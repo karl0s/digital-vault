@@ -1,0 +1,141 @@
+import { ShowCard } from './ShowCard';
+import { Show } from '../App';
+import { useRef, useState, useEffect } from 'react';
+import { ChevronDown } from 'lucide-react';
+
+interface ArtistRowProps {
+  artist: string;
+  shows: Show[];
+  onShowClick: (show: Show) => void;
+  focusedShowId?: string;
+  opacity?: number;
+  isCenter?: boolean;
+  getImageUrl?: (checksum: string, index: number) => string | null;
+  allArtists?: string[];
+  onArtistJump?: (artist: string) => void;
+  currentArtist?: string;
+}
+
+export function ArtistRow({ artist, shows, onShowClick, focusedShowId, opacity = 1, isCenter = false, getImageUrl, allArtists = [], onArtistJump, currentArtist }: ArtistRowProps) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isRowHovered, setIsRowHovered] = useState(false);
+  
+  // Sort shows by year (newest first)
+  const sortedShows = [...shows].sort((a, b) => {
+    const yearA = a.ShowDate ? a.ShowDate.split('-')[0] : '0000';
+    const yearB = b.ShowDate ? b.ShowDate.split('-')[0] : '0000';
+    return yearB.localeCompare(yearA); // Descending order (newest first)
+  });
+
+  // Scroll to current artist when dropdown opens
+  useEffect(() => {
+    if (isDropdownOpen && dropdownRef.current && allArtists.length > 0) {
+      const currentIndex = allArtists.indexOf(artist);
+      if (currentIndex >= 0) {
+        // Scroll to show current artist at top (each item is roughly 44px tall)
+        dropdownRef.current.scrollTop = currentIndex * 44;
+      }
+    }
+  }, [isDropdownOpen, artist, allArtists]);
+
+  // Prevent page scroll when dropdown is open
+  useEffect(() => {
+    if (isDropdownOpen) {
+      // Prevent body scroll
+      document.body.style.overflow = 'hidden';
+      
+      return () => {
+        // Restore body scroll
+        document.body.style.overflow = '';
+      };
+    }
+  }, [isDropdownOpen]);
+
+  const handleArtistClick = (selectedArtist: string) => {
+    setIsDropdownOpen(false);
+    // Restore body scroll immediately
+    document.body.style.overflow = '';
+    
+    if (onArtistJump) {
+      // Small delay to ensure dropdown closes and scroll is restored
+      setTimeout(() => {
+        onArtistJump(selectedArtist);
+      }, 50);
+    }
+  };
+
+  return (
+    <div 
+      id={`artist-${artist.replace(/\s+/g, '-')}`} 
+      data-artist={artist}
+      className="mb-32 transition-opacity duration-200"
+      style={{ 
+        opacity,
+        // GPU acceleration
+        transform: 'translateZ(0)',
+        willChange: 'opacity',
+      }}
+      onMouseEnter={() => setIsRowHovered(true)}
+      onMouseLeave={() => setIsRowHovered(false)}
+    >
+      <div className="relative px-4 mb-4 lg:mb-6">
+        <button
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          className="flex items-center gap-3 group"
+        >
+          <h2 className="text-[40px] font-semibold group-hover:text-gray-300 transition-colors">
+            {artist}
+          </h2>
+          <ChevronDown 
+            className={`w-6 h-6 text-gray-600 transition-all duration-300 ${
+              isRowHovered ? 'opacity-100' : 'opacity-0'
+            } ${isDropdownOpen ? 'rotate-180' : ''}`}
+          />
+        </button>
+
+        {/* Dropdown Menu */}
+        {isDropdownOpen && allArtists.length > 0 && (
+          <div 
+            ref={dropdownRef}
+            className="absolute top-full left-4 mt-2 bg-black/95 backdrop-blur-xl border border-white/10 rounded-lg shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 max-h-[60vh] overflow-y-auto z-[100]"
+            onMouseLeave={() => setIsDropdownOpen(false)}
+          >
+            {allArtists.map((artistName) => (
+              <button
+                key={artistName}
+                onClick={() => handleArtistClick(artistName)}
+                className={`block text-left px-5 py-3 hover:bg-white/10 transition-colors whitespace-nowrap ${
+                  artistName === currentArtist ? 'bg-white/5 text-white' : 'text-gray-300'
+                }`}
+              >
+                {artistName}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+      
+      <div className="relative">
+        <div 
+          ref={scrollRef}
+          className="flex gap-2 md:gap-3 lg:gap-4 overflow-x-auto overflow-y-visible py-8 px-4 scrollbar-hide"
+        >
+          {sortedShows.map(show => (
+            <ShowCard
+              key={show.ShowID}
+              show={show}
+              onClick={() => onShowClick(show)}
+              focused={show.ShowID === focusedShowId}
+              getImageUrl={getImageUrl}
+            />
+          ))}
+        </div>
+        
+        {/* Fade out indicator on right if more shows exist beyond viewport */}
+        <div className="absolute right-0 top-0 bottom-0 w-24 md:w-32 lg:w-40 bg-gradient-to-l from-[#141414] to-transparent pointer-events-none" />
+      </div>
+    </div>
+  );
+}
