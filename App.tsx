@@ -120,7 +120,9 @@ export default function App() {
       return imageMapping[key];
     }
     // Fallback to local path
-    return `/images/${checksum}_0${index}.jpg`;
+    const base = import.meta.env.BASE_URL;
+    return `${base}images/${checksum}_0${index}.jpg`;
+
   };
 
   // Filter shows based on search query
