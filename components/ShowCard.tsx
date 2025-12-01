@@ -124,13 +124,9 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl }: ShowCa
           {/* Badges - only show on hover/focus */}
           {(focused || isHovered) && (
             <div className="absolute top-3 right-3 flex gap-2 animate-in fade-in duration-200">
-              {show.ShowDate ? (
+              {show.ShowDate && (
                 <div className={`px-2 py-1 rounded text-xs transition-colors ${focused ? 'bg-white text-black' : 'bg-[#E50914]'}`}>
                   {year}
-                </div>
-              ) : (
-                <div className={`px-2 py-1 rounded text-xs transition-colors ${focused ? 'bg-gray-500 text-black' : 'bg-gray-700'}`}>
-                  Date Unknown
                 </div>
               )}
               {show.RecordingType && (
@@ -154,13 +150,7 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl }: ShowCa
                 transform: 'translateZ(0)',
               }}
             >
-              <h3 className="text-sm mb-1 truncate">{show.Artist}</h3>
-              <div className="flex items-center gap-3 text-xs text-gray-300 mb-2">
-                <span className="flex items-center gap-1">
-                  <MapPin className="w-3 h-3" />
-                  {location}
-                </span>
-              </div>
+              {show.ShowName && <h3 className="text-sm mb-2 truncate">{show.ShowName}</h3>}
               
               <div className="space-y-1 text-xs text-gray-300">
                 {show.VenueName && <p className="truncate">{show.VenueName}</p>}
