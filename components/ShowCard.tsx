@@ -150,17 +150,19 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl }: ShowCa
                 transform: 'translateZ(0)',
               }}
             >
-              {show.ShowName && <h3 className="text-sm mb-2 truncate">{show.ShowName}</h3>}
-              
               <div className="space-y-1 text-xs text-gray-300">
-                {show.VenueName && <p className="truncate">{show.VenueName}</p>}
-                {show.EventOrFestival && <p className="truncate text-[#E50914]">{show.EventOrFestival}</p>}
-                {durationMin > 0 && (
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {durationText}
-                  </span>
+                {show.ShowDate && <p>{show.ShowDate}</p>}
+                {(show.EventOrFestival || show.VenueName) && (
+                  <p className="truncate">
+                    {[show.EventOrFestival, show.VenueName].filter(Boolean).join(', ')}
+                  </p>
                 )}
+                {(show.City || show.Country) && (
+                  <p className="truncate">
+                    {[show.City, show.Country].filter(Boolean).join(', ')}
+                  </p>
+                )}
+                {durationMin > 0 && <p>{durationText}</p>}
               </div>
             </div>
           )}
