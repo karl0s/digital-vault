@@ -31,7 +31,15 @@ export function ShowDrawer({ show, onClose, onImageClick, getImageUrl }: ShowDra
     ? (hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m ${seconds}s`)
     : 'Unknown';
   
-  const setlistItems = show.Setlist ? show.Setlist.split(';').map(s => s.trim()).filter(Boolean) : [];
+  const rawSetlist =
+    (show as any).Setlist ||
+    (show as any).setlist ||
+    "";
+
+const setlistItems = rawSetlist
+  ? rawSetlist.split(";").map(s => s.trim()).filter(Boolean)
+  : [];
+
   
   // Parse RepVideoFiles if it's a string
   const videoFiles = typeof show.RepVideoFiles === 'string'
