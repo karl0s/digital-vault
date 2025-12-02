@@ -177,7 +177,7 @@ export function ShowDrawer({ show, onClose, onImageClick, getImageUrl }: ShowDra
                     <button
                       key={idx}
                       onClick={() => onImageClick(url)}
-                      className="aspect-video bg-black/30 rounded overflow-hidden hover:ring-2 hover:ring-white/50 transition-all"
+                      className="drawer-thumbnail bg-black/30 rounded overflow-hidden hover:ring-2 hover:ring-white/50 transition-all"
                     >
                       <LazyImage
                         src={url}
