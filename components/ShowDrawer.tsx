@@ -22,6 +22,20 @@ export function ShowDrawer({ show, onClose, onImageClick, getImageUrl }: ShowDra
     return () => window.removeEventListener('keydown', handleEscape);
   }, [onClose]);
 
+  // Disable body scroll when drawer is open (desktop only)
+  useEffect(() => {
+    // Save original overflow value
+    const originalOverflow = document.body.style.overflow;
+    
+    // Disable scrolling on body (but allow scroll within drawer)
+    document.body.style.overflow = 'hidden';
+    
+    // Cleanup: restore original overflow when drawer closes
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, []);
+
   const year = show.ShowDate ? show.ShowDate.split('-')[0] : 'Unknown';
   const durationSec = parseInt(show.DurationSec || '0');
   const hours = Math.floor(durationSec / 3600);
@@ -89,13 +103,13 @@ export function ShowDrawer({ show, onClose, onImageClick, getImageUrl }: ShowDra
 
       {/* Drawer - slide from right on desktop, slide from bottom on mobile */}
       <div 
-        className="fixed top-0 md:top-0 right-0 md:right-0 bottom-0 left-0 md:left-auto w-full md:w-[60vw] h-full md:h-auto bg-[#181818] z-50 overflow-y-auto drawer-slide-in md:drawer-slide-in-right"
+        className="fixed bottom-0 md:top-0 left-0 md:left-auto right-0 md:right-0 w-full md:w-[60vw] h-[85vh] md:h-full bg-[#181818] z-50 overflow-y-auto drawer-slide-in"
       >
         <div className="relative">
-          {/* Fixed Close button */}
+          {/* Close button - sticky on mobile, fixed within drawer on desktop */}
           <button
             onClick={onClose}
-            className="fixed top-4 right-4 z-[60] p-2 bg-black/60 hover:bg-black/80 rounded-full transition-colors"
+            className="sticky md:fixed top-4 right-4 z-[60] ml-auto mr-4 mt-4 md:m-0 p-2 bg-black/60 hover:bg-black/80 rounded-full transition-colors block"
             aria-label="Close"
           >
             <X className="w-6 h-6" />

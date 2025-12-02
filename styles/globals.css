@@ -19,27 +19,34 @@ html {
 @keyframes slideInFromRight {
   from {
     transform: translateX(100%);
+    opacity: 0;
   }
   to {
     transform: translateX(0);
+    opacity: 1;
   }
 }
 
 @keyframes slideInFromBottom {
   from {
     transform: translateY(100%);
+    opacity: 0;
   }
   to {
     transform: translateY(0);
+    opacity: 1;
   }
 }
 
+/* Single class with responsive behavior */
 .drawer-slide-in {
-  animation: slideInFromBottom 0.3s ease-out forwards;
+  /* Mobile: slide from bottom */
+  animation: slideInFromBottom 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Desktop: slide from right */
 @media (min-width: 768px) {
-  .drawer-slide-in-right {
-    animation: slideInFromRight 0.3s ease-out forwards;
+  .drawer-slide-in {
+    animation: slideInFromRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 }
