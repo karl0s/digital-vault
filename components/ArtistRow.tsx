@@ -90,7 +90,7 @@ export function ArtistRow({ artist, shows, onShowClick, focusedShowId, opacity =
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           className="flex items-center gap-3 group"
         >
-          <h2 className="text-xl md:text-[40px]">{artist}</h2>
+          <h2 className="text-xl md:text-[40px] font-bold text-[32px]">{artist}</h2>
           <ChevronDown 
             className={`w-6 h-6 text-gray-600 transition-all duration-300 hidden md:block ${
               isRowHovered ? 'opacity-100' : 'opacity-0'
