@@ -2,6 +2,7 @@ import { ShowCard } from './ShowCard';
 import { Show } from '../App';
 import { useRef, useState, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { motion } from 'motion/react';
 
 interface ArtistRowProps {
   artist: string;
@@ -67,7 +68,7 @@ export function ArtistRow({ artist, shows, onShowClick, focusedShowId, opacity =
   };
 
   return (
-    <div 
+    <motion.div 
       id={`artist-${artist.replace(/\s+/g, '-')}`} 
       data-artist={artist}
       className="mb-32 transition-opacity duration-200"
@@ -77,6 +78,10 @@ export function ArtistRow({ artist, shows, onShowClick, focusedShowId, opacity =
         transform: 'translateZ(0)',
         willChange: 'opacity',
       }}
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: opacity, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       onMouseEnter={() => setIsRowHovered(true)}
       onMouseLeave={() => setIsRowHovered(false)}
     >
@@ -121,33 +126,55 @@ export function ArtistRow({ artist, shows, onShowClick, focusedShowId, opacity =
           ref={scrollRef}
           className="hidden md:flex gap-2 md:gap-3 lg:gap-4 overflow-x-auto overflow-y-visible py-8 px-4 scrollbar-hide"
         >
-          {sortedShows.map(show => (
-            <ShowCard
+          {sortedShows.map((show, index) => (
+            <motion.div
               key={show.ShowID}
-              show={show}
-              onClick={() => onShowClick(show)}
-              focused={show.ShowID === focusedShowId}
-              getImageUrl={getImageUrl}
-            />
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ 
+                duration: 0.4, 
+                delay: index * 0.05,
+                ease: [0.16, 1, 0.3, 1]
+              }}
+            >
+              <ShowCard
+                show={show}
+                onClick={() => onShowClick(show)}
+                focused={show.ShowID === focusedShowId}
+                getImageUrl={getImageUrl}
+              />
+            </motion.div>
           ))}
         </div>
 
         {/* Mobile: 2-column grid */}
         <div className="md:hidden grid grid-cols-2 gap-3 px-4 py-4">
-          {sortedShows.map(show => (
-            <ShowCard
+          {sortedShows.map((show, index) => (
+            <motion.div
               key={show.ShowID}
-              show={show}
-              onClick={() => onShowClick(show)}
-              focused={show.ShowID === focusedShowId}
-              getImageUrl={getImageUrl}
-            />
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-30px" }}
+              transition={{ 
+                duration: 0.4, 
+                delay: index * 0.03,
+                ease: [0.16, 1, 0.3, 1]
+              }}
+            >
+              <ShowCard
+                show={show}
+                onClick={() => onShowClick(show)}
+                focused={show.ShowID === focusedShowId}
+                getImageUrl={getImageUrl}
+              />
+            </motion.div>
           ))}
         </div>
         
         {/* Fade out indicator on right if more shows exist beyond viewport - desktop only */}
         <div className="hidden md:block absolute right-0 top-0 bottom-0 w-24 md:w-32 lg:w-40 bg-gradient-to-l from-[#141414] to-transparent pointer-events-none" />
       </div>
-    </div>
+    </motion.div>
   );
 }

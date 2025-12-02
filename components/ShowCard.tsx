@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Clock, MapPin } from 'lucide-react';
 import { Show } from '../App';
 import { LazyImage } from './LazyImage';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface ShowCardProps {
   show: Show;
@@ -106,66 +107,135 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl }: ShowCa
                 placeholderColor={getColorFromString(show.Artist)}
               />
               {/* Gradient overlay - only show on hover/focus */}
-              {(focused || isHovered) && (
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent transition-opacity duration-300" />
-              )}
+              <AnimatePresence>
+                {(focused || isHovered) && (
+                  <motion.div 
+                    className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                )}
+              </AnimatePresence>
             </>
           ) : (
             // Placeholder with artist initials
             <div className={`w-full h-full ${getColorFromString(show.Artist)} flex items-center justify-center`}>
               <div className="text-6xl text-white/40 font-bold">{artistInitials}</div>
               {/* Gradient overlay - only show on hover/focus */}
-              {(focused || isHovered) && (
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent transition-opacity duration-300" />
-              )}
+              <AnimatePresence>
+                {(focused || isHovered) && (
+                  <motion.div 
+                    className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                )}
+              </AnimatePresence>
             </div>
           )}
           
           {/* Badges - only show on hover/focus */}
-          {(focused || isHovered) && (
-            <div className="absolute top-3 right-3 flex gap-2 animate-in fade-in duration-200">
-              {show.ShowDate && (
-                <div className={`px-2 py-1 rounded text-xs transition-colors ${focused ? 'bg-white text-black' : 'bg-[#E50914]'}`}>
-                  {year}
-                </div>
-              )}
-              {show.RecordingType && (
-                <div className="bg-black/70 px-2 py-1 rounded text-xs">
-                  {show.RecordingType}
-                </div>
-              )}
-              {show.TVStandard && (
-                <div className="bg-black/70 px-2 py-1 rounded text-xs">
-                  {show.TVStandard}
-                </div>
-              )}
-            </div>
-          )}
+          <AnimatePresence>
+            {(focused || isHovered) && (
+              <div className="absolute top-3 right-3 flex gap-2">
+                {show.ShowDate && (
+                  <motion.div 
+                    className={`px-2 py-1 rounded text-xs transition-colors ${focused ? 'bg-white text-black' : 'bg-[#E50914]'}`}
+                    initial={{ opacity: 0, y: -10, scale: 0.8 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.2, delay: 0 }}
+                  >
+                    {year}
+                  </motion.div>
+                )}
+                {show.RecordingType && (
+                  <motion.div 
+                    className="bg-black/70 px-2 py-1 rounded text-xs"
+                    initial={{ opacity: 0, y: -10, scale: 0.8 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.2, delay: 0.05 }}
+                  >
+                    {show.RecordingType}
+                  </motion.div>
+                )}
+                {show.TVStandard && (
+                  <motion.div 
+                    className="bg-black/70 px-2 py-1 rounded text-xs"
+                    initial={{ opacity: 0, y: -10, scale: 0.8 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.2, delay: 0.1 }}
+                  >
+                    {show.TVStandard}
+                  </motion.div>
+                )}
+              </div>
+            )}
+          </AnimatePresence>
 
           {/* Info overlay - hidden by default, visible on hover/focus */}
-          {(focused || isHovered) && (
-            <div className="absolute bottom-0 left-0 right-0 p-4 transition-all duration-300 animate-in fade-in duration-200"
-              style={{
-                // GPU acceleration for smooth transitions
-                transform: 'translateZ(0)',
-              }}
-            >
-              <div className="space-y-1 text-xs text-gray-300">
-                {show.ShowDate && <p>{show.ShowDate}</p>}
-                {(show.EventOrFestival || show.VenueName) && (
-                  <p className="truncate">
-                    {[show.EventOrFestival, show.VenueName].filter(Boolean).join(', ')}
-                  </p>
-                )}
-                {(show.City || show.Country) && (
-                  <p className="truncate">
-                    {[show.City, show.Country].filter(Boolean).join(', ')}
-                  </p>
-                )}
-                {durationMin > 0 && <p>{durationText}</p>}
-              </div>
-            </div>
-          )}
+          <AnimatePresence>
+            {(focused || isHovered) && (
+              <motion.div 
+                className="absolute bottom-0 left-0 right-0 p-4"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                style={{
+                  // GPU acceleration for smooth transitions
+                  transform: 'translateZ(0)',
+                }}
+              >
+                <div className="space-y-1 text-xs text-gray-300">
+                  {show.ShowDate && (
+                    <motion.p
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.2, delay: 0.15 }}
+                    >
+                      {show.ShowDate}
+                    </motion.p>
+                  )}
+                  {(show.EventOrFestival || show.VenueName) && (
+                    <motion.p 
+                      className="truncate"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.2, delay: 0.2 }}
+                    >
+                      {[show.EventOrFestival, show.VenueName].filter(Boolean).join(', ')}
+                    </motion.p>
+                  )}
+                  {(show.City || show.Country) && (
+                    <motion.p 
+                      className="truncate"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.2, delay: 0.25 }}
+                    >
+                      {[show.City, show.Country].filter(Boolean).join(', ')}
+                    </motion.p>
+                  )}
+                  {durationMin > 0 && (
+                    <motion.p
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.2, delay: 0.3 }}
+                    >
+                      {durationText}
+                    </motion.p>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>
