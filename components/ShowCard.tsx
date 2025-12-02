@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Clock, MapPin } from 'lucide-react';
 import { Show } from '../App';
 import { LazyImage } from './LazyImage';
+import { GlowingEffect } from './ui/GlowingEffect';
+import { extractColorsWithCache } from '../utils/colorExtractor';
 
 interface ShowCardProps {
   show: Show;
@@ -13,6 +15,8 @@ interface ShowCardProps {
 export function ShowCard({ show, onClick, focused = false, getImageUrl }: ShowCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [prefetchedImages, setPrefetchedImages] = useState<string[]>([]);
+  const [extractedColors, setExtractedColors] = useState<string[] | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
   
   const year = show.ShowDate ? show.ShowDate.split('-')[0] : 'Unknown';
   const durationMin = Math.floor(parseInt(show.DurationSec || '0') / 60);
@@ -56,6 +60,23 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl }: ShowCa
     return colors[Math.abs(hash) % colors.length];
   };
 
+  // Check if mobile on mount
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Extract colors from image on hover (desktop only)
+  useEffect(() => {
+    if (isHovered && imageUrl && !extractedColors && !isMobile) {
+      extractColorsWithCache(imageUrl, 4)
+        .then(colors => setExtractedColors(colors))
+        .catch(() => setExtractedColors(null));
+    }
+  }, [isHovered, imageUrl, extractedColors, isMobile]);
+
   // Prefetch drawer images on hover (all 4 screenshots)
   useEffect(() => {
     if (isHovered && show.ChecksumSHA1 && prefetchedImages.length === 0) {
@@ -96,6 +117,17 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl }: ShowCa
           willChange: focused || isHovered ? 'transform' : 'auto',
         }}
       >
+        {/* Glowing border effect - desktop only, activated on hover */}
+        <GlowingEffect
+          disabled={!isHovered || isMobile}
+          proximity={120}
+          spread={30}
+          blur={10}
+          borderWidth={2}
+          colors={extractedColors || undefined}
+          movementDuration={1.5}
+        />
+
         <div className="aspect-[4/3] bg-gray-800 relative">
           {imageUrl ? (
             <>
