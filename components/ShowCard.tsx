@@ -81,14 +81,14 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl }: ShowCa
     <div
       id={`show-${show.ShowID}`}
       data-show-year={year}
-      className={`group cursor-pointer flex-shrink-0 w-64 sm:w-72 md:w-80 lg:w-96 xl:w-[26rem] transition-all duration-300 ${focused ? 'relative z-20' : 'relative z-0'}`}
+      className={`group cursor-pointer flex-shrink-0 w-full md:w-64 md:sm:w-72 md:md:w-80 md:lg:w-96 md:xl:w-[26rem] transition-all duration-300 ${focused ? 'relative z-20' : 'relative z-0'}`}
       onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className={`
         relative overflow-hidden rounded-lg transition-all duration-300
-        ${focused ? 'scale-110 ring-4 ring-white shadow-2xl shadow-white/30' : isHovered ? 'scale-105 shadow-2xl shadow-black/50' : 'scale-100'}
+        ${focused ? 'scale-110 ring-4 ring-white shadow-2xl shadow-white/30' : isHovered ? 'md:scale-105 shadow-2xl shadow-black/50' : 'scale-100'}
       `}
         style={{
           // Force GPU acceleration for smooth animations

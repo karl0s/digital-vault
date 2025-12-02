@@ -31,14 +31,7 @@ export function ShowDrawer({ show, onClose, onImageClick, getImageUrl }: ShowDra
     ? (hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m ${seconds}s`)
     : 'Unknown';
   
-const rawSetlist =
-  (show as any).Setlist ||
-  (show as any).setlist ||
-  "";
-
-const setlistItems = rawSetlist
-  ? rawSetlist.split(";").map(s => s.trim()).filter(Boolean)
-  : [];
+  const setlistItems = show.Setlist ? show.Setlist.split(';').map(s => s.trim()).filter(Boolean) : [];
   
   // Parse RepVideoFiles if it's a string
   const videoFiles = typeof show.RepVideoFiles === 'string'
@@ -94,9 +87,9 @@ const setlistItems = rawSetlist
         onClick={onClose}
       />
 
-      {/* Drawer */}
+      {/* Drawer - slide from right on desktop, slide from bottom on mobile */}
       <div 
-        className="fixed top-0 right-0 bottom-0 w-[60vw] bg-[#181818] z-50 overflow-y-auto drawer-slide-in"
+        className="fixed top-0 md:top-0 right-0 md:right-0 bottom-0 left-0 md:left-auto w-full md:w-[60vw] h-full md:h-auto bg-[#181818] z-50 overflow-y-auto drawer-slide-in md:drawer-slide-in-right"
       >
         <div className="relative">
           {/* Fixed Close button */}
@@ -109,7 +102,7 @@ const setlistItems = rawSetlist
           </button>
 
           {/* Header with hero image */}
-          <div className="relative h-80 bg-[#181818]">
+          <div className="relative h-48 md:h-80 bg-[#181818]">
             {images.length > 0 ? (
               <>
                 <LazyImage
@@ -123,16 +116,16 @@ const setlistItems = rawSetlist
             ) : (
               // Placeholder with artist initials
               <div className={`w-full h-full ${getColorFromString(show.Artist)} flex items-center justify-center`}>
-                <div className="text-9xl text-white/30 font-bold">{artistInitials}</div>
+                <div className="text-6xl md:text-9xl text-white/30 font-bold">{artistInitials}</div>
                 <div className="absolute inset-0 bg-gradient-to-t from-[#181818] via-[#181818]/50 to-transparent backdrop-blur-[3px]" />
               </div>
             )}
             
-            <div className="absolute bottom-0 left-0 right-0 p-8">
-              <h1 className="text-white mb-2">
+            <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8">
+              <h1 className="text-white mb-1 md:mb-2 text-xl md:text-3xl">
                 {show.Artist}
               </h1>
-              <p className="text-xl text-gray-300 mb-3">
+              <p className="text-base md:text-xl text-gray-300 mb-2 md:mb-3">
                 {show.ShowDate || 'Date Unknown'}
                 {show.VenueName && ` · ${show.VenueName}`}
               </p>
@@ -147,25 +140,25 @@ const setlistItems = rawSetlist
           </div>
 
           {/* Content */}
-          <div className="p-8 space-y-6">
+          <div className="p-4 md:p-8 space-y-4 md:space-y-6">
             {/* Location & Event summary */}
             {(locationStr || show.EventOrFestival) && (
               <div className="space-y-2">
-                {locationStr && <p className="text-gray-300">{locationStr}</p>}
+                {locationStr && <p className="text-gray-300 text-sm md:text-base">{locationStr}</p>}
                 {show.EventOrFestival && (
                   <p className="text-[#E50914] text-sm">🎪 {show.EventOrFestival}</p>
                 )}
               </div>
             )}
 
-            {/* Screenshots - Horizontal 1x4 grid */}
+            {/* Screenshots - 2x2 grid on mobile, 1x4 on desktop */}
             {images.length > 0 && show.ChecksumSHA1 && (
               <div>
-                <h3 className="text-sm text-gray-400 mb-4 flex items-center gap-2">
+                <h3 className="text-sm text-gray-400 mb-3 md:mb-4 flex items-center gap-2">
                   <Film className="w-4 h-4" />
                   Screenshots
                 </h3>
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                   {images.map((url, idx) => (
                     <button
                       key={idx}
@@ -183,8 +176,8 @@ const setlistItems = rawSetlist
               </div>
             )}
 
-            {/* Technical Details */}
-            <div className="grid grid-cols-2 gap-6">
+            {/* Technical Details - 1 column on mobile, 2 on desktop */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               <div className="space-y-3">
                 <h3 className="text-sm text-gray-400 flex items-center gap-2">
                   <HardDrive className="w-4 h-4" />

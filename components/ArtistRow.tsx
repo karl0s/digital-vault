@@ -85,21 +85,19 @@ export function ArtistRow({ artist, shows, onShowClick, focusedShowId, opacity =
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           className="flex items-center gap-3 group"
         >
-          <h2 className="text-[40px] font-semibold group-hover:text-gray-300 transition-colors">
-            {artist}
-          </h2>
+          <h2 className="text-xl md:text-[40px]">{artist}</h2>
           <ChevronDown 
-            className={`w-6 h-6 text-gray-600 transition-all duration-300 ${
+            className={`w-6 h-6 text-gray-600 transition-all duration-300 hidden md:block ${
               isRowHovered ? 'opacity-100' : 'opacity-0'
             } ${isDropdownOpen ? 'rotate-180' : ''}`}
           />
         </button>
 
-        {/* Dropdown Menu */}
+        {/* Dropdown Menu - desktop only */}
         {isDropdownOpen && allArtists.length > 0 && (
           <div 
             ref={dropdownRef}
-            className="absolute top-full left-4 mt-2 bg-black/95 backdrop-blur-xl border border-white/10 rounded-lg shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 max-h-[60vh] overflow-y-auto z-[100]"
+            className="hidden md:block absolute top-full left-4 mt-2 bg-black/95 backdrop-blur-xl border border-white/10 rounded-lg shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 max-h-[60vh] overflow-y-auto z-[100]"
             onMouseLeave={() => setIsDropdownOpen(false)}
           >
             {allArtists.map((artistName) => (
@@ -118,9 +116,10 @@ export function ArtistRow({ artist, shows, onShowClick, focusedShowId, opacity =
       </div>
       
       <div className="relative">
+        {/* Desktop: horizontal scroll */}
         <div 
           ref={scrollRef}
-          className="flex gap-2 md:gap-3 lg:gap-4 overflow-x-auto overflow-y-visible py-8 px-4 scrollbar-hide"
+          className="hidden md:flex gap-2 md:gap-3 lg:gap-4 overflow-x-auto overflow-y-visible py-8 px-4 scrollbar-hide"
         >
           {sortedShows.map(show => (
             <ShowCard
@@ -132,9 +131,22 @@ export function ArtistRow({ artist, shows, onShowClick, focusedShowId, opacity =
             />
           ))}
         </div>
+
+        {/* Mobile: 2-column grid */}
+        <div className="md:hidden grid grid-cols-2 gap-3 px-4 py-4">
+          {sortedShows.map(show => (
+            <ShowCard
+              key={show.ShowID}
+              show={show}
+              onClick={() => onShowClick(show)}
+              focused={show.ShowID === focusedShowId}
+              getImageUrl={getImageUrl}
+            />
+          ))}
+        </div>
         
-        {/* Fade out indicator on right if more shows exist beyond viewport */}
-        <div className="absolute right-0 top-0 bottom-0 w-24 md:w-32 lg:w-40 bg-gradient-to-l from-[#141414] to-transparent pointer-events-none" />
+        {/* Fade out indicator on right if more shows exist beyond viewport - desktop only */}
+        <div className="hidden md:block absolute right-0 top-0 bottom-0 w-24 md:w-32 lg:w-40 bg-gradient-to-l from-[#141414] to-transparent pointer-events-none" />
       </div>
     </div>
   );

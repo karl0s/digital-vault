@@ -41,10 +41,10 @@ export function ImageLightbox({ imageUrl, images, currentImage, onClose }: Image
       {/* Close button */}
       <button
         onClick={onClose}
-        className="absolute top-6 right-6 p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
+        className="absolute top-4 md:top-6 right-4 md:right-6 p-2 md:p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
         aria-label="Close lightbox"
       >
-        <X className="w-6 h-6" />
+        <X className="w-5 h-5 md:w-6 md:h-6" />
       </button>
 
       {/* Navigation buttons */}
@@ -52,30 +52,30 @@ export function ImageLightbox({ imageUrl, images, currentImage, onClose }: Image
         <>
           <button
             onClick={handlePrevious}
-            className="absolute left-6 p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
+            className="absolute left-2 md:left-6 p-2 md:p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
             aria-label="Previous image"
           >
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
           </button>
           <button
             onClick={handleNext}
-            className="absolute right-6 p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
+            className="absolute right-2 md:right-6 p-2 md:p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
             aria-label="Next image"
           >
-            <ChevronRight className="w-6 h-6" />
+            <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
           </button>
         </>
       )}
 
       {/* Image counter */}
       {imageArray.length > 1 && (
-        <div className="absolute top-6 left-1/2 -translate-x-1/2 px-4 py-2 bg-white/10 rounded-full text-sm">
+        <div className="absolute top-4 md:top-6 left-1/2 -translate-x-1/2 px-3 md:px-4 py-1 md:py-2 bg-white/10 rounded-full text-xs md:text-sm">
           {currentIndex + 1} / {imageArray.length}
         </div>
       )}
 
       {/* Main image */}
-      <div className="max-w-7xl max-h-[90vh] w-full px-20">
+      <div className="max-w-7xl max-h-[90vh] w-full px-4 md:px-20">
         <ImageWithFallback
           src={imageArray[currentIndex]}
           alt={`Screenshot ${currentIndex + 1}`}
@@ -83,9 +83,9 @@ export function ImageLightbox({ imageUrl, images, currentImage, onClose }: Image
         />
       </div>
 
-      {/* Thumbnail strip */}
+      {/* Thumbnail strip - hide on mobile */}
       {imageArray.length > 1 && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
+        <div className="hidden md:flex absolute bottom-6 left-1/2 -translate-x-1/2 gap-2">
           {imageArray.map((img, idx) => (
             <button
               key={idx}

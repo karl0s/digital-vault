@@ -63,54 +63,54 @@ export default function App() {
   const [imageMapping, setImageMapping] = useState<Record<string, string>>({});
   const mainRef = useRef<HTMLDivElement>(null);
 
-useEffect(() => {
-  const base = import.meta.env.BASE_URL;
+  useEffect(() => {
+    // Load test images mapping (optional, for demo purposes)
+    fetch('./test-images.json')
+      .then(res => res.json())
+      .then((data: Record<string, string>) => {
+        setImageMapping(data);
+      })
+      .catch(err => {
+        console.log('No test images found, using local paths');
+      });
 
-  // Load test images mapping (optional, for demo purposes)
-  fetch(`${base}test-images.json`)
-    .then(res => res.json())
-    .then((data: Record<string, string>) => {
-      setImageMapping(data);
-    })
-    .catch(() => {
-      console.log('No test images found, using local paths');
-    });
-
-  const loadShows = async () => {
-    const url = `${base}shows.json`;
-
-    try {
-      console.log('Loading shows from:', url);
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error(`Failed with status: ${response.status}`);
+    // Load shows data - try multiple paths for compatibility
+    const loadShows = async () => {
+      const paths = ['./shows.json', '/shows.json', './public/shows.json'];
+      
+      for (const path of paths) {
+        try {
+          console.log(`Trying to load from: ${path}`);
+          const response = await fetch(path);
+          
+          if (!response.ok) {
+            console.log(`${path} failed with status: ${response.status}`);
+            continue;
+          }
+          
+          const contentType = response.headers.get('content-type');
+          if (!contentType || !contentType.includes('application/json')) {
+            console.log(`${path} returned non-JSON content type: ${contentType}`);
+            continue;
+          }
+          
+          const data: ShowsData = await response.json();
+          console.log(`✅ Successfully loaded ${data.items.length} shows from ${path}`);
+          setShows(data.items);
+          return; // Success! Exit the function
+        } catch (err) {
+          console.log(`${path} failed:`, err instanceof Error ? err.message : 'Unknown error');
+        }
       }
-
-      const data = await response.json();
-
-      // Support both formats: plain array OR { items: [...] }
-      let items: Show[];
-
-      if (Array.isArray(data)) {
-        items = data as Show[];
-      } else if (data && Array.isArray((data as any).items)) {
-        items = (data as any).items as Show[];
-      } else {
-        throw new Error('Unexpected shows.json structure');
-      }
-
-      console.log(`✅ Successfully loaded ${items.length} shows from ${url}`);
-      setShows(items);
-    } catch (err) {
-      console.error('⚠️ Failed to load shows.json, using sample data fallback.', err);
+      
+      // If all paths fail, use sample data
+      console.log('⚠️ All paths failed. Using sample data for preview.');
+      console.log('💡 When deployed to GitHub Pages, your shows.json will load correctly.');
       setShows(SAMPLE_SHOWS);
-    }
-  };
-
-  loadShows();
-}, []);
-
+    };
+    
+    loadShows();
+  }, []);
 
   // Helper function to get image URL (supports external URLs for testing)
   const getImageUrl = (checksum: string, index: number): string | null => {
@@ -120,9 +120,7 @@ useEffect(() => {
       return imageMapping[key];
     }
     // Fallback to local path
-    const base = import.meta.env.BASE_URL;
-    return `${base}images/${checksum}_0${index}.jpg`;
-
+    return `/images/${checksum}_0${index}.jpg`;
   };
 
   // Filter shows based on search query
@@ -447,27 +445,32 @@ useEffect(() => {
       <TopNav 
         searchQuery={searchQuery} 
         onSearchChange={setSearchQuery}
+        artists={sortedArtists}
+        onArtistJump={handleArtistJump}
       />
       
       <div className="flex">
-        <Sidebar 
-          artists={sortedArtists}
-          activeLetter={currentLetter}
-          onLetterClick={(letter) => {
-            // Clear keyboard focus when sidebar is clicked
-            setFocusedIndex(null);
-            setIsKeyboardMode(false);
-            
-            const element = document.getElementById(`artist-${letter}`);
-            element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }}
-          onArtistClick={handleArtistJump}
-        />
+        {/* Sidebar - hidden on mobile */}
+        <div className="hidden md:block">
+          <Sidebar 
+            artists={sortedArtists}
+            activeLetter={currentLetter}
+            onLetterClick={(letter) => {
+              // Clear keyboard focus when sidebar is clicked
+              setFocusedIndex(null);
+              setIsKeyboardMode(false);
+              
+              const element = document.getElementById(`artist-${letter}`);
+              element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }}
+            onArtistClick={handleArtistJump}
+          />
+        </div>
         
-        <main ref={mainRef} className="flex-1 ml-16 pt-24 px-8 pb-8 overflow-x-hidden">
+        <main ref={mainRef} className="flex-1 ml-0 md:ml-16 pt-20 md:pt-24 px-4 md:px-8 pb-8 overflow-x-hidden">
           {searchQuery && (
             <div className="mb-6 flex items-center gap-4">
-              <p className="text-gray-400">
+              <p className="text-gray-400 text-sm md:text-base">
                 Search results for <span className="text-white">"{searchQuery}"</span>
               </p>
               <button
