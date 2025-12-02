@@ -17,7 +17,7 @@ interface GlowingEffectProps {
   borderWidth?: number;
   colors?: string[]; // Custom colors extracted from image
 }
-
+ 
 const GlowingEffect = memo(
   ({
     blur = 0,

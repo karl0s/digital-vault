@@ -19,7 +19,7 @@ function rgbToHex(rgb: RGB): string {
   };
   return `#${toHex(rgb.r)}${toHex(rgb.g)}${toHex(rgb.b)}`;
 }
-
+ 
 /**
  * Calculate color distance in RGB space
  */
