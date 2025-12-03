@@ -3,9 +3,6 @@
 ## Issue #1: Artists Below "R" Not Scrolling/Showing as Active ✅ FIXED
 
 ### Problem:
-- Clicking "Rage Against the Machine" (or any artist starting with R or later) from top menu didn't scroll to artist
-- Clicking from left sidebar also didn't work
-- When manually scrolling to these artists, they didn't show as active/current in the middle of screen
 
 ### Root Cause:
 **Regex Pattern Bug in ArtistRow.tsx (Line 69)**
@@ -18,9 +15,6 @@ id={`artist-${artist.replace(/\s+/g, '-')}`}
 ```
 
 The double backslash `\\\\s+` was preventing proper space replacement in artist names. This caused:
-- Element IDs to be generated incorrectly (e.g., `artist-Rage\\Against\\the\\Machine` instead of `artist-Rage-Against-the-Machine`)
-- `scrollIntoView()` couldn't find the element
-- Scroll detection couldn't find the element to calculate active state
 
 ### Impact:
 Artist names with multiple words (especially those alphabetically after early artists) were affected more noticeably because:
@@ -29,9 +23,7 @@ Artist names with multiple words (especially those alphabetically after early ar
 3. Artists later in the alphabet are physically lower on the page, where the scroll detection needs to work harder
 
 ### Files Changed:
-- `/components/ArtistRow.tsx` - Fixed regex pattern
 
----
 
 ## Issue #2: Sidebar Multi-Column Layout for Long Artist Lists ✅ FIXED
 
@@ -70,15 +62,9 @@ Letters with many artists (e.g., 'T' with 16 artists) created very long vertical
 ```
 
 ### Result:
-- ✅ **≤ 8 artists:** Single column, width 16rem
-- ✅ **> 8 artists:** 2 columns, width 32rem  
-- ✅ **No vertical scrollbars** - all artists visible at once
-- ✅ **Compact, scannable layout** - easier to browse large artist lists
 
 ### Files Changed:
-- `/components/Sidebar.tsx` - Added multi-column grid layout for letters with > 8 artists
 
----
 
 ## Issue #3: Show Card Size Too Small ✅ UPDATED
 
@@ -95,35 +81,17 @@ w-64 sm:w-72 md:w-80 lg:w-96 xl:w-[28rem]
 ```
 
 ### Percentage Increase:
-- Mobile (w-64): **33% larger** (12rem → 16rem)
-- Small (sm:w-72): **29% larger** (14rem → 18rem)
-- Medium (md:w-80): **25% larger** (16rem → 20rem)
-- Large (lg:w-96): **33% larger** (18rem → 24rem)
-- XL (xl:w-[28rem]): **40% larger** (20rem → 28rem)
 
 ### Note:
-- ✅ Only main screen show cards increased
-- ✅ Drawer screenshots remain unchanged (as requested)
 
 ### Files Changed:
-- `/components/ShowCard.tsx` - Updated responsive width classes
 
----
 
 ## Testing Checklist
 
 After these fixes, verify:
 
-- [ ] Click "Rage Against the Machine" from top artist menu → Should scroll smoothly
-- [ ] Click "R" from sidebar, then click "Rage Against the Machine" → Should scroll smoothly
-- [ ] Manually scroll to "Rage Against the Machine" → Should show as active (bold in sidebar)
-- [ ] Continue scrolling through R, S, T artists → All should activate correctly
-- [ ] Hover over "S" in sidebar → Menu should expand without scrollbar
-- [ ] Hover over "T", "U", "V", "W", "Z" → All should expand without scrollbar
-- [ ] Show cards on main screen → Should be noticeably larger
-- [ ] Open drawer → Screenshot thumbnails should be same size as before
 
----
 
 ## Related Files
 
@@ -133,10 +101,7 @@ After these fixes, verify:
 3. `/components/ShowCard.tsx` - Increased card sizes
 
 ### Unchanged:
-- `/components/ShowDrawer.tsx` - Screenshots remain original size
-- All scrolling logic in `/App.tsx` - Already correct
 
----
 
 ## Technical Notes
 
@@ -158,8 +123,12 @@ After these fixes, verify:
 3. Better aspect ratio for 4:3 concert footage
 4. More comfortable for browsing large collections (800+ shows)
 
----
 
 **All Issues Resolved:** ✅  
 **Ready for Testing:** ✅  
 **Performance Impact:** None (optimizations still active)
+
+This file has been moved to `docs/BUGFIXES.md`.
+
+Please open `docs/BUGFIXES.md` for the canonical content.
+

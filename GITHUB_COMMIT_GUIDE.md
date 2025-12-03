@@ -1,4 +1,6 @@
-# GitHub Commit Guide - Animation Implementation
+This file has been moved to `docs/GITHUB_COMMIT_GUIDE.md`.
+
+Please open `docs/GITHUB_COMMIT_GUIDE.md` for the canonical content.
 
 ## Files to Commit
 

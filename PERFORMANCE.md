@@ -1,4 +1,6 @@
-# Performance Optimizations
+This file has been moved to `docs/PERFORMANCE.md`.
+
+Please open `docs/PERFORMANCE.md` for the canonical content.
 
 This document outlines the performance optimizations implemented in The Vault to handle 800+ shows with 3,200+ images efficiently.
 

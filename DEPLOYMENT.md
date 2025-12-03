@@ -1,4 +1,6 @@
-# GitHub Pages Deployment Guide
+This file has been moved to `docs/DEPLOYMENT.md`.
+
+Please open `docs/DEPLOYMENT.md` for the canonical content.
 
 ## Understanding the Build Process
 

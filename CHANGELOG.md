@@ -1,4 +1,6 @@
-# Changelog
+This file has been moved to `docs/CHANGELOG.md`.
+
+Please open `docs/CHANGELOG.md` for the canonical content.
 
 ## Phase 1 + 2: Performance Optimizations (November 2024)
 

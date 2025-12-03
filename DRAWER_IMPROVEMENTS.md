@@ -1,4 +1,6 @@
-# Show Drawer Improvements - November 27, 2024
+This file has been moved to `docs/DRAWER_IMPROVEMENTS.md`.
+
+Please open `docs/DRAWER_IMPROVEMENTS.md` for the canonical content.
 
 ## Summary of Changes
 
