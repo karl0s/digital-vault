@@ -68,20 +68,13 @@ export function ArtistRow({ artist, shows, onShowClick, focusedShowId, opacity =
   };
 
   return (
-    <motion.div 
-      id={`artist-${artist.replace(/\s+/g, '-')}`} 
+    <motion.div
+      id={`artist-${artist.replace(/\s+/g, '-')}`}
       data-artist={artist}
-      className="mb-32 transition-opacity duration-200"
-      style={{ 
-        opacity,
-        // GPU acceleration
-        transform: 'translateZ(0)',
-        willChange: 'opacity',
-      }}
+      className="mb-32"
       initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: opacity, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      animate={{ opacity, y: 0 }}
+      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
       onMouseEnter={() => setIsRowHovered(true)}
       onMouseLeave={() => setIsRowHovered(false)}
     >

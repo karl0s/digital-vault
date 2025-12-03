@@ -12,6 +12,10 @@ export function useScrollSpy(
   const [currentArtistIndex, setCurrentArtistIndex] = useState<number>(0);
   const mainRef = useRef<HTMLDivElement>(null);
 
+  // Keep refs for last-set index and pending debounce timer to avoid state churn
+  const lastSetIndexRef = useRef<number>(0);
+  const pendingTimeoutRef = useRef<number | null>(null);
+
   useEffect(() => {
     let rafId: number;
     
@@ -60,7 +64,18 @@ export function useScrollSpy(
 
         // Only update if no keyboard focus is active
         if (focusedIndex === null) {
-          setCurrentArtistIndex(closestArtistIndex);
+          // Avoid unnecessary state updates — only change when index actually changes
+          if (closestArtistIndex !== lastSetIndexRef.current) {
+            // Debounce rapid toggles caused by small layout shifts or scroll jitter
+            if (pendingTimeoutRef.current) {
+              clearTimeout(pendingTimeoutRef.current as unknown as number);
+            }
+            pendingTimeoutRef.current = window.setTimeout(() => {
+              setCurrentArtistIndex(closestArtistIndex);
+              lastSetIndexRef.current = closestArtistIndex;
+              pendingTimeoutRef.current = null;
+            }, 90);
+          }
         }
       });
     };
@@ -72,13 +87,23 @@ export function useScrollSpy(
       if (rafId) {
         cancelAnimationFrame(rafId);
       }
+      if (pendingTimeoutRef.current) {
+        clearTimeout(pendingTimeoutRef.current as unknown as number);
+        pendingTimeoutRef.current = null;
+      }
     };
   }, [sortedArtists, focusedIndex]);
 
   // Update current artist when focused index changes (keyboard navigation)
   useEffect(() => {
     if (focusedIndex !== null) {
+      // Immediate update for keyboard navigation; cancel any pending debounce
+      if (pendingTimeoutRef.current) {
+        clearTimeout(pendingTimeoutRef.current as unknown as number);
+        pendingTimeoutRef.current = null;
+      }
       setCurrentArtistIndex(focusedIndex.artistIndex);
+      lastSetIndexRef.current = focusedIndex.artistIndex;
     }
   }, [focusedIndex]);
 
