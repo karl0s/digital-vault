@@ -82,7 +82,7 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl }: ShowCa
     <div
       id={`show-${show.ShowID}`}
       data-show-year={year}
-      className={`group cursor-pointer flex-shrink-0 w-full md:w-64 md:sm:w-72 md:md:w-80 md:lg:w-96 md:xl:w-[26rem] transition-all duration-300 ${focused ? 'relative z-20' : 'relative z-0'}`}
+      className={`group cursor-pointer flex-shrink-0 w-full md:w-64 md:sm:w-72 md:md:w-80 md:lg:w-96 md:xl:w-[22rem] transition-all duration-300 ${focused ? 'relative z-20' : 'relative z-0'}`}
       onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
