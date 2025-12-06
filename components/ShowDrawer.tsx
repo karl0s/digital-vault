@@ -97,7 +97,7 @@ export function ShowDrawer({ show, onClose, onImageClick, getImageUrl }: ShowDra
     <>
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-black/60 z-50 fade-in"
+        className="fixed inset-0 bg-black/60 z-50 fade-in backdrop-blur-sm"
         onClick={onClose}
       />
 
