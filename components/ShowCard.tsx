@@ -2,7 +2,27 @@ import { useState, useEffect } from 'react';
 import { Clock, MapPin } from 'lucide-react';
 import { Show } from '../App';
 import { LazyImage } from './LazyImage';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+/**
+Get Tailwind aspect ratio class based on AspectRatio metadata
+Returns: aspect-[4/3] or aspect-[16/9]
+ */
+const getAspectRatioClass = (aspectRatio: string | undefined): string => {
+  if (!aspectRatio) return 'aspect-[4/3]'; // Default fallback
+  
+  const lower = aspectRatio.toLowerCase();
+  
+  // "16:9 (native)" → aspect-[16/9]
+  if (lower.includes('16:9') && lower.includes('native')) {
+    return 'aspect-[16/9]';
+  }
+  
+  // "4:3 (letterboxed 16:9)" → aspect-[4/3]
+  // "4:3 (native)" → aspect-[4/3]
+  // Any other 4:3 variant → aspect-[4/3]
+  return 'aspect-[4/3]';
+};
 
 interface ShowCardProps {
   show: Show;
@@ -57,6 +77,11 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl }: ShowCa
     return colors[Math.abs(hash) % colors.length];
   };
 
+  // Get dynamic aspect ratio class based on metadata
+  const aspectRatioClass = getAspectRatioClass(show.AspectRatio);
+  // Flag for 16:9 so we can tweak thumbnail rendering while keeping a consistent card height
+  const is16by9 = aspectRatioClass === 'aspect-[16/9]';
+
   // Prefetch drawer images on hover (all 4 screenshots)
   useEffect(() => {
     if (isHovered && show.ChecksumSHA1 && prefetchedImages.length === 0) {
@@ -97,13 +122,19 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl }: ShowCa
           willChange: focused || isHovered ? 'transform' : 'auto',
         }}
       >
-        <div className="aspect-[4/3] bg-gray-800 relative">
+        {/*
+          Keep the visible thumbnail container at a consistent height (4:3) so all cards
+          share the same height. For shows that are natively 16:9 we still detect them
+          (is16by9) but render the image with `object-cover object-center` so the image
+          fills the 4:3 container, is centered horizontally, and any extra width is cropped.
+        */}
+        <div className={`aspect-[4/3] bg-gray-800 relative`}>
           {imageUrl ? (
             <>
               <LazyImage
                 src={imageUrl}
                 alt={`${show.Artist} - ${show.VenueName}`}
-                className="w-full h-full"
+                className="w-full h-full object-cover object-center"
                 placeholderColor={getColorFromString(show.Artist)}
               />
               {/* Gradient overlay - only show on hover/focus */}
