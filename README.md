@@ -1,6 +1,6 @@
 # The Vault - Concert Archive Browser
 
-A Netflix-style web interface for browsing your private archive of live concert recordings. Built with React, TypeScript, and Vite for fast development and optimized static hosting.
+A Netflix-style web interface for browsing private collection of live concert recordings. Built with React, TypeScript, and Vite for fast development and optimized static hosting.
 
 ## Features
 
