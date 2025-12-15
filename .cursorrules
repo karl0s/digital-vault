@@ -1,0 +1,10 @@
+You are assisting with a production codebase.
+
+Rules:
+- Do NOT introduce new frameworks or libraries unless explicitly asked.
+- Do NOT rewrite architecture.
+- Make minimal, focused changes.
+- Prefer clarity over cleverness.
+- Follow existing patterns in the codebase.
+- Ask for confirmation before refactoring more than one file.
+- Do not assume this is a web app unless explicitly stated.
