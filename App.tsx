@@ -56,18 +56,7 @@ export default function App() {
   const [selectedShow, setSelectedShow] = useState<Show | null>(null);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
 
-  // Custom hooks for data and behavior
-  const { shows, getImageUrl } = useShows();
-  const { groupedShows, sortedArtists } = useSearchAndFilter(shows, searchQuery);
-  const {
-    focusedIndex,
-    setFocusedIndex,
-    isKeyboardMode,
-    setIsKeyboardMode,
-  } = useKeyboardNavigation(sortedArtists, groupedShows, selectedShow, handleShowClick, handleArtistJump);
-  const { currentArtistIndex, mainRef } = useScrollSpy(sortedArtists, focusedIndex);
-
-  // Handler functions
+  // Handler functions - defined before hooks that use them
   function handleShowClick(show: Show) {
     setSelectedShow(show);
   }
@@ -86,12 +75,28 @@ export default function App() {
 
   function handleArtistJump(artist: string) {
     // Clear keyboard focus when jumping to an artist
-    setFocusedIndex(null);
-    setIsKeyboardMode(false);
-    
+    // Note: setFocusedIndex and setIsKeyboardMode are defined in the hook below
     const element = document.getElementById(`artist-${artist.replace(/\s+/g, '-')}`);
     element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
+
+  // Custom hooks for data and behavior
+  const { shows, getImageUrl } = useShows();
+  const { groupedShows, sortedArtists } = useSearchAndFilter(shows, searchQuery);
+  const {
+    focusedIndex,
+    setFocusedIndex,
+    isKeyboardMode,
+    setIsKeyboardMode,
+  } = useKeyboardNavigation(sortedArtists, groupedShows, selectedShow, handleShowClick, handleArtistJump);
+  const { currentArtistIndex, mainRef } = useScrollSpy(sortedArtists, focusedIndex);
+
+  // Update handleArtistJump to use the state setters from the hook
+  const handleArtistJumpWithState = (artist: string) => {
+    setFocusedIndex(null);
+    setIsKeyboardMode(false);
+    handleArtistJump(artist);
+  };
 
   function getFocusedShowId() {
     if (!focusedIndex) return null;
@@ -125,7 +130,7 @@ export default function App() {
             isCenter={index === currentArtistIndex}
             getImageUrl={getImageUrl}
             allArtists={sortedArtists}
-            onArtistJump={handleArtistJump}
+            onArtistJump={handleArtistJumpWithState}
             currentArtist={currentArtist}
           />
         );
@@ -139,7 +144,7 @@ export default function App() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         artists={sortedArtists}
-        onArtistJump={handleArtistJump}
+        onArtistJump={handleArtistJumpWithState}
       />
 
       <div className="flex">
@@ -153,7 +158,7 @@ export default function App() {
               const element = document.getElementById(`artist-${letter}`);
               element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }}
-            onArtistClick={handleArtistJump}
+            onArtistClick={handleArtistJumpWithState}
           />
         </div>
 

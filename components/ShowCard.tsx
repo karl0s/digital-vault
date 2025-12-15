@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Clock, MapPin } from 'lucide-react';
 import { Show } from '../App';
 import { LazyImage } from './LazyImage';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 
 /**
 Get Tailwind aspect ratio class based on AspectRatio metadata
