@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { motion } from 'motion/react';
 import { X, Clock, HardDrive, Film, Music, Info, ChevronDown } from 'lucide-react';
 import { Show } from '../App';
 import { LazyImage } from './LazyImage';
@@ -93,17 +94,28 @@ export function ShowDrawer({ show, onClose, onImageClick, getImageUrl }: ShowDra
     return colors[Math.abs(hash) % colors.length];
   };
 
+  // Detect viewport for animation direction (mobile: bottom, desktop: right)
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
   return (
     <>
       {/* Backdrop */}
-      <div 
-        className="fixed inset-0 bg-black/60 z-50 fade-in backdrop-blur-sm"
+      <motion.div
+        className="fixed inset-0 bg-black/70 z-50"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
         onClick={onClose}
       />
 
       {/* Drawer - slide from right on desktop, slide from bottom on mobile */}
-      <div 
-        className="fixed bottom-0 md:top-0 left-0 md:left-auto right-0 md:right-0 w-full md:w-[60vw] h-[85vh] md:h-full bg-[#181818] z-50 overflow-y-auto drawer-slide-in"
+      <motion.div
+        className="fixed bottom-0 md:top-0 left-0 md:left-auto right-0 md:right-0 w-full md:w-[60vw] h-[85vh] md:h-full bg-[#181818] z-50 overflow-y-auto"
+        initial={{ x: isMobile ? 0 : '100%', y: isMobile ? '100%' : 0 }}
+        animate={{ x: 0, y: 0 }}
+        exit={{ x: isMobile ? 0 : '100%', y: isMobile ? '100%' : 0 }}
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
       >
         <div className="relative">
           {/* Close button - sticky on mobile, fixed within drawer on desktop */}
@@ -119,13 +131,13 @@ export function ShowDrawer({ show, onClose, onImageClick, getImageUrl }: ShowDra
           <div className="relative h-48 md:h-80 bg-[#181818]">
             {images.length > 0 ? (
               <>
-                <LazyImage
+                <img
                   src={images[0]}
                   alt={show.Artist}
                   className="w-full h-full object-cover opacity-50"
                   style={{ objectPosition: '0% 25%' }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#181818] via-[#181818]/50 to-transparent backdrop-blur-[3px]" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#181818] via-[#181818]/60 to-transparent" />
               </>
             ) : (
               // Placeholder with artist initials
@@ -376,7 +388,7 @@ export function ShowDrawer({ show, onClose, onImageClick, getImageUrl }: ShowDra
 
           </div>
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }
