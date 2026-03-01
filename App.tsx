@@ -5,6 +5,7 @@ import { Sidebar } from './components/Sidebar';
 import { ArtistRow } from './components/ArtistRow';
 import { ShowDrawer } from './components/ShowDrawer';
 import { ImageLightbox } from './components/ImageLightbox';
+import { AnimatePresence } from 'motion/react';
 import { useShows } from './src/hooks/useShows';
 import { useSearchAndFilter } from './src/hooks/useSearchAndFilter';
 import { useScrollSpy } from './src/hooks/useScrollSpy';
@@ -178,9 +179,11 @@ export default function App() {
         </main>
       </div>
 
-      {selectedShow && (
-        <ShowDrawer show={selectedShow} onClose={handleCloseDrawer} onImageClick={handleImageClick} getImageUrl={getImageUrl} />
-      )}
+      <AnimatePresence>
+        {selectedShow && (
+          <ShowDrawer show={selectedShow} onClose={handleCloseDrawer} onImageClick={handleImageClick} getImageUrl={getImageUrl} />
+        )}
+      </AnimatePresence>
 
       {lightboxImage && <ImageLightbox imageUrl={lightboxImage} onClose={handleCloseLightbox} />}
     </div>
