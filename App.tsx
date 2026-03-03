@@ -57,8 +57,21 @@ export default function App() {
   const [selectedShow, setSelectedShow] = useState<Show | null>(null);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
 
-  // Handler functions - defined before hooks that use them
+  // Custom hooks for data and behavior
+  const { shows, getImageUrl } = useShows();
+
+  // Handler functions
   function handleShowClick(show: Show) {
+    // Prefetch drawer images immediately on click so they load during the animation
+    if (show.ChecksumSHA1) {
+      [1, 2, 3, 4].forEach(index => {
+        const url = getImageUrl(show.ChecksumSHA1!, index);
+        if (url) {
+          const img = new Image();
+          img.src = url;
+        }
+      });
+    }
     setSelectedShow(show);
   }
 
@@ -75,14 +88,9 @@ export default function App() {
   }
 
   function handleArtistJump(artist: string) {
-    // Clear keyboard focus when jumping to an artist
-    // Note: setFocusedIndex and setIsKeyboardMode are defined in the hook below
     const element = document.getElementById(`artist-${artist.replace(/\s+/g, '-')}`);
     element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
-
-  // Custom hooks for data and behavior
-  const { shows, getImageUrl } = useShows();
   const { groupedShows, sortedArtists } = useSearchAndFilter(shows, searchQuery);
   const {
     focusedIndex,
