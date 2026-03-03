@@ -191,10 +191,11 @@ export function ShowDrawer({ show, onClose, onImageClick, getImageUrl }: ShowDra
                       onClick={() => onImageClick(url)}
                       className="drawer-thumbnail bg-black/30 rounded overflow-hidden hover:ring-2 hover:ring-white/50 transition-all"
                     >
-                      <LazyImage
+                      <img
                         src={url}
                         alt={`Screenshot ${idx + 1}`}
                         className="w-full h-full object-cover"
+                        loading="eager"
                       />
                     </button>
                   ))}
