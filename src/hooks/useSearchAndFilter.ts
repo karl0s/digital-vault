@@ -1,97 +1,62 @@
 import { useMemo } from 'react';
-import { Show } from '../App';
+import { Show } from '../../App';
+import { useSearchEngine } from './useSearchEngine';
 
-/**
- * Custom hook to handle search filtering and artist grouping.
- * Returns filtered shows grouped by artist and sorted alphabetically.
- */
 export function useSearchAndFilter(shows: Show[], searchQuery: string) {
-  // Filter shows based on search query
+  const { ms, showById } = useSearchEngine(shows);
+
   const filteredShows = useMemo(() => {
-    return shows.filter(show => {
-      if (!searchQuery) return true;
-      
-      const query = searchQuery.toLowerCase().trim();
-      
-      // Check for field-specific filters (e.g., "artist:pearl jam", "type:soundboard", "song:alive")
-      const fieldMatch = query.match(/^(\w+):(.+)$/);
-      
-      if (fieldMatch) {
-        const [, field, value] = fieldMatch;
-        const searchValue = value.toLowerCase().trim();
-        
+    if (!searchQuery) return shows;
+
+    const query = searchQuery.toLowerCase().trim();
+
+    // Field-specific filters: "artist:pearl jam", "type:soundboard", etc.
+    const fieldMatch = query.match(/^(\w+):(.+)$/);
+    if (fieldMatch) {
+      const [, field, value] = fieldMatch;
+      const v = value.toLowerCase().trim();
+      return shows.filter(show => {
         switch (field) {
-          case 'artist':
-            return show.Artist.toLowerCase().includes(searchValue);
-          case 'type':
-            return show.RecordingType?.toLowerCase().includes(searchValue) || false;
-          case 'country':
-            return show.Country.toLowerCase().includes(searchValue);
-          case 'city':
-            return show.City.toLowerCase().includes(searchValue);
-          case 'venue':
-            return show.VenueName.toLowerCase().includes(searchValue);
-          case 'event':
-            return show.EventOrFestival?.toLowerCase().includes(searchValue) || false;
-          case 'song':
-            return show.Setlist.toLowerCase().includes(searchValue);
-          case 'year':
-            return show.ShowDate.includes(searchValue);
-          case 'drive':
-            return show.MasterDriveName.toLowerCase().includes(searchValue);
-          case 'codec':
-            return show.VideoCodec.toLowerCase().includes(searchValue);
+          case 'artist':  return show.Artist.toLowerCase().includes(v);
+          case 'type':    return show.RecordingType?.toLowerCase().includes(v) ?? false;
+          case 'country': return show.Country.toLowerCase().includes(v);
+          case 'city':    return show.City.toLowerCase().includes(v);
+          case 'venue':   return show.VenueName.toLowerCase().includes(v);
+          case 'event':   return show.EventOrFestival?.toLowerCase().includes(v) ?? false;
+          case 'song':    return show.Setlist.toLowerCase().includes(v);
+          case 'year':    return show.ShowDate.includes(v);
+          case 'drive':   return show.MasterDriveName.toLowerCase().includes(v);
+          case 'codec':   return show.VideoCodec.toLowerCase().includes(v);
           default:
-            // Unknown field, fall back to general search
             return (
               show.Artist.toLowerCase().includes(query) ||
               show.VenueName.toLowerCase().includes(query) ||
               show.City.toLowerCase().includes(query) ||
               show.Country.toLowerCase().includes(query) ||
               show.ShowDate.includes(query) ||
-              (show.EventOrFestival && show.EventOrFestival.toLowerCase().includes(query)) ||
-              (show.RecordingType && show.RecordingType.toLowerCase().includes(query)) ||
+              (show.EventOrFestival?.toLowerCase().includes(query) ?? false) ||
+              (show.RecordingType?.toLowerCase().includes(query) ?? false) ||
               show.Setlist.toLowerCase().includes(query) ||
               show.Notes.toLowerCase().includes(query)
             );
         }
-      }
-      
-      // General search (no field prefix)
-      return (
-        show.Artist.toLowerCase().includes(query) ||
-        show.VenueName.toLowerCase().includes(query) ||
-        show.City.toLowerCase().includes(query) ||
-        show.Country.toLowerCase().includes(query) ||
-        show.ShowDate.includes(query) ||
-        (show.EventOrFestival && show.EventOrFestival.toLowerCase().includes(query)) ||
-        (show.RecordingType && show.RecordingType.toLowerCase().includes(query)) ||
-        show.Setlist.toLowerCase().includes(query) ||
-        show.Notes.toLowerCase().includes(query)
-      );
-    });
-  }, [shows, searchQuery]);
+      });
+    }
 
-  // Group shows by artist
+    // General search — MiniSearch with prefix + fuzzy matching
+    const results = ms.search(searchQuery);
+    return results.map(r => showById[r.id]).filter(Boolean) as Show[];
+  }, [shows, searchQuery, ms, showById]);
+
   const groupedShows = useMemo(() => {
     return filteredShows.reduce((acc, show) => {
-      const artist = show.Artist;
-      if (!acc[artist]) {
-        acc[artist] = [];
-      }
-      acc[artist].push(show);
+      if (!acc[show.Artist]) acc[show.Artist] = [];
+      acc[show.Artist].push(show);
       return acc;
     }, {} as Record<string, Show[]>);
   }, [filteredShows]);
 
-  // Sort artists alphabetically
-  const sortedArtists = useMemo(() => {
-    return Object.keys(groupedShows).sort();
-  }, [groupedShows]);
+  const sortedArtists = useMemo(() => Object.keys(groupedShows).sort(), [groupedShows]);
 
-  return {
-    filteredShows,
-    groupedShows,
-    sortedArtists,
-  };
+  return { filteredShows, groupedShows, sortedArtists };
 }
