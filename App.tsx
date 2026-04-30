@@ -1,15 +1,17 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TopNav } from './components/TopNav';
 import { Sidebar } from './components/Sidebar';
 import { ArtistRow } from './components/ArtistRow';
 import { ShowDrawer } from './components/ShowDrawer';
 import { ImageLightbox } from './components/ImageLightbox';
+import { SearchResultsGrid } from './components/SearchResultsGrid';
 import { AnimatePresence } from 'motion/react';
 import { useShows } from './src/hooks/useShows';
 import { useSearchAndFilter } from './src/hooks/useSearchAndFilter';
 import { useScrollSpy } from './src/hooks/useScrollSpy';
 import { useKeyboardNavigation } from './src/hooks/useKeyboardNavigation';
+import { useDebounce } from './src/hooks/useDebounce';
 
 export interface Show {
   ShowID: string;
@@ -52,55 +54,56 @@ export interface Show {
 }
 
 export default function App() {
-  // State management
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedShow, setSelectedShow] = useState<Show | null>(null);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
 
-  // Custom hooks for data and behavior
   const { shows, getImageUrl } = useShows();
 
-  // Handler functions
+  // Debounce search so MiniSearch only re-runs after the user pauses typing
+  const debouncedQuery = useDebounce(searchQuery, 80);
+
+  const { filteredShows, groupedShows, sortedArtists } = useSearchAndFilter(shows, debouncedQuery);
+
+  const isSearching = debouncedQuery.trim().length > 0;
+
+  // Escape clears search
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && searchQuery) setSearchQuery('');
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [searchQuery]);
+
   function handleShowClick(show: Show) {
-    // Prefetch drawer images immediately on click so they load during the animation
     if (show.ChecksumSHA1) {
       [1, 2, 3, 4].forEach(index => {
         const url = getImageUrl(show.ChecksumSHA1!, index);
-        if (url) {
-          const img = new Image();
-          img.src = url;
-        }
+        if (url) { const img = new Image(); img.src = url; }
       });
     }
     setSelectedShow(show);
   }
 
-  function handleCloseDrawer() {
-    setSelectedShow(null);
-  }
-
-  function handleImageClick(imageUrl: string) {
-    setLightboxImage(imageUrl);
-  }
-
-  function handleCloseLightbox() {
-    setLightboxImage(null);
-  }
+  function handleCloseDrawer() { setSelectedShow(null); }
+  function handleImageClick(imageUrl: string) { setLightboxImage(imageUrl); }
+  function handleCloseLightbox() { setLightboxImage(null); }
 
   function handleArtistJump(artist: string) {
     const element = document.getElementById(`artist-${artist.replace(/\s+/g, '-')}`);
     element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
-  const { groupedShows, sortedArtists } = useSearchAndFilter(shows, searchQuery);
+
   const {
     focusedIndex,
     setFocusedIndex,
     isKeyboardMode,
     setIsKeyboardMode,
   } = useKeyboardNavigation(sortedArtists, groupedShows, selectedShow, handleShowClick, handleArtistJump);
+
   const { currentArtistIndex, mainRef } = useScrollSpy(sortedArtists, focusedIndex);
 
-  // Update handleArtistJump to use the state setters from the hook
   const handleArtistJumpWithState = (artist: string) => {
     setFocusedIndex(null);
     setIsKeyboardMode(false);
@@ -117,17 +120,13 @@ export default function App() {
   const currentArtist = sortedArtists[currentArtistIndex] || 'Browse Shows';
   const currentLetter = currentArtist ? currentArtist[0].toUpperCase() : '';
 
-  const mainContent = sortedArtists.length === 0 ? (
+  const browseContent = sortedArtists.length === 0 ? (
     <div className="text-center py-20 text-gray-400">No shows found</div>
   ) : (
     <div className="space-y-0">
       {sortedArtists.map((artist, index) => {
         const distanceFromCenter = Math.abs(index - currentArtistIndex);
-        let opacity = 1;
-        if (distanceFromCenter === 0) opacity = 1;
-        else if (distanceFromCenter === 1) opacity = 0.4;
-        else opacity = 0.15;
-
+        const opacity = distanceFromCenter === 0 ? 1 : distanceFromCenter === 1 ? 0.4 : 0.15;
         return (
           <ArtistRow
             key={artist}
@@ -172,18 +171,22 @@ export default function App() {
         </div>
 
         <main ref={mainRef} className="flex-1 ml-0 md:ml-16 pt-20 md:pt-24 px-4 md:px-8 pb-8 overflow-x-hidden">
-          {searchQuery && (
-            <div className="mb-6 flex items-center gap-4">
-              <p className="text-gray-400 text-sm md:text-base">
-                Search results for <span className="text-white">"{searchQuery}"</span>
-              </p>
-              <button onClick={() => setSearchQuery('')} className="text-sm text-gray-400 hover:text-white transition-colors">
-                Clear search
-              </button>
-            </div>
-          )}
-
-          {mainContent}
+          <AnimatePresence mode="wait">
+            {isSearching ? (
+              <SearchResultsGrid
+                key="search"
+                shows={filteredShows}
+                query={debouncedQuery}
+                onShowClick={handleShowClick}
+                onClear={() => setSearchQuery('')}
+                getImageUrl={getImageUrl}
+              />
+            ) : (
+              <div key="browse">
+                {browseContent}
+              </div>
+            )}
+          </AnimatePresence>
         </main>
       </div>
 
