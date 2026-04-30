@@ -1136,7 +1136,7 @@
   {
     "ShowID": "9fd79828213e",
     "Artist": "Aerosmith",
-    "ShowDate": "2099-12-31",
+    "ShowDate": "1999-12-31",
     "EventOrFestival": "",
     "VenueName": "",
     "City": "",
@@ -1346,7 +1346,7 @@
   {
     "ShowID": "9555931645b1",
     "Artist": "Alice In Chains",
-    "ShowDate": "2093-01-01",
+    "ShowDate": "1993-01-01",
     "EventOrFestival": "",
     "VenueName": "",
     "City": "",
@@ -6134,11 +6134,11 @@
   {
     "ShowID": "a057aa12a049",
     "Artist": "Faith No More",
-    "ShowDate": "2097-04-18",
+    "ShowDate": "1997-11-11",
     "EventOrFestival": "",
     "VenueName": "Faith No More 1997.11.11",
-    "City": "Grobe Freiheit",
-    "Country": "Hamburg",
+    "City": "Hamburg",
+    "Country": "Germany",
     "RecordingType": "Proshot",
     "Generation": "1st Gen",
     "Lineage": "tv brdcst > 1st gen pal > dvdr w/ menu",
@@ -7814,7 +7814,7 @@
   {
     "ShowID": "8ddd13481eb7",
     "Artist": "Foo Fighters",
-    "ShowDate": "2098-07-11",
+    "ShowDate": "1998-07-11",
     "EventOrFestival": "",
     "VenueName": "",
     "City": "Vancouver",
@@ -8528,7 +8528,7 @@
   {
     "ShowID": "2ff6473dff82",
     "Artist": "Green Day",
-    "ShowDate": "2094-08-14",
+    "ShowDate": "1994-08-14",
     "EventOrFestival": "",
     "VenueName": "",
     "City": "08-14-94 Saugerties",
@@ -11090,7 +11090,7 @@
   {
     "ShowID": "8e3e2d8165f4",
     "Artist": "Jimi Hendrix",
-    "ShowDate": "2069-07-24",
+    "ShowDate": "1969-07-24",
     "EventOrFestival": "",
     "VenueName": "",
     "City": "Stockholm",
@@ -13862,7 +13862,7 @@
   {
     "ShowID": "5b83c229df85",
     "Artist": "Lenny Kravitz",
-    "ShowDate": "2091-05-28",
+    "ShowDate": "1991-05-28",
     "EventOrFestival": "",
     "VenueName": "Lenny kravitz",
     "City": "Live in vredenburg",
@@ -14533,8 +14533,8 @@
   },
   {
     "ShowID": "e0c9cc428b88",
-    "Artist": "Live",
-    "ShowDate": "2073-08-17",
+    "Artist": "Joe Walsh",
+    "ShowDate": "1973-08-17",
     "EventOrFestival": "",
     "VenueName": "Joe Walsh",
     "City": "Live 70s+80s_TV_DVD",
@@ -17894,7 +17894,7 @@
   {
     "ShowID": "c29a692bd561",
     "Artist": "Nirvana",
-    "ShowDate": "2093-09-24",
+    "ShowDate": "1993-09-24",
     "EventOrFestival": "",
     "VenueName": "",
     "City": "New York",
@@ -25706,7 +25706,7 @@
   {
     "ShowID": "31b63a1524eb",
     "Artist": "Smashing Pumpkins",
-    "ShowDate": "2094-05-23",
+    "ShowDate": "1994-05-23",
     "EventOrFestival": "",
     "VenueName": "23-05-94 Pinkpop Festival",
     "City": "Landgraaf",
@@ -31040,7 +31040,7 @@
   {
     "ShowID": "f708fefe23f6",
     "Artist": "Stone Temple Pilots",
-    "ShowDate": "2097-03-14",
+    "ShowDate": "1997-03-14",
     "EventOrFestival": "",
     "VenueName": "",
     "City": "Panama City Beach",
@@ -32006,7 +32006,7 @@
   {
     "ShowID": "19e3ce93b3d2",
     "Artist": "Supergrass",
-    "ShowDate": "2099-05-13",
+    "ShowDate": "1999-05-13",
     "EventOrFestival": "",
     "VenueName": "Supergrass",
     "City": "MTV Five Night Stand 1999 DVD (PAL)",
@@ -32300,7 +32300,7 @@
   {
     "ShowID": "f7c20e185b58",
     "Artist": "The Kinks",
-    "ShowDate": "2080-12-31",
+    "ShowDate": "1980-12-31",
     "EventOrFestival": "",
     "VenueName": "",
     "City": "Essen",
