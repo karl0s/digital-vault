@@ -6,7 +6,9 @@ import { ArtistRow } from './components/ArtistRow';
 import { ShowDrawer } from './components/ShowDrawer';
 import { ImageLightbox } from './components/ImageLightbox';
 import { SearchResultsGrid } from './components/SearchResultsGrid';
-import { AnimatePresence } from 'motion/react';
+import { HeroSearch } from './components/HeroSearch';
+import { FeaturedRows } from './components/FeaturedRows';
+import { AnimatePresence, motion } from 'motion/react';
 import { useShows } from './src/hooks/useShows';
 import { useSearchAndFilter } from './src/hooks/useSearchAndFilter';
 import { useScrollSpy } from './src/hooks/useScrollSpy';
@@ -53,16 +55,17 @@ export interface Show {
   ExtractionWarnings?: string;
 }
 
+// View mode controls what the main content area renders
+type ViewMode = 'hero' | 'browse';
+
 export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedShow, setSelectedShow] = useState<Show | null>(null);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>('hero');
 
   const { shows, getImageUrl } = useShows();
-
-  // Debounce search so MiniSearch only re-runs after the user pauses typing
   const debouncedQuery = useDebounce(searchQuery, 80);
-
   const { filteredShows, groupedShows, sortedArtists } = useSearchAndFilter(shows, debouncedQuery);
 
   const isSearching = debouncedQuery.trim().length > 0;
@@ -86,6 +89,15 @@ export default function App() {
     setSelectedShow(show);
   }
 
+  function handleSearchChange(query: string) {
+    setSearchQuery(query);
+  }
+
+  function handleBrowseAll() {
+    setViewMode('browse');
+    setSearchQuery('');
+  }
+
   function handleCloseDrawer() { setSelectedShow(null); }
   function handleImageClick(imageUrl: string) { setLightboxImage(imageUrl); }
   function handleCloseLightbox() { setLightboxImage(null); }
@@ -98,7 +110,6 @@ export default function App() {
   const {
     focusedIndex,
     setFocusedIndex,
-    isKeyboardMode,
     setIsKeyboardMode,
   } = useKeyboardNavigation(sortedArtists, groupedShows, selectedShow, handleShowClick, handleArtistJump);
 
@@ -107,6 +118,7 @@ export default function App() {
   const handleArtistJumpWithState = (artist: string) => {
     setFocusedIndex(null);
     setIsKeyboardMode(false);
+    setViewMode('browse');
     handleArtistJump(artist);
   };
 
@@ -120,72 +132,118 @@ export default function App() {
   const currentArtist = sortedArtists[currentArtistIndex] || 'Browse Shows';
   const currentLetter = currentArtist ? currentArtist[0].toUpperCase() : '';
 
-  const browseContent = sortedArtists.length === 0 ? (
-    <div className="text-center py-20 text-gray-400">No shows found</div>
-  ) : (
-    <div className="space-y-0">
-      {sortedArtists.map((artist, index) => {
-        const distanceFromCenter = Math.abs(index - currentArtistIndex);
-        const opacity = distanceFromCenter === 0 ? 1 : distanceFromCenter === 1 ? 0.4 : 0.15;
-        return (
-          <ArtistRow
-            key={artist}
-            artist={artist}
-            shows={groupedShows[artist]}
-            onShowClick={handleShowClick}
-            focusedShowId={getFocusedShowId()}
-            opacity={opacity}
-            isCenter={index === currentArtistIndex}
-            getImageUrl={getImageUrl}
-            allArtists={sortedArtists}
-            onArtistJump={handleArtistJumpWithState}
-            currentArtist={currentArtist}
-          />
-        );
-      })}
-    </div>
+  const browseContent = (
+    <motion.div
+      key="browse"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      {sortedArtists.length === 0 ? (
+        <div className="text-center py-20 text-gray-400">No shows found</div>
+      ) : (
+        <div className="space-y-0">
+          {sortedArtists.map((artist, index) => {
+            const distanceFromCenter = Math.abs(index - currentArtistIndex);
+            const opacity = distanceFromCenter === 0 ? 1 : distanceFromCenter === 1 ? 0.4 : 0.15;
+            return (
+              <ArtistRow
+                key={artist}
+                artist={artist}
+                shows={groupedShows[artist]}
+                onShowClick={handleShowClick}
+                focusedShowId={getFocusedShowId()}
+                opacity={opacity}
+                isCenter={index === currentArtistIndex}
+                getImageUrl={getImageUrl}
+                allArtists={sortedArtists}
+                onArtistJump={handleArtistJumpWithState}
+                currentArtist={currentArtist}
+              />
+            );
+          })}
+        </div>
+      )}
+    </motion.div>
   );
+
+  // Determine what to render in the main area
+  let mainContent: React.ReactNode;
+  if (isSearching) {
+    mainContent = (
+      <SearchResultsGrid
+        key="search"
+        shows={filteredShows}
+        query={debouncedQuery}
+        onShowClick={handleShowClick}
+        onClear={() => setSearchQuery('')}
+        getImageUrl={getImageUrl}
+      />
+    );
+  } else if (viewMode === 'hero') {
+    mainContent = (
+      <motion.div
+        key="hero"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <HeroSearch
+          value={searchQuery}
+          onChange={handleSearchChange}
+          totalShows={shows.length}
+          onBrowseAll={handleBrowseAll}
+        />
+        <FeaturedRows
+          shows={shows}
+          onShowClick={handleShowClick}
+          getImageUrl={getImageUrl}
+        />
+      </motion.div>
+    );
+  } else {
+    mainContent = browseContent;
+  }
+
+  const isHeroMode = viewMode === 'hero' && !isSearching;
 
   return (
     <div className="min-h-screen bg-[#141414] text-white">
       <TopNav
         searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
+        onSearchChange={handleSearchChange}
         artists={sortedArtists}
         onArtistJump={handleArtistJumpWithState}
+        hideSearch={isHeroMode}
       />
 
       <div className="flex">
-        <div className="hidden md:block">
-          <Sidebar
-            artists={sortedArtists}
-            activeLetter={currentLetter}
-            onLetterClick={(letter) => {
-              setFocusedIndex(null);
-              setIsKeyboardMode(false);
-              const element = document.getElementById(`artist-${letter}`);
-              element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }}
-            onArtistClick={handleArtistJumpWithState}
-          />
-        </div>
+        {/* Sidebar hidden in hero mode */}
+        {!isHeroMode && (
+          <div className="hidden md:block">
+            <Sidebar
+              artists={sortedArtists}
+              activeLetter={currentLetter}
+              onLetterClick={(letter) => {
+                setFocusedIndex(null);
+                setIsKeyboardMode(false);
+                setViewMode('browse');
+                const element = document.getElementById(`artist-${letter}`);
+                element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }}
+              onArtistClick={handleArtistJumpWithState}
+            />
+          </div>
+        )}
 
-        <main ref={mainRef} className="flex-1 ml-0 md:ml-16 pt-20 md:pt-24 px-4 md:px-8 pb-8 overflow-x-hidden">
+        <main
+          ref={mainRef}
+          className={`flex-1 ${isHeroMode ? '' : 'ml-0 md:ml-16'} ${isHeroMode ? 'pt-16' : 'pt-20 md:pt-24'} ${isSearching ? 'px-4 md:px-8' : ''} pb-8 overflow-x-hidden`}
+        >
           <AnimatePresence mode="wait">
-            {isSearching ? (
-              <SearchResultsGrid
-                key="search"
-                shows={filteredShows}
-                query={debouncedQuery}
-                onShowClick={handleShowClick}
-                onClear={() => setSearchQuery('')}
-                getImageUrl={getImageUrl}
-              />
-            ) : (
-              <div key="browse">
-                {browseContent}
-              </div>
-            )}
+            {mainContent}
           </AnimatePresence>
         </main>
       </div>
