@@ -173,37 +173,15 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl }: ShowCa
           <AnimatePresence>
             {(focused || isHovered) && (
               <div className="absolute top-3 right-3 flex gap-2">
-                {show.ShowDate && (
-                  <motion.div 
-                    className={`px-2 py-1 rounded text-xs transition-colors ${focused ? 'bg-white text-black' : 'bg-[#E50914]'}`}
+                {show.RecordingType && (
+                  <motion.div
+                    className="bg-black/70 px-2 py-1 rounded text-xs"
                     initial={{ opacity: 0, y: -10, scale: 0.8 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ duration: 0.2, delay: 0 }}
                   >
-                    {year}
-                  </motion.div>
-                )}
-                {show.RecordingType && (
-                  <motion.div 
-                    className="bg-black/70 px-2 py-1 rounded text-xs"
-                    initial={{ opacity: 0, y: -10, scale: 0.8 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.2, delay: 0.05 }}
-                  >
                     {show.RecordingType}
-                  </motion.div>
-                )}
-                {show.TVStandard && (
-                  <motion.div 
-                    className="bg-black/70 px-2 py-1 rounded text-xs"
-                    initial={{ opacity: 0, y: -10, scale: 0.8 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.2, delay: 0.1 }}
-                  >
-                    {show.TVStandard}
                   </motion.div>
                 )}
               </div>
@@ -213,43 +191,52 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl }: ShowCa
           {/* Info overlay - hidden by default, visible on hover/focus */}
           <AnimatePresence>
             {(focused || isHovered) && (
-              <motion.div 
+              <motion.div
                 className="absolute bottom-0 left-0 right-0 p-4"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
                 transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                 style={{
-                  // GPU acceleration for smooth transitions
                   transform: 'translateZ(0)',
                 }}
               >
                 <div className="space-y-1 text-xs text-gray-300">
                   {show.ShowDate && (
-                    <motion.p
+                    <motion.div
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.2, delay: 0.15 }}
                     >
-                      {show.ShowDate}
-                    </motion.p>
+                      <span className="bg-black/70 px-2 py-1 rounded text-xs">
+                        {year}
+                      </span>
+                    </motion.div>
                   )}
+                  <motion.p
+                    className="font-medium text-white truncate"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.2, delay: 0.2 }}
+                  >
+                    {show.Artist}
+                  </motion.p>
                   {(show.EventOrFestival || show.VenueName) && (
-                    <motion.p 
+                    <motion.p
                       className="truncate"
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.2, delay: 0.2 }}
+                      transition={{ duration: 0.2, delay: 0.25 }}
                     >
                       {[show.EventOrFestival, show.VenueName].filter(Boolean).join(', ')}
                     </motion.p>
                   )}
                   {(show.City || show.Country) && (
-                    <motion.p 
+                    <motion.p
                       className="truncate"
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.2, delay: 0.25 }}
+                      transition={{ duration: 0.2, delay: 0.3 }}
                     >
                       {[show.City, show.Country].filter(Boolean).join(', ')}
                     </motion.p>
@@ -258,7 +245,7 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl }: ShowCa
                     <motion.p
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.2, delay: 0.3 }}
+                      transition={{ duration: 0.2, delay: 0.35 }}
                     >
                       {durationText}
                     </motion.p>
