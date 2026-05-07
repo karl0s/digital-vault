@@ -39,10 +39,10 @@ export function TopNav({ searchQuery, onSearchChange, onLogoClick, artists = [],
 
   return (
     <nav
-      className={`fixed top-0 left-0 ${hasSidebar ? 'md:left-16' : ''} right-0 z-40 transition-all duration-300 ${
+      className={`fixed top-0 left-0 ${hasSidebar ? 'md:left-16' : ''} right-0 z-40 transition-all duration-300 border-b ${
         isScrolled
-          ? 'bg-[#141414]/97 backdrop-blur-md border-b border-white/6'
-          : 'bg-linear-to-b from-black/80 via-black/40 to-transparent'
+          ? 'bg-[#141414]/97 backdrop-blur-md border-white/6'
+          : 'bg-linear-to-b from-black/80 via-black/40 to-transparent border-transparent'
       }`}
     >
       <div className="flex items-center gap-4 px-4 md:px-8 h-14">
