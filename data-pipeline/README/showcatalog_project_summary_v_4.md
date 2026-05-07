@@ -1,305 +1,225 @@
-# The Vault: Project Overview and Technical Architecture (2025)
+# The Vault: Project Overview and Technical Architecture
 
-A fully automated, local-first cataloging system for hundreds of archival music concert recordings, combining structured metadata, rich media screenshots, and a Netflix‑style browsing experience.
+A local-first cataloging system for a large private collection of live concert recordings, combining structured metadata, rich media screenshots, and a Netflix-style browsing experience deployed to GitHub Pages.
 
-This document replaces all previous versions of the project summary.
+This document is the current authoritative technical specification.
 
 ---
 
-# 1. Project Purpose
+## 1. Project Purpose
 
-The Vault aims to create a single, authoritative source of truth for a large private collection of rare concert recordings. Each show includes:
+The Vault creates a single, authoritative source of truth for a private collection of rare concert recordings. Each show includes:
 
-- Setlists
-- Venue, city, country
+- Artist, date, venue, city, country
 - Taper lineage and recording source info
-- Technical metadata (file formats, disc structures, VOB/TS groups)
-- High‑quality screenshots (3–4 per show)
-- Master hard‑drive reference
+- Technical metadata (file formats, codecs, disc structures, VOB/TS groups)
+- Thumbnails (up to 4 per show, extracted from the video)
+- Setlist
+- Master hard-drive reference
 
 The project delivers:
 
-- A cleaned, structured **master CSV** representing the entire collection.
-- A unified **shows.json** derived from the CSV.
-- A **static website** that feels like Netflix: dark mode, polished, fast.
-- A local development workflow that consumes *real* metadata and screenshots.
-- A highly automated system requiring minimal manual effort.
-
-No online hosting is currently used; everything runs locally for privacy, speed, and simplicity.
+- A cleaned, structured **master CSV** representing the entire collection
+- A unified **shows.json** derived from the CSV
+- A **static website** hosted on GitHub Pages: dark mode, Netflix-style, fast
+- A data pipeline requiring minimal manual effort once set up
 
 ---
 
-# 2. High‑Level Workflow (2025)
+## 2. Current Collection Stats
 
-## **1. Data Collection & Metadata Processing**
-- Thousands of archival concert folders across multiple external drives.
-- Automated Python scripts read each folder:
-  - Extract show metadata from TXT/DOC files.
-  - Parse setlists heuristically.
-  - Detect multiple VOB/TS files and group them.
-  - Capture lineage, taper, venue info.
-- Output is written into a **master CSV**.
-
-## **2. Screenshot Capture**
-Fully automated screenshot generation (VLC or mpv):
-- 3–4 full‑resolution images at predictable timestamps.
-- Written to `public/images/<show-id>/...`.
-- Browser scales these for thumbnails.
-
-## **3. CSV → shows.json**
-- Python conversion pipeline cleans, normalises, and outputs:
-  - Artist
-  - Date
-  - Venue, city, country
-  - Setlist
-  - Source/lineage
-  - Screenshot paths
-  - Drive location
-
-## **4. Figma Make → Real UI Code**
-Figma Make produces a ZIP containing:
-
-```
-(zip root)/
-  index.html
-  package.json
-  vite.config.ts
-  tsconfig.json
-  tsconfig.node.json
-  src/
-  public/   (Figma's placeholder data – ignored/merged)
-```
-
-This code is **not fully accurate** to the real data structure in The Vault.
-Therefore, we run a custom automation script.
-
-## **5. Automated Sync & Build Pipeline**
-The core of the system.
-
-A shell script `update_from_figma.sh`:
-- Detects latest ZIP in `~/Downloads`.
-- Extracts the ZIP.
-- Treats the ZIP's **src folder** as the true project root.
-- Syncs all updated UI code into the stable project.
-- **Preserves real data:**
-  - `public/images/`
-  - `public/shows.json`
-- Installs dependencies.
-- Ensures Tailwind CSS directives are injected.
-- Runs a full `npm run build`.
-
-## **6. Live Preview via Vite**
-Local dev server:
-
-```
-npm run dev
-```
-
-Visit:
-```
-http://localhost:5173/
-```
-
-This shows **real** concert data and **real** screenshots integrated into the Netflix-style UI.
+- **819 shows** across multiple artists
+- **726 shows** with known dates (recovered via automated metadata scanning)
+- **9 shows** marked "Compilation" (multi-date collections)
+- **84 shows** with no recoverable date
+- Images: up to 4 thumbnails per show, stored as `{ChecksumSHA1}_01.jpg` through `_04.jpg`
 
 ---
 
-# 3. The Stable Local Project Structure
+## 3. High-Level Workflow
 
-Final folder layout after syncing:
+### Step 1 — Scan Hard Drives
+Automated Python scripts scan each show folder across multiple external drives:
+- Read TXT/NFO/DOC files for metadata (venue, lineage, taper info, setlists)
+- Detect and group VOB/TS video files
+- Extract technical specs (codec, resolution, duration, file size)
+- Capture folder name and path as metadata fallbacks
+
+Output: per-drive CSV files in `data-pipeline/01_scan_hd_shows/`
+
+### Step 2 — Screenshot Extraction
+Automated screenshot generation using VLC or mpv:
+- 3–4 full-resolution frames extracted at predictable timestamps
+- Named `{ChecksumSHA1}_01.jpg` through `_{n}.jpg`
+- Placed directly in `public/images/`
+
+### Step 3 — Merge & Deduplicate
+Python scripts in `data-pipeline/04_merge_hd_csvs_identify_duplicates/` and `data-pipeline/05_merge_csvs/`:
+- Merge per-drive CSVs into a single dataset
+- Identify and flag duplicates using `ChecksumSHA1`
+- Enrich with checksum data
+
+### Step 4 — Create Master CSV
+Scripts in `data-pipeline/07_merge_csvs_create_single_master/` and `data-pipeline/08_final_create_master_CSV/`:
+- Produce a single authoritative `MASTER_merged_shows.csv`
+- Clean artist names, venue names, event/festival names
+- Recover dates from folder names, file names, and embedded notes
+- Output `shows.json` for the web app
+
+### Step 5 — Publish to Web App
+Copy or symlink the output `shows.json` to `public/shows.json`, then push to `main`. GitHub Actions handles the rest.
+
+---
+
+## 4. Project Structure
 
 ```
 the-vault/
-  index.html
-  package.json
+  App.tsx                          # Root React component
+  components/
+    FeaturedRows.tsx               # Home page — curated horizontal rows
+    HeroSearch.tsx                 # Top search bar
+    TopNav.tsx                     # Navigation bar
+    ShowCard.tsx                   # Individual show card
+    SearchResultsGrid.tsx          # Search results layout
+    ShowDrawer.tsx                 # Slide-out detail panel
+    ArtistRow.tsx                  # Single horizontal scroll row
+    Sidebar.tsx                    # Artist navigation sidebar
+    ImageLightbox.tsx              # Full-screen image viewer
+    LazyImage.tsx                  # Lazy-loading image with placeholder
+  src/
+    hooks/
+      useSearchEngine.ts           # MiniSearch index setup
+      useSearchAndFilter.ts        # Filter logic — field-specific, decade keywords
+      useGeoLocation.ts            # IP geolocation (ipapi.co)
+      useShows.ts                  # Data loading
+      useDebounce.ts               # Search debounce
+      useKeyboardNavigation.ts     # Keyboard nav
+      useScrollSpy.ts              # Sidebar scroll tracking
+    main.tsx                       # React entry point
+    index.css                      # Global styles
+  public/
+    shows.json                     # Master show data (flat JSON array)
+    images/                        # Thumbnails: {ChecksumSHA1}_01.jpg etc.
+  data-pipeline/
+    01_scan_hd_shows/              # Per-drive scan scripts and output CSVs
+    04_merge_hd_csvs_identify_duplicates/
+    05_merge_csvs/
+    07_merge_csvs_create_single_master/
+    08_final_create_master_CSV/    # Final master CSV + shows.json output
+    README/                        # This document
+  .github/
+    workflows/
+      deploy.yml                   # GitHub Actions — auto-deploy on push to main
   vite.config.ts
   tsconfig.json
-  tsconfig.node.json
-
-  public/
-    images/           # All real screenshots (preserved)
-    shows.json        # Real metadata JSON
-
-  src/
-    App.tsx
-    main.tsx
-    components/
-    styles/
-    index.css
-
-  update_from_figma.sh
-  node_modules/
+  package.json
+  README.md                        # Main project README
 ```
 
-This structure is required for:
-- Vite dev server
-- Tailwind/PostCSS pipeline
-- Figma Make compatibility
-
 ---
 
-# 4. Figma Make → Local Sync Script
+## 5. Development Workflow
 
-`update_from_figma.sh` performs the following:
+The UI is built directly in the codebase using React/TypeScript. There is no external design tool or sync script.
 
-### **Automated ZIP Handling**
-- Locates newest `the-vault*.zip` in `~/Downloads` automatically.
-- Extracts ZIP to a temporary directory.
-- Identifies the correct project root (`zip/src`).
+### Day-to-day
 
-### **Code Syncing**
-- Syncs UI code into the local project root.
-- Syncs Figma `public/` while *preserving* existing images & JSON.
-
-### **Dependency Management**
-- Runs `npm install` as needed.
-- Ensures Tailwind CSS dependencies are installed.
-- Injects Tailwind directives into `index.css` if missing.
-
-### **Build Automation**
-- Always runs `npm run build` at the end.
-
-This script eliminates all manual copying, cleaning, reinstalling, or rebuilding.
-
----
-
-# 5. One‑Command Workflow (Aliases)
-
-To avoid memorising commands, the workflow is wrapped inside `zsh` functions.
-These live in `~/.zshrc`.
-
-### **vault-go**
 ```bash
-vault-go() {
-  cd /Users/ko/Desktop/Projects/the-vault || return
-  ./update_from_figma.sh
-  # open http://localhost:5173/     # optional
-  npm run dev
-}
-```
-Run this after every Figma export:
-
-```
-vault-go
+# Start local dev server
+npm run dev
+# Preview at: http://localhost:5173/digital-vault/
 ```
 
-### **vault-build** (optional)
+Edit any file in `components/`, `src/hooks/`, or `App.tsx`. Changes reflect instantly via hot module reloading.
+
+### Committing and deploying
+
 ```bash
-vault-build() {
-  cd /Users/ko/Desktop/Projects/the-vault || return
-  ./update_from_figma.sh
-}
-```
-Useful when changing **only** metadata (e.g. new shows.json).
-
-### **vault-help**
-```bash
-vault-help() {
-  echo ""
-  echo "Vault Commands:"
-  echo "  vault-go      → Update project from Figma ZIP + run dev server"
-  echo "  vault-build   → Update project from Figma ZIP only"
-  echo ""
-  echo "Other helpful commands:"
-  echo "  alias         → Show all aliases"
-  echo "  functions     → Show all functions"
-  echo ""
-}
+git add <files>
+git commit -m "feat: description of change"
+git push origin main
 ```
 
-When you forget commands, simply type:
+GitHub Actions picks up the push, builds the project, and deploys to GitHub Pages automatically. The live site updates within ~2 minutes.
 
-```
-vault-help
-```
+- **Live URL**: `https://karl0s.github.io/digital-vault/`
+- **GitHub repo**: `https://github.com/karl0s/digital-vault`
+
+### Branch policy
+
+Work directly on `main` for routine changes. Feature branches are fine for larger changes but must be merged into `main` to deploy. Delete merged branches when done.
 
 ---
 
-# 6. Why Local Development (No GitHub/Netlify)
+## 6. Data Format
 
-The Vault is currently a **private collection** and must handle:
-- Thousands of screenshots
-- Several gigabytes of media metadata
-- Frequent iteration
-- Zero exposure of private archives or personal collection
+`public/shows.json` is a **flat JSON array** — not wrapped in any outer object:
 
-Local development provides:
+```json
+[
+  {
+    "ShowID": "abc123",
+    "Artist": "Stone Temple Pilots",
+    "ShowDate": "1993-01-01",
+    "EventOrFestival": "",
+    "VenueName": "Fresno Civic Auditorium",
+    "City": "Fresno",
+    "Country": "United States",
+    "RecordingType": "Audience",
+    "ChecksumSHA1": "def456...",
+    ...
+  }
+]
+```
 
-### ✔ **Privacy**
-No hosting or uploads of private material.
+### ShowDate conventions
 
-### ✔ **Speed**
-Vite dev server is near‑instant.
+| Value | Meaning |
+|-------|---------|
+| `"1994-08-16"` | Exact date known |
+| `"1994-01-01"` | Year known, exact date unknown |
+| `"Compilation"` | Multi-date collection spanning more than one year |
+| `""` (empty) | Date completely unknown |
 
-### ✔ **Simplicity**
-One command updates everything.
+### Display priority on cards
 
-### ✔ **Control**
-The project works offline and without platform limitations.
+The UI picks the most specific available descriptor for each show:
 
-Future hosting (optional) could be:
-- GitHub Pages
-- Netlify
-- Cloudflare Pages
-- S3 bucket
+- **Line 1 (title)**: `EventOrFestival` → `VenueName` → `Artist`
+- **Line 2 (subtitle)**: `EventOrFestival` → `VenueName` → `City, Country`
 
-But not needed at this stage.
-
----
-
-# 7. Developer Checklist
-
-### After making changes in Figma Make:
-1. Export latest ZIP to `~/Downloads`.
-2. Run:
-   ```bash
-   vault-go
-   ```
-3. Browser preview opens at:
-   ```
-   http://localhost:5173/
-   ```
-
-### After updating metadata (Master CSV → shows.json):
-1. Regenerate `public/shows.json`.
-2. Run:
-   ```bash
-   vault-build
-   ```
-
-### After adding new screenshots:
-1. Add to `public/images/<show-id>/...`.
-2. Refresh browser.
-
-### If Terminal commands are forgotten:
-- `vault-help`
-- `alias`
-- `functions`
+Keep `EventOrFestival` for festivals, TV appearances, and documentaries. Use `VenueName` for straight concert venues.
 
 ---
 
-# 8. Future Enhancements
+## 7. Search Capabilities
 
-- Automated CSV → shows.json converter (button‑triggered)
-- Automated VLC/mpv screenshot pipeline
-- Automated artist-grouping logic
-- Full-text search improvements
-- Optional deployment to a private remote server
-- Adding nightly backups of JSON + images
-- UI improvements in Figma Make driven by real dataset
+The search engine (MiniSearch) supports:
+
+- **General**: prefix + fuzzy matching across all text fields
+- **Field-specific**: `artist:`, `venue:`, `city:`, `country:`, `type:`, `song:`, `year:`, `event:`, `drive:`, `codec:`
+- **Decade keywords**: `nineties`, `90s`, `eighties`, `80s`, `2000s`, `00s`, `2010s`, `10s`, etc.
+- **Compound**: `nirvana nineties`, `soundboard 2000s`
 
 ---
 
-# 9. Summary
+## 8. Future Enhancements
 
-The Vault is now a:
-- Fully local
-- Fully automated
-- Netflix‑style
-- Metadata‑driven
-- Private archival system
+- Automated date recovery pipeline (run as part of CSV generation, not post-hoc)
+- Nightly backup of `shows.json` + `public/images/`
+- Admin interface for manually correcting metadata without editing JSON directly
+- Optional password protection for the GitHub Pages deployment
 
-One command (`vault-go`) updates, rebuilds, and launches the entire interactive UI using real show metadata and high-quality screenshots.
+---
 
-This document represents the current authoritative technical specification of the system.
+## 9. Summary
 
+The Vault is a:
+- **Code-first** project — UI built directly in React/TypeScript, no design tool intermediary
+- **Git-driven** — push to `main` deploys automatically
+- **Data-pipeline-backed** — Python scripts produce the `shows.json` that powers the UI
+- **Private collection** — concert files remain on local drives; only metadata and thumbnails are published
+
+Development: `npm run dev` → edit → browser refreshes instantly.
+Deploy: `git push origin main` → live in ~2 minutes.
