@@ -2,6 +2,34 @@ import { useMemo } from 'react';
 import { Show } from '../../App';
 import { useSearchEngine } from './useSearchEngine';
 
+// Maps decade keywords → [startYear, endYear] (inclusive)
+const DECADE_MAP: Record<string, [number, number]> = {
+  'fifties':    [1950, 1959],
+  '50s':        [1950, 1959],
+  'sixties':    [1960, 1969],
+  '60s':        [1960, 1969],
+  'seventies':  [1970, 1979],
+  '70s':        [1970, 1979],
+  'eighties':   [1980, 1989],
+  '80s':        [1980, 1989],
+  'nineties':   [1990, 1999],
+  '90s':        [1990, 1999],
+  'thousands':  [2000, 2009],
+  'noughties':  [2000, 2009],
+  '2000s':      [2000, 2009],
+  '00s':        [2000, 2009],
+  'tens':       [2010, 2019],
+  '2010s':      [2010, 2019],
+  '10s':        [2010, 2019],
+  'twenties':   [2020, 2029],
+  '2020s':      [2020, 2029],
+  '20s':        [2020, 2029],
+};
+
+function getShowYear(show: Show): number {
+  return parseInt(show.ShowDate?.split('-')[0] || '0');
+}
+
 export function useSearchAndFilter(shows: Show[], searchQuery: string) {
   const { ms, showById } = useSearchEngine(shows);
 
@@ -41,6 +69,26 @@ export function useSearchAndFilter(shows: Show[], searchQuery: string) {
             );
         }
       });
+    }
+
+    // Decade search — detect decade keyword anywhere in the query
+    const words = query.split(/\s+/);
+    const decadeWord = words.find(w => DECADE_MAP[w]);
+    if (decadeWord) {
+      const [start, end] = DECADE_MAP[decadeWord];
+      const decadeFiltered = shows.filter(show => {
+        const year = getShowYear(show);
+        return year >= start && year <= end;
+      });
+
+      // If there are other words alongside the decade, run them through
+      // MiniSearch on the decade-filtered subset
+      const remainingWords = words.filter(w => w !== decadeWord).join(' ').trim();
+      if (!remainingWords) return decadeFiltered;
+
+      const remainingResults = ms.search(remainingWords);
+      const matchingIds = new Set(remainingResults.map(r => r.id));
+      return decadeFiltered.filter(show => matchingIds.has(show.ShowID));
     }
 
     // General search — MiniSearch with prefix + fuzzy matching
