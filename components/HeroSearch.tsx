@@ -7,7 +7,12 @@ interface HeroSearchProps {
   onBrowseAll: () => void;
 }
 
-const QUICK_SEARCHES = ['Soundgarden', 'Stone Temple Pilots', 'Smashing Pumpkins', '1990s'];
+const QUICK_SEARCHES = [
+  { label: 'Soundgarden', query: 'Soundgarden' },
+  { label: 'Stone Temple Pilots', query: 'Stone Temple Pilots' },
+  { label: 'Smashing Pumpkins', query: 'Smashing Pumpkins' },
+  { label: '1990s', query: 'nineties' },
+];
 
 export function HeroSearch({ totalShows, onSearch, onBrowseAll }: HeroSearchProps) {
   return (
@@ -64,13 +69,13 @@ export function HeroSearch({ totalShows, onSearch, onBrowseAll }: HeroSearchProp
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.22 }}
         >
-          {QUICK_SEARCHES.map((tag) => (
+          {QUICK_SEARCHES.map(({ label, query }) => (
             <button
-              key={tag}
-              onClick={() => onSearch(tag)}
+              key={label}
+              onClick={() => onSearch(query)}
               className="px-4 py-1.5 rounded-full text-sm text-gray-500 hover:text-white bg-white/5 hover:bg-white/10 border border-white/8 hover:border-white/20 transition-all duration-200"
             >
-              {tag}
+              {label}
             </button>
           ))}
         </motion.div>
