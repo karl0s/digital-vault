@@ -143,25 +143,6 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
       .sort((a, b) => (b.ShowDate || '').localeCompare(a.ShowDate || ''))
       .slice(0, 24);
 
-    const byDecade: Record<string, Show[]> = {};
-    shows.forEach((show) => {
-      const year = parseInt(show.ShowDate?.split('-')[0] || '0');
-      if (year >= 1960 && year <= 2030) {
-        const decade = `${Math.floor(year / 10) * 10}s`;
-        if (!byDecade[decade]) byDecade[decade] = [];
-        byDecade[decade].push(show);
-      }
-    });
-
-    const decadeRows = Object.entries(byDecade)
-      .sort(([a], [b]) => b.localeCompare(a))
-      .map(([decade, decadeShows]) => ({
-        decade,
-        shows: decadeShows
-          .sort((a, b) => (b.ShowDate || '').localeCompare(a.ShowDate || ''))
-          .slice(0, 24),
-      }));
-
     const countryCandidates = (() => {
       if (!geo?.countryName) return [];
       const names = [geo.countryName];
@@ -200,7 +181,7 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
       }
     }
 
-    return { topArtistShows, recent, soundboards, decadeRows, geoShows, geoRowTitle };
+    return { topArtistShows, recent, soundboards, geoShows, geoRowTitle };
   }, [shows, geo]);
 
   if (!sections) {
@@ -254,15 +235,6 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
           getImageUrl={getImageUrl}
         />
       )}
-      {sections.decadeRows.map(({ decade, shows: decadeShows }) => (
-        <FeaturedRow
-          key={decade}
-          title={decade}
-          shows={decadeShows}
-          onShowClick={onShowClick}
-          getImageUrl={getImageUrl}
-        />
-      ))}
     </div>
   );
 }
