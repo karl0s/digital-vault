@@ -154,6 +154,9 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl, searchMo
                 transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
               >
                 <div className="space-y-0.5">
+                  {searchMode && (
+                    <p className="text-xs text-gray-200 truncate leading-snug">{show.Artist}</p>
+                  )}
                   {durationMin > 0 && (
                     <p className="text-xs text-gray-500">{durationText}</p>
                   )}
