@@ -51,6 +51,7 @@ export function SearchResultsGrid({ shows, query, onShowClick, onClear, getImage
                 show={show}
                 onClick={() => onShowClick(show)}
                 getImageUrl={getImageUrl}
+                searchMode
               />
             </div>
           ))}
