@@ -107,7 +107,7 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl }: ShowCa
     <div
       id={`show-${show.ShowID}`}
       data-show-year={year}
-      className={`group cursor-pointer flex-shrink-0 w-full md:w-64 md:sm:w-72 md:md:w-80 md:lg:w-96 md:xl:w-[22rem] transition-all duration-300 ${focused ? 'relative z-20' : 'relative z-0'}`}
+      className={`group cursor-pointer flex-shrink-0 w-full md:w-120 transition-all duration-300 ${focused ? 'relative z-20' : 'relative z-0'}`}
       onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -173,7 +173,7 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl }: ShowCa
           <AnimatePresence>
             {(focused || isHovered) && (
               <div className="absolute top-3 right-3 flex gap-2">
-                {show.RecordingType && (
+                {show.RecordingType && show.RecordingType.toLowerCase() !== 'proshot' && (
                   <motion.div
                     className="bg-black/70 px-2 py-1 rounded text-xs"
                     initial={{ opacity: 0, y: -10, scale: 0.8 }}
@@ -202,31 +202,25 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl }: ShowCa
                 }}
               >
                 <div className="space-y-1 text-xs text-gray-300">
-                  {show.ShowDate && (
-                    <motion.div
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.2, delay: 0.15 }}
-                    >
-                      <span className="bg-black/70 px-2 py-1 rounded text-xs">
-                        {year}
-                      </span>
-                    </motion.div>
-                  )}
-                  <motion.p
-                    className="font-medium text-white truncate"
+                  <motion.div
+                    className="flex items-center gap-2"
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.2, delay: 0.2 }}
+                    transition={{ duration: 0.2, delay: 0.15 }}
                   >
-                    {show.Artist}
-                  </motion.p>
+                    <p className="font-medium text-white truncate text-base">{show.Artist}</p>
+                    {show.ShowDate && (
+                      <span className="shrink-0 bg-black/70 px-2 py-0.5 rounded text-xs text-gray-300">
+                        {year}
+                      </span>
+                    )}
+                  </motion.div>
                   {(show.EventOrFestival || show.VenueName) && (
                     <motion.p
                       className="truncate"
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.2, delay: 0.25 }}
+                      transition={{ duration: 0.2, delay: 0.2 }}
                     >
                       {[show.EventOrFestival, show.VenueName].filter(Boolean).join(', ')}
                     </motion.p>
@@ -236,7 +230,7 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl }: ShowCa
                       className="truncate"
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.2, delay: 0.3 }}
+                      transition={{ duration: 0.2, delay: 0.25 }}
                     >
                       {[show.City, show.Country].filter(Boolean).join(', ')}
                     </motion.p>
@@ -245,7 +239,7 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl }: ShowCa
                     <motion.p
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.2, delay: 0.35 }}
+                      transition={{ duration: 0.2, delay: 0.3 }}
                     >
                       {durationText}
                     </motion.p>

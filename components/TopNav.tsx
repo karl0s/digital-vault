@@ -1,17 +1,20 @@
 import { Search, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 interface TopNavProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   artists?: string[];
   onArtistJump?: (artist: string) => void;
-  hideSearch?: boolean;
+  hasSidebar?: boolean;
+  searchInputRef?: React.RefObject<HTMLInputElement>;
 }
 
-export function TopNav({ searchQuery, onSearchChange, artists = [], onArtistJump, hideSearch = false }: TopNavProps) {
+export function TopNav({ searchQuery, onSearchChange, artists = [], onArtistJump, hasSidebar = false, searchInputRef }: TopNavProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showAlphabet, setShowAlphabet] = useState(false);
+  const localRef = useRef<HTMLInputElement>(null);
+  const inputRef = searchInputRef ?? localRef;
 
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   const artistsByLetter = artists.reduce((acc, artist) => {
@@ -31,47 +34,38 @@ export function TopNav({ searchQuery, onSearchChange, artists = [], onArtistJump
   };
 
   return (
-    <nav className="fixed top-0 left-0 md:left-16 right-0 z-40 bg-gradient-to-b from-black/80 to-transparent">
-      <div className="flex items-center justify-between px-4 md:px-8 py-4">
+    <nav className={`fixed top-0 left-0 ${hasSidebar ? 'md:left-16' : ''} right-0 z-40 bg-linear-to-b from-black/90 to-transparent backdrop-blur-sm`}>
+      <div className="flex items-center gap-3 px-4 md:px-8 py-3">
         {/* Mobile menu button */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden p-2 hover:bg-white/10 rounded transition-colors"
+          className="md:hidden p-2 hover:bg-white/10 rounded transition-colors shrink-0"
           aria-label="Menu"
         >
-          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
 
-        {hideSearch ? (
-          /* Wordmark shown in hero mode */
-          <span className="hidden md:block text-sm font-semibold tracking-[0.2em] text-gray-500 uppercase select-none">
-            The Vault
-          </span>
-        ) : (
-          /* Search bar */
-          <div className="relative group flex-1 md:flex-none">
-            <input
-              type="text"
-              placeholder="Search…"
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="bg-black/70 border border-white/20 text-white placeholder-gray-400 rounded px-4 py-2 pl-10 w-full md:w-96 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-transparent transition-all text-sm md:text-base"
-            />
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-
-            {/* Search hint tooltip - desktop only */}
-            <div className="hidden md:block absolute top-full right-0 mt-2 bg-black/95 border border-white/10 rounded-lg px-3 py-2 text-xs text-gray-400 w-72 opacity-0 group-focus-within:opacity-100 transition-opacity pointer-events-none">
-              <div className="mb-1 text-white">Field filters:</div>
-              <div className="space-y-0.5 font-mono">
-                <div><span className="text-gray-500">artist:</span> pearl jam</div>
-                <div><span className="text-gray-500">song:</span> alive</div>
-                <div><span className="text-gray-500">type:</span> soundboard</div>
-                <div><span className="text-gray-500">country:</span> usa</div>
-                <div><span className="text-gray-500">year:</span> 1999</div>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Search bar — always visible */}
+        <div className="relative flex-1 md:max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          <input
+            ref={inputRef}
+            type="text"
+            placeholder="Search artist, song, venue, country, year…"
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="w-full bg-white/8 border border-white/12 text-white placeholder-gray-600 rounded-xl px-4 py-2 pl-10 focus:outline-none focus:ring-2 focus:ring-white/25 focus:border-white/25 focus:bg-white/10 transition-all text-sm"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => { onSearchChange(''); inputRef.current?.focus(); }}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
+              aria-label="Clear search"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Mobile menu */}
