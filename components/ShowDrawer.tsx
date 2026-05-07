@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { X, Clock, HardDrive, Film, Music, Info, ChevronDown } from 'lucide-react';
+import { X, Clock, HardDrive, Music, ChevronDown } from 'lucide-react';
 import { Show } from '../App';
 import { LazyImage } from './LazyImage';
 
@@ -11,97 +11,70 @@ interface ShowDrawerProps {
   getImageUrl?: (checksum: string, index: number) => string | null;
 }
 
+const getRecordingBadgeStyle = (type: string): string => {
+  const lower = type.toLowerCase();
+  if (lower.includes('soundboard')) return 'bg-amber-500/15 text-amber-400 border border-amber-500/25';
+  if (lower.includes('audience'))   return 'bg-sky-500/15 text-sky-400 border border-sky-500/25';
+  if (lower.includes('proshot'))    return 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25';
+  return 'bg-white/8 text-white/60 border border-white/12';
+};
+
+const getColorFromString = (str: string): string => {
+  const colors = [
+    'bg-red-900', 'bg-blue-900', 'bg-green-900', 'bg-purple-900',
+    'bg-pink-900', 'bg-indigo-900', 'bg-yellow-900', 'bg-teal-900',
+  ];
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  return colors[Math.abs(hash) % colors.length];
+};
+
 export function ShowDrawer({ show, onClose, onImageClick, getImageUrl }: ShowDrawerProps) {
   const [isSourceExpanded, setIsSourceExpanded] = useState(false);
   const [isNotesExpanded, setIsNotesExpanded] = useState(false);
-  
+
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handleEscape);
-    return () => window.removeEventListener('keydown', handleEscape);
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
 
-  // Disable body scroll when drawer is open (desktop only)
   useEffect(() => {
-    // Save original overflow value
-    const originalOverflow = document.body.style.overflow;
-    
-    // Disable scrolling on body (but allow scroll within drawer)
+    const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    
-    // Cleanup: restore original overflow when drawer closes
-    return () => {
-      document.body.style.overflow = originalOverflow;
-    };
+    return () => { document.body.style.overflow = prev; };
   }, []);
 
   const year = show.ShowDate ? show.ShowDate.split('-')[0] : 'Unknown';
   const durationSec = parseInt(show.DurationSec || '0');
   const hours = Math.floor(durationSec / 3600);
   const minutes = Math.floor((durationSec % 3600) / 60);
-  const seconds = durationSec % 60;
-  const durationFormatted = durationSec > 0 
-    ? (hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m ${seconds}s`)
-    : 'Unknown';
-  
+  const durationFormatted = durationSec > 0
+    ? (hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`)
+    : null;
+
   const setlistItems = show.Setlist ? show.Setlist.split(';').map(s => s.trim()).filter(Boolean) : [];
-  
-  // Parse RepVideoFiles if it's a string
   const videoFiles = typeof show.RepVideoFiles === 'string'
     ? show.RepVideoFiles.split(';').map(f => f.trim()).filter(Boolean)
     : show.RepVideoFiles || [];
 
-  // Get images using ChecksumSHA1 - up to 4 screenshots
-  const images = show.ChecksumSHA1 
-    ? [1, 2, 3, 4].map(index => 
-        getImageUrl 
-          ? getImageUrl(show.ChecksumSHA1!, index)
-          : `/images/${show.ChecksumSHA1}_0${index}.jpg`
-      ).filter(Boolean) as string[]
+  const images = show.ChecksumSHA1
+    ? [1, 2, 3, 4].map(i => getImageUrl ? getImageUrl(show.ChecksumSHA1!, i) : `/images/${show.ChecksumSHA1}_0${i}.jpg`).filter(Boolean) as string[]
     : [];
 
-  // Build location string
   const locationParts = [show.City, show.Country].filter(Boolean);
-  const locationStr = locationParts.length > 0 ? locationParts.join(', ') : '';
+  const locationStr = locationParts.join(', ');
 
-  // Generate artist initials for placeholder
   const artistInitials = show.Artist
-    .split(' ')
-    .map(word => word[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
+    .split(' ').map(w => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
 
-  // Generate a consistent color based on artist name
-  const getColorFromString = (str: string) => {
-    const colors = [
-      'bg-red-900',
-      'bg-blue-900',
-      'bg-green-900',
-      'bg-purple-900',
-      'bg-pink-900',
-      'bg-indigo-900',
-      'bg-yellow-900',
-      'bg-teal-900',
-    ];
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    return colors[Math.abs(hash) % colors.length];
-  };
-
-  // Detect viewport for animation direction (mobile: bottom, desktop: right)
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
   return (
     <>
       {/* Backdrop */}
       <motion.div
-        className="fixed inset-0 bg-black/70 z-50"
+        className="fixed inset-0 bg-black/75 z-50"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -109,285 +82,278 @@ export function ShowDrawer({ show, onClose, onImageClick, getImageUrl }: ShowDra
         onClick={onClose}
       />
 
-      {/* Drawer - slide from right on desktop, slide from bottom on mobile */}
+      {/* Drawer */}
       <motion.div
-        className="fixed bottom-0 md:top-0 left-0 md:left-auto right-0 md:right-0 w-full md:w-[60vw] h-[85vh] md:h-full bg-[#181818] z-50 overflow-y-auto"
+        className="fixed bottom-0 md:top-0 left-0 md:left-auto right-0 md:right-0 w-full md:w-[58vw] lg:w-[52vw] h-[88vh] md:h-full bg-[#181818] z-50 overflow-y-auto"
         initial={{ x: isMobile ? 0 : '100%', y: isMobile ? '100%' : 0 }}
         animate={{ x: 0, y: 0 }}
         exit={{ x: isMobile ? 0 : '100%', y: isMobile ? '100%' : 0 }}
-        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
       >
-        <div className="relative">
-          {/* Close button - sticky on mobile, fixed within drawer on desktop */}
-          <button
-            onClick={onClose}
-            className="sticky md:fixed top-4 right-4 z-[60] ml-auto mr-4 mt-4 md:m-0 p-2 bg-black/60 hover:bg-black/80 rounded-full transition-colors block"
-            aria-label="Close"
-          >
-            <X className="w-6 h-6" />
-          </button>
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="sticky md:fixed top-4 right-4 z-60 ml-auto mr-4 mt-4 md:m-0 p-2 bg-black/70 hover:bg-black/90 rounded-full transition-colors block"
+          aria-label="Close"
+        >
+          <X className="w-5 h-5" />
+        </button>
 
-          {/* Header with hero image */}
-          <div className="relative h-48 md:h-80 bg-[#181818]">
-            {images.length > 0 ? (
-              <>
-                <img
-                  src={images[0]}
-                  alt={show.Artist}
-                  className="w-full h-full object-cover opacity-50"
-                  style={{ objectPosition: '0% 25%' }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#181818] via-[#181818]/60 to-transparent" />
-              </>
-            ) : (
-              // Placeholder with artist initials
-              <div className={`w-full h-full ${getColorFromString(show.Artist)} flex items-center justify-center`}>
-                <div className="text-6xl md:text-9xl text-white/30 font-bold">{artistInitials}</div>
-                <div className="absolute inset-0 bg-gradient-to-t from-[#181818] via-[#181818]/50 to-transparent backdrop-blur-[3px]" />
-              </div>
-            )}
-            
-            <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8">
-              <h1 className="text-white mb-1 md:mb-2 text-xl md:text-3xl">
-                {show.Artist}
-              </h1>
-              <p className="text-base md:text-xl text-gray-300 mb-2 md:mb-3">
-                {show.ShowDate || 'Date Unknown'}
-                {show.VenueName && ` · ${show.VenueName}`}
-              </p>
-              <div className="flex flex-wrap gap-2 text-sm">
-                {year !== 'Unknown' && <span className="px-3 py-1 bg-white/10 rounded">{year}</span>}
-                {show.RecordingType && <span className="px-3 py-1 bg-white/10 rounded">{show.RecordingType}</span>}
-                {durationSec > 0 && <span className="px-3 py-1 bg-white/10 rounded">{durationFormatted}</span>}
-                {show.Width && show.Height && <span className="px-3 py-1 bg-white/10 rounded">{show.Width}×{show.Height}</span>}
-                {show.VideoCodec && <span className="px-3 py-1 bg-white/10 rounded">{show.VideoCodec}</span>}
-              </div>
+        {/* Hero image — tall, cinematic */}
+        <div className="relative h-56 md:h-[42vh] bg-[#0d0d0d] overflow-hidden">
+          {images.length > 0 ? (
+            <>
+              <img
+                src={images[0]}
+                alt={show.Artist}
+                className="w-full h-full object-cover object-top opacity-55"
+              />
+              <div className="absolute inset-0 bg-linear-to-t from-[#181818] via-[#181818]/50 to-transparent" />
+            </>
+          ) : (
+            <div className={`w-full h-full ${getColorFromString(show.Artist)} flex items-center justify-center`}>
+              <span className="text-7xl md:text-9xl font-bold text-white/20"
+                style={{ fontFamily: 'var(--font-display)', letterSpacing: '0.05em' }}>
+                {artistInitials}
+              </span>
+              <div className="absolute inset-0 bg-linear-to-t from-[#181818] via-[#181818]/40 to-transparent" />
+            </div>
+          )}
+
+          {/* Artist info over hero */}
+          <div className="absolute bottom-0 left-0 right-0 px-5 md:px-8 pb-5">
+            <h1
+              className="text-white leading-none mb-2"
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(32px, 5vw, 56px)',
+                letterSpacing: '0.04em',
+              }}
+            >
+              {show.Artist}
+            </h1>
+            <p className="text-gray-400 text-sm md:text-base mb-3">
+              {show.ShowDate || 'Date Unknown'}
+              {show.VenueName && <span className="text-gray-600"> · {show.VenueName}</span>}
+            </p>
+
+            {/* Metadata badges */}
+            <div className="flex flex-wrap gap-1.5">
+              {year !== 'Unknown' && (
+                <span className="px-2.5 py-0.5 rounded text-xs font-medium bg-white/8 text-gray-300 border border-white/10">
+                  {year}
+                </span>
+              )}
+              {show.RecordingType && (
+                <span className={`px-2.5 py-0.5 rounded text-xs font-medium ${getRecordingBadgeStyle(show.RecordingType)}`}>
+                  {show.RecordingType}
+                </span>
+              )}
+              {durationFormatted && (
+                <span className="px-2.5 py-0.5 rounded text-xs font-medium bg-white/8 text-gray-300 border border-white/10 flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  {durationFormatted}
+                </span>
+              )}
+              {show.Width && show.Height && (
+                <span className="px-2.5 py-0.5 rounded text-xs font-mono font-medium bg-white/8 text-gray-400 border border-white/10">
+                  {show.Width}×{show.Height}
+                </span>
+              )}
             </div>
           </div>
+        </div>
 
-          {/* Content */}
-          <div className="p-4 md:p-8 space-y-4 md:space-y-6">
-            {/* Location & Event summary */}
-            {(locationStr || show.EventOrFestival) && (
-              <div className="space-y-2">
-                {locationStr && <p className="text-gray-300 text-sm md:text-base">{locationStr}</p>}
-                {show.EventOrFestival && (
-                  <p className="text-[#E50914] text-sm">🎪 {show.EventOrFestival}</p>
-                )}
+        {/* Content */}
+        <div className="px-5 md:px-8 py-6 space-y-6">
+
+          {/* Location & event */}
+          {(locationStr || show.EventOrFestival) && (
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+              {locationStr && <span className="text-gray-400">{locationStr}</span>}
+              {show.EventOrFestival && (
+                <span className="text-[#E50914] font-medium">{show.EventOrFestival}</span>
+              )}
+            </div>
+          )}
+
+          {/* Screenshots */}
+          {images.length > 0 && (
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600 mb-3">
+                Screenshots
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                {images.map((url, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => onImageClick(url)}
+                    className="rounded overflow-hidden hover:ring-2 hover:ring-white/30 transition-all group/thumb"
+                  >
+                    <img
+                      src={url}
+                      alt={`Screenshot ${idx + 1}`}
+                      className="w-full aspect-4/3 object-cover group-hover/thumb:opacity-90 transition-opacity"
+                      loading="eager"
+                    />
+                  </button>
+                ))}
               </div>
-            )}
+            </div>
+          )}
 
-            {/* Screenshots - 2x2 grid on mobile, 1x4 on desktop */}
-            {images.length > 0 && show.ChecksumSHA1 && (
+          {/* Setlist + Tech specs side by side */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            {/* Setlist */}
+            {setlistItems.length > 0 && (
               <div>
-                <h3 className="text-sm text-gray-400 mb-3 md:mb-4 flex items-center gap-2">
-                  <Film className="w-4 h-4" />
-                  Screenshots
-                </h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                  {images.map((url, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => onImageClick(url)}
-                      className="drawer-thumbnail bg-black/30 rounded overflow-hidden hover:ring-2 hover:ring-white/50 transition-all"
-                    >
-                      <img
-                        src={url}
-                        alt={`Screenshot ${idx + 1}`}
-                        className="w-full h-full object-cover"
-                        loading="eager"
-                      />
-                    </button>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600 mb-4 flex items-center gap-1.5">
+                  <Music className="w-3 h-3" /> Setlist
+                </p>
+                <ol className="space-y-2">
+                  {setlistItems.map((song, idx) => (
+                    <li key={idx} className="flex items-start gap-3 text-sm">
+                      <span className="text-gray-700 tabular-nums text-xs w-5 shrink-0 pt-px text-right">
+                        {idx + 1}
+                      </span>
+                      <span className="text-gray-200 leading-snug">{song}</span>
+                    </li>
                   ))}
-                </div>
+                </ol>
               </div>
             )}
 
-            {/* Technical Details - 1 column on mobile, 2 on desktop */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-              <div className="space-y-3">
-                <h3 className="text-sm text-gray-400 flex items-center gap-2">
-                  <HardDrive className="w-4 h-4" />
-                  Video
-                </h3>
-                <div className="space-y-2 text-sm">
-                  {show.RecordingType && (
-                    <div>
-                      <span className="text-gray-400">Type:</span>{' '}
-                      <span className="text-white">{show.RecordingType}</span>
-                    </div>
-                  )}
+            {/* Technical specs */}
+            <div className="space-y-5">
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600 mb-3 flex items-center gap-1.5">
+                  <HardDrive className="w-3 h-3" /> Technical
+                </p>
+                <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
                   {show.VideoCodec && (
-                    <div>
-                      <span className="text-gray-400">Codec:</span>{' '}
-                      <span className="text-white">{show.VideoCodec}</span>
-                    </div>
-                  )}
-                  {show.Width && show.Height && (
-                    <div>
-                      <span className="text-gray-400">Resolution:</span>{' '}
-                      <span className="text-white">{show.Width}×{show.Height}</span>
-                    </div>
+                    <>
+                      <dt className="text-gray-600">Video</dt>
+                      <dd className="text-gray-300 font-mono">{show.VideoCodec}</dd>
+                    </>
                   )}
                   {show.AspectRatio && (
-                    <div>
-                      <span className="text-gray-400">Aspect:</span>{' '}
-                      <span className="text-white">{show.AspectRatio}</span>
-                    </div>
+                    <>
+                      <dt className="text-gray-600">Aspect</dt>
+                      <dd className="text-gray-300">{show.AspectRatio}</dd>
+                    </>
                   )}
                   {show.TVStandard && (
-                    <div>
-                      <span className="text-gray-400">Standard:</span>{' '}
-                      <span className="text-white">{show.TVStandard}</span>
-                    </div>
+                    <>
+                      <dt className="text-gray-600">Standard</dt>
+                      <dd className="text-gray-300">{show.TVStandard}</dd>
+                    </>
                   )}
                   {show.Container && (
-                    <div>
-                      <span className="text-gray-400">Container:</span>{' '}
-                      <span className="text-white">{show.Container}</span>
-                    </div>
+                    <>
+                      <dt className="text-gray-600">Container</dt>
+                      <dd className="text-gray-300 font-mono">{show.Container}</dd>
+                    </>
                   )}
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <h3 className="text-sm text-gray-400">Audio & Storage</h3>
-                <div className="space-y-2 text-sm">
                   {show.AudioCodec && (
-                    <div>
-                      <span className="text-gray-400">Audio:</span>{' '}
-                      <span className="text-white">{show.AudioCodec}</span>
-                    </div>
+                    <>
+                      <dt className="text-gray-600">Audio</dt>
+                      <dd className="text-gray-300 font-mono">{show.AudioCodec}</dd>
+                    </>
                   )}
                   {show.AudioChannels && (
-                    <div>
-                      <span className="text-gray-400">Channels:</span>{' '}
-                      <span className="text-white">{show.AudioChannels}ch</span>
-                    </div>
+                    <>
+                      <dt className="text-gray-600">Channels</dt>
+                      <dd className="text-gray-300">{show.AudioChannels}ch</dd>
+                    </>
                   )}
                   {show.AudioSampleRate && (
-                    <div>
-                      <span className="text-gray-400">Sample Rate:</span>{' '}
-                      <span className="text-white">{(parseInt(show.AudioSampleRate) / 1000).toFixed(1)}kHz</span>
-                    </div>
+                    <>
+                      <dt className="text-gray-600">Sample rate</dt>
+                      <dd className="text-gray-300 font-mono">{(parseInt(show.AudioSampleRate) / 1000).toFixed(1)} kHz</dd>
+                    </>
                   )}
                   {show.TotalSizeHuman && (
-                    <div>
-                      <span className="text-gray-400">Size:</span>{' '}
-                      <span className="text-white">{show.TotalSizeHuman}</span>
-                    </div>
+                    <>
+                      <dt className="text-gray-600">Size</dt>
+                      <dd className="text-gray-300">{show.TotalSizeHuman}</dd>
+                    </>
                   )}
                   {show.FileCount && (
-                    <div>
-                      <span className="text-gray-400">Files:</span>{' '}
-                      <span className="text-white">{show.FileCount}</span>
-                    </div>
+                    <>
+                      <dt className="text-gray-600">Files</dt>
+                      <dd className="text-gray-300">{show.FileCount}</dd>
+                    </>
                   )}
-                </div>
+                </dl>
               </div>
             </div>
-
-            {/* Setlist and Notes/Source - Side by side */}
-            <div className="grid grid-cols-2 gap-6">
-              {/* Setlist */}
-              {setlistItems.length > 0 && (
-                <div>
-                  <h3 className="text-sm text-gray-400 mb-4 flex items-center gap-2">
-                    <Music className="w-4 h-4" />
-                    Setlist
-                  </h3>
-                  <div className="space-y-2">
-                    {setlistItems.map((song, idx) => (
-                      <div key={idx} className="flex items-start gap-3 text-sm">
-                        <span className="text-gray-500 min-w-[2rem]">{idx + 1}.</span>
-                        <span className="text-white">{song}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Notes and Source/Files column */}
-              <div className="space-y-4">
-                {/* Notes - Accordion (collapsed by default) */}
-                {show.Notes && (
-                  <div className="border border-white/10 rounded-lg overflow-hidden">
-                    <button
-                      onClick={() => setIsNotesExpanded(!isNotesExpanded)}
-                      className="w-full flex items-center justify-between p-4 bg-black/20 hover:bg-black/30 transition-colors text-left"
-                    >
-                      <h3 className="text-sm text-gray-400">Notes</h3>
-                      <ChevronDown 
-                        className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
-                          isNotesExpanded ? 'rotate-180' : ''
-                        }`}
-                      />
-                    </button>
-                    {isNotesExpanded && (
-                      <div className="bg-black/30 p-4 max-h-96 overflow-y-auto">
-                        <p className="text-sm text-gray-300 whitespace-pre-wrap font-mono leading-relaxed">
-                          {show.Notes}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Source / Lineage - Accordion (collapsed by default) */}
-                {(show.Lineage || show.FolderPath || videoFiles.length > 0 || show.MasterDriveName) && (
-                  <div className="border border-white/10 rounded-lg overflow-hidden">
-                    <button
-                      onClick={() => setIsSourceExpanded(!isSourceExpanded)}
-                      className="w-full flex items-center justify-between p-4 bg-black/20 hover:bg-black/30 transition-colors text-left"
-                    >
-                      <h3 className="text-sm text-gray-400">Source & Files</h3>
-                      <ChevronDown 
-                        className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
-                          isSourceExpanded ? 'rotate-180' : ''
-                        }`}
-                      />
-                    </button>
-                    {isSourceExpanded && (
-                      <div className="bg-black/30 p-4 space-y-3 text-sm">
-                        {show.MasterDriveName && (
-                          <div>
-                            <span className="text-gray-400 block mb-1">Drive:</span>
-                            <span className="text-white text-xs">{show.MasterDriveName}</span>
-                          </div>
-                        )}
-                        {show.FolderPath && (
-                          <div>
-                            <span className="text-gray-400 block mb-1">Path:</span>
-                            <span className="text-white font-mono text-xs break-all">{show.FolderPath}</span>
-                          </div>
-                        )}
-                        {show.Lineage && (
-                          <div>
-                            <span className="text-gray-400 block mb-1">Lineage:</span>
-                            <span className="text-white text-xs">{show.Lineage}</span>
-                          </div>
-                        )}
-                        {videoFiles.length > 0 && (
-                          <div>
-                            <span className="text-gray-400 block mb-2">Video Files ({videoFiles.length}):</span>
-                            <div className="space-y-1 pl-4 max-h-40 overflow-y-auto">
-                              {videoFiles.map((file, idx) => (
-                                <div key={idx} className="text-gray-300 font-mono text-xs">
-                                  {file}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-
-
           </div>
+
+          {/* Accordions: Notes + Source */}
+          <div className="space-y-2">
+            {show.Notes && (
+              <div className="border border-white/8 rounded-lg overflow-hidden">
+                <button
+                  onClick={() => setIsNotesExpanded(!isNotesExpanded)}
+                  className="w-full flex items-center justify-between px-4 py-3 bg-white/3 hover:bg-white/5 transition-colors text-left"
+                >
+                  <span className="text-xs font-semibold uppercase tracking-[0.15em] text-gray-500">Notes</span>
+                  <ChevronDown className={`w-4 h-4 text-gray-600 transition-transform duration-200 ${isNotesExpanded ? 'rotate-180' : ''}`} />
+                </button>
+                {isNotesExpanded && (
+                  <div className="px-4 pb-4 pt-2 max-h-80 overflow-y-auto bg-black/20">
+                    <p className="text-xs text-gray-400 whitespace-pre-wrap font-mono leading-relaxed">{show.Notes}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {(show.Lineage || show.FolderPath || videoFiles.length > 0 || show.MasterDriveName) && (
+              <div className="border border-white/8 rounded-lg overflow-hidden">
+                <button
+                  onClick={() => setIsSourceExpanded(!isSourceExpanded)}
+                  className="w-full flex items-center justify-between px-4 py-3 bg-white/3 hover:bg-white/5 transition-colors text-left"
+                >
+                  <span className="text-xs font-semibold uppercase tracking-[0.15em] text-gray-500">Source & Files</span>
+                  <ChevronDown className={`w-4 h-4 text-gray-600 transition-transform duration-200 ${isSourceExpanded ? 'rotate-180' : ''}`} />
+                </button>
+                {isSourceExpanded && (
+                  <div className="px-4 pb-4 pt-2 space-y-3 bg-black/20 text-xs">
+                    {show.MasterDriveName && (
+                      <div>
+                        <span className="text-gray-600 block mb-0.5">Drive</span>
+                        <span className="text-gray-300">{show.MasterDriveName}</span>
+                      </div>
+                    )}
+                    {show.FolderPath && (
+                      <div>
+                        <span className="text-gray-600 block mb-0.5">Path</span>
+                        <span className="text-gray-400 font-mono break-all">{show.FolderPath}</span>
+                      </div>
+                    )}
+                    {show.Lineage && (
+                      <div>
+                        <span className="text-gray-600 block mb-0.5">Lineage</span>
+                        <span className="text-gray-300">{show.Lineage}</span>
+                      </div>
+                    )}
+                    {videoFiles.length > 0 && (
+                      <div>
+                        <span className="text-gray-600 block mb-1.5">Files ({videoFiles.length})</span>
+                        <div className="space-y-1 max-h-36 overflow-y-auto">
+                          {videoFiles.map((file, idx) => (
+                            <div key={idx} className="text-gray-500 font-mono truncate">{file}</div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
         </div>
       </motion.div>
     </>
