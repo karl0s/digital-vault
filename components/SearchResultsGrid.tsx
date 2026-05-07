@@ -40,19 +40,19 @@ export function SearchResultsGrid({ shows, query, onShowClick, onClear, getImage
         </div>
       ) : (
         <motion.div
-          className="grid gap-x-3 gap-y-6"
-          style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}
+          className="flex flex-wrap gap-x-3 gap-y-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.2 }}
         >
           {shows.map((show) => (
-            <ShowCard
-              key={show.ShowID}
-              show={show}
-              onClick={() => onShowClick(show)}
-              getImageUrl={getImageUrl}
-            />
+            <div key={show.ShowID} className="w-[280px]">
+              <ShowCard
+                show={show}
+                onClick={() => onShowClick(show)}
+                getImageUrl={getImageUrl}
+              />
+            </div>
           ))}
         </motion.div>
       )}
