@@ -7,7 +7,7 @@ interface HeroSearchProps {
   onBrowseAll: () => void;
 }
 
-const QUICK_SEARCHES = ['Pearl Jam', 'Soundboard', '1990s', 'Japan', 'Radiohead', 'USA'];
+const QUICK_SEARCHES = ['Soundgarden', 'Stone Temple Pilots', 'Smashing Pumpkins', '1990s'];
 
 export function HeroSearch({ totalShows, onSearch, onBrowseAll }: HeroSearchProps) {
   return (
