@@ -205,10 +205,10 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
 
   return (
     <div className="pb-16">
-      {sections.geoShows.length > 0 && (
+      {sections.recent.length > 0 && (
         <FeaturedRow
-          title={sections.geoRowTitle}
-          shows={sections.geoShows}
+          title="Featured"
+          shows={sections.recent}
           onShowClick={onShowClick}
           getImageUrl={getImageUrl}
         />
@@ -219,10 +219,10 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
         onShowClick={onShowClick}
         getImageUrl={getImageUrl}
       />
-      {sections.recent.length > 0 && (
+      {sections.geoShows.length > 0 && (
         <FeaturedRow
-          title="Featured"
-          shows={sections.recent}
+          title={sections.geoRowTitle}
+          shows={sections.geoShows}
           onShowClick={onShowClick}
           getImageUrl={getImageUrl}
         />
