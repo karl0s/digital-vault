@@ -97,7 +97,8 @@ the-vault/
       useKeyboardNavigation.ts     # Keyboard nav
       useScrollSpy.ts              # Sidebar scroll tracking
     main.tsx                       # React entry point
-    index.css                      # Global styles
+  styles/
+    globals.css                    # Global styles (Tailwind + custom)
   public/
     shows.json                     # Master show data (flat JSON array)
     images/                        # Thumbnails: {ChecksumSHA1}_01.jpg etc.
