@@ -35,7 +35,7 @@ export function HeroSearch({ totalShows, onSearch, onBrowseAll }: HeroSearchProp
         }}
       />
 
-      <div className="relative w-full max-w-3xl">
+      <div className="relative w-full max-w-4xl">
         {/* Main title */}
         <motion.h1
           className="leading-none text-white select-none"
