@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useRef, useState, useEffect, useCallback } from 'react';
 import { motion } from 'motion/react';
 import { Show } from '../App';
 import { ShowCard } from './ShowCard';
@@ -11,7 +11,29 @@ interface FeaturedRowProps {
 }
 
 function FeaturedRow({ title, shows, onShowClick, getImageUrl }: FeaturedRowProps) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [showLeft, setShowLeft] = useState(false);
+  const [showRight, setShowRight] = useState(false);
+
+  const updateGradients = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setShowLeft(el.scrollLeft > 2);
+    setShowRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 2);
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    updateGradients();
+    el.addEventListener('scroll', updateGradients, { passive: true });
+    const ro = new ResizeObserver(updateGradients);
+    ro.observe(el);
+    return () => { el.removeEventListener('scroll', updateGradients); ro.disconnect(); };
+  }, [shows, updateGradients]);
+
   if (shows.length === 0) return null;
+
   return (
     <motion.div
       className="mb-10"
@@ -20,12 +42,33 @@ function FeaturedRow({ title, shows, onShowClick, getImageUrl }: FeaturedRowProp
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
     >
       <h2 className="text-lg md:text-xl font-bold mb-3 px-4 md:px-8">{title}</h2>
-      <div className="flex gap-3 overflow-x-auto px-4 md:px-8 pb-4 scrollbar-hide">
-        {shows.map((show) => (
-          <div key={show.ShowID} className="flex-shrink-0">
-            <ShowCard show={show} onClick={() => onShowClick(show)} getImageUrl={getImageUrl} />
-          </div>
-        ))}
+      <div className="relative">
+        <div
+          ref={scrollRef}
+          className="flex gap-3 overflow-x-auto px-4 md:px-8 pb-4 scrollbar-hide"
+        >
+          {shows.map((show) => (
+            <div key={show.ShowID} className="shrink-0">
+              <ShowCard show={show} onClick={() => onShowClick(show)} getImageUrl={getImageUrl} />
+            </div>
+          ))}
+        </div>
+        {/* Left fade */}
+        <div
+          className="absolute left-0 top-0 bottom-4 w-20 pointer-events-none transition-opacity duration-300"
+          style={{
+            opacity: showLeft ? 1 : 0,
+            background: 'linear-gradient(to right, #141414 15%, transparent)',
+          }}
+        />
+        {/* Right fade */}
+        <div
+          className="absolute right-0 top-0 bottom-4 w-20 pointer-events-none transition-opacity duration-300"
+          style={{
+            opacity: showRight ? 1 : 0,
+            background: 'linear-gradient(to left, #141414 15%, transparent)',
+          }}
+        />
       </div>
     </motion.div>
   );
@@ -48,20 +91,32 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
       artistShows[show.Artist].push(show);
     });
 
-    // Top artists by show count → pick their most recent show
-    const topArtistShows = Object.entries(artistShows)
-      .sort(([, a], [, b]) => b.length - a.length)
-      .slice(0, 20)
-      .map(([, artistShows]) =>
-        [...artistShows].sort((a, b) => (b.ShowDate || '').localeCompare(a.ShowDate || ''))[0]
-      )
-      .filter(Boolean) as Show[];
+    // Top artists: 2 random shows per artist, shuffled
+    const TOP_ARTISTS = ['Stone Temple Pilots', 'Smashing Pumpkins', 'Soundgarden', 'Supergrass'];
+    const shuffle = <T,>(arr: T[]): T[] => [...arr].sort(() => Math.random() - 0.5);
+    const topArtistShows = shuffle(
+      TOP_ARTISTS.flatMap(name => {
+        const artistShowList = artistShows[name];
+        if (!artistShowList) return [];
+        return shuffle(artistShowList).slice(0, 2);
+      })
+    );
 
-    // Recently added (by LastScannedAt)
-    const recent = [...shows]
-      .filter((s) => s.LastScannedAt)
-      .sort((a, b) => (b.LastScannedAt! > a.LastScannedAt! ? 1 : -1))
-      .slice(0, 24);
+    // Featured: curated list by ShowID
+    const FEATURED_IDS = [
+      '3d97ae42ed27', // Soundgarden - MTV Live N Loud 1996
+      'ac9aea292913', // STP - House of Blues 1999 (Claudia)
+      'afe8655f1236', // STP - Unplugged 1993 + Big Empty
+      '3fe2d2713abb', // Lenny Kravitz - Unplugged 1994 (Ad Aerts)
+      '3620031b5215', // STP - VH1 + WAAF 2000
+      'a062c6d4ee9f', // Audioslave - Compilation 79 Hideki
+      '4dba0c8ff6ae', // Nirvana - Live N Loud 1993-11-18 Seattle
+      '6cd303bce708', // Rage Against the Machine - 1994 - 1996
+      '730be7647294', // RHCP - MSG NYC 1996-02-09
+      'a939ab1baf17', // Radiohead - 10spot, New York City 1997
+    ];
+    const showById = new Map(shows.map(s => [s.ShowID, s]));
+    const recent = FEATURED_IDS.map(id => showById.get(id)).filter(Boolean) as Show[];
 
     // Soundboard recordings
     const soundboards = shows
@@ -101,7 +156,7 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
               <div className="h-6 bg-white/5 rounded w-40 mb-4" />
               <div className="flex gap-3">
                 {[1, 2, 3, 4, 5].map((j) => (
-                  <div key={j} className="flex-shrink-0 w-64 aspect-[4/3] bg-white/5 rounded-lg" />
+                  <div key={j} className="shrink-0 w-64 aspect-4/3 bg-white/5 rounded-lg" />
                 ))}
               </div>
             </div>
@@ -121,7 +176,7 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
       />
       {sections.recent.length > 0 && (
         <FeaturedRow
-          title="Recently Added"
+          title="Featured"
           shows={sections.recent}
           onShowClick={onShowClick}
           getImageUrl={getImageUrl}

@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { TopNav } from './components/TopNav';
 import { Sidebar } from './components/Sidebar';
 import { ArtistRow } from './components/ArtistRow';
@@ -55,7 +55,6 @@ export interface Show {
   ExtractionWarnings?: string;
 }
 
-// View mode controls what the main content area renders
 type ViewMode = 'hero' | 'browse';
 
 export default function App() {
@@ -63,17 +62,28 @@ export default function App() {
   const [selectedShow, setSelectedShow] = useState<Show | null>(null);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('hero');
+  const navSearchRef = useRef<HTMLInputElement>(null);
 
   const { shows, getImageUrl } = useShows();
-  const debouncedQuery = useDebounce(searchQuery, 80);
+  const debouncedQuery = useDebounce(searchQuery, 150);
   const { filteredShows, groupedShows, sortedArtists } = useSearchAndFilter(shows, debouncedQuery);
 
   const isSearching = debouncedQuery.trim().length > 0;
+  // isHeroMode drives layout (sidebar visibility, padding) — independent of search state
+  const isHeroMode = viewMode === 'hero';
+
+  // Auto-focus the nav search bar on initial load
+  useEffect(() => {
+    navSearchRef.current?.focus();
+  }, []);
 
   // Escape clears search
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && searchQuery) setSearchQuery('');
+      if (e.key === 'Escape' && searchQuery) {
+        setSearchQuery('');
+        navSearchRef.current?.focus();
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -168,37 +178,77 @@ export default function App() {
     </motion.div>
   );
 
-  // Determine what to render in the main area
-  let mainContent: React.ReactNode;
-  if (isSearching) {
-    mainContent = (
-      <SearchResultsGrid
-        key="search"
-        shows={filteredShows}
-        query={debouncedQuery}
-        onShowClick={handleShowClick}
-        onClear={() => setSearchQuery('')}
-        getImageUrl={getImageUrl}
+  // Hero mode: HeroSearch (title + pills) is always mounted; only the slot below it transitions.
+  // This means the nav search input never unmounts while the user is typing.
+  const heroContent = (
+    <motion.div
+      key="hero"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      <HeroSearch
+        totalShows={shows.length}
+        onSearch={handleSearchChange}
+        onBrowseAll={handleBrowseAll}
       />
-    );
-  } else if (viewMode === 'hero') {
+      {/* Content slot: transitions between featured rows and search results */}
+      <AnimatePresence mode="wait">
+        {isSearching ? (
+          <motion.div
+            key="hero-results"
+            className="px-4 md:px-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+          >
+            <SearchResultsGrid
+              shows={filteredShows}
+              query={debouncedQuery}
+              onShowClick={handleShowClick}
+              onClear={() => { setSearchQuery(''); navSearchRef.current?.focus(); }}
+              getImageUrl={getImageUrl}
+            />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="hero-featured"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <FeaturedRows
+              shows={shows}
+              onShowClick={handleShowClick}
+              getImageUrl={getImageUrl}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+
+  // Outer AnimatePresence only switches between hero ↔ browse (not triggered by typing)
+  let mainContent: React.ReactNode;
+  if (viewMode === 'hero') {
+    mainContent = heroContent;
+  } else if (isSearching) {
     mainContent = (
       <motion.div
-        key="hero"
+        key="search"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.2 }}
       >
-        <HeroSearch
-          value={searchQuery}
-          onChange={handleSearchChange}
-          totalShows={shows.length}
-          onBrowseAll={handleBrowseAll}
-        />
-        <FeaturedRows
-          shows={shows}
+        <SearchResultsGrid
+          shows={filteredShows}
+          query={debouncedQuery}
           onShowClick={handleShowClick}
+          onClear={() => { setSearchQuery(''); navSearchRef.current?.focus(); }}
           getImageUrl={getImageUrl}
         />
       </motion.div>
@@ -207,8 +257,6 @@ export default function App() {
     mainContent = browseContent;
   }
 
-  const isHeroMode = viewMode === 'hero' && !isSearching;
-
   return (
     <div className="min-h-screen bg-[#141414] text-white">
       <TopNav
@@ -216,11 +264,12 @@ export default function App() {
         onSearchChange={handleSearchChange}
         artists={sortedArtists}
         onArtistJump={handleArtistJumpWithState}
-        hideSearch={isHeroMode}
+        hasSidebar={!isHeroMode}
+        searchInputRef={navSearchRef}
       />
 
       <div className="flex">
-        {/* Sidebar hidden in hero mode */}
+        {/* Sidebar only in browse mode */}
         {!isHeroMode && (
           <div className="hidden md:block">
             <Sidebar
@@ -240,7 +289,7 @@ export default function App() {
 
         <main
           ref={mainRef}
-          className={`flex-1 ${isHeroMode ? '' : 'ml-0 md:ml-16'} ${isHeroMode ? 'pt-16' : 'pt-20 md:pt-24'} ${isSearching ? 'px-4 md:px-8' : ''} pb-8 overflow-x-hidden`}
+          className={`flex-1 ${isHeroMode ? '' : 'ml-0 md:ml-16'} pt-16 ${!isHeroMode && isSearching ? 'px-4 md:px-8' : ''} pb-8 overflow-x-hidden`}
         >
           <AnimatePresence mode="wait">
             {mainContent}

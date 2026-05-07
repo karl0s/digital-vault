@@ -37,7 +37,7 @@ export function SearchResultsGrid({ shows, query, onShowClick, onClear, getImage
         </div>
       ) : (
         <motion.div
-          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4"
+          className="flex flex-wrap gap-3"
           initial="hidden"
           animate="visible"
           variants={{
@@ -49,6 +49,7 @@ export function SearchResultsGrid({ shows, query, onShowClick, onClear, getImage
             {shows.map((show) => (
               <motion.div
                 key={show.ShowID}
+                className="shrink-0"
                 variants={{
                   hidden: { opacity: 0, scale: 0.92 },
                   visible: { opacity: 1, scale: 1, transition: { duration: 0.22, ease: [0.16, 1, 0.3, 1] } },
