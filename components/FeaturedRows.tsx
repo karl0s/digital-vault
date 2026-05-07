@@ -1,7 +1,11 @@
 import { useMemo, useRef, useState, useEffect, useCallback } from 'react';
 import { motion } from 'motion/react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Show } from '../App';
 import { ShowCard } from './ShowCard';
+import { useGeoLocation } from '../src/hooks/useGeoLocation';
+
+const shuffle = <T,>(arr: T[]): T[] => [...arr].sort(() => Math.random() - 0.5);
 
 interface FeaturedRowProps {
   title: string;
@@ -14,6 +18,9 @@ function FeaturedRow({ title, shows, onShowClick, getImageUrl }: FeaturedRowProp
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showLeft, setShowLeft] = useState(false);
   const [showRight, setShowRight] = useState(false);
+  const [isRowHovered, setIsRowHovered] = useState(false);
+
+  const SCROLL_AMOUNT = 560;
 
   const updateGradients = useCallback(() => {
     const el = scrollRef.current;
@@ -32,6 +39,9 @@ function FeaturedRow({ title, shows, onShowClick, getImageUrl }: FeaturedRowProp
     return () => { el.removeEventListener('scroll', updateGradients); ro.disconnect(); };
   }, [shows, updateGradients]);
 
+  const scrollLeft = () => scrollRef.current?.scrollBy({ left: -SCROLL_AMOUNT, behavior: 'smooth' });
+  const scrollRight = () => scrollRef.current?.scrollBy({ left: SCROLL_AMOUNT, behavior: 'smooth' });
+
   if (shows.length === 0) return null;
 
   return (
@@ -40,35 +50,54 @@ function FeaturedRow({ title, shows, onShowClick, getImageUrl }: FeaturedRowProp
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      onMouseEnter={() => setIsRowHovered(true)}
+      onMouseLeave={() => setIsRowHovered(false)}
     >
-      <h2 className="text-lg md:text-xl font-bold mb-3 px-4 md:px-8">{title}</h2>
-      <div className="relative">
+      {/* Row title */}
+      <h2 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-500 mb-3 px-4 md:px-8">
+        {title}
+      </h2>
+
+      <div className="relative group/row">
+        {/* Scroll container */}
         <div
           ref={scrollRef}
-          className="flex gap-3 overflow-x-auto px-4 md:px-8 pb-4 scrollbar-hide"
+          className="flex gap-3 overflow-x-auto px-4 md:px-8 pb-6 scrollbar-hide"
         >
           {shows.map((show) => (
-            <div key={show.ShowID} className="shrink-0">
+            <div key={show.ShowID} className="w-[280px] shrink-0">
               <ShowCard show={show} onClick={() => onShowClick(show)} getImageUrl={getImageUrl} />
             </div>
           ))}
         </div>
-        {/* Left fade */}
-        <div
-          className="absolute left-0 top-0 bottom-4 w-20 pointer-events-none transition-opacity duration-300"
-          style={{
-            opacity: showLeft ? 1 : 0,
-            background: 'linear-gradient(to right, #141414 15%, transparent)',
-          }}
-        />
-        {/* Right fade */}
-        <div
-          className="absolute right-0 top-0 bottom-4 w-20 pointer-events-none transition-opacity duration-300"
-          style={{
-            opacity: showRight ? 1 : 0,
-            background: 'linear-gradient(to left, #141414 15%, transparent)',
-          }}
-        />
+
+        {/* Left arrow */}
+        {showLeft && (
+          <button
+            onClick={scrollLeft}
+            className={`absolute left-0 top-0 bottom-6 z-10 flex items-center justify-start pl-2 pr-8 transition-opacity duration-200 ${isRowHovered ? 'opacity-100' : 'opacity-0'}`}
+            style={{ background: 'linear-gradient(to right, #141414 20%, transparent)' }}
+            aria-label="Scroll left"
+          >
+            <div className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors duration-150">
+              <ChevronLeft className="w-4 h-4 text-white" />
+            </div>
+          </button>
+        )}
+
+        {/* Right arrow */}
+        {showRight && (
+          <button
+            onClick={scrollRight}
+            className={`absolute right-0 top-0 bottom-6 z-10 flex items-center justify-end pr-2 pl-8 transition-opacity duration-200 ${isRowHovered ? 'opacity-100' : 'opacity-0'}`}
+            style={{ background: 'linear-gradient(to left, #141414 20%, transparent)' }}
+            aria-label="Scroll right"
+          >
+            <div className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors duration-150">
+              <ChevronRight className="w-4 h-4 text-white" />
+            </div>
+          </button>
+        )}
       </div>
     </motion.div>
   );
@@ -81,50 +110,39 @@ interface FeaturedRowsProps {
 }
 
 export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsProps) {
+  const geo = useGeoLocation();
+
   const sections = useMemo(() => {
     if (shows.length === 0) return null;
 
-    // Group shows by artist
     const artistShows: Record<string, Show[]> = {};
     shows.forEach((show) => {
       if (!artistShows[show.Artist]) artistShows[show.Artist] = [];
       artistShows[show.Artist].push(show);
     });
 
-    // Top artists: 2 random shows per artist, shuffled
     const TOP_ARTISTS = ['Stone Temple Pilots', 'Smashing Pumpkins', 'Soundgarden', 'Supergrass'];
-    const shuffle = <T,>(arr: T[]): T[] => [...arr].sort(() => Math.random() - 0.5);
     const topArtistShows = shuffle(
       TOP_ARTISTS.flatMap(name => {
-        const artistShowList = artistShows[name];
-        if (!artistShowList) return [];
-        return shuffle(artistShowList).slice(0, 2);
+        const list = artistShows[name];
+        if (!list) return [];
+        return shuffle(list).slice(0, 2);
       })
     );
 
-    // Featured: curated list by ShowID
     const FEATURED_IDS = [
-      '3d97ae42ed27', // Soundgarden - MTV Live N Loud 1996
-      'ac9aea292913', // STP - House of Blues 1999 (Claudia)
-      'afe8655f1236', // STP - Unplugged 1993 + Big Empty
-      '3fe2d2713abb', // Lenny Kravitz - Unplugged 1994 (Ad Aerts)
-      '3620031b5215', // STP - VH1 + WAAF 2000
-      'a062c6d4ee9f', // Audioslave - Compilation 79 Hideki
-      '4dba0c8ff6ae', // Nirvana - Live N Loud 1993-11-18 Seattle
-      '6cd303bce708', // Rage Against the Machine - 1994 - 1996
-      '730be7647294', // RHCP - MSG NYC 1996-02-09
-      'a939ab1baf17', // Radiohead - 10spot, New York City 1997
+      '3d97ae42ed27', 'ac9aea292913', 'afe8655f1236', '3fe2d2713abb',
+      '3620031b5215', 'a062c6d4ee9f', '4dba0c8ff6ae', '6cd303bce708',
+      '730be7647294', 'a939ab1baf17',
     ];
     const showById = new Map(shows.map(s => [s.ShowID, s]));
-    const recent = FEATURED_IDS.map(id => showById.get(id)).filter(Boolean) as Show[];
+    const recent = shuffle(FEATURED_IDS.map(id => showById.get(id)).filter(Boolean) as Show[]);
 
-    // Soundboard recordings
     const soundboards = shows
       .filter((s) => s.RecordingType?.toLowerCase().includes('soundboard'))
       .sort((a, b) => (b.ShowDate || '').localeCompare(a.ShowDate || ''))
       .slice(0, 24);
 
-    // By decade (newest first)
     const byDecade: Record<string, Show[]> = {};
     shows.forEach((show) => {
       const year = parseInt(show.ShowDate?.split('-')[0] || '0');
@@ -144,19 +162,57 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
           .slice(0, 24),
       }));
 
-    return { topArtistShows, recent, soundboards, decadeRows };
-  }, [shows]);
+    const countryCandidates = (() => {
+      if (!geo?.countryName) return [];
+      const names = [geo.countryName];
+      if (geo.countryName === 'United Kingdom') {
+        if (geo.region) names.push(geo.region);
+        names.push('UK', 'Britain');
+      }
+      if (geo.countryName === 'United States') names.push('USA', 'US');
+      return names.map(n => n.toLowerCase());
+    })();
+
+    let geoShows: Show[] = [];
+    let geoRowTitle = 'Shows Near You';
+
+    if (geo) {
+      if (geo.city) {
+        const cityMatches = shows.filter(s =>
+          s.City?.toLowerCase() === geo.city!.toLowerCase()
+        );
+        if (cityMatches.length >= 3) {
+          geoShows = shuffle(cityMatches).slice(0, 24);
+          geoRowTitle = `Shows from ${geo.city}`;
+        }
+      }
+      if (geoShows.length === 0 && countryCandidates.length > 0) {
+        const countryMatches = shows.filter(s =>
+          countryCandidates.includes(s.Country?.toLowerCase() || '')
+        );
+        if (countryMatches.length >= 3) {
+          geoShows = shuffle(countryMatches).slice(0, 24);
+          const label = (geo.countryName === 'United Kingdom' && geo.region)
+            ? geo.region
+            : geo.countryName;
+          geoRowTitle = `Shows from ${label}`;
+        }
+      }
+    }
+
+    return { topArtistShows, recent, soundboards, decadeRows, geoShows, geoRowTitle };
+  }, [shows, geo]);
 
   if (!sections) {
     return (
       <div className="px-4 md:px-8 py-8">
-        <div className="animate-pulse space-y-8">
+        <div className="animate-pulse space-y-10">
           {[1, 2, 3].map((i) => (
             <div key={i}>
-              <div className="h-6 bg-white/5 rounded w-40 mb-4" />
+              <div className="h-3 bg-white/5 rounded w-32 mb-4" />
               <div className="flex gap-3">
                 {[1, 2, 3, 4, 5].map((j) => (
-                  <div key={j} className="shrink-0 w-64 aspect-4/3 bg-white/5 rounded-lg" />
+                  <div key={j} className="shrink-0 w-[280px] aspect-4/3 bg-white/5 rounded-md" />
                 ))}
               </div>
             </div>
@@ -167,7 +223,15 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
   }
 
   return (
-    <div className="pb-12">
+    <div className="pb-16">
+      {sections.geoShows.length > 0 && (
+        <FeaturedRow
+          title={sections.geoRowTitle}
+          shows={sections.geoShows}
+          onShowClick={onShowClick}
+          getImageUrl={getImageUrl}
+        />
+      )}
       <FeaturedRow
         title="Top Artists"
         shows={sections.topArtistShows}

@@ -208,7 +208,7 @@ export default function App() {
               shows={filteredShows}
               query={debouncedQuery}
               onShowClick={handleShowClick}
-              onClear={() => { setSearchQuery(''); navSearchRef.current?.focus(); }}
+              onClear={() => { setSearchQuery(''); setViewMode('hero'); window.scrollTo({ top: 0, behavior: 'smooth' }); navSearchRef.current?.focus(); }}
               getImageUrl={getImageUrl}
             />
           </motion.div>
@@ -248,7 +248,7 @@ export default function App() {
           shows={filteredShows}
           query={debouncedQuery}
           onShowClick={handleShowClick}
-          onClear={() => { setSearchQuery(''); navSearchRef.current?.focus(); }}
+          onClear={() => { setSearchQuery(''); setViewMode('hero'); window.scrollTo({ top: 0, behavior: 'smooth' }); navSearchRef.current?.focus(); }}
           getImageUrl={getImageUrl}
         />
       </motion.div>
@@ -262,6 +262,7 @@ export default function App() {
       <TopNav
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
+        onLogoClick={() => { setSearchQuery(''); setViewMode('hero'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
         artists={sortedArtists}
         onArtistJump={handleArtistJumpWithState}
         hasSidebar={!isHeroMode}

@@ -1,28 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Clock, MapPin } from 'lucide-react';
 import { Show } from '../App';
 import { LazyImage } from './LazyImage';
 import { motion, AnimatePresence } from 'motion/react';
-
-/**
-Get Tailwind aspect ratio class based on AspectRatio metadata
-Returns: aspect-[4/3] or aspect-[16/9]
- */
-const getAspectRatioClass = (aspectRatio: string | undefined): string => {
-  if (!aspectRatio) return 'aspect-[4/3]'; // Default fallback
-  
-  const lower = aspectRatio.toLowerCase();
-  
-  // "16:9 (native)" → aspect-[16/9]
-  if (lower.includes('16:9') && lower.includes('native')) {
-    return 'aspect-[16/9]';
-  }
-  
-  // "4:3 (letterboxed 16:9)" → aspect-[4/3]
-  // "4:3 (native)" → aspect-[4/3]
-  // Any other 4:3 variant → aspect-[4/3]
-  return 'aspect-[4/3]';
-};
 
 interface ShowCardProps {
   show: Show;
@@ -31,25 +10,42 @@ interface ShowCardProps {
   getImageUrl?: (checksum: string, index: number) => string | null;
 }
 
+const getColorFromString = (str: string): string => {
+  const colors = [
+    'bg-red-900', 'bg-blue-900', 'bg-green-900', 'bg-purple-900',
+    'bg-pink-900', 'bg-indigo-900', 'bg-yellow-900', 'bg-teal-900',
+  ];
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return colors[Math.abs(hash) % colors.length];
+};
+
+const getRecordingBadgeStyle = (type: string): string => {
+  const lower = type.toLowerCase();
+  if (lower.includes('soundboard')) return 'bg-amber-500/20 text-amber-400 border border-amber-500/30';
+  if (lower.includes('audience')) return 'bg-sky-500/20 text-sky-400 border border-sky-500/30';
+  if (lower.includes('proshot')) return 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+  return 'bg-white/10 text-white/60';
+};
+
 export function ShowCard({ show, onClick, focused = false, getImageUrl }: ShowCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [prefetchedImages, setPrefetchedImages] = useState<string[]>([]);
-  
-  const year = show.ShowDate ? show.ShowDate.split('-')[0] : 'Unknown';
+
+  const year = show.ShowDate ? show.ShowDate.split('-')[0] : '';
   const durationMin = Math.floor(parseInt(show.DurationSec || '0') / 60);
   const hours = Math.floor(durationMin / 60);
   const minutes = durationMin % 60;
   const durationText = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
 
-  // Use ChecksumSHA1 for image path, fallback to placeholder
-  const imageUrl = show.ChecksumSHA1 
+  const imageUrl = show.ChecksumSHA1
     ? (getImageUrl ? getImageUrl(show.ChecksumSHA1, 1) : `/images/${show.ChecksumSHA1}_01.jpg`)
     : null;
-  
-  // Build display location
-  const location = [show.City, show.Country].filter(Boolean).join(', ') || show.VenueName || 'Unknown';
 
-  // Generate artist initials for placeholder
+  const location = [show.City, show.Country].filter(Boolean).join(', ');
+
   const artistInitials = show.Artist
     .split(' ')
     .map(word => word[0])
@@ -58,77 +54,41 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl }: ShowCa
     .join('')
     .toUpperCase();
 
-  // Generate a consistent color based on artist name
-  const getColorFromString = (str: string) => {
-    const colors = [
-      'bg-red-900',
-      'bg-blue-900',
-      'bg-green-900',
-      'bg-purple-900',
-      'bg-pink-900',
-      'bg-indigo-900',
-      'bg-yellow-900',
-      'bg-teal-900',
-    ];
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    return colors[Math.abs(hash) % colors.length];
-  };
-
-  // Get dynamic aspect ratio class based on metadata
-  const aspectRatioClass = getAspectRatioClass(show.AspectRatio);
-  // Flag for 16:9 so we can tweak thumbnail rendering while keeping a consistent card height
-  const is16by9 = aspectRatioClass === 'aspect-[16/9]';
-
-  // Prefetch drawer images on hover (all 4 screenshots)
+  // Prefetch drawer images on hover
   useEffect(() => {
     if (isHovered && show.ChecksumSHA1 && prefetchedImages.length === 0) {
-      const imagesToPrefetch = [1, 2, 3, 4].map(index => 
-        getImageUrl 
-          ? getImageUrl(show.ChecksumSHA1!, index)
-          : `/images/${show.ChecksumSHA1}_0${index}.jpg`
+      const urls = [1, 2, 3, 4].map(i =>
+        getImageUrl ? getImageUrl(show.ChecksumSHA1!, i) : `/images/${show.ChecksumSHA1}_0${i}.jpg`
       ).filter(Boolean) as string[];
-      
-      // Prefetch images in the background
-      imagesToPrefetch.forEach(url => {
-        if (url) {
-          const img = new Image();
-          img.src = url;
-        }
-      });
-      
-      setPrefetchedImages(imagesToPrefetch);
+      urls.forEach(url => { const img = new Image(); img.src = url; });
+      setPrefetchedImages(urls);
     }
   }, [isHovered, show.ChecksumSHA1, prefetchedImages.length, getImageUrl]);
+
+  const active = focused || isHovered;
 
   return (
     <div
       id={`show-${show.ShowID}`}
       data-show-year={year}
-      className={`group cursor-pointer flex-shrink-0 w-full md:w-120 transition-all duration-300 ${focused ? 'relative z-20' : 'relative z-0'}`}
+      className={`group cursor-pointer w-full ${focused ? 'relative z-20' : 'relative z-0'}`}
       onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className={`
-        relative overflow-hidden rounded-lg transition-all duration-300
-        ${focused ? 'scale-110 ring-4 ring-white shadow-2xl shadow-white/30' : isHovered ? 'md:scale-105 shadow-2xl shadow-black/50' : 'scale-100'}
-      `}
-        style={{
-          // Force GPU acceleration for smooth animations
-          transform: 'translateZ(0)',
-          willChange: focused || isHovered ? 'transform' : 'auto',
-        }}
+      {/* Thumbnail */}
+      <div
+        className={`
+          relative overflow-hidden rounded-md transition-transform duration-300 ease-out
+          ${focused
+            ? 'scale-[1.03] ring-2 ring-[#E50914] shadow-2xl shadow-black/70'
+            : isHovered
+              ? 'scale-[1.02] shadow-xl shadow-black/60'
+              : ''}
+        `}
+        style={{ willChange: active ? 'transform' : 'auto' }}
       >
-        {/*
-          Keep the visible thumbnail container at a consistent height (4:3) so all cards
-          share the same height. For shows that are natively 16:9 we still detect them
-          (is16by9) but render the image with `object-cover object-center` so the image
-          fills the 4:3 container, is centered horizontally, and any extra width is cropped.
-        */}
-        <div className={`aspect-[4/3] bg-gray-800 relative`}>
+        <div className="aspect-4/3 bg-neutral-900 relative">
           {imageUrl ? (
             <>
               <LazyImage
@@ -137,118 +97,87 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl }: ShowCa
                 className="w-full h-full object-cover object-center"
                 placeholderColor={getColorFromString(show.Artist)}
               />
-              {/* Gradient overlay - only show on hover/focus */}
               <AnimatePresence>
-                {(focused || isHovered) && (
-                  <motion.div 
-                    className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"
+                {active && (
+                  <motion.div
+                    className="absolute inset-0 bg-linear-to-t from-black/85 via-black/15 to-transparent"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.2 }}
                   />
                 )}
               </AnimatePresence>
             </>
           ) : (
-            // Placeholder with artist initials
             <div className={`w-full h-full ${getColorFromString(show.Artist)} flex items-center justify-center`}>
-              <div className="text-6xl text-white/40 font-bold">{artistInitials}</div>
-              {/* Gradient overlay - only show on hover/focus */}
+              <span className="text-4xl font-bold text-white/20">{artistInitials}</span>
               <AnimatePresence>
-                {(focused || isHovered) && (
-                  <motion.div 
-                    className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
+                {active && (
+                  <motion.div
+                    className="absolute inset-0 bg-linear-to-t from-black/85 via-black/15 to-transparent"
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
                   />
                 )}
               </AnimatePresence>
             </div>
           )}
-          
-          {/* Badges - only show on hover/focus */}
+
+          {/* Recording type badge — top-right on hover */}
           <AnimatePresence>
-            {(focused || isHovered) && (
-              <div className="absolute top-3 right-3 flex gap-2">
-                {show.RecordingType && show.RecordingType.toLowerCase() !== 'proshot' && (
-                  <motion.div
-                    className="bg-black/70 px-2 py-1 rounded text-xs"
-                    initial={{ opacity: 0, y: -10, scale: 0.8 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.2, delay: 0 }}
-                  >
-                    {show.RecordingType}
-                  </motion.div>
-                )}
-              </div>
+            {active && show.RecordingType && (
+              <motion.div
+                className="absolute top-2 right-2"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+              >
+                <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium tracking-wide ${getRecordingBadgeStyle(show.RecordingType)}`}>
+                  {show.RecordingType.split(' ')[0].toUpperCase()}
+                </span>
+              </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Info overlay - hidden by default, visible on hover/focus */}
+          {/* Hover overlay — venue + duration */}
           <AnimatePresence>
-            {(focused || isHovered) && (
+            {active && (
               <motion.div
-                className="absolute bottom-0 left-0 right-0 p-4"
-                initial={{ opacity: 0, y: 10 }}
+                className="absolute bottom-0 left-0 right-0 p-3"
+                initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
-                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                style={{
-                  transform: 'translateZ(0)',
-                }}
+                exit={{ opacity: 0, y: 5 }}
+                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
               >
-                <div className="space-y-1 text-xs text-gray-300">
-                  <motion.div
-                    className="flex items-center gap-2"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.2, delay: 0.15 }}
-                  >
-                    <p className="font-medium text-white truncate text-base">{show.Artist}</p>
-                    {show.ShowDate && (
-                      <span className="shrink-0 bg-black/70 px-2 py-0.5 rounded text-xs text-gray-300">
-                        {year}
-                      </span>
-                    )}
-                  </motion.div>
+                <div className="space-y-0.5">
                   {(show.EventOrFestival || show.VenueName) && (
-                    <motion.p
-                      className="truncate"
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.2, delay: 0.2 }}
-                    >
-                      {[show.EventOrFestival, show.VenueName].filter(Boolean).join(', ')}
-                    </motion.p>
-                  )}
-                  {(show.City || show.Country) && (
-                    <motion.p
-                      className="truncate"
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.2, delay: 0.25 }}
-                    >
-                      {[show.City, show.Country].filter(Boolean).join(', ')}
-                    </motion.p>
+                    <p className="text-xs text-gray-200 truncate leading-snug">
+                      {show.EventOrFestival || show.VenueName}
+                    </p>
                   )}
                   {durationMin > 0 && (
-                    <motion.p
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.2, delay: 0.3 }}
-                    >
-                      {durationText}
-                    </motion.p>
+                    <p className="text-xs text-gray-500">{durationText}</p>
                   )}
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
+      </div>
+
+      {/* Always-visible metadata below card */}
+      <div className="mt-2 px-0.5">
+        <div className="flex items-baseline justify-between gap-2">
+          <p className="text-[13px] font-medium text-white truncate leading-snug">{show.Artist}</p>
+          {year && (
+            <span className="text-[11px] text-gray-600 shrink-0 tabular-nums">{year}</span>
+          )}
+        </div>
+        {location && (
+          <p className="text-[11px] text-gray-600 truncate mt-0.5 leading-snug">{location}</p>
+        )}
       </div>
     </div>
   );
