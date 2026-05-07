@@ -11,6 +11,7 @@ const QUICK_SEARCHES = [
   { label: 'Soundgarden', query: 'Soundgarden' },
   { label: 'Stone Temple Pilots', query: 'Stone Temple Pilots' },
   { label: 'Smashing Pumpkins', query: 'Smashing Pumpkins' },
+  { label: "Jane's Addiction", query: "Jane's Addiction" },
   { label: '1990s', query: 'nineties' },
 ];
 
