@@ -1,34 +1,58 @@
-# The Vault - Concert Archive Browser
+# The Vault — Concert Archive Browser
 
-A Netflix-style web interface for browsing private collection of live concert recordings. Built with React, TypeScript, and Vite for fast development and optimized static hosting.
+A Netflix-style web interface for browsing a private collection of live concert recordings. Built with React, TypeScript, and Vite. Deployed automatically to GitHub Pages on every push to `main`.
+
+---
 
 ## Features
 
-- **Netflix-Style Dark UI**: Polished, responsive interface with smooth animations and blur effects
-- **Artist Grouping**: Shows organized by artist in horizontal scrollable rows
-- **A-Z Navigation**: Quick-jump sidebar to navigate by artist name
-- **Real-Time Search**: Filter shows by artist, venue, city, country, date, recording type, setlist, or notes
-- **Detailed Drawer**: Right-hand slide-out panel with comprehensive metadata, technical specs, and source information
-- **Image Lightbox**: Full-screen image viewer with keyboard navigation (arrow keys, ESC to close)
-- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile
-- **Aspect Ratio Detection**: Automatically detects and renders 16:9 and 4:3 screenshots at correct aspect ratios
-- **Backdrop Blur**: Netflix-style blurred background when drawer is open
+### Home Page
+- **Curated Featured Rows**: Horizontal scrollable rows — "Shows Near You" (geo-personalised), "Top Artists", "Featured", and "Soundboard Recordings"
+- **Geo-Location Row**: Silently detects your city/country via IP and surfaces matching shows at the top — no browser prompt, no API key required. Falls back to country-level if no city matches. Row is hidden if no shows match or the lookup fails
+- **Horizontal Scroll Rows**: Each row has fade gradients and arrow controls that appear on hover
+
+### Search
+- **Hero Search Bar**: Always-visible at the top; results replace the home page instantly as you type
+- **Full-Text MiniSearch**: Prefix + fuzzy matching across all metadata fields with field boosts (Artist 4×, RecordingType 2×, Year 2×)
+- **Field-Specific Filters**: Prefix any query with a field name:
+  - `artist:pearl jam` `venue:house of blues` `city:london` `country:uk`
+  - `type:soundboard` `song:black` `year:1994` `event:glastonbury` `drive:seagate`
+- **Decade Keywords**: Type `nineties`, `90s`, `eighties`, `80s`, `seventies`, `2000s`, `00s` etc. to filter by decade
+- **Compound Queries**: Combine decade + other terms — `nirvana nineties`, `soundboard 2000s`
+
+### Show Cards
+- **Context-Aware Metadata**: Home page shows Artist + Venue/Event; search results show Venue/Event instead of artist (artist is already in the search box)
+- **Smart Location Line**: Prioritises `EventOrFestival` → `VenueName` → `City, Country` — one line, no redundancy
+- **Hover Overlay**: Recording type badge (Soundboard / Audience / Proshot) + duration + artist name in search mode
+- **Lazy Image Loading**: Thumbnails load progressively with artist-coloured placeholders
+
+### Show Detail
+- **Slide-Out Drawer**: Full metadata panel — technical specs, setlist, lineage, source equipment, drive reference
+- **Image Lightbox**: Full-screen image viewer with keyboard navigation (arrow keys, ESC)
+
+---
 
 ## Tech Stack
 
-- **Framework**: React 18+ with TypeScript
-- **Build Tool**: Vite
-- **Styling**: Tailwind CSS v4
-- **Animations**: Framer Motion (motion/react)
-- **Icons**: Lucide React
-- **Image Loading**: Lazy image loading with placeholder support
+| Layer | Technology |
+|-------|-----------|
+| Framework | React 18 + TypeScript |
+| Build Tool | Vite |
+| Styling | Tailwind CSS v4 |
+| Animations | Framer Motion (`motion/react`) |
+| Icons | Lucide React |
+| Search | MiniSearch |
+| Geo-location | ipapi.co (no API key, cached in `sessionStorage`) |
+| Deployment | GitHub Pages via GitHub Actions |
 
-## Installation & Setup
+---
+
+## Getting Started
 
 ### 1. Clone the Repository
 ```bash
-git clone <repo-url>
-cd /Users/ko/Desktop/Projects/the-vault
+git clone https://github.com/karl0s/digital-vault.git
+cd digital-vault
 ```
 
 ### 2. Install Dependencies
@@ -36,254 +60,192 @@ cd /Users/ko/Desktop/Projects/the-vault
 npm install
 ```
 
-### 3. Add Your Data
-Place your `shows.json` file in the `/public` directory:
-```
-/public/shows.json
-```
-
-See **Data Format** section below for structure requirements.
-
-### 4. (Optional) Add Screenshot Images
-If using the Python data pipeline to generate screenshots and metadata, place generated images in:
-```
-/public/images/
-```
-
-Images should be named: `{ChecksumSHA1}_01.jpg`, `{ChecksumSHA1}_02.jpg`, etc.
-
-### 5. Run Development Server
+### 3. Run Development Server
 ```bash
 npm run dev
 ```
 
-This starts a local Vite dev server (typically `http://localhost:5173`) with hot module reloading. Your changes will reflect instantly in the browser.
+Opens at `http://localhost:5173/digital-vault/` with hot module reloading.
 
-### 6. Build for Production
+### 4. Build for Production
 ```bash
 npm run build
 ```
 
-Outputs optimized static files to `/dist/` ready for deployment.
+Outputs optimised static files to `/dist/`. Not needed for deployment — GitHub Actions handles the build automatically.
 
-### 7. Git Workflow
-
-**Make your changes, then commit and push:**
-
-```bash
-# Check status
-git status
-
-# Stage changes
-git add .
-
-# Commit with descriptive message
-git commit -m "feat: Add aspect ratio detection for 16:9 shows"
-
-# Push to remote
-git push origin main
-```
-
-## Data Pipeline & Workflow
-
-The `shows.json` file is the foundation of this application. Here's the complete workflow to create it:
-
-### Step 1: Gather Show Metadata
-Use MediaInfo (or similar) to extract technical details from your video files:
-- Dimensions (width, height)
-- Duration
-- Codec information
-- Aspect ratio (16:9 native, 4:3 native, 4:3 letterboxed 16:9, etc.)
-- Audio specs
-
-Store this metadata in a structured format (CSV, JSON, or database).
-
-### Step 2: Generate Screenshots
-Use the Python data pipeline in `/data-pipeline/` to:
-1. Extract 4 screenshots from each video file
-2. Generate consistent aspect ratio images
-3. Create checksums (SHA1) for image organization
-
-**Python Pipeline Files:**
-- `data-pipeline/generate_screenshots.py` - Extracts frames from videos
-- `data-pipeline/generate_metadata.py` - Collates technical metadata
-
-Run the pipeline:
-```bash
-cd data-pipeline
-python generate_screenshots.py --input /path/to/videos
-python generate_metadata.py --input /path/to/metadata.csv
-```
-
-This outputs:
-- Screenshot images (saved to `/public/images/`)
-- Metadata JSON ready to merge
-
-### Step 3: Assemble shows.json
-Combine all metadata into a single `shows.json` file with the structure below.
-
-### Step 4: Validate & Test
-1. Place `shows.json` in `/public/`
-2. Run `npm run dev`
-3. Check browser DevTools Console for any data loading errors
-4. Verify shows appear, search works, and images load
-
-## Data Format
-
-Place your `shows.json` file in the `/public` directory. The application expects the following structure:
-
-```json
-{
-  "generated_at": "2025-12-08",
-  "items": [
-    {
-      "ShowID": "unique-id-12345",
-      "Artist": "Smashing Pumpkins",
-      "ShowDate": "2000-05-23",
-      "EventOrFestival": "Universal City Festival",
-      "VenueName": "Universal Amphitheater",
-      "City": "Los Angeles",
-      "Country": "US",
-      "RecordingType": "Proshot",
-      "Generation": "1st Gen",
-      "Lineage": "Source chain description",
-      "SourceEquipment": "Professional broadcast equipment",
-      "FolderName": "SP_20000523_LA",
-      "FolderPath": "/Volumes/Archive/Concerts/SP_20000523_LA",
-      "MasterDriveName": "Archive_Drive_001",
-      "RepVideoFiles": "SP_20000523_LA_01.m2ts; SP_20000523_LA_02.m2ts",
-      "Container": ".m2ts",
-      "VideoCodec": "mpeg2video",
-      "Width": "1920",
-      "Height": "1080",
-      "DurationSec": "7200",
-      "AspectRatio": "16:9 (native)",
-      "TVStandard": "NTSC",
-      "AudioCodec": "ac3",
-      "AudioChannels": "2",
-      "AudioSampleRate": "48000",
-      "FileCount": "2",
-      "TotalSizeHuman": "8.5 GB",
-      "ChecksumSHA1": "abc123def456...",
-      "Setlist": "Cherub Rock; Quiet; Bullet with Butterfly Wings; Tonight Tonight; The End is the Beginning is the End",
-      "Notes": "Excellent quality proshot from the Pumpkins' 2000 reunion tour"
-    }
-  ]
-}
-```
-
-### Required Fields
-- `ShowID`, `Artist`, `MasterDriveName`, `FolderPath`, `VideoCodec`, `Width`, `Height`, `Container`, `FileCount`, `TotalSizeHuman`, `ChecksumSHA1`
-
-### Optional Fields
-- `ShowDate`, `EventOrFestival`, `RecordingType`, `Generation`, `SourceEquipment`, `AspectRatio`, `TVStandard`, `AudioCodec`, `AudioChannels`, `AudioSampleRate`, `Setlist`, `Notes`
-
-### Notes on Data
-- **AspectRatio**: Examples: `"16:9 (native)"`, `"4:3 (native)"`, `"4:3 (letterboxed 16:9)"` — used to render screenshots at correct aspect ratio
-- **ChecksumSHA1**: Unique identifier; matches image filenames (`{ChecksumSHA1}_01.jpg`, `{ChecksumSHA1}_02.jpg`, etc.)
-- **ShowDate**: Format `YYYY-MM-DD`; can be empty for unknown dates
-- **DurationSec**: Duration in seconds; automatically formatted as hours/minutes in UI
-- **Setlist**: Semicolon-separated list of songs; rendered as numbered list in drawer
-
-## Key Files to Customize
-
-### Components
-- **`/components/ShowCard.tsx`** - Individual show card component; edit to change card layout, aspect ratio handling, hover effects
-- **`/components/ShowDrawer.tsx`** - Detail panel that slides in from the right; edit to change drawer layout, metadata display, or add new sections
-- **`/components/ArtistRow.tsx`** - Horizontal scrollable row of shows per artist; edit to change row layout or scrolling behavior
-- **`/components/SearchBar.tsx`** - Search input and filtering logic; edit to add new search fields or change filter behavior
-- **`/components/LazyImage.tsx`** - Lazy-loading image component with placeholders; edit for custom image loading or caching
-
-### Styling & Theme
-- **`/src/globals.css`** - Global Tailwind utilities and custom CSS; edit overlay darkness (`rgba(0, 0, 0, 0.7)`), backdrop blur strength (`blur(8px)`), or transition timings
-- **`/src/index.css`** - Additional global styles and animation definitions
-- **`tailwind.config.ts`** - Tailwind configuration; add custom colors, spacing, or breakpoints
-
-### Data & Logic
-- **`/src/App.tsx`** - Main app component; handles data loading, artist grouping, and state management
-- **`/src/index.tsx`** - Entry point and React DOM rendering
-- **`/public/shows.json`** - Your show data (create this file)
-
-### Configuration
-- **`vite.config.ts`** - Vite build settings
-- **`tsconfig.json`** - TypeScript configuration
-- **`tailwind.config.ts`** - Tailwind CSS theme customization
-
-## Customization Guide
-
-### Change Overlay Darkness & Blur
-Edit `/src/globals.css`:
-```css
-.bg-black\/60,
-.overlay-backdrop {
-  background-color: rgba(0, 0, 0, 0.7); /* Adjust alpha: 0.3–0.9 */
-  backdrop-filter: blur(8px); /* Adjust blur: 4px–12px */
-}
-```
-
-### Change Card Styling
-Edit `/components/ShowCard.tsx`:
-- Card width: `w-full md:w-64 md:sm:w-72 ...` classes
-- Border radius: `rounded-lg` class
-- Shadow effects: `shadow-2xl` class
-- Hover scale: `md:scale-105` on hover state
-
-### Change Color Scheme
-Edit `/src/globals.css` or `tailwind.config.ts`:
-- Background: `bg-black`, `bg-[#141414]`
-- Accent (Netflix red): `bg-[#E50914]`
-- Text: `text-white`, `text-gray-300`, `text-gray-400`
-
-### Add New Show Metadata Fields
-1. Update `/src/App.tsx` types to include new field
-2. Add field to your `shows.json` structure
-3. Display in `/components/ShowDrawer.tsx` by adding new section
+---
 
 ## Deployment
 
-### GitHub Pages / Static Hosting
-1. Build the project: `npm run build`
-2. Deploy the `/dist/` folder to your static host
-3. Ensure `/public/shows.json` is copied to the deployment
+Deployment is fully automated via **GitHub Actions**. There are no manual steps.
 
-### Vercel / Netlify
-1. Connect your git repo
-2. Set build command: `npm run build`
-3. Set output directory: `dist`
-4. Ensure `public/shows.json` is included in deployment
+- **Trigger**: Any push to `main`
+- **Process**: GitHub Actions checks out the repo, runs `npm install` + `npm run build`, and deploys `/dist/` to GitHub Pages
+- **Live URL**: `https://karl0s.github.io/digital-vault/`
+- **Build time**: ~2 minutes from push to live
+- **Config**: `.github/workflows/deploy.yml`
 
-## Browser Support
+To deploy: commit your changes and `git push origin main`. That's it.
 
-- Modern browsers (Chrome 90+, Firefox 88+, Safari 14+, Edge 90+)
-- Mobile browsers (iOS Safari 14+, Chrome Mobile)
-- Requires JavaScript enabled
+---
+
+## Data Format
+
+`public/shows.json` is a **flat JSON array** of show objects (not wrapped in any outer object):
+
+```json
+[
+  {
+    "ShowID": "unique-id-12345",
+    "Artist": "Smashing Pumpkins",
+    "ShowDate": "1995-10-23",
+    "EventOrFestival": "Mellon Collie Tour",
+    "VenueName": "Chicago Theatre",
+    "City": "Chicago",
+    "Country": "United States",
+    "RecordingType": "Proshot",
+    "Generation": "Master",
+    "Lineage": "Broadcast > VHS > DVD > encode",
+    "SourceEquipment": "Professional broadcast camera",
+    "FolderName": "SP_19951023_Chicago",
+    "FolderPath": "/Volumes/Big Daddy/Concerts/SP_19951023_Chicago",
+    "MasterDriveName": "Big Daddy",
+    "RepVideoFiles": "SP_19951023_01.vob; SP_19951023_02.vob",
+    "Container": ".vob",
+    "VideoCodec": "mpeg2video",
+    "Width": "720",
+    "Height": "576",
+    "DurationSec": "5400",
+    "AspectRatio": "4:3 (native)",
+    "TVStandard": "PAL",
+    "AudioCodec": "ac3",
+    "AudioChannels": "2",
+    "AudioSampleRate": "48000",
+    "FileCount": "4",
+    "TotalSizeHuman": "4.2 GB",
+    "ChecksumSHA1": "abc123def456...",
+    "Setlist": "Rhinoceros; Soma; Bullet with Butterfly Wings; Tonight Tonight",
+    "Notes": "Excellent broadcast quality. Sourced from BBC2 transmission."
+  }
+]
+```
+
+### Key Field Notes
+
+| Field | Notes |
+|-------|-------|
+| `ShowDate` | Format `YYYY-MM-DD`. Year-only dates stored as `YYYY-01-01`. Multi-date compilations use the string `"Compilation"` |
+| `ChecksumSHA1` | Links to thumbnail images — `public/images/{ChecksumSHA1}_01.jpg` through `_04.jpg` |
+| `EventOrFestival` | Takes display priority over `VenueName` on cards. Use for festivals, TV appearances, documentaries |
+| `VenueName` | Used when no event/festival applies — e.g. "Madison Square Gardens", "House of Blues" |
+| `RecordingType` | Drives badge colour — `Soundboard` (amber), `Audience` (sky blue), `Proshot` (emerald) |
+| `Setlist` | Semicolon-separated song titles; rendered as a numbered list in the drawer |
+| `DurationSec` | Integer seconds; auto-formatted as `2h 15m` in the UI |
+
+### Thumbnail Images
+
+Images live flat in `public/images/` and follow this naming convention:
+
+```
+public/images/{ChecksumSHA1}_01.jpg   ← primary thumbnail
+public/images/{ChecksumSHA1}_02.jpg
+public/images/{ChecksumSHA1}_03.jpg
+public/images/{ChecksumSHA1}_04.jpg
+```
+
+The `_01.jpg` image is used as the card thumbnail. All four are prefetched on card hover for the drawer lightbox.
+
+---
+
+## Search Guide
+
+| Query | What it does |
+|-------|-------------|
+| `pearl jam` | Full-text search across all fields |
+| `artist:pearl jam` | Artist field only |
+| `venue:house of blues` | Venue field only |
+| `city:london` | City field only |
+| `country:uk` | Country field only |
+| `type:soundboard` | Recording type filter |
+| `song:black` | Setlist search |
+| `year:1994` | Year filter |
+| `event:glastonbury` | Festival/event filter |
+| `drive:seagate` | Master drive filter |
+| `codec:mpeg2` | Video codec filter |
+| `nineties` or `90s` | All shows from 1990–1999 |
+| `eighties` or `80s` | All shows from 1980–1989 |
+| `seventies` or `70s` | All shows from 1970–1979 |
+| `2000s` or `00s` | All shows from 2000–2009 |
+| `2010s` or `10s` | All shows from 2010–2019 |
+| `nirvana nineties` | Nirvana shows from the 90s |
+| `soundboard 2000s` | Soundboard recordings from 2000–2009 |
+
+---
+
+## Key Files
+
+### Components
+
+| File | Purpose |
+|------|---------|
+| `App.tsx` | Root component — data loading, state, mode switching (home / search) |
+| `components/FeaturedRows.tsx` | Home page — geo row + curated horizontal scroll rows |
+| `components/HeroSearch.tsx` | Top search input |
+| `components/TopNav.tsx` | Navigation bar |
+| `components/ShowCard.tsx` | Individual show card — renders differently in home vs search mode |
+| `components/SearchResultsGrid.tsx` | Search results layout and header |
+| `components/ShowDrawer.tsx` | Slide-out detail panel |
+| `components/ArtistRow.tsx` | Single horizontal scrollable row of show cards |
+| `components/Sidebar.tsx` | Artist navigation sidebar |
+| `components/ImageLightbox.tsx` | Full-screen image viewer |
+| `components/LazyImage.tsx` | Lazy-loading image with colour placeholder |
+
+### Hooks
+
+| File | Purpose |
+|------|---------|
+| `src/hooks/useSearchEngine.ts` | Builds and configures the MiniSearch index |
+| `src/hooks/useSearchAndFilter.ts` | All filter logic — field-specific, decade keywords, general search |
+| `src/hooks/useGeoLocation.ts` | Silent IP geolocation via ipapi.co with sessionStorage cache |
+| `src/hooks/useShows.ts` | Fetches and parses `shows.json` |
+| `src/hooks/useDebounce.ts` | Debounces the search input |
+| `src/hooks/useKeyboardNavigation.ts` | Keyboard navigation for drawer and lightbox |
+| `src/hooks/useScrollSpy.ts` | Tracks scroll position for the sidebar |
+
+### Config
+
+| File | Purpose |
+|------|---------|
+| `vite.config.ts` | Vite build config — `base` set to `/digital-vault/` for GitHub Pages |
+| `tsconfig.json` | TypeScript configuration |
+| `.github/workflows/deploy.yml` | GitHub Actions CI/CD — builds and deploys on push to `main` |
+
+---
 
 ## Troubleshooting
 
 **Images not loading?**
-- Confirm `ChecksumSHA1` field is present in shows.json
-- Verify images exist at `/public/images/{ChecksumSHA1}_01.jpg`, etc.
-- Check browser DevTools Network tab for 404 errors
+- Confirm `ChecksumSHA1` is present in `shows.json`
+- Check images exist at `public/images/{ChecksumSHA1}_01.jpg`
+- Check DevTools → Network tab for 404 errors
 
 **Shows not appearing?**
-- Validate `shows.json` syntax (use JSONLint)
-- Ensure required fields are present: `ShowID`, `Artist`, `MasterDriveName`, `FolderPath`, `VideoCodec`, `Width`, `Height`, `Container`, `FileCount`, `TotalSizeHuman`, `ChecksumSHA1`
-- Check browser console (F12) for parsing errors
+- Confirm `shows.json` is a flat array — not `{"items": [...]}` or any other wrapper
+- Check browser console (F12) for JSON parse errors
+- Ensure every record has `ShowID` and `Artist`
 
-**Slow performance?**
-- Lazy image loading is enabled by default
-- Consider reducing number of shows or using a CDN for images
-- Check DevTools Performance tab for bottlenecks
+**"Shows Near You" row not appearing?**
+- The row only shows if ≥3 shows match your city or country
+- Check DevTools → Application → Session Storage for the `vault_geo` key
+- Some ad blockers block ipapi.co — the row simply won't appear in that case, which is expected
 
-## Tips for Best Results
+**Deployment not updating after a push?**
+- Check the Actions tab in the GitHub repo for build status and logs
+- GitHub Pages CDN can take 1–2 minutes after a successful deploy
 
-1. **Image Quality**: Screenshots should be at least 800px wide for crisp card display
-2. **Aspect Ratio**: Ensure accurate `AspectRatio` values so images render correctly
-3. **Show Dates**: Accurate `ShowDate` values enable sorting and filtering
-4. **Setlist Format**: Use semicolons to separate songs (e.g., `"Song 1; Song 2; Song 3"`)
-5. **Technical Notes**: Include MediaInfo or equipment details in `Notes` field for reference
-6. **File Organization**: Keep folder paths consistent and accessible for archival reference
+---
 
 ## License
 
-This is a personal archive browser. Ensure you have rights to any content you catalog.
+Personal archive browser. Ensure you have rights to any content you catalogue.
