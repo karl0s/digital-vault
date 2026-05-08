@@ -1,10 +1,8 @@
-import { ChevronRight } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface HeroSearchProps {
   totalShows: number;
   onSearch: (query: string) => void;
-  onBrowseAll: () => void;
 }
 
 const QUICK_SEARCHES = [
@@ -16,7 +14,7 @@ const QUICK_SEARCHES = [
   { label: '1990s', query: 'nineties' },
 ];
 
-export function HeroSearch({ totalShows, onSearch, onBrowseAll }: HeroSearchProps) {
+export function HeroSearch({ totalShows, onSearch }: HeroSearchProps) {
   return (
     <div className="relative flex flex-col items-center px-4 pt-28 pb-16 text-center overflow-hidden">
       {/* Atmospheric radial glow — faint red from above, like stage lighting */}
@@ -82,18 +80,6 @@ export function HeroSearch({ totalShows, onSearch, onBrowseAll }: HeroSearchProp
           ))}
         </motion.div>
 
-        {/* Browse all */}
-        <motion.button
-          onClick={onBrowseAll}
-          className="group inline-flex items-center gap-1.5 text-xs text-gray-600 hover:text-gray-300 transition-colors duration-200 tracking-wide uppercase"
-          style={{ letterSpacing: '0.12em' }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.35, delay: 0.3 }}
-        >
-          Browse all artists
-          <ChevronRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
-        </motion.button>
       </div>
     </div>
   );

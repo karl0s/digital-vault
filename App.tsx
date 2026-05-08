@@ -191,7 +191,6 @@ export default function App() {
       <HeroSearch
         totalShows={shows.length}
         onSearch={handleSearchChange}
-        onBrowseAll={handleBrowseAll}
       />
       {/* Content slot: transitions between featured rows and search results */}
       <AnimatePresence mode="wait">
