@@ -1,7 +1,6 @@
 import { motion } from 'motion/react';
 
 interface HeroSearchProps {
-  totalShows: number;
   onSearch: (query: string) => void;
 }
 
@@ -14,7 +13,7 @@ const QUICK_SEARCHES = [
   { label: '1990s', query: 'nineties' },
 ];
 
-export function HeroSearch({ totalShows, onSearch }: HeroSearchProps) {
+export function HeroSearch({ onSearch }: HeroSearchProps) {
   return (
     <div className="relative flex flex-col items-center px-4 pt-28 pb-16 text-center overflow-hidden">
       {/* Atmospheric radial glow — faint red from above, like stage lighting */}

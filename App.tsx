@@ -188,10 +188,7 @@ export default function App() {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <HeroSearch
-        totalShows={shows.length}
-        onSearch={handleSearchChange}
-      />
+      <HeroSearch onSearch={handleSearchChange} />
       {/* Content slot: transitions between featured rows and search results */}
       <AnimatePresence mode="wait">
         {isSearching ? (
