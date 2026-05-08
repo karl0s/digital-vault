@@ -1,16 +1,26 @@
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Show } from '../App';
 import { ShowCard } from './ShowCard';
 
 interface SearchResultsGridProps {
   shows: Show[];
   query: string;
+  searchType?: 'artist' | 'general';
+  transitionKey?: number;
   onShowClick: (show: Show) => void;
   onClear: () => void;
   getImageUrl: (checksum: string, index: number) => string | null;
 }
 
-export function SearchResultsGrid({ shows, query, onShowClick, onClear, getImageUrl }: SearchResultsGridProps) {
+export function SearchResultsGrid({ shows, query, searchType, transitionKey, onShowClick, onClear, getImageUrl }: SearchResultsGridProps) {
+  // Explicit type from the call site wins; fall back to inferring from results for free-text searches
+  const isSingleArtist = shows.length > 0 && shows.every(s => s.Artist === shows[0].Artist);
+  const cardMode: 'artist' | 'search' = searchType === 'artist'
+    ? 'artist'
+    : searchType === 'general'
+      ? 'search'
+      : isSingleArtist ? 'artist' : 'search';
+
   return (
     <div>
       {/* Results header */}
@@ -39,23 +49,27 @@ export function SearchResultsGrid({ shows, query, onShowClick, onClear, getImage
           </button>
         </div>
       ) : (
-        <motion.div
-          className="flex flex-wrap gap-x-3 gap-y-6"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.2 }}
-        >
-          {shows.map((show) => (
-            <div key={show.ShowID} className="w-[280px]">
-              <ShowCard
-                show={show}
-                onClick={() => onShowClick(show)}
-                getImageUrl={getImageUrl}
-                searchMode
-              />
-            </div>
-          ))}
-        </motion.div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={transitionKey ?? cardMode}
+            className="flex flex-wrap gap-x-3 gap-y-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+          >
+            {shows.map((show) => (
+              <div key={show.ShowID} className="w-[280px]">
+                <ShowCard
+                  show={show}
+                  onClick={() => onShowClick(show)}
+                  getImageUrl={getImageUrl}
+                  searchMode={cardMode}
+                />
+              </div>
+            ))}
+          </motion.div>
+        </AnimatePresence>
       )}
     </div>
   );

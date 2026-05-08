@@ -132,6 +132,7 @@ export function ArtistRow({
                 onClick={() => onShowClick(show)}
                 focused={show.ShowID === focusedShowId}
                 getImageUrl={getImageUrl}
+                searchMode="artist"
               />
             </motion.div>
           ))}
@@ -154,6 +155,7 @@ export function ArtistRow({
                 onClick={() => onShowClick(show)}
                 focused={show.ShowID === focusedShowId}
                 getImageUrl={getImageUrl}
+                searchMode="artist"
               />
             </motion.div>
           ))}

@@ -8,7 +8,7 @@ interface ShowCardProps {
   onClick: () => void;
   focused?: boolean;
   getImageUrl?: (checksum: string, index: number) => string | null;
-  searchMode?: boolean;
+  searchMode?: 'artist' | 'search';
 }
 
 const getColorFromString = (str: string): string => {
@@ -31,7 +31,7 @@ const getRecordingBadgeStyle = (type: string): string => {
   return 'bg-white/10 text-white/60';
 };
 
-export function ShowCard({ show, onClick, focused = false, getImageUrl, searchMode = false }: ShowCardProps) {
+export function ShowCard({ show, onClick, focused = false, getImageUrl, searchMode }: ShowCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [prefetchedImages, setPrefetchedImages] = useState<string[]>([]);
 
@@ -46,7 +46,26 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl, searchMo
     : null;
 
   const location = [show.City, show.Country].filter(Boolean).join(', ');
-  const locationLabel = show.EventOrFestival || show.VenueName || location;
+  // Full context label: event → venue → city/country
+  const contextLabel = show.EventOrFestival || show.VenueName || location;
+  // Non-repeating secondary label: skips whatever was shown on line 1
+  const secondaryLabel = show.EventOrFestival
+    ? (show.VenueName || location)
+    : show.VenueName
+      ? location
+      : contextLabel;
+
+  // Line 1 & line 2 per mode
+  const line1 = searchMode === 'search'
+    ? show.Artist
+    : searchMode === 'artist'
+      ? (show.EventOrFestival || show.VenueName || location)
+      : show.Artist;
+  const line2 = searchMode === 'search'
+    ? contextLabel
+    : searchMode === 'artist'
+      ? secondaryLabel
+      : contextLabel;
 
   const artistInitials = show.Artist
     .split(' ')
@@ -154,7 +173,7 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl, searchMo
                 transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
               >
                 <div className="space-y-0.5">
-                  {searchMode && (
+                  {searchMode === 'artist' && (
                     <p className="text-xs text-gray-200 truncate leading-snug">{show.Artist}</p>
                   )}
                   {durationMin > 0 && (
@@ -170,17 +189,13 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl, searchMo
       {/* Always-visible metadata below card */}
       <div className="mt-2 px-0.5">
         <div className="flex items-baseline justify-between gap-2">
-          <p className="text-[13px] font-medium text-white truncate leading-snug">
-            {searchMode
-              ? (show.EventOrFestival || show.VenueName || show.Artist)
-              : show.Artist}
-          </p>
+          <p className="text-[13px] font-medium text-white truncate leading-snug">{line1}</p>
           {year && (
             <span className="text-[11px] text-gray-600 shrink-0 tabular-nums">{year}</span>
           )}
         </div>
-        {locationLabel && (
-          <p className="text-[11px] text-gray-600 truncate mt-0.5 leading-snug">{locationLabel}</p>
+        {line2 && (
+          <p className="text-[11px] text-gray-600 truncate mt-0.5 leading-snug">{line2}</p>
         )}
       </div>
     </div>

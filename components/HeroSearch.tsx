@@ -1,16 +1,18 @@
 import { motion } from 'motion/react';
 
+export type SearchType = 'artist' | 'general';
+
 interface HeroSearchProps {
-  onSearch: (query: string) => void;
+  onSearch: (query: string, type?: SearchType) => void;
 }
 
-const QUICK_SEARCHES = [
-  { label: 'Soundgarden', query: 'Soundgarden' },
-  { label: 'Stone Temple Pilots', query: 'Stone Temple Pilots' },
-  { label: 'Smashing Pumpkins', query: 'Smashing Pumpkins' },
-  { label: "Jane's Addiction", query: "Jane's Addiction" },
-  { label: 'Radiohead', query: 'Radiohead' },
-  { label: '1990s', query: 'nineties' },
+const QUICK_SEARCHES: { label: string; query: string; type: SearchType }[] = [
+  { label: 'Soundgarden',          query: 'Soundgarden',          type: 'artist'  },
+  { label: 'Stone Temple Pilots',  query: 'Stone Temple Pilots',  type: 'artist'  },
+  { label: 'Smashing Pumpkins',    query: 'Smashing Pumpkins',    type: 'artist'  },
+  { label: "Jane's Addiction",     query: "Jane's Addiction",     type: 'artist'  },
+  { label: 'Radiohead',            query: 'Radiohead',            type: 'artist'  },
+  { label: '1990s',                query: 'nineties',             type: 'general' },
 ];
 
 export function HeroSearch({ onSearch }: HeroSearchProps) {
@@ -66,10 +68,10 @@ export function HeroSearch({ onSearch }: HeroSearchProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.22 }}
         >
-          {QUICK_SEARCHES.map(({ label, query }) => (
+          {QUICK_SEARCHES.map(({ label, query, type }) => (
             <button
               key={label}
-              onClick={() => onSearch(query)}
+              onClick={() => onSearch(query, type)}
               className="px-4 py-1.5 rounded-full text-sm text-gray-500 hover:text-white bg-white/5 hover:bg-white/10 border border-white/8 hover:border-white/20 transition-all duration-200"
             >
               {label}

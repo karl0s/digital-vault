@@ -59,6 +59,8 @@ type ViewMode = 'hero' | 'browse';
 
 export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchType, setSearchType] = useState<'artist' | 'general' | undefined>(undefined);
+  const [pillTransitionKey, setPillTransitionKey] = useState(0);
   const [selectedShow, setSelectedShow] = useState<Show | null>(null);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('hero');
@@ -99,8 +101,10 @@ export default function App() {
     setSelectedShow(show);
   }
 
-  function handleSearchChange(query: string) {
+  function handleSearchChange(query: string, type?: 'artist' | 'general') {
     setSearchQuery(query);
+    setSearchType(query.trim() ? type : undefined);
+    if (type !== undefined) setPillTransitionKey(k => k + 1);
   }
 
   function handleBrowseAll() {
@@ -203,6 +207,8 @@ export default function App() {
             <SearchResultsGrid
               shows={filteredShows}
               query={debouncedQuery}
+              searchType={searchType}
+              transitionKey={pillTransitionKey}
               onShowClick={handleShowClick}
               onClear={() => { setSearchQuery(''); setViewMode('hero'); window.scrollTo({ top: 0, behavior: 'smooth' }); navSearchRef.current?.focus(); }}
               getImageUrl={getImageUrl}
@@ -243,6 +249,8 @@ export default function App() {
         <SearchResultsGrid
           shows={filteredShows}
           query={debouncedQuery}
+          searchType={searchType}
+          transitionKey={pillTransitionKey}
           onShowClick={handleShowClick}
           onClear={() => { setSearchQuery(''); setViewMode('hero'); window.scrollTo({ top: 0, behavior: 'smooth' }); navSearchRef.current?.focus(); }}
           getImageUrl={getImageUrl}
