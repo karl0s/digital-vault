@@ -57,9 +57,7 @@ export function HeroSearch({ totalShows, onSearch }: HeroSearchProps) {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.4, delay: 0.15 }}
         >
-          {totalShows > 0
-            ? `${totalShows.toLocaleString()} live concerts`
-            : 'Loading…'}
+          A collection of rare live recordings
         </motion.p>
 
         {/* Quick-search pills */}
