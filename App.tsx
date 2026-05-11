@@ -1,5 +1,5 @@
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useMemo } from 'react';
 import { TopNav } from './components/TopNav';
 import { Sidebar } from './components/Sidebar';
 import { ArtistRow } from './components/ArtistRow';
@@ -64,11 +64,24 @@ export default function App() {
   const [selectedShow, setSelectedShow] = useState<Show | null>(null);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('hero');
+  const [showAllMode, setShowAllMode] = useState(false);
   const navSearchRef = useRef<HTMLInputElement>(null);
 
   const { shows, getImageUrl } = useShows();
   const debouncedQuery = useDebounce(searchQuery, 150);
   const { filteredShows, groupedShows, sortedArtists } = useSearchAndFilter(shows, debouncedQuery);
+
+  const allShowsSorted = useMemo(() =>
+    [...shows].sort((a, b) => {
+      const artistCmp = a.Artist.localeCompare(b.Artist);
+      if (artistCmp !== 0) return artistCmp;
+      const ad = a.ShowDate || '';
+      const bd = b.ShowDate || '';
+      if (!ad && !bd) return 0;
+      if (!ad) return 1;
+      if (!bd) return -1;
+      return bd.localeCompare(ad);
+    }), [shows]);
 
   const isSearching = debouncedQuery.trim().length > 0;
   // isHeroMode drives layout (sidebar visibility, padding) — independent of search state
@@ -79,17 +92,17 @@ export default function App() {
     navSearchRef.current?.focus();
   }, []);
 
-  // Escape clears search
+  // Escape clears search or all-shows mode
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && searchQuery) {
-        setSearchQuery('');
-        navSearchRef.current?.focus();
+      if (e.key === 'Escape') {
+        if (searchQuery) { setSearchQuery(''); navSearchRef.current?.focus(); }
+        else if (showAllMode) { setShowAllMode(false); navSearchRef.current?.focus(); }
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [searchQuery]);
+  }, [searchQuery, showAllMode]);
 
   function handleShowClick(show: Show) {
     if (show.ChecksumSHA1) {
@@ -105,11 +118,18 @@ export default function App() {
     setSearchQuery(query);
     setSearchType(query.trim() ? type : undefined);
     if (type !== undefined) setPillTransitionKey(k => k + 1);
+    if (query.trim()) setShowAllMode(false);
   }
 
   function handleBrowseAll() {
     setViewMode('browse');
     setSearchQuery('');
+  }
+
+  function handleShowAllShows() {
+    setShowAllMode(true);
+    setSearchQuery('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function handleCloseDrawer() { setSelectedShow(null); }
@@ -192,8 +212,8 @@ export default function App() {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <HeroSearch onSearch={handleSearchChange} />
-      {/* Content slot: transitions between featured rows and search results */}
+      <HeroSearch onSearch={handleSearchChange} onBrowseAll={handleShowAllShows} />
+      {/* Content slot: transitions between featured rows, all-shows, and search results */}
       <AnimatePresence mode="wait">
         {isSearching ? (
           <motion.div
@@ -211,6 +231,24 @@ export default function App() {
               transitionKey={pillTransitionKey}
               onShowClick={handleShowClick}
               onClear={() => { setSearchQuery(''); setViewMode('hero'); window.scrollTo({ top: 0, behavior: 'smooth' }); navSearchRef.current?.focus(); }}
+              getImageUrl={getImageUrl}
+            />
+          </motion.div>
+        ) : showAllMode ? (
+          <motion.div
+            key="hero-all"
+            className="px-4 md:px-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+          >
+            <SearchResultsGrid
+              shows={allShowsSorted}
+              query="All Shows"
+              searchType="general"
+              onShowClick={handleShowClick}
+              onClear={() => { setShowAllMode(false); window.scrollTo({ top: 0, behavior: 'smooth' }); navSearchRef.current?.focus(); }}
               getImageUrl={getImageUrl}
             />
           </motion.div>

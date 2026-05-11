@@ -4,6 +4,7 @@ export type SearchType = 'artist' | 'general';
 
 interface HeroSearchProps {
   onSearch: (query: string, type?: SearchType) => void;
+  onBrowseAll: () => void;
 }
 
 const QUICK_SEARCHES: { label: string; query: string; type: SearchType }[] = [
@@ -15,7 +16,7 @@ const QUICK_SEARCHES: { label: string; query: string; type: SearchType }[] = [
   { label: '1990s',                query: 'nineties',             type: 'general' },
 ];
 
-export function HeroSearch({ onSearch }: HeroSearchProps) {
+export function HeroSearch({ onSearch, onBrowseAll }: HeroSearchProps) {
   return (
     <div className="relative flex flex-col items-center px-4 pt-28 pb-16 text-center overflow-hidden">
       {/* Atmospheric radial glow — faint red from above, like stage lighting */}
@@ -34,7 +35,7 @@ export function HeroSearch({ onSearch }: HeroSearchProps) {
         }}
       />
 
-      <div className="relative w-full max-w-4xl">
+      <div className="relative w-full max-w-5xl">
         {/* Main title */}
         <motion.h1
           className="leading-none text-white select-none"
@@ -61,9 +62,9 @@ export function HeroSearch({ onSearch }: HeroSearchProps) {
           A collection of rare live recordings
         </motion.p>
 
-        {/* Quick-search pills */}
+        {/* Quick-search pills + All Shows */}
         <motion.div
-          className="flex flex-wrap justify-center gap-2 mb-8"
+          className="flex flex-wrap justify-center items-center gap-2 mb-8"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.22 }}
@@ -77,6 +78,13 @@ export function HeroSearch({ onSearch }: HeroSearchProps) {
               {label}
             </button>
           ))}
+          <span className="text-white/10 select-none mx-1">|</span>
+          <button
+            onClick={onBrowseAll}
+            className="text-sm text-gray-600 hover:text-gray-300 transition-colors duration-200 tracking-wide"
+          >
+            All Shows →
+          </button>
         </motion.div>
 
       </div>
