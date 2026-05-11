@@ -30,6 +30,24 @@ function getShowYear(show: Show): number {
   return parseInt(show.ShowDate?.split('-')[0] || '0');
 }
 
+function isUndated(show: Show): boolean {
+  const date = show.ShowDate || '';
+  if (!date) return true;                   // empty string
+  if (!/^\d{4}/.test(date)) return true;   // "Compilation" or any non-year string
+  if (date.startsWith('0000')) return true; // 0000-00-00
+  return false;
+}
+
+function sortChronological(a: Show, b: Show): number {
+  const aUndated = isUndated(a);
+  const bUndated = isUndated(b);
+  if (aUndated && bUndated) return 0;
+  if (aUndated) return 1;
+  if (bUndated) return -1;
+  // Most recent first — ShowDate is YYYY-MM-DD so string comparison works
+  return (b.ShowDate || '').localeCompare(a.ShowDate || '');
+}
+
 export function useSearchAndFilter(shows: Show[], searchQuery: string) {
   const { ms, showById } = useSearchEngine(shows);
 
@@ -68,7 +86,7 @@ export function useSearchAndFilter(shows: Show[], searchQuery: string) {
               show.Notes.toLowerCase().includes(query)
             );
         }
-      });
+      }).sort(sortChronological);
     }
 
     // Decade search — detect decade keyword anywhere in the query
@@ -84,16 +102,16 @@ export function useSearchAndFilter(shows: Show[], searchQuery: string) {
       // If there are other words alongside the decade, run them through
       // MiniSearch on the decade-filtered subset
       const remainingWords = words.filter(w => w !== decadeWord).join(' ').trim();
-      if (!remainingWords) return decadeFiltered;
+      if (!remainingWords) return [...decadeFiltered].sort(sortChronological);
 
       const remainingResults = ms.search(remainingWords);
       const matchingIds = new Set(remainingResults.map(r => r.id));
-      return decadeFiltered.filter(show => matchingIds.has(show.ShowID));
+      return decadeFiltered.filter(show => matchingIds.has(show.ShowID)).sort(sortChronological);
     }
 
     // General search — MiniSearch with prefix + fuzzy matching
     const results = ms.search(searchQuery);
-    return results.map(r => showById[r.id]).filter(Boolean) as Show[];
+    return (results.map(r => showById[r.id]).filter(Boolean) as Show[]).sort(sortChronological);
   }, [shows, searchQuery, ms, showById]);
 
   const groupedShows = useMemo(() => {
