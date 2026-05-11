@@ -131,8 +131,8 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
     );
 
     const FEATURED_IDS = [
-      '3d97ae42ed27', 'ac9aea292913', 'afe8655f1236', '3fe2d2713abb',
-      '3620031b5215', 'a062c6d4ee9f', '4dba0c8ff6ae', '6cd303bce708',
+      '3d97ae42ed27', 'ac9aea292913', 'ccd7ed3c2fa4', '3fe2d2713abb',
+      '3620031b5215', 'e16f55a36df2', '4dba0c8ff6ae', '6cd303bce708',
       '730be7647294', 'a939ab1baf17',
     ];
     const showById = new Map(shows.map(s => [s.ShowID, s]));
