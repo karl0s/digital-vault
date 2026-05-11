@@ -304,7 +304,7 @@ export default function App() {
       <TopNav
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
-        onLogoClick={() => { setSearchQuery(''); setViewMode('hero'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+        onLogoClick={() => { setSearchQuery(''); setViewMode('hero'); setShowAllMode(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
         artists={sortedArtists}
         onArtistJump={handleArtistJumpWithState}
         hasSidebar={!isHeroMode}
