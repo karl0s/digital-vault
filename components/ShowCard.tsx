@@ -23,12 +23,8 @@ const getColorFromString = (str: string): string => {
   return colors[Math.abs(hash) % colors.length];
 };
 
-const getRecordingBadgeStyle = (type: string): string => {
-  const lower = type.toLowerCase();
-  if (lower.includes('soundboard')) return 'bg-amber-500/20 text-amber-400 border border-amber-500/30';
-  if (lower.includes('audience')) return 'bg-sky-500/20 text-sky-400 border border-sky-500/30';
-  if (lower.includes('proshot')) return 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
-  return 'bg-white/10 text-white/60';
+const getRecordingBadgeStyle = (_type: string): string => {
+  return 'bg-black text-white border border-white/10';
 };
 
 export function ShowCard({ show, onClick, focused = false, getImageUrl, searchMode }: ShowCardProps) {
@@ -145,23 +141,6 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl, searchMo
             </div>
           )}
 
-          {/* Recording type badge — top-right on hover */}
-          <AnimatePresence>
-            {active && show.RecordingType && (
-              <motion.div
-                className="absolute top-2 right-2"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.15 }}
-              >
-                <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium tracking-wide ${getRecordingBadgeStyle(show.RecordingType)}`}>
-                  {show.RecordingType.split(' ')[0].toUpperCase()}
-                </span>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
           {/* Hover overlay — venue + duration */}
           <AnimatePresence>
             {active && (
@@ -180,6 +159,23 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl, searchMo
                     <p className="text-xs text-gray-500">{durationText}</p>
                   )}
                 </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Recording type badge — bottom-right on hover */}
+          <AnimatePresence>
+            {active && show.RecordingType && (
+              <motion.div
+                className="absolute bottom-2 right-2 z-10"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+              >
+                <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium tracking-wide ${getRecordingBadgeStyle(show.RecordingType)}`}>
+                  {show.RecordingType.split(' ')[0].toUpperCase()}
+                </span>
               </motion.div>
             )}
           </AnimatePresence>
