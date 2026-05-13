@@ -181,6 +181,42 @@ The workflow for adding a new drive is not yet finalised.
 
 ---
 
+## Metadata enrichment agent
+
+`scripts/enrich-metadata.py` uses Claude claude-sonnet-4-6 with web search to look up exact
+dates, venues, cities and countries for shows with placeholder metadata.
+
+**Setup** (one time):
+```bash
+pip install anthropic
+echo 'export ANTHROPIC_API_KEY=sk-ant-...' >> ~/.zshrc && source ~/.zshrc
+```
+
+**Common usage:**
+```bash
+# All shows with YYYY-01-01 placeholder dates
+python3 scripts/enrich-metadata.py
+
+# One artist only
+python3 scripts/enrich-metadata.py --artist "Stone Temple Pilots"
+
+# Single show by ShowID
+python3 scripts/enrich-metadata.py --id abc123def456
+
+# Preview without writing
+python3 scripts/enrich-metadata.py --dry-run
+
+# Limit batch size
+python3 scripts/enrich-metadata.py --limit 5
+```
+
+The agent: searches setlist.fm + Wikipedia per show → collects all proposals → shows a
+full diff → asks for one confirmation → writes to `public/shows.json`.
+Only writes fields it can confirm from a reliable source. Never guesses.
+After writing, always run the health check and commit.
+
+---
+
 ## Hard drives in the collection
 
 | Drive | Contents |
