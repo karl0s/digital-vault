@@ -225,7 +225,7 @@ The `_01.jpg` image is used as the card thumbnail. All four are prefetched on ca
 | `tsconfig.json` | TypeScript configuration |
 | `.github/workflows/deploy.yml` | GitHub Actions CI/CD — builds and deploys on push to `main` |
 | `scripts/health-check.py` | Integrity validator — checks shows, images, manifest, dates, temp stubs. Runs automatically as a pre-push git hook. Errors block push; warnings are informational |
-| `scripts/enrich-metadata.py` | Metadata enrichment agent — uses Claude claude-sonnet-4-6 + web search to find exact dates, venues and locations for shows with placeholder metadata. See CLAUDE.md for setup and usage |
+| `scripts/enrich-metadata.py` | Metadata enrichment — queries the free setlist.fm API to find exact dates, venues and locations for shows with YYYY-01-01 placeholder dates. See CLAUDE.md for setup and usage |
 | `CLAUDE.md` | Full project guide for Claude — conventions, data model, workflows, hard rules |
 
 ---

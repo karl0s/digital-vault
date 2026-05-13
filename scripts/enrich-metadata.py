@@ -2,25 +2,28 @@
 """
 enrich-metadata.py
 
-Metadata enrichment agent for The Vault.
-Uses Claude claude-sonnet-4-6 with web search to look up exact dates, venues,
-cities and countries for shows that have incomplete or placeholder metadata.
+Looks up exact dates, venues, cities and countries for shows that have
+placeholder metadata (YYYY-01-01 dates), using the FREE setlist.fm API.
 
-── Setup ────────────────────────────────────────────────────────────────────
-  pip install anthropic
-  export ANTHROPIC_API_KEY=sk-ant-...        # add to ~/.zshrc or ~/.bash_profile
+── Setup (one time) ─────────────────────────────────────────────────────────
+  1. Create a free account at https://www.setlist.fm
+  2. Go to https://www.setlist.fm/settings/api  →  Apply for an API key
+     (it's instant and free — just needs a brief description like "personal archive")
+  3. Add the key to your shell:
+       echo 'export SETLISTFM_API_KEY=your-key-here' >> ~/.zshrc
+       source ~/.zshrc
 
-── Usage ────────────────────────────────────────────────────────────────────
-  # Enrich all shows with placeholder dates (YYYY-01-01) — default
+── Usage ─────────────────────────────────────────────────────────────────────
+  # All shows with YYYY-01-01 placeholder dates (default)
   python3 scripts/enrich-metadata.py
 
-  # Filter to one artist
+  # One artist only
   python3 scripts/enrich-metadata.py --artist "Stone Temple Pilots"
 
-  # Specific show by ShowID
+  # Single show by ShowID
   python3 scripts/enrich-metadata.py --id abc123def456
 
-  # Preview proposed changes without writing
+  # Preview proposals without writing
   python3 scripts/enrich-metadata.py --dry-run
 
   # Limit how many shows to process in one run
@@ -33,12 +36,13 @@ import os
 import re
 import sys
 import time
+import urllib.request
+import urllib.parse
+import urllib.error
 
-ROOT        = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SHOWS_JSON  = os.path.join(ROOT, 'public', 'shows.json')
-MODEL       = 'claude-sonnet-4-6'
-
-ENRICHABLE_FIELDS = ['ShowDate', 'VenueName', 'City', 'Country', 'EventOrFestival']
+ROOT       = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SHOWS_JSON = os.path.join(ROOT, 'public', 'shows.json')
+API_BASE   = 'https://api.setlist.fm/rest/1.0'
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -51,215 +55,231 @@ def save_shows(shows):
         json.dump(shows, f, indent=2)
 
 def is_placeholder_date(date_str):
-    """Returns True for YYYY-01-01 (year-only placeholder)."""
-    if not date_str:
-        return False
-    return bool(re.match(r'^\d{4}-01-01$', date_str))
+    return bool(date_str and re.match(r'^\d{4}-01-01$', date_str))
 
-def find_target_shows(shows, artist_filter=None, show_id=None):
-    """Return shows that need enrichment."""
-    targets = []
+def sfm_date_to_iso(d):
+    """Convert setlist.fm DD-MM-YYYY → YYYY-MM-DD."""
+    parts = d.split('-')
+    if len(parts) == 3:
+        return f'{parts[2]}-{parts[1]}-{parts[0]}'
+    return None
+
+def find_targets(shows, artist_filter=None, show_id=None):
+    out = []
     for s in shows:
         if show_id and s['ShowID'] != show_id:
             continue
         if artist_filter and artist_filter.lower() not in s.get('Artist', '').lower():
             continue
         if show_id or is_placeholder_date(s.get('ShowDate', '')):
-            targets.append(s)
-    return targets
+            out.append(s)
+    return out
 
-def describe_show(show):
-    """Human-readable show description for prompts and display."""
+def describe(show):
     parts = [show.get('Artist', '')]
-    ef    = show.get('EventOrFestival', '')
-    venue = show.get('VenueName', '')
-    city  = show.get('City', '')
-    date  = show.get('ShowDate', '')
-    if ef:    parts.append(ef)
-    if venue and venue != ef: parts.append(venue)
-    if city:  parts.append(city)
-    if date:  parts.append(f'({date})')
-    folder = show.get('FolderName') or show.get('FolderPath', '').split('/')[-1]
-    return ' — '.join(parts), folder
+    for f in ['EventOrFestival', 'VenueName', 'City']:
+        v = show.get(f, '')
+        if v and v not in parts:
+            parts.append(v)
+    d = show.get('ShowDate', '')
+    if d:
+        parts.append(f'({d})')
+    return '  |  '.join(parts)
 
-# ── Agent ─────────────────────────────────────────────────────────────────────
+# ── setlist.fm API ────────────────────────────────────────────────────────────
 
-def research_show(client, show):
+def sfm_search(api_key, artist_name, year, page=1):
+    """Search setlist.fm for an artist's shows in a given year."""
+    params = urllib.parse.urlencode({
+        'artistName': artist_name,
+        'year':       year,
+        'p':          page,
+    })
+    url = f'{API_BASE}/search/setlists?{params}'
+    req = urllib.request.Request(url, headers={
+        'Accept':    'application/json',
+        'x-api-key': api_key,
+    })
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            return json.loads(resp.read().decode())
+    except urllib.error.HTTPError as e:
+        if e.code == 404:
+            return {'setlist': [], 'total': 0}
+        if e.code == 429:
+            print('      Rate limited — waiting 10s...')
+            time.sleep(10)
+            return sfm_search(api_key, artist_name, year, page)
+        raise
+
+def parse_setlist(sl):
+    """Extract the fields we care about from a setlist.fm result."""
+    iso_date = sfm_date_to_iso(sl.get('eventDate', ''))
+    venue    = sl.get('venue', {})
+    city_obj = venue.get('city', {})
+    country  = city_obj.get('country', {})
+    tour     = sl.get('tour', {})
+    return {
+        'ShowDate':        iso_date,
+        'VenueName':       venue.get('name', ''),
+        'City':            city_obj.get('name', ''),
+        'Country':         country.get('name', ''),
+        'EventOrFestival': tour.get('name', ''),
+        'url':             sl.get('url', ''),
+    }
+
+# ── Matching ──────────────────────────────────────────────────────────────────
+
+def score_match(show, candidate):
+    """Score how well a setlist.fm result matches what we already know."""
+    score = 0
+    def norm(s): return (s or '').lower().strip()
+
+    known_city    = norm(show.get('City'))
+    known_venue   = norm(show.get('VenueName'))
+    known_event   = norm(show.get('EventOrFestival'))
+    known_country = norm(show.get('Country'))
+
+    if known_city    and known_city    in norm(candidate['City']):    score += 3
+    if known_venue   and known_venue   in norm(candidate['VenueName']):  score += 3
+    if known_event   and known_event   in norm(candidate['EventOrFestival']): score += 2
+    if known_country and known_country in norm(candidate['Country']):  score += 1
+    return score
+
+def find_best_match(show, candidates):
     """
-    Ask Claude (with web search) to find exact metadata for a show.
-    Returns a dict of proposed field updates, or None if nothing found.
+    Return (best_candidate, confidence, alternatives).
+    confidence: 'high' | 'medium' | 'low'
     """
-    desc, folder = describe_show(show)
-    year = (show.get('ShowDate') or '')[:4] or 'unknown year'
+    if not candidates:
+        return None, None, []
 
-    known = {k: show.get(k, '') for k in ENRICHABLE_FIELDS if show.get(k)}
-    known_str = '\n'.join(f'  {k}: {v}' for k, v in known.items()) or '  (none)'
+    if len(candidates) == 1:
+        return candidates[0], 'high', []
 
-    prompt = f"""I need exact metadata for this concert recording in my archive.
+    # Score all candidates against known fields
+    scored = sorted(candidates, key=lambda c: score_match(show, c), reverse=True)
+    best   = scored[0]
+    rest   = scored[1:]
 
-Artist: {show.get('Artist', '')}
-Year: {year}
-Folder name: {folder}
-Currently known:
-{known_str}
+    top_score  = score_match(show, best)
+    next_score = score_match(show, rest[0]) if rest else -1
 
-Search setlist.fm, Wikipedia, and other reliable sources to find:
-1. The exact date (YYYY-MM-DD)
-2. The venue name as it was called at the time (not modern rebranding — e.g. use
-   "Brixton Academy" not "O2 Academy Brixton" for shows before 2011)
-3. City
-4. Country
-5. Festival or event name if applicable (e.g. "Glastonbury", "MTV Unplugged")
+    if top_score == 0:
+        # No known fields to match against — ambiguous
+        confidence = 'low'
+    elif top_score > next_score:
+        confidence = 'high' if top_score >= 3 else 'medium'
+    else:
+        confidence = 'low'  # tie
 
-Return ONLY valid JSON with no markdown formatting, no explanation — just the JSON object:
-{{
-  "ShowDate": "YYYY-MM-DD or null",
-  "VenueName": "venue name or null",
-  "City": "city or null",
-  "Country": "country or null",
-  "EventOrFestival": "event/festival name or null",
-  "confidence": "high / medium / low",
-  "source": "URL or site where you found this",
-  "notes": "any caveats or uncertainty"
-}}
+    return best, confidence, rest[:2]  # return up to 2 alternatives
 
-Rules:
-- Return null for any field you cannot confirm from a reliable source
-- Never guess or invent data
-- If the date is ambiguous (multiple shows that year), return the most likely one
-  and set confidence to medium or low with an explanation in notes
-- Do not change a field that is already correct (compare against "Currently known" above)"""
+# ── Research a single show ────────────────────────────────────────────────────
 
-    messages = [{'role': 'user', 'content': prompt}]
-    tools    = [{'type': 'web_search_20250305', 'name': 'web_search'}]
-
-    # Agentic loop — Claude may issue multiple search calls before answering
-    while True:
-        response = client.messages.create(
-            model=MODEL,
-            max_tokens=1024,
-            tools=tools,
-            messages=messages,
-        )
-
-        # Collect any text blocks for the final answer
-        text_blocks    = [b for b in response.content if b.type == 'text']
-        tool_use_blocks = [b for b in response.content if b.type == 'tool_use']
-
-        if response.stop_reason == 'end_turn' or not tool_use_blocks:
-            # Final response — extract JSON from text
-            if not text_blocks:
-                return None
-            raw = text_blocks[-1].text.strip()
-            # Strip markdown code fences if present
-            raw = re.sub(r'^```(?:json)?\s*', '', raw)
-            raw = re.sub(r'\s*```$', '', raw)
-            try:
-                return json.loads(raw)
-            except json.JSONDecodeError:
-                # Try to extract JSON object from within the text
-                m = re.search(r'\{[\s\S]+\}', raw)
-                if m:
-                    try:
-                        return json.loads(m.group())
-                    except Exception:
-                        pass
-            return None
-
-        # Tool use — append assistant message and tool results, then loop
-        messages.append({'role': 'assistant', 'content': response.content})
-        tool_results = []
-        for tb in tool_use_blocks:
-            # Web search results are returned by Anthropic server-side;
-            # if the tool result is already in the response content we don't need to do
-            # anything — but some API versions return tool_result blocks separately.
-            # Pass an empty result to keep the loop going if needed.
-            tool_results.append({
-                'type': 'tool_result',
-                'tool_use_id': tb.id,
-                'content': '',
-            })
-        if tool_results:
-            messages.append({'role': 'user', 'content': tool_results})
-
-# ── Diff / display ────────────────────────────────────────────────────────────
-
-def build_proposal(show, result):
+def research_show(api_key, show):
     """
-    Compare research result against current show data.
-    Returns dict of fields that would actually change.
+    Query setlist.fm and return proposed field updates for this show.
+    Returns (proposal, confidence, source_url, note).
+    proposal is a dict of {field: {'from': old, 'to': new}}.
     """
-    if not result:
-        return {}
+    artist = show.get('Artist', '')
+    year   = (show.get('ShowDate') or '')[:4]
+    if not year or not artist:
+        return {}, None, '', 'Missing artist or year — skipped'
 
-    changes = {}
-    for field in ENRICHABLE_FIELDS:
-        proposed = result.get(field)
+    data = sfm_search(api_key, artist, year)
+    total = data.get('total', 0)
+
+    if total == 0:
+        return {}, None, '', f'No results on setlist.fm for {artist} {year}'
+
+    # Fetch more pages if needed (up to 3 pages = 60 results)
+    all_setlists = data.get('setlist', [])
+    pages_to_fetch = min(3, -(-total // 20))  # ceil division
+    for page in range(2, pages_to_fetch + 1):
+        time.sleep(0.6)
+        more = sfm_search(api_key, artist, year, page)
+        all_setlists.extend(more.get('setlist', []))
+
+    candidates  = [parse_setlist(sl) for sl in all_setlists]
+    best, confidence, alternatives = find_best_match(show, candidates)
+
+    if best is None:
+        return {}, None, '', 'No suitable match found'
+
+    # Build proposal — only include fields that would actually change
+    proposal = {}
+    for field in ['ShowDate', 'VenueName', 'City', 'Country', 'EventOrFestival']:
+        proposed = best.get(field, '')
         current  = show.get(field, '')
-        if proposed and proposed != current:
-            # Don't overwrite a good date with a placeholder
-            if field == 'ShowDate' and is_placeholder_date(proposed):
-                continue
-            # Don't downgrade a full date to year-only
-            if field == 'ShowDate' and len(current) == 10 and len(proposed) < 10:
-                continue
-            changes[field] = {'from': current, 'to': proposed}
-    return changes
+        if not proposed:
+            continue
+        if proposed == current:
+            continue
+        # Don't replace a full date with another placeholder
+        if field == 'ShowDate' and is_placeholder_date(proposed):
+            continue
+        # Don't downgrade a full date
+        if field == 'ShowDate' and len(current) == 10 and len(proposed) < 10:
+            continue
+        proposal[field] = {'from': current, 'to': proposed}
 
-def print_proposal(show, proposal, result):
-    desc, _ = describe_show(show)
-    confidence = result.get('confidence', '?') if result else '?'
-    source     = result.get('source', '') if result else ''
-    notes      = result.get('notes', '') if result else ''
+    alt_note = ''
+    if alternatives and confidence == 'low':
+        alt_note = f'  (also found: {alternatives[0]["City"]} {alternatives[0]["ShowDate"]})'
 
-    conf_colour = {'high': '✓', 'medium': '~', 'low': '?'}.get(confidence, '?')
+    note = f'{total} result(s) found on setlist.fm{alt_note}'
+    return proposal, confidence, best.get('url', ''), note
 
-    print(f'\n  [{conf_colour} {confidence}]  {show["ShowID"]}  {desc}')
+# ── Display ───────────────────────────────────────────────────────────────────
+
+CONF_ICON = {'high': '✓', 'medium': '~', 'low': '?'}
+
+def print_result(show, proposal, confidence, url, note):
+    icon = CONF_ICON.get(confidence, ' ') if confidence else '✗'
+    conf = confidence or 'none'
+    print(f'\n  [{icon} {conf}]  {show["ShowID"]}')
+    print(f'          {describe(show)}')
     if not proposal:
-        print('      No changes proposed')
+        print(f'          No changes proposed  —  {note}')
     else:
         for field, change in proposal.items():
-            old = change["from"] or '(blank)'
-            new = change["to"]
-            print(f'      {field:<20}  {old}  →  {new}')
-    if source:
-        print(f'      Source: {source}')
-    if notes:
-        print(f'      Note:   {notes}')
+            old = change['from'] or '(blank)'
+            print(f'          {field:<22} {old}  →  {change["to"]}')
+        if url:
+            print(f'          Source: {url}')
+        if note:
+            print(f'          Note:   {note}')
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
-    parser = argparse.ArgumentParser(description='Enrich show metadata using Claude + web search')
-    parser.add_argument('--artist',  help='Filter to shows by this artist (partial match)')
-    parser.add_argument('--id',      help='Research a single show by ShowID')
-    parser.add_argument('--dry-run', action='store_true', help='Show proposals without writing')
-    parser.add_argument('--limit',   type=int, default=0, help='Max shows to process (0 = all)')
+    parser = argparse.ArgumentParser(description='Enrich show metadata via setlist.fm')
+    parser.add_argument('--artist',  help='Filter by artist name (partial match)')
+    parser.add_argument('--id',      help='Single show by ShowID')
+    parser.add_argument('--dry-run', action='store_true', help='Show proposals, do not write')
+    parser.add_argument('--limit',   type=int, default=0, help='Max shows to process (0=all)')
     args = parser.parse_args()
 
     # ── API key check ─────────────────────────────────────────────────────────
-    api_key = os.environ.get('ANTHROPIC_API_KEY')
+    api_key = os.environ.get('SETLISTFM_API_KEY')
     if not api_key:
         print(
-            '\nANTHROPIC_API_KEY is not set.\n'
-            'Add it to your shell profile:\n'
-            '  echo \'export ANTHROPIC_API_KEY=sk-ant-...\' >> ~/.zshrc\n'
-            '  source ~/.zshrc\n'
+            '\nSETLISTFM_API_KEY is not set.\n\n'
+            'Setup (free, takes 2 minutes):\n'
+            '  1. Create a free account at https://www.setlist.fm\n'
+            '  2. Go to https://www.setlist.fm/settings/api\n'
+            '  3. Click "Apply for an API key" (instant approval)\n'
+            '  4. Then run:\n'
+            '       echo \'export SETLISTFM_API_KEY=your-key\' >> ~/.zshrc\n'
+            '       source ~/.zshrc\n'
         )
         sys.exit(1)
 
-    try:
-        import anthropic
-    except ImportError:
-        print('\nThe anthropic package is not installed.\n  pip install anthropic\n')
-        sys.exit(1)
-
-    client = anthropic.Anthropic(api_key=api_key)
-
-    # ── Find target shows ─────────────────────────────────────────────────────
     shows      = load_shows()
     show_index = {s['ShowID']: i for i, s in enumerate(shows)}
-    targets    = find_target_shows(shows, artist_filter=args.artist, show_id=args.id)
+    targets    = find_targets(shows, artist_filter=args.artist, show_id=args.id)
 
     if not targets:
         print('No shows matched the criteria.')
@@ -268,42 +288,35 @@ def main():
     if args.limit:
         targets = targets[:args.limit]
 
-    print(f'\nThe Vault — Metadata Enrichment Agent')
-    print(f'Model: {MODEL}  |  Shows to research: {len(targets)}')
+    print(f'\nThe Vault — Metadata Enrichment')
+    print(f'Source: setlist.fm  |  Shows to research: {len(targets)}')
     if args.dry_run:
         print('Mode: DRY RUN (no writes)')
     print('─' * 60)
 
-    # ── Research each show ────────────────────────────────────────────────────
-    proposals = []   # list of (show, proposal_dict, result_dict)
+    results = []  # (show, proposal, confidence, url, note)
 
     for i, show in enumerate(targets, 1):
-        desc, folder = describe_show(show)
-        print(f'\n[{i}/{len(targets)}] Researching: {desc}')
-        if folder:
-            print(f'             Folder: {folder}')
-
+        print(f'\n[{i}/{len(targets)}] {show.get("Artist")} — {show.get("ShowDate")}', end='', flush=True)
         try:
-            result   = research_show(client, show)
-            proposal = build_proposal(show, result)
-            proposals.append((show, proposal, result))
-            print_proposal(show, proposal, result)
+            proposal, confidence, url, note = research_show(api_key, show)
+            results.append((show, proposal, confidence, url, note))
+            print_result(show, proposal, confidence, url, note)
         except Exception as e:
-            print(f'  ERROR: {e}')
-            proposals.append((show, {}, None))
-
-        # Polite rate limiting
+            print(f'\n  ERROR: {e}')
+            results.append((show, {}, None, '', str(e)))
+        # Polite rate limiting — setlist.fm asks for max 2 req/sec
         if i < len(targets):
-            time.sleep(1)
+            time.sleep(0.6)
 
     # ── Summary ───────────────────────────────────────────────────────────────
-    with_changes  = [(s, p, r) for s, p, r in proposals if p]
-    no_changes    = [(s, p, r) for s, p, r in proposals if not p]
+    with_changes = [(s, p, c, u, n) for s, p, c, u, n in results if p]
+    no_changes   = [(s, p, c, u, n) for s, p, c, u, n in results if not p]
 
     print(f'\n{"═" * 60}')
-    print(f'  Researched : {len(proposals)} shows')
+    print(f'  Researched:   {len(results)}')
     print(f'  With changes: {len(with_changes)}')
-    print(f'  No changes  : {len(no_changes)}')
+    print(f'  No changes:   {len(no_changes)}')
     print(f'{"═" * 60}')
 
     if not with_changes:
@@ -311,25 +324,25 @@ def main():
         sys.exit(0)
 
     if args.dry_run:
-        print('\nDry run complete — no files written.')
+        print('\nDry run — no files written.')
         sys.exit(0)
 
     # ── Confirm and write ─────────────────────────────────────────────────────
     answer = input(f'\nWrite {len(with_changes)} change(s) to public/shows.json? [y/N] ').strip().lower()
     if answer != 'y':
-        print('Aborted — no changes written.')
+        print('Aborted — nothing written.')
         sys.exit(0)
 
-    for show, proposal, _ in with_changes:
+    for show, proposal, _, _, _ in with_changes:
         idx = show_index[show['ShowID']]
         for field, change in proposal.items():
             shows[idx][field] = change['to']
 
     save_shows(shows)
-    print(f'\n✓ Updated {len(with_changes)} shows in public/shows.json')
-    print('  Remember to run the health check and push:\n'
-          '    python3 scripts/health-check.py\n'
-          '    git add -f public/shows.json && git commit && git push')
+    print(f'\n✓  Updated {len(with_changes)} show(s) in public/shows.json')
+    print('   Run health check and push:\n'
+          '     python3 scripts/health-check.py\n'
+          '     git add -f public/shows.json && git commit && git push')
 
 if __name__ == '__main__':
     main()

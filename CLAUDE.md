@@ -186,10 +186,12 @@ The workflow for adding a new drive is not yet finalised.
 `scripts/enrich-metadata.py` uses Claude claude-sonnet-4-6 with web search to look up exact
 dates, venues, cities and countries for shows with placeholder metadata.
 
-**Setup** (one time):
+**Setup** (one time — free, no payment):
 ```bash
-pip install anthropic
-echo 'export ANTHROPIC_API_KEY=sk-ant-...' >> ~/.zshrc && source ~/.zshrc
+# 1. Create a free account at https://www.setlist.fm
+# 2. Go to https://www.setlist.fm/settings/api → Apply for an API key
+# 3. Add it to your shell:
+echo 'export SETLISTFM_API_KEY=your-key-here' >> ~/.zshrc && source ~/.zshrc
 ```
 
 **Common usage:**
@@ -210,9 +212,9 @@ python3 scripts/enrich-metadata.py --dry-run
 python3 scripts/enrich-metadata.py --limit 5
 ```
 
-The agent: searches setlist.fm + Wikipedia per show → collects all proposals → shows a
-full diff → asks for one confirmation → writes to `public/shows.json`.
-Only writes fields it can confirm from a reliable source. Never guesses.
+The script: queries setlist.fm per show → scores matches against known fields →
+collects all proposals → shows a full diff → asks for one confirmation →
+writes to `public/shows.json`. Uses no AI — pure setlist.fm data.
 After writing, always run the health check and commit.
 
 ---
