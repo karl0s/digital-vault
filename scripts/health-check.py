@@ -188,6 +188,70 @@ if no_images:
 else:
     print('  All shows have a checksum — OK')
 
+# ── 11. Documentation currency ───────────────────────────────────────────────
+
+section('Documentation currency')
+
+import subprocess
+
+# Check if README or CLAUDE.md mention the current show count
+actual_count = len(shows)
+doc_issues = []
+
+for doc_path, doc_name in [('README.md', 'README'), ('CLAUDE.md', 'CLAUDE.md')]:
+    full_path = os.path.join(ROOT, doc_path)
+    if not os.path.exists(full_path):
+        doc_issues.append(f'{doc_name} not found')
+        continue
+
+    with open(full_path) as f:
+        doc_text = f.read()
+
+    # Check if any show count (plural "shows") in the doc is >5% off from actual.
+    # Exclude year-like numbers (1900–2029) to avoid false positives like "a 1996 show".
+    import re as _re
+    counts_found = [int(m) for m in _re.findall(r'\b(\d{3,4})\s+shows\b', doc_text, _re.IGNORECASE)
+                    if not (1900 <= int(m) <= 2029)]
+    for c in counts_found:
+        if abs(c - actual_count) > max(5, actual_count * 0.02):
+            doc_issues.append(f'{doc_name} mentions {c} shows but actual is {actual_count} — update may be needed')
+
+# Check if any new component or hook files exist that aren't mentioned in README
+readme_path = os.path.join(ROOT, 'README.md')
+if os.path.exists(readme_path):
+    with open(readme_path) as f:
+        readme_text = f.read()
+
+    for search_dir, label in [('components', 'component'), ('src/hooks', 'hook'), ('scripts', 'script')]:
+        dir_path = os.path.join(ROOT, search_dir)
+        if not os.path.isdir(dir_path):
+            continue
+        for fname in os.listdir(dir_path):
+            if fname.startswith('.') or fname.startswith('_') or fname == '__pycache__':
+                continue
+            base = fname.rsplit('.', 1)[0]
+            if base not in readme_text:
+                doc_issues.append(f'{label} "{fname}" not mentioned in README — consider adding it')
+
+# Check for uncommitted changes to docs themselves relative to last commit
+try:
+    result = subprocess.run(
+        ['git', 'diff', '--name-only', 'HEAD', 'README.md', 'CLAUDE.md'],
+        cwd=ROOT, capture_output=True, text=True
+    )
+    changed_docs = [l.strip() for l in result.stdout.splitlines() if l.strip()]
+    if changed_docs:
+        for d in changed_docs:
+            warn(f'  {d} has uncommitted changes')
+except Exception:
+    pass
+
+if doc_issues:
+    for issue in doc_issues:
+        warn(f'  {issue}')
+else:
+    print('  README and CLAUDE.md appear current — OK')
+
 # ── Summary ───────────────────────────────────────────────────────────────────
 
 print('\n' + '═' * 60)
