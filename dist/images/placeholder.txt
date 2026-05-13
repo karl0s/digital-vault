@@ -1,2 +1,0 @@
-Upload your screenshot images here.
-Images should be named: {ChecksumSHA1}_01.jpg through _04.jpg
