@@ -181,41 +181,20 @@ The workflow for adding a new drive is not yet finalised.
 
 ---
 
-## Metadata enrichment agent
+## Metadata enrichment workflow
 
-`scripts/enrich-metadata.py` uses Claude claude-sonnet-4-6 with web search to look up exact
-dates, venues, cities and countries for shows with placeholder metadata.
+For shows with placeholder dates (`YYYY-01-01`), enrichment is done conversationally with Claude:
 
-**Setup** (one time — free, no payment):
-```bash
-# 1. Create a free account at https://www.setlist.fm
-# 2. Go to https://www.setlist.fm/settings/api → Apply for an API key
-# 3. Add it to your shell:
-echo 'export SETLISTFM_API_KEY=your-key-here' >> ~/.zshrc && source ~/.zshrc
-```
+1. Ask Claude to scan `shows.json` for a given artist's placeholder-date shows
+2. Claude web-searches each show using the metadata already present (artist, event name, city, folder name, etc.)
+3. Claude only proposes a change when **2+ independent sources agree** on the date/venue
+4. Proposals are batched per artist — review and confirm before Claude writes to `shows.json`
+5. After writing, Claude runs the health check and commits
 
-**Common usage:**
-```bash
-# All shows with YYYY-01-01 placeholder dates
-python3 scripts/enrich-metadata.py
+**To start an enrichment session:**
+> "Check Radiohead for missing or placeholder dates"
 
-# One artist only
-python3 scripts/enrich-metadata.py --artist "Stone Temple Pilots"
-
-# Single show by ShowID
-python3 scripts/enrich-metadata.py --id abc123def456
-
-# Preview without writing
-python3 scripts/enrich-metadata.py --dry-run
-
-# Limit batch size
-python3 scripts/enrich-metadata.py --limit 5
-```
-
-The script: queries setlist.fm per show → scores matches against known fields →
-collects all proposals → shows a full diff → asks for one confirmation →
-writes to `public/shows.json`. Uses no AI — pure setlist.fm data.
-After writing, always run the health check and commit.
+No API keys, no scripts, no external accounts needed. Claude handles the research inline.
 
 ---
 
