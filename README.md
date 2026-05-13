@@ -10,9 +10,12 @@ A Netflix-style web interface for browsing a private collection of live concert 
 - **Curated Featured Rows**: Horizontal scrollable rows — "Shows Near You" (geo-personalised), "Top Artists", "Featured", and "Soundboard Recordings"
 - **Geo-Location Row**: Silently detects your city/country via IP and surfaces matching shows at the top — no browser prompt, no API key required. Falls back to country-level if no city matches. Row is hidden if no shows match or the lookup fails
 - **Horizontal Scroll Rows**: Each row has fade gradients and arrow controls that appear on hover
+- **Quick-Search Pills**: One-click artist/decade filter buttons on the hero page
+- **All Shows Button**: Ghost link next to pills — lists every show in the collection alphabetically by artist
 
 ### Search
 - **Hero Search Bar**: Always-visible at the top; results replace the home page instantly as you type
+- **Chronological Results**: Search results sorted newest-first; undated and compilation shows sorted to the end
 - **Full-Text MiniSearch**: Prefix + fuzzy matching across all metadata fields with field boosts (Artist 4×, RecordingType 2×, Year 2×)
 - **Field-Specific Filters**: Prefix any query with a field name:
   - `artist:pearl jam` `venue:house of blues` `city:london` `country:uk`
@@ -23,7 +26,7 @@ A Netflix-style web interface for browsing a private collection of live concert 
 ### Show Cards
 - **Context-Aware Metadata**: Home page shows Artist + Venue/Event; search results show Venue/Event instead of artist (artist is already in the search box)
 - **Smart Location Line**: Prioritises `EventOrFestival` → `VenueName` → `City, Country` — one line, no redundancy
-- **Hover Overlay**: Recording type badge (Soundboard / Audience / Proshot) + duration + artist name in search mode
+- **Hover Overlay**: Recording type badge (black, bottom-right corner) + duration + artist name in search mode
 - **Lazy Image Loading**: Thumbnails load progressively with artist-coloured placeholders
 
 ### Show Detail
@@ -72,7 +75,7 @@ Opens at `http://localhost:5173/digital-vault/` with hot module reloading.
 npm run build
 ```
 
-Outputs optimised static files to `/dist/`. Not needed for deployment — GitHub Actions handles the build automatically.
+Outputs optimised static files to `/dist/`. Not needed for deployment — GitHub Actions handles the build automatically on push. **Do not commit `/dist/`** — it is gitignored and CI-owned.
 
 ---
 
@@ -135,11 +138,11 @@ To deploy: commit your changes and `git push origin main`. That's it.
 
 | Field | Notes |
 |-------|-------|
-| `ShowDate` | Format `YYYY-MM-DD`. Year-only dates stored as `YYYY-01-01`. Multi-date compilations use the string `"Compilation"` |
+| `ShowDate` | Format `YYYY-MM-DD`. Year-only dates stored as `YYYY-01-01`. Undated shows (compilations, TV-only, documentaries) use empty string `""` — they sort to the end of all result lists |
 | `ChecksumSHA1` | Links to thumbnail images — `public/images/{ChecksumSHA1}_01.jpg` through `_04.jpg` |
 | `EventOrFestival` | Takes display priority over `VenueName` on cards. Use for festivals, TV appearances, documentaries |
 | `VenueName` | Used when no event/festival applies — e.g. "Madison Square Gardens", "House of Blues" |
-| `RecordingType` | Drives badge colour — `Soundboard` (amber), `Audience` (sky blue), `Proshot` (emerald) |
+| `RecordingType` | Shown as a black badge (bottom-right of card on hover) — `Soundboard`, `Audience`, `Proshot` |
 | `Setlist` | Semicolon-separated song titles; rendered as a numbered list in the drawer |
 | `DurationSec` | Integer seconds; auto-formatted as `2h 15m` in the UI |
 
@@ -200,6 +203,7 @@ The `_01.jpg` image is used as the card thumbnail. All four are prefetched on ca
 | `components/Sidebar.tsx` | Artist navigation sidebar |
 | `components/ImageLightbox.tsx` | Full-screen image viewer |
 | `components/LazyImage.tsx` | Lazy-loading image with colour placeholder |
+| `components/ImageWithFallback.tsx` | Image component with automatic fallback on load error |
 
 ### Hooks
 
@@ -213,13 +217,15 @@ The `_01.jpg` image is used as the card thumbnail. All four are prefetched on ca
 | `src/hooks/useKeyboardNavigation.ts` | Keyboard navigation for drawer and lightbox |
 | `src/hooks/useScrollSpy.ts` | Tracks scroll position for the sidebar |
 
-### Config
+### Scripts & Config
 
 | File | Purpose |
 |------|---------|
 | `vite.config.ts` | Vite build config — `base` set to `/digital-vault/` for GitHub Pages |
 | `tsconfig.json` | TypeScript configuration |
 | `.github/workflows/deploy.yml` | GitHub Actions CI/CD — builds and deploys on push to `main` |
+| `scripts/health-check.py` | Integrity validator — checks shows, images, manifest, dates, temp stubs. Runs automatically as a pre-push git hook. Errors block push; warnings are informational |
+| `CLAUDE.md` | Full project guide for Claude — conventions, data model, workflows, hard rules |
 
 ---
 
