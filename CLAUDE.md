@@ -143,22 +143,97 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 
 ---
 
-## Metadata consistency rules
+## Metadata conventions
 
+These rules apply every time any field in `shows.json` is created or edited. No exceptions.
+
+---
+
+### Duplicate recordings
 When the same show exists as multiple recordings (different sources), all versions must share:
 - Identical `ShowDate`
 - Identical `EventOrFestival`
 - Identical `VenueName`
 - Identical `City` and `Country`
 
-The record with the most complete metadata is used as the reference; others are updated to match.
+The record with the most complete metadata is the reference; others are updated to match.
+Always scan for duplicates when editing any of these fields.
+
+---
+
+### ShowDate
+- Format: `YYYY-MM-DD` or `""` — nothing else ever
+- Only year known → `YYYY-01-01`
+- Only year + month known → `YYYY-MM-01`
+- Compilations, documentaries, rockumentaries, TV-only specials with no air/performance date → `""`
+- Never use `"0000-00-00"`, `"Compilation"`, or any other placeholder string
+
+---
+
+### Country
+- Always the full English country name — never abbreviations or codes
+- `"United States"` not `"USA"` / `"US"` / `"U.S.A."`
+- `"United Kingdom"` not `"UK"` / `"U.K."`
+- `"South Korea"` not `"Korea"`
+- Apply consistently across all duplicate recordings of the same show
+
+---
+
+### VenueName
+- Use the name the venue had **at the time of the show** — not its current or modern branding
+- Examples:
+  - "Brixton Academy" for shows before 2011 (became O2 Academy Brixton in 2011)
+  - "Wembley Stadium" not "EE Wembley Stadium" for older shows
+  - "The Shoreline Amphitheatre" not "Shoreline Amphitheater at Mountain View" for older shows
+- Strip any date prefixes (e.g. `"2001-08-16 - Festival Name"` → `"Festival Name"`)
+- `VenueName` is the physical venue only — festival name goes in `EventOrFestival`
+
+---
+
+### EventOrFestival
+- Festival/event name only — never include dates, venue, or city in this field
+- Examples: `"Glastonbury"`, `"Rock am Ring"`, `"MTV Unplugged"`, `"Later w/ Jools Holland"`
+- Leave blank if it was a standard headline show with no named event/festival
+
+---
+
+### Setlist format
+**Always** a single semicolon-separated string. Never newlines, numbered lists, or bullet points.
+
+```
+Song One; Song Two; Song Three; Encore break; Song Four; Song Five
+```
+
+Rules:
+- Songs separated by `; ` (semicolon + space)
+- Encore separator is exactly `Encore break` (capitalised, no dashes or symbols)
+- No track numbers, no bullet points, no newlines
+- Covers noted inline: `In the Flesh (Pink Floyd cover)`
+- Acoustic versions noted inline: `Just Because (Acoustic)`
+- If a setlist is partial/incomplete, append ` (incomplete)` at the end of the string
+
+### Setlist sourcing
+Before writing any setlist, **2+ independent sources must agree** on the songs and order.
+
+Acceptable sources (ranked by reliability):
+1. setlist.fm (check user-confirmed count — higher = more reliable)
+2. Official band site tour pages (e.g. janesaddiction.org/tour)
+3. Published concert reviews (Rolling Stone, NME, Billboard, Pitchfork, local press)
+4. YouTube full-show videos with confirmed date/venue
+5. Fan forums or Dime A Dozen NFO files with eyewitness accounts
+
+If only 1 source is found, or sources conflict: leave `Setlist` blank and note the conflict.
+Never infer or reconstruct a setlist from tour averages or nearby-show patterns alone.
+
+---
 
 ### Common corrections to watch for
-- `EventOrFestival` accidentally containing a date string → replace with the festival name
-- `VenueName` containing date prefixes like `"2001-08-16 - Festival Name"` → strip the date
-- Venue names using modern branding for historic shows (e.g. "O2 Academy Brixton" for a 1996
-  show — should be "Brixton Academy", O2 naming started 2011)
-- Rockumentaries, documentaries, compilations, and TV-only shows → `ShowDate` should be `""`
+- `EventOrFestival` containing a date string → replace with the festival name only
+- `VenueName` containing date prefixes → strip the date
+- Venue using modern branding for a historic show → use name from the time of the show
+- Rockumentaries, documentaries, compilations, TV-only shows → `ShowDate` should be `""`
+- `Country` using abbreviation → expand to full name
+- Setlist using newlines or numbered format → convert to semicolon format
 
 ---
 
