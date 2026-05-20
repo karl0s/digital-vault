@@ -20,6 +20,7 @@ public/
 
 dist/                   ← BUILD OUTPUT — never commit this, CI owns it
 components/             ← React components
+  CloseButton.tsx       ← shared close button (semi-transparent style) — use this for ALL close buttons
 src/hooks/              ← custom React hooks
 data-pipeline/          ← numbered Python scripts for scanning hard drives → CSV → shows.json
 scripts/
@@ -279,6 +280,36 @@ No API keys, no scripts, no external accounts needed. Claude handles the researc
 |---|---|
 | Big Daddy | Main collection — bulk of all shows |
 | Seagate Expansion Drive | Overflow + 2010–2013 era shows |
+
+---
+
+## UI patterns
+
+### Close buttons
+All close buttons use the shared `CloseButton` component (`components/CloseButton.tsx`).
+Style: `bg-white/10 hover:bg-white/20 rounded-full`, icon `w-5 h-5 md:w-6 md:h-6`.
+Pass positioning via `className` prop — the component handles appearance only.
+Standard coordinates: `top-4 right-4` mobile, `top-6 right-6` desktop.
+
+### Hero section (HeroSearch)
+The hero title block (site name, subtitle, quick-search pills) is always mounted but animates to
+`height: 0 / opacity: 0` when `isSearching` is true. It is driven by Framer Motion's `animate` prop
+(not `AnimatePresence`) so the nav search input is never unmounted while typing.
+`App.tsx` passes `isSearching={isSearching || showAllMode}` to collapse it in both search and all-shows mode.
+
+### In-drawer image viewer (ShowDrawer)
+`ShowDrawer` manages image viewing internally — there is no external lightbox call.
+
+Key state:
+- `expandedFromIndex: number | null` — which thumbnail was clicked; anchors the `layoutId` for the open/close animation; set to `null` to close
+- `viewingIndex: number` — which image is currently displayed; changes on prev/next without affecting the `layoutId` anchor
+
+How it works:
+- Each thumbnail is wrapped in `<motion.div layoutId={`drawer-img-${show.ShowID}-${idx}`}>` 
+- The overlay renders a `<motion.div>` with the same `layoutId` matching `expandedFromIndex` — Framer Motion animates the element between thumbnail and expanded positions
+- Navigating prev/next only updates `viewingIndex`; close always zooms back to the original thumbnail
+- The drawer's own close button is hidden (`!isImageExpanded`) while the viewer is open to prevent z-index conflicts with the overlay's close button
+- `ImageLightbox` is **not used** by `ShowDrawer` — do not re-add `onImageClick` prop or wire it back up
 
 ---
 

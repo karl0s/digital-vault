@@ -14,7 +14,7 @@ A Netflix-style web interface for browsing a private collection of live concert 
 - **All Shows Button**: Ghost link next to pills — lists every show in the collection alphabetically by artist
 
 ### Search
-- **Hero Search Bar**: Always-visible at the top; results replace the home page instantly as you type
+- **Hero Search Bar**: Always-visible at the top; results appear instantly as you type. The hero title block (site name, subtitle, quick-search pills) animates to zero height while a search is active and restores when cleared
 - **Chronological Results**: Search results sorted newest-first; undated and compilation shows sorted to the end
 - **Full-Text MiniSearch**: Prefix + fuzzy matching across all metadata fields with field boosts (Artist 4×, RecordingType 2×, Year 2×)
 - **Field-Specific Filters**: Prefix any query with a field name:
@@ -31,7 +31,7 @@ A Netflix-style web interface for browsing a private collection of live concert 
 
 ### Show Detail
 - **Slide-Out Drawer**: Full metadata panel — technical specs, setlist, lineage, source equipment, drive reference
-- **Image Lightbox**: Full-screen image viewer with keyboard navigation (arrow keys, ESC)
+- **In-Drawer Image Viewer**: Clicking a screenshot thumbnail expands it inside the drawer using a Framer Motion `layoutId` animation — the image grows from the thumbnail to fill the drawer. Includes prev/next navigation, dot indicators, and keyboard support (arrow keys, ESC closes back to drawer). No full-screen takeover.
 
 ---
 
@@ -157,7 +157,7 @@ public/images/{ChecksumSHA1}_03.jpg
 public/images/{ChecksumSHA1}_04.jpg
 ```
 
-The `_01.jpg` image is used as the card thumbnail. All four are prefetched on card hover for the drawer lightbox.
+The `_01.jpg` image is used as the card thumbnail. All four are prefetched on card hover for the drawer image viewer.
 
 ---
 
@@ -198,10 +198,11 @@ The `_01.jpg` image is used as the card thumbnail. All four are prefetched on ca
 | `components/TopNav.tsx` | Navigation bar |
 | `components/ShowCard.tsx` | Individual show card — renders differently in home vs search mode |
 | `components/SearchResultsGrid.tsx` | Search results layout and header |
-| `components/ShowDrawer.tsx` | Slide-out detail panel |
+| `components/ShowDrawer.tsx` | Slide-out detail panel — handles image viewing internally via in-drawer viewer (no external lightbox) |
+| `components/CloseButton.tsx` | Shared close button — semi-transparent style, used in `ShowDrawer` and `ImageLightbox` |
 | `components/ArtistRow.tsx` | Single horizontal scrollable row of show cards |
 | `components/Sidebar.tsx` | Artist navigation sidebar |
-| `components/ImageLightbox.tsx` | Full-screen image viewer |
+| `components/ImageLightbox.tsx` | Full-screen image viewer — component exists but is not currently wired up; image viewing is handled in-drawer by `ShowDrawer` |
 | `components/LazyImage.tsx` | Lazy-loading image with colour placeholder |
 | `components/ImageWithFallback.tsx` | Image component with automatic fallback on load error |
 
