@@ -24,18 +24,19 @@ export function SearchResultsGrid({ shows, query, searchType, transitionKey, onS
   return (
     <div>
       {/* Results header */}
-      <div className="mb-6 flex items-baseline gap-3">
-        <p className="text-gray-500 text-sm">
-          <span className="text-white font-semibold tabular-nums">{shows.length}</span>
-          {' '}{shows.length === 1 ? 'result' : 'results'} for{' '}
-          <span className="text-white">"{query}"</span>
-        </p>
-        <button
-          onClick={onClear}
-          className="text-xs text-gray-700 hover:text-gray-400 transition-colors underline underline-offset-2"
-        >
-          Clear
-        </button>
+      <div className="mb-6">
+        <h2 className="text-4xl font-bold text-white">"{query}"</h2>
+        <div className="flex items-center gap-3 mt-1">
+          <p className="text-gray-500 text-sm">
+            Found <span className="text-gray-300 tabular-nums">{shows.length}</span> {shows.length === 1 ? 'show' : 'shows'}
+          </p>
+          <button
+            onClick={onClear}
+            className="text-xs text-gray-700 hover:text-gray-400 transition-colors underline underline-offset-2"
+          >
+            Clear
+          </button>
+        </div>
       </div>
 
       {shows.length === 0 ? (
