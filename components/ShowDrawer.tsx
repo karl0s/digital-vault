@@ -32,7 +32,6 @@ const getColorFromString = (str: string): string => {
 const LAYOUT_TRANSITION = { duration: 0.38, ease: [0.16, 1, 0.3, 1] };
 
 export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
-  const [isSourceExpanded, setIsSourceExpanded] = useState(false);
   const [isNotesExpanded, setIsNotesExpanded] = useState(false);
   // expandedFromIndex: which thumbnail was clicked (anchors the layoutId for open/close animation)
   // viewingIndex: which image is currently shown (changes on prev/next without affecting layoutId)
@@ -70,7 +69,6 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
     return () => { document.body.style.overflow = prev; };
   }, []);
 
-  const year = show.ShowDate ? show.ShowDate.split('-')[0] : 'Unknown';
   const durationSec = parseInt(show.DurationSec || '0');
   const hours = Math.floor(durationSec / 3600);
   const minutes = Math.floor((durationSec % 3600) / 60);
@@ -79,9 +77,6 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
     : null;
 
   const setlistItems = show.Setlist ? show.Setlist.split(';').map(s => s.trim()).filter(Boolean) : [];
-  const videoFiles = typeof show.RepVideoFiles === 'string'
-    ? show.RepVideoFiles.split(';').map(f => f.trim()).filter(Boolean)
-    : show.RepVideoFiles || [];
 
   const locationParts = [show.City, show.Country].filter(Boolean);
   const locationStr = locationParts.join(', ');
@@ -236,13 +231,8 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
                 {show.VenueName && <span className="text-gray-600"> · {show.VenueName}</span>}
               </p>
 
-              {/* Metadata badges */}
+              {/* Metadata badges: recording type, duration, TV standard */}
               <div className="flex flex-wrap gap-1.5">
-                {year !== 'Unknown' && (
-                  <span className="px-2.5 py-0.5 rounded text-xs font-medium bg-white/8 text-gray-300 border border-white/10">
-                    {year}
-                  </span>
-                )}
                 {show.RecordingType && (
                   <span className={`px-2.5 py-0.5 rounded text-xs font-medium ${getRecordingBadgeStyle(show.RecordingType)}`}>
                     {show.RecordingType}
@@ -254,9 +244,9 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
                     {durationFormatted}
                   </span>
                 )}
-                {show.Width && show.Height && (
-                  <span className="px-2.5 py-0.5 rounded text-xs font-mono font-medium bg-white/8 text-gray-400 border border-white/10">
-                    {show.Width}×{show.Height}
+                {show.TVStandard && (
+                  <span className="px-2.5 py-0.5 rounded text-xs font-medium bg-white/8 text-gray-300 border border-white/10">
+                    {show.TVStandard}
                   </span>
                 )}
               </div>
@@ -416,49 +406,6 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
                 </div>
               )}
 
-              {(show.Lineage || show.FolderPath || videoFiles.length > 0 || show.MasterDriveName) && (
-                <div className="border border-white/8 rounded-lg overflow-hidden">
-                  <button
-                    onClick={() => setIsSourceExpanded(!isSourceExpanded)}
-                    className="w-full flex items-center justify-between px-4 py-3 bg-white/3 hover:bg-white/5 transition-colors text-left"
-                  >
-                    <span className="text-xs font-semibold uppercase tracking-[0.15em] text-gray-500">Source & Files</span>
-                    <ChevronDown className={`w-4 h-4 text-gray-600 transition-transform duration-200 ${isSourceExpanded ? 'rotate-180' : ''}`} />
-                  </button>
-                  {isSourceExpanded && (
-                    <div className="px-4 pb-4 pt-2 space-y-3 bg-black/20 text-xs">
-                      {show.MasterDriveName && (
-                        <div>
-                          <span className="text-gray-600 block mb-0.5">Drive</span>
-                          <span className="text-gray-300">{show.MasterDriveName}</span>
-                        </div>
-                      )}
-                      {show.FolderPath && (
-                        <div>
-                          <span className="text-gray-600 block mb-0.5">Path</span>
-                          <span className="text-gray-400 font-mono break-all">{show.FolderPath}</span>
-                        </div>
-                      )}
-                      {show.Lineage && (
-                        <div>
-                          <span className="text-gray-600 block mb-0.5">Lineage</span>
-                          <span className="text-gray-300">{show.Lineage}</span>
-                        </div>
-                      )}
-                      {videoFiles.length > 0 && (
-                        <div>
-                          <span className="text-gray-600 block mb-1.5">Files ({videoFiles.length})</span>
-                          <div className="space-y-1 max-h-36 overflow-y-auto">
-                            {videoFiles.map((file, idx) => (
-                              <div key={idx} className="text-gray-500 font-mono truncate">{file}</div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
 
           </div>
