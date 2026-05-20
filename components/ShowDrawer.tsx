@@ -224,7 +224,15 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
                 {show.Artist}
               </h1>
               <p className="text-gray-400 text-sm md:text-base mb-3">
-                {show.ShowDate || 'Date Unknown'}
+                {[
+                  show.ShowDate || 'Date Unknown',
+                  show.EventOrFestival
+                    ? show.EventOrFestival
+                    : show.VenueName || null,
+                  show.EventOrFestival
+                    ? show.Country
+                    : [show.City, show.Country].filter(Boolean).join(', '),
+                ].filter(Boolean).join(' · ')}
               </p>
 
               {/* Metadata badges: recording type, duration, TV standard */}
@@ -251,16 +259,6 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
 
           {/* Content */}
           <div className="px-5 md:px-8 py-6 space-y-6">
-
-            {/* Context line: event · country  —or—  venue · city, country */}
-            {(show.EventOrFestival || show.VenueName || show.City || show.Country) && (
-              <p className="text-sm text-gray-400">
-                {show.EventOrFestival
-                  ? [show.EventOrFestival, show.Country].filter(Boolean).join(' · ')
-                  : [show.VenueName, [show.City, show.Country].filter(Boolean).join(', ')].filter(Boolean).join(' · ')
-                }
-              </p>
-            )}
 
             {/* Screenshots */}
             {images.length > 0 && (
