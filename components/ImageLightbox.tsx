@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { ImageWithFallback } from './ImageWithFallback';
+import { CloseButton } from './CloseButton';
 
 interface ImageLightboxProps {
   imageUrl?: string;
@@ -39,13 +40,11 @@ export function ImageLightbox({ imageUrl, images, currentImage, onClose }: Image
   return (
     <div className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center fade-in">
       {/* Close button */}
-      <button
+      <CloseButton
         onClick={onClose}
-        className="absolute top-4 md:top-6 right-4 md:right-6 p-2 md:p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-10"
+        className="absolute top-4 md:top-6 right-4 md:right-6 z-10"
         aria-label="Close lightbox"
-      >
-        <X className="w-5 h-5 md:w-6 md:h-6" />
-      </button>
+      />
 
       {/* Navigation buttons */}
       {imageArray.length > 1 && (

@@ -4,7 +4,6 @@ import { TopNav } from './components/TopNav';
 import { Sidebar } from './components/Sidebar';
 import { ArtistRow } from './components/ArtistRow';
 import { ShowDrawer } from './components/ShowDrawer';
-import { ImageLightbox } from './components/ImageLightbox';
 import { SearchResultsGrid } from './components/SearchResultsGrid';
 import { HeroSearch } from './components/HeroSearch';
 import { FeaturedRows } from './components/FeaturedRows';
@@ -62,7 +61,6 @@ export default function App() {
   const [searchType, setSearchType] = useState<'artist' | 'general' | undefined>(undefined);
   const [pillTransitionKey, setPillTransitionKey] = useState(0);
   const [selectedShow, setSelectedShow] = useState<Show | null>(null);
-  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('hero');
   const [showAllMode, setShowAllMode] = useState(false);
   const navSearchRef = useRef<HTMLInputElement>(null);
@@ -133,8 +131,6 @@ export default function App() {
   }
 
   function handleCloseDrawer() { setSelectedShow(null); }
-  function handleImageClick(imageUrl: string) { setLightboxImage(imageUrl); }
-  function handleCloseLightbox() { setLightboxImage(null); }
 
   function handleArtistJump(artist: string) {
     const element = document.getElementById(`artist-${artist.replace(/\s+/g, '-')}`);
@@ -318,11 +314,10 @@ export default function App() {
 
       <AnimatePresence>
         {selectedShow && (
-          <ShowDrawer show={selectedShow} onClose={handleCloseDrawer} onImageClick={handleImageClick} getImageUrl={getImageUrl} />
+          <ShowDrawer show={selectedShow} onClose={handleCloseDrawer} getImageUrl={getImageUrl} />
         )}
       </AnimatePresence>
 
-      {lightboxImage && <ImageLightbox imageUrl={lightboxImage} onClose={handleCloseLightbox} />}
     </div>
   );
 }
