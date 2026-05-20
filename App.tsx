@@ -212,62 +212,38 @@ export default function App() {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <HeroSearch onSearch={handleSearchChange} onBrowseAll={handleShowAllShows} />
+      <HeroSearch onSearch={handleSearchChange} onBrowseAll={handleShowAllShows} isSearching={isSearching || showAllMode} />
       {/* Content slot: transitions between featured rows, all-shows, and search results */}
-      <AnimatePresence mode="wait">
-        {isSearching ? (
-          <motion.div
-            key="hero-results"
-            className="px-4 md:px-8"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18 }}
-          >
-            <SearchResultsGrid
-              shows={filteredShows}
-              query={debouncedQuery}
-              searchType={searchType}
-              transitionKey={pillTransitionKey}
-              onShowClick={handleShowClick}
-              onClear={() => { setSearchQuery(''); setViewMode('hero'); window.scrollTo({ top: 0, behavior: 'smooth' }); navSearchRef.current?.focus(); }}
-              getImageUrl={getImageUrl}
-            />
-          </motion.div>
-        ) : showAllMode ? (
-          <motion.div
-            key="hero-all"
-            className="px-4 md:px-8"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18 }}
-          >
-            <SearchResultsGrid
-              shows={allShowsSorted}
-              query="All Shows"
-              searchType="general"
-              onShowClick={handleShowClick}
-              onClear={() => { setShowAllMode(false); window.scrollTo({ top: 0, behavior: 'smooth' }); navSearchRef.current?.focus(); }}
-              getImageUrl={getImageUrl}
-            />
-          </motion.div>
-        ) : (
-          <motion.div
-            key="hero-featured"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-          >
-            <FeaturedRows
-              shows={shows}
-              onShowClick={handleShowClick}
-              getImageUrl={getImageUrl}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {isSearching ? (
+        <div className="px-4 md:px-8 pt-10">
+          <SearchResultsGrid
+            shows={filteredShows}
+            query={debouncedQuery}
+            searchType={searchType}
+            transitionKey={pillTransitionKey}
+            onShowClick={handleShowClick}
+            onClear={() => { setSearchQuery(''); setViewMode('hero'); window.scrollTo({ top: 0, behavior: 'smooth' }); navSearchRef.current?.focus(); }}
+            getImageUrl={getImageUrl}
+          />
+        </div>
+      ) : showAllMode ? (
+        <div className="px-4 md:px-8">
+          <SearchResultsGrid
+            shows={allShowsSorted}
+            query="All Shows"
+            searchType="general"
+            onShowClick={handleShowClick}
+            onClear={() => { setShowAllMode(false); window.scrollTo({ top: 0, behavior: 'smooth' }); navSearchRef.current?.focus(); }}
+            getImageUrl={getImageUrl}
+          />
+        </div>
+      ) : (
+        <FeaturedRows
+          shows={shows}
+          onShowClick={handleShowClick}
+          getImageUrl={getImageUrl}
+        />
+      )}
     </motion.div>
   );
 

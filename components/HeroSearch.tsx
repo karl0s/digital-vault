@@ -5,6 +5,7 @@ export type SearchType = 'artist' | 'general';
 interface HeroSearchProps {
   onSearch: (query: string, type?: SearchType) => void;
   onBrowseAll: () => void;
+  isSearching?: boolean;
 }
 
 const QUICK_SEARCHES: { label: string; query: string; type: SearchType }[] = [
@@ -16,9 +17,21 @@ const QUICK_SEARCHES: { label: string; query: string; type: SearchType }[] = [
   { label: '1990s',                query: 'nineties',             type: 'general' },
 ];
 
-export function HeroSearch({ onSearch, onBrowseAll }: HeroSearchProps) {
+export function HeroSearch({ onSearch, onBrowseAll, isSearching = false }: HeroSearchProps) {
   return (
-    <div className="relative flex flex-col items-center px-4 pt-28 pb-16 text-center overflow-hidden">
+    <motion.div
+      style={{ overflow: 'hidden' }}
+      animate={isSearching
+        ? { opacity: 0, height: 0 }
+        : { opacity: 1, height: 'auto' }
+      }
+      transition={{
+        opacity: { duration: 0.18, ease: 'easeOut' },
+        height: { duration: 0.28, ease: [0.4, 0, 0.2, 1] },
+      }}
+    >
+      {/* Static inner wrapper owns all padding — keeps it out of the height animation */}
+      <div className="relative flex flex-col items-center px-4 pt-28 pb-16 text-center overflow-hidden">
       {/* Atmospheric radial glow — faint red from above, like stage lighting */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -88,6 +101,7 @@ export function HeroSearch({ onSearch, onBrowseAll }: HeroSearchProps) {
         </motion.div>
 
       </div>
-    </div>
+      </div>
+    </motion.div>
   );
 }
