@@ -78,9 +78,6 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
 
   const setlistItems = show.Setlist ? show.Setlist.split(';').map(s => s.trim()).filter(Boolean) : [];
 
-  const locationParts = [show.City, show.Country].filter(Boolean);
-  const locationStr = locationParts.join(', ');
-
   const artistInitials = show.Artist
     .split(' ').map(w => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
 
@@ -228,7 +225,6 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
               </h1>
               <p className="text-gray-400 text-sm md:text-base mb-3">
                 {show.ShowDate || 'Date Unknown'}
-                {show.VenueName && <span className="text-gray-600"> · {show.VenueName}</span>}
               </p>
 
               {/* Metadata badges: recording type, duration, TV standard */}
@@ -256,14 +252,14 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
           {/* Content */}
           <div className="px-5 md:px-8 py-6 space-y-6">
 
-            {/* Location & event */}
-            {(locationStr || show.EventOrFestival) && (
-              <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-                {locationStr && <span className="text-gray-400">{locationStr}</span>}
-                {show.EventOrFestival && (
-                  <span className="text-[#E50914] font-medium">{show.EventOrFestival}</span>
-                )}
-              </div>
+            {/* Context line: event · country  —or—  venue · city, country */}
+            {(show.EventOrFestival || show.VenueName || show.City || show.Country) && (
+              <p className="text-sm text-gray-400">
+                {show.EventOrFestival
+                  ? [show.EventOrFestival, show.Country].filter(Boolean).join(' · ')
+                  : [show.VenueName, [show.City, show.Country].filter(Boolean).join(', ')].filter(Boolean).join(' · ')
+                }
+              </p>
             )}
 
             {/* Screenshots */}
