@@ -4,17 +4,10 @@ import { SAMPLE_SHOWS } from '../data/sampleShows';
 
 export function useShows() {
   const [shows, setShows] = useState<Show[]>([]);
-  const [imageMapping, setImageMapping] = useState<Record<string, string>>({});
   const [imageManifest, setImageManifest] = useState<Record<string, number[]>>({});
 
   useEffect(() => {
     const base = import.meta.env.BASE_URL;
-
-    // Load test images mapping (optional)
-    fetch(`${base}test-images.json`)
-      .then(res => res.json())
-      .then((data: Record<string, string>) => setImageMapping(data))
-      .catch(() => {});
 
     // Load image manifest — maps checksum → available slot indices
     fetch(`${base}image-manifest.json`)
@@ -60,10 +53,6 @@ export function useShows() {
       const available = imageManifest[checksum];
       if (!available || !available.includes(index)) return null;
     }
-
-    // Check test image mapping first
-    const key = `${checksum}_0${index}`;
-    if (imageMapping[key]) return imageMapping[key];
 
     return `${base}images/${checksum}_0${index}.jpg`;
   };
