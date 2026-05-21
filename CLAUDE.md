@@ -339,6 +339,28 @@ Claude will scan the artist's shows, identify gaps, research each one, and prese
 
 ## UI patterns
 
+### Content container width
+The homepage and nav share a standard max-width container to keep content visually centred on wide screens:
+
+- `max-w-[1924px] mx-auto` — used in `FeaturedRows` (outer wrapper) and `TopNav` (inner content wrapper). Derived from 6.5 visible cards × 280px + 6 gaps × 12px + 64px padding = 1924px.
+- `max-w-[1860px] mx-auto` — used in `SearchResultsGrid`. Same effective inner width (1924 − 64px outer padding already applied by `App.tsx`).
+
+When adding any new full-width homepage section, wrap its content in `max-w-[1924px] mx-auto`. The nav background spans the full viewport; only its inner flex div gets the max-width wrapper.
+
+### Homepage row fade gradients
+In `FeaturedRow` (inside `FeaturedRows.tsx`), the left/right edge fades are **always visible** when there is content to scroll — they are separate `pointer-events-none` divs, not part of the arrow buttons. The arrow buttons (`z-20`) are hover-only (`opacity-0` → `opacity-100` on `isRowHovered`). The fade divs (`z-10`) have no opacity transition.
+
+This means users always see the scroll affordance without needing to hover first.
+
+### Search results grid
+`SearchResultsGrid` uses CSS `grid` with responsive column counts — no fixed card widths (columns size automatically via `1fr`):
+
+```
+grid-cols-2  →  md:grid-cols-4  →  lg:grid-cols-5  →  xl:grid-cols-6  →  2xl:grid-cols-7
+```
+
+At the `2xl` breakpoint (1536px+) with the `max-w-[1860px]` container, each card is approximately 255px wide — visually consistent with the 280px cards on the homepage rows.
+
 ### Close buttons
 All close buttons use the shared `CloseButton` component (`components/CloseButton.tsx`).
 Style: `bg-white/10 hover:bg-white/20 rounded-full`, icon `w-5 h-5 md:w-6 md:h-6`.
