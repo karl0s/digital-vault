@@ -297,6 +297,26 @@ The hero title block (site name, subtitle, quick-search pills) is always mounted
 (not `AnimatePresence`) so the nav search input is never unmounted while typing.
 `App.tsx` passes `isSearching={isSearching || showAllMode}` to collapse it in both search and all-shows mode.
 
+### Drawer metadata layout (ShowDrawer)
+The drawer hero area and content grid follow this fixed structure:
+
+**Hero area** (top of drawer, above thumbnails):
+1. Artist name — large display font
+2. Single subtitle line — `Date · EventOrFestival (or VenueName if no event) · Country (or City, Country if no event)` — built as a filtered join with ` · ` separator; "Date Unknown" if `ShowDate` is empty
+3. Badge pills row — RecordingType, Duration (Clock icon + auto-formatted `DurationSec`), TVStandard — each only rendered if the field has a value
+
+**Content grid** (below thumbnails):
+- 3 columns on `md+`: Setlist | Technical | Notes
+- Column count is dynamic — `md:grid-cols-3` when all three exist, `md:grid-cols-2` when only two, no grid class when only one
+- Column labels use `text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600`
+- Setlist: numbered list from semicolon-split `Setlist` field; `Encore break` rendered as a divider line
+- Technical: array of `{ label, value }` rows — label fixed `w-16 text-gray-500`, value `text-white`; only rows with a value are rendered
+- Notes: `whitespace-pre-wrap font-mono text-xs text-gray-400`; truncated to `max-h-40` with a gradient fade when collapsed; **More ⌄ / Less ⌃** buttons toggle `notesExpanded` state; button only shown when `Notes.length > 320`
+
+The Source & Files accordion has been removed — drive/folder/file metadata is no longer shown in the drawer.
+
+**Tailwind v4 note**: use `bg-linear-to-t` not `bg-gradient-to-t` for gradient classes — the latter triggers a deprecation warning in v4.
+
 ### In-drawer image viewer (ShowDrawer)
 `ShowDrawer` manages image viewing internally — there is no external lightbox call.
 
