@@ -342,10 +342,23 @@ Claude will scan the artist's shows, identify gaps, research each one, and prese
 ### Content container width
 The homepage and nav share a standard max-width container to keep content visually centred on wide screens:
 
-- `max-w-[1924px] mx-auto` — used in `FeaturedRows` (outer wrapper) and `TopNav` (inner content wrapper). Derived from 6.5 visible cards × 280px + 6 gaps × 12px + 64px padding = 1924px.
-- `max-w-[1860px] mx-auto` — used in `SearchResultsGrid`. Same effective inner width (1924 − 64px outer padding already applied by `App.tsx`).
+- `max-w-[1924px] mx-auto` — used in `FeaturedRows` (outer wrapper) and `TopNav` (inner content wrapper). Caps the content area on ultra-wide screens so rows don't stretch edge-to-edge.
+- `max-w-[1860px] mx-auto` — used in `SearchResultsGrid`. Same effective inner width as FeaturedRows (1924px − 64px outer padding already applied by `App.tsx`).
 
 When adding any new full-width homepage section, wrap its content in `max-w-[1924px] mx-auto`. The nav background spans the full viewport; only its inner flex div gets the max-width wrapper.
+
+### Homepage row card widths
+`FeaturedRows` uses viewport-calc card widths at the same breakpoints as `SearchResultsGrid`, so cards are the same size in both views at every viewport width. Cards are not fixed-width — they scale with the viewport:
+
+```
+default: calc((100vw - 32px - 12px) / 2)        ← 2 visible
+md:     calc((100vw - 64px - 36px) / 4)          ← 4 visible (= search grid)
+lg:     calc((100vw - 64px - 48px) / 5)          ← 5 visible (= search grid)
+xl:     calc((100vw - 64px - 60px) / 6)          ← 6 visible (= search grid)
+2xl:    calc((min(100vw,1924px) - 64px - 72px) / 6.5)  ← 6.5 with scroll peek
+```
+
+At `2xl` the homepage shows 6.5 (one fewer than the grid's 7) to preserve the visible scroll peek.
 
 ### Homepage row fade gradients
 In `FeaturedRow` (inside `FeaturedRows.tsx`), the left/right edge fades are **always visible** when there is content to scroll — they are separate `pointer-events-none` divs, not part of the arrow buttons. The arrow buttons (`z-20`) are hover-only (`opacity-0` → `opacity-100` on `isRowHovered`). The fade divs (`z-10`) have no opacity transition.
@@ -359,7 +372,7 @@ This means users always see the scroll affordance without needing to hover first
 grid-cols-2  →  md:grid-cols-4  →  lg:grid-cols-5  →  xl:grid-cols-6  →  2xl:grid-cols-7
 ```
 
-At the `2xl` breakpoint (1536px+) with the `max-w-[1860px]` container, each card is approximately 255px wide — visually consistent with the 280px cards on the homepage rows.
+Card widths at each breakpoint match the homepage row cards (same calc denominators), so both views feel visually consistent.
 
 ### Close buttons
 All close buttons use the shared `CloseButton` component (`components/CloseButton.tsx`).
