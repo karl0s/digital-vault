@@ -203,10 +203,9 @@ The `_01.jpg` image is used as the card thumbnail. All four are prefetched on ca
 | `components/ShowCard.tsx` | Individual show card — renders differently in home vs search mode |
 | `components/SearchResultsGrid.tsx` | Search results — responsive CSS grid (2→4→5→6→7 cols), `max-w-[1860px]` centred container |
 | `components/ShowDrawer.tsx` | Slide-out detail panel — hero subtitle, badge pills, 3-column Setlist/Technical/Notes grid, Notes expand, in-drawer image viewer (no external lightbox) |
-| `components/CloseButton.tsx` | Shared close button — semi-transparent style, used in `ShowDrawer` and `ImageLightbox` |
-| `components/ArtistRow.tsx` | Single horizontal scrollable row of show cards |
+| `components/CloseButton.tsx` | Shared close button — semi-transparent style, used in `ShowDrawer` |
+| `components/ArtistRow.tsx` | Single horizontal scrollable row of show cards — responsive viewport-calc widths (2→4→5→6→7 cols), accounts for sidebar offset |
 | `components/Sidebar.tsx` | Artist navigation sidebar |
-| `components/ImageLightbox.tsx` | Full-screen image viewer — component exists but is not currently wired up; image viewing is handled in-drawer by `ShowDrawer` |
 | `components/LazyImage.tsx` | Lazy-loading image with colour placeholder |
 | `components/ImageWithFallback.tsx` | Image component with automatic fallback on load error |
 

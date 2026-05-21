@@ -379,6 +379,7 @@ All close buttons use the shared `CloseButton` component (`components/CloseButto
 Style: `bg-white/10 hover:bg-white/20 rounded-full`, icon `w-5 h-5 md:w-6 md:h-6`.
 Pass positioning via `className` prop — the component handles appearance only.
 Standard coordinates: `top-4 right-4` mobile, `top-6 right-6` desktop.
+Currently used in: `ShowDrawer` (drawer close + image overlay close).
 
 ### Hero section (HeroSearch)
 The hero title block (site name, subtitle, quick-search pills) is always mounted but animates to
@@ -418,7 +419,6 @@ How it works:
 - The overlay renders a `<motion.div>` with the same `layoutId` matching `expandedFromIndex` — Framer Motion animates the element between thumbnail and expanded positions
 - Navigating prev/next only updates `viewingIndex`; close always zooms back to the original thumbnail
 - The drawer's own close button is hidden (`!isImageExpanded`) while the viewer is open to prevent z-index conflicts with the overlay's close button
-- `ImageLightbox` is **not used** by `ShowDrawer` — do not re-add `onImageClick` prop or wire it back up
 
 ---
 
