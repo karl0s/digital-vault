@@ -121,7 +121,7 @@ export function ArtistRow({
           {sortedShows.map((show, index) => (
             <motion.div
               key={show.ShowID}
-              className="w-[280px] shrink-0"
+              className="shrink-0 w-[calc((100vw-32px-12px)/2)] md:w-[calc((100vw-128px-36px)/4)] lg:w-[calc((100vw-128px-48px)/5)] xl:w-[calc((100vw-128px-60px)/6)] 2xl:w-[calc((100vw-128px-72px)/7)]"
               initial={{ opacity: 0, scale: 0.92 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true, margin: '-40px' }}
