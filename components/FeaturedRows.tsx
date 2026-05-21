@@ -65,18 +65,25 @@ function FeaturedRow({ title, shows, onShowClick, getImageUrl }: FeaturedRowProp
           className="flex gap-3 overflow-x-auto px-4 md:px-8 pb-6 scrollbar-hide"
         >
           {shows.map((show) => (
-            <div key={show.ShowID} className="w-[280px] shrink-0">
+            <div key={show.ShowID} className="shrink-0 w-[calc((100vw-32px-12px)/2)] md:w-[calc((100vw-64px-36px)/4)] lg:w-[calc((100vw-64px-48px)/5)] xl:w-[calc((100vw-64px-60px)/6)] 2xl:w-[calc((min(100vw,1924px)-64px-72px)/6.5)]">
               <ShowCard show={show} onClick={() => onShowClick(show)} getImageUrl={getImageUrl} />
             </div>
           ))}
         </div>
 
-        {/* Left arrow */}
+        {/* Left fade — always visible when scrolled right */}
+        {showLeft && (
+          <div
+            className="absolute left-0 top-0 bottom-6 w-24 pointer-events-none z-10"
+            style={{ background: 'linear-gradient(to right, #141414 20%, transparent)' }}
+          />
+        )}
+
+        {/* Left arrow — hover only */}
         {showLeft && (
           <button
             onClick={scrollLeft}
-            className={`absolute left-0 top-0 bottom-6 z-10 flex items-center justify-start pl-2 pr-8 transition-opacity duration-200 ${isRowHovered ? 'opacity-100' : 'opacity-0'}`}
-            style={{ background: 'linear-gradient(to right, #141414 20%, transparent)' }}
+            className={`absolute left-2 top-0 bottom-6 z-20 flex items-center transition-opacity duration-200 ${isRowHovered ? 'opacity-100' : 'opacity-0'}`}
             aria-label="Scroll left"
           >
             <div className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors duration-150">
@@ -85,12 +92,19 @@ function FeaturedRow({ title, shows, onShowClick, getImageUrl }: FeaturedRowProp
           </button>
         )}
 
-        {/* Right arrow */}
+        {/* Right fade — always visible when more content to scroll */}
+        {showRight && (
+          <div
+            className="absolute right-0 top-0 bottom-6 w-24 pointer-events-none z-10"
+            style={{ background: 'linear-gradient(to left, #141414 20%, transparent)' }}
+          />
+        )}
+
+        {/* Right arrow — hover only */}
         {showRight && (
           <button
             onClick={scrollRight}
-            className={`absolute right-0 top-0 bottom-6 z-10 flex items-center justify-end pr-2 pl-8 transition-opacity duration-200 ${isRowHovered ? 'opacity-100' : 'opacity-0'}`}
-            style={{ background: 'linear-gradient(to left, #141414 20%, transparent)' }}
+            className={`absolute right-2 top-0 bottom-6 z-20 flex items-center justify-end transition-opacity duration-200 ${isRowHovered ? 'opacity-100' : 'opacity-0'}`}
             aria-label="Scroll right"
           >
             <div className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors duration-150">
@@ -186,14 +200,14 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
 
   if (!sections) {
     return (
-      <div className="px-4 md:px-8 py-8">
+      <div className="px-4 md:px-8 py-8 max-w-[1924px] mx-auto">
         <div className="animate-pulse space-y-10">
           {[1, 2, 3].map((i) => (
             <div key={i}>
               <div className="h-3 bg-white/5 rounded w-32 mb-4" />
               <div className="flex gap-3">
                 {[1, 2, 3, 4, 5].map((j) => (
-                  <div key={j} className="shrink-0 w-[280px] aspect-4/3 bg-white/5 rounded-md" />
+                  <div key={j} className="shrink-0 w-[calc((100vw-32px-12px)/2)] md:w-[calc((100vw-64px-36px)/4)] lg:w-[calc((100vw-64px-48px)/5)] xl:w-[calc((100vw-64px-60px)/6)] 2xl:w-[calc((min(100vw,1924px)-64px-72px)/6.5)] aspect-4/3 bg-white/5 rounded-md" />
                 ))}
               </div>
             </div>
@@ -204,7 +218,7 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
   }
 
   return (
-    <div className="pb-16">
+    <div className="pb-16 max-w-[1924px] mx-auto">
       {sections.recent.length > 0 && (
         <FeaturedRow
           title="Featured"
