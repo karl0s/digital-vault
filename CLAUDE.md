@@ -259,18 +259,72 @@ The workflow for adding a new drive is not yet finalised.
 
 ## Metadata enrichment workflow
 
-For shows with placeholder dates (`YYYY-01-01`), enrichment is done conversationally with Claude:
+This is a **recurring weekly task**. Each session picks an artist (or a batch of artists) and enriches their shows in `shows.json` — filling in missing or placeholder values for dates, setlists, venue names, and event/festival names.
 
-1. Ask Claude to scan `shows.json` for a given artist's placeholder-date shows
-2. Claude web-searches each show using the metadata already present (artist, event name, city, folder name, etc.)
-3. Claude only proposes a change when **2+ independent sources agree** on the date/venue
-4. Proposals are batched per artist — review and confirm before Claude writes to `shows.json`
-5. After writing, Claude runs the health check and commits
+No API keys, no scripts, no external accounts needed. Claude handles all research inline using web search.
 
-**To start an enrichment session:**
-> "Check Radiohead for missing or placeholder dates"
+---
 
-No API keys, no scripts, no external accounts needed. Claude handles the research inline.
+### What gets enriched
+
+| Field | Missing/placeholder state | Target state |
+|---|---|---|
+| `ShowDate` | `YYYY-01-01` (year only) or `YYYY-MM-01` (year+month) | Full `YYYY-MM-DD` |
+| `Setlist` | Empty string `""` | Semicolon-separated song list |
+| `EventOrFestival` | Empty or generic string | Correct festival/event name |
+| `VenueName` | Empty, approximate, or uses modern branding | Name at time of show |
+
+---
+
+### How to identify the show
+
+Each show record contains clues that narrow down the exact date and event, even when the metadata is sparse. Claude should check these fields in order:
+
+1. `FolderPath` and `FolderName` — often contain the date (`19961023`), venue shorthand, or event name encoded in the folder structure
+2. `Notes` — may contain recording lineage text, broadcast source, or eyewitness descriptions that identify the show
+3. `EventOrFestival` — if already present, use it as the primary search anchor
+4. `City` + `Country` + approximate year — narrows the search to regional shows in that window
+5. `VenueName` — cross-reference with known venue histories
+
+---
+
+### Research rules
+
+- **2+ independent sources must agree** before any field is written. Never write from a single source.
+- Acceptable sources (ranked by reliability):
+  1. setlist.fm (check user-confirmed count — higher = more reliable)
+  2. Official band site tour pages
+  3. Published concert reviews (Rolling Stone, NME, Billboard, Pitchfork, local press)
+  4. YouTube full-show videos with confirmed date/venue
+  5. Fan forums or Dime A Dozen NFO files with eyewitness accounts
+- If only 1 source is found, or sources conflict: leave the field unchanged and note the conflict in a comment to the user
+- Never infer or reconstruct a setlist from tour averages or nearby-show patterns alone
+- For `VenueName`: use the name the venue had **at the time of the show**, not its current branding
+
+---
+
+### Batching and confirmation workflow
+
+1. Claude scans `shows.json` for the requested artist and lists all shows with missing/placeholder fields
+2. Claude researches each show and prepares a **proposal batch** — all proposed changes for that artist in one message
+3. User reviews the batch and confirms (or rejects individual entries)
+4. Claude writes only the confirmed changes to `shows.json`
+5. Claude runs the health check and commits with `fix(shows):` or `feat(shows):` prefix
+
+**Never write to `shows.json` before the user confirms the batch.**
+
+---
+
+### Trigger phrases
+
+Start a session with any of these:
+
+> "Check [Artist] for missing setlists"
+> "Enrich [Artist] shows — dates, setlists, venues"
+> "Pick up metadata enrichment — do [Artist] next"
+> "Continue enrichment from last session"
+
+Claude will scan the artist's shows, identify gaps, research each one, and present the full proposal batch for review before writing anything.
 
 ---
 
