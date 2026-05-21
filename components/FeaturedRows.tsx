@@ -186,7 +186,7 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
 
   if (!sections) {
     return (
-      <div className="px-4 md:px-8 py-8">
+      <div className="px-4 md:px-8 py-8 max-w-[1924px] mx-auto">
         <div className="animate-pulse space-y-10">
           {[1, 2, 3].map((i) => (
             <div key={i}>
@@ -204,7 +204,7 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
   }
 
   return (
-    <div className="pb-16">
+    <div className="pb-16 max-w-[1924px] mx-auto">
       {sections.recent.length > 0 && (
         <FeaturedRow
           title="Featured"
