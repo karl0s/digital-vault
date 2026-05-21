@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Clock, Music, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Clock, Music, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { Show } from '../App';
 import { LazyImage } from './LazyImage';
 import { CloseButton } from './CloseButton';
@@ -361,17 +361,17 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
                     {!notesExpanded && show.Notes.length > 200 && (
                       <button
                         onClick={() => setNotesExpanded(true)}
-                        className="mt-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600 hover:text-gray-400 transition-colors"
+                        className="mt-2 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600 hover:text-gray-400 transition-colors"
                       >
-                        More
+                        More <ChevronDown className="w-3 h-3" />
                       </button>
                     )}
                     {notesExpanded && (
                       <button
                         onClick={() => setNotesExpanded(false)}
-                        className="mt-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600 hover:text-gray-400 transition-colors block"
+                        className="mt-2 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600 hover:text-gray-400 transition-colors"
                       >
-                        Less
+                        Less <ChevronUp className="w-3 h-3" />
                       </button>
                     )}
                   </div>
