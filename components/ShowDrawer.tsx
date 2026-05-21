@@ -351,14 +351,14 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
                   </p>
                   <div>
                     <div className="relative">
-                      <p className={`text-xs text-gray-400 whitespace-pre-wrap font-mono leading-relaxed ${notesExpanded ? '' : 'max-h-24 overflow-hidden'}`}>
+                      <p className={`text-xs text-gray-400 whitespace-pre-wrap font-mono leading-relaxed ${notesExpanded ? '' : 'max-h-40 overflow-hidden'}`}>
                         {show.Notes}
                       </p>
-                      {!notesExpanded && show.Notes.length > 200 && (
+                      {!notesExpanded && show.Notes.length > 320 && (
                         <div className="absolute bottom-0 left-0 right-0 h-10 bg-linear-to-t from-[#181818] to-transparent pointer-events-none" />
                       )}
                     </div>
-                    {!notesExpanded && show.Notes.length > 200 && (
+                    {!notesExpanded && show.Notes.length > 320 && (
                       <button
                         onClick={() => setNotesExpanded(true)}
                         className="mt-2 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600 hover:text-gray-400 transition-colors"
