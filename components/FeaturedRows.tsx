@@ -71,12 +71,19 @@ function FeaturedRow({ title, shows, onShowClick, getImageUrl }: FeaturedRowProp
           ))}
         </div>
 
-        {/* Left arrow */}
+        {/* Left fade — always visible when scrolled right */}
+        {showLeft && (
+          <div
+            className="absolute left-0 top-0 bottom-6 w-24 pointer-events-none z-10"
+            style={{ background: 'linear-gradient(to right, #141414 20%, transparent)' }}
+          />
+        )}
+
+        {/* Left arrow — hover only */}
         {showLeft && (
           <button
             onClick={scrollLeft}
-            className={`absolute left-0 top-0 bottom-6 z-10 flex items-center justify-start pl-2 pr-8 transition-opacity duration-200 ${isRowHovered ? 'opacity-100' : 'opacity-0'}`}
-            style={{ background: 'linear-gradient(to right, #141414 20%, transparent)' }}
+            className={`absolute left-2 top-0 bottom-6 z-20 flex items-center transition-opacity duration-200 ${isRowHovered ? 'opacity-100' : 'opacity-0'}`}
             aria-label="Scroll left"
           >
             <div className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors duration-150">
@@ -85,12 +92,19 @@ function FeaturedRow({ title, shows, onShowClick, getImageUrl }: FeaturedRowProp
           </button>
         )}
 
-        {/* Right arrow */}
+        {/* Right fade — always visible when more content to scroll */}
+        {showRight && (
+          <div
+            className="absolute right-0 top-0 bottom-6 w-24 pointer-events-none z-10"
+            style={{ background: 'linear-gradient(to left, #141414 20%, transparent)' }}
+          />
+        )}
+
+        {/* Right arrow — hover only */}
         {showRight && (
           <button
             onClick={scrollRight}
-            className={`absolute right-0 top-0 bottom-6 z-10 flex items-center justify-end pr-2 pl-8 transition-opacity duration-200 ${isRowHovered ? 'opacity-100' : 'opacity-0'}`}
-            style={{ background: 'linear-gradient(to left, #141414 20%, transparent)' }}
+            className={`absolute right-2 top-0 bottom-6 z-20 flex items-center justify-end transition-opacity duration-200 ${isRowHovered ? 'opacity-100' : 'opacity-0'}`}
             aria-label="Scroll right"
           >
             <div className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors duration-150">
