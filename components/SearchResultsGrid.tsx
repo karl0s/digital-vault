@@ -22,7 +22,7 @@ export function SearchResultsGrid({ shows, query, searchType, transitionKey, onS
       : isSingleArtist ? 'artist' : 'search';
 
   return (
-    <div>
+    <div className="max-w-[1860px] mx-auto">
       {/* Results header */}
       <div className="mb-6">
         <h2 className="text-4xl font-bold text-white">"{query}"</h2>
@@ -53,14 +53,14 @@ export function SearchResultsGrid({ shows, query, searchType, transitionKey, onS
         <AnimatePresence mode="wait">
           <motion.div
             key={transitionKey ?? cardMode}
-            className="flex flex-wrap gap-x-3 gap-y-6"
+            className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-x-3 gap-y-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2, ease: 'easeInOut' }}
           >
             {shows.map((show) => (
-              <div key={show.ShowID} className="w-[280px]">
+              <div key={show.ShowID}>
                 <ShowCard
                   show={show}
                   onClick={() => onShowClick(show)}
