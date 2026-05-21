@@ -65,7 +65,7 @@ function FeaturedRow({ title, shows, onShowClick, getImageUrl }: FeaturedRowProp
           className="flex gap-3 overflow-x-auto px-4 md:px-8 pb-6 scrollbar-hide"
         >
           {shows.map((show) => (
-            <div key={show.ShowID} className="w-[280px] shrink-0">
+            <div key={show.ShowID} className="shrink-0 w-[calc((100vw-32px-12px)/2)] md:w-[calc((100vw-64px-36px)/4)] lg:w-[calc((100vw-64px-48px)/5)] xl:w-[calc((100vw-64px-60px)/6)] 2xl:w-[calc((min(100vw,1924px)-64px-72px)/6.5)]">
               <ShowCard show={show} onClick={() => onShowClick(show)} getImageUrl={getImageUrl} />
             </div>
           ))}
@@ -207,7 +207,7 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
               <div className="h-3 bg-white/5 rounded w-32 mb-4" />
               <div className="flex gap-3">
                 {[1, 2, 3, 4, 5].map((j) => (
-                  <div key={j} className="shrink-0 w-[280px] aspect-4/3 bg-white/5 rounded-md" />
+                  <div key={j} className="shrink-0 w-[calc((100vw-32px-12px)/2)] md:w-[calc((100vw-64px-36px)/4)] lg:w-[calc((100vw-64px-48px)/5)] xl:w-[calc((100vw-64px-60px)/6)] 2xl:w-[calc((min(100vw,1924px)-64px-72px)/6.5)] aspect-4/3 bg-white/5 rounded-md" />
                 ))}
               </div>
             </div>
