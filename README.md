@@ -197,11 +197,11 @@ The `_01.jpg` image is used as the card thumbnail. All four are prefetched on ca
 | File | Purpose |
 |------|---------|
 | `App.tsx` | Root component — data loading, state, mode switching (home / search) |
-| `components/FeaturedRows.tsx` | Home page — geo row + curated horizontal scroll rows |
+| `components/FeaturedRows.tsx` | Home page — geo row + curated horizontal scroll rows; `max-w-[1924px]` centred container; responsive viewport-calc card widths (2→4→5→6→6.5 cols); always-visible edge fades, hover-only arrows |
 | `components/HeroSearch.tsx` | Top search input |
-| `components/TopNav.tsx` | Navigation bar |
+| `components/TopNav.tsx` | Navigation bar — inner content constrained to `max-w-[1924px]` to align with homepage rows |
 | `components/ShowCard.tsx` | Individual show card — renders differently in home vs search mode |
-| `components/SearchResultsGrid.tsx` | Search results layout and header |
+| `components/SearchResultsGrid.tsx` | Search results — responsive CSS grid (2→4→5→6→7 cols), `max-w-[1860px]` centred container |
 | `components/ShowDrawer.tsx` | Slide-out detail panel — hero subtitle, badge pills, 3-column Setlist/Technical/Notes grid, Notes expand, in-drawer image viewer (no external lightbox) |
 | `components/CloseButton.tsx` | Shared close button — semi-transparent style, used in `ShowDrawer` and `ImageLightbox` |
 | `components/ArtistRow.tsx` | Single horizontal scrollable row of show cards |
