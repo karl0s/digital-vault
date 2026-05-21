@@ -32,7 +32,6 @@ const getColorFromString = (str: string): string => {
 const LAYOUT_TRANSITION = { duration: 0.38, ease: [0.16, 1, 0.3, 1] };
 
 export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
-  const [metaTab, setMetaTab] = useState<'technical' | 'notes'>('technical');
   // expandedFromIndex: which thumbnail was clicked (anchors the layoutId for open/close animation)
   // viewingIndex: which image is currently shown (changes on prev/next without affecting layoutId)
   const [expandedFromIndex, setExpandedFromIndex] = useState<number | null>(null);
@@ -293,118 +292,68 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
               </div>
             )}
 
-            {/* Setlist */}
-            {setlistItems.length > 0 && (
-              <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600 mb-4 flex items-center gap-1.5">
-                  <Music className="w-3 h-3" /> Setlist
-                </p>
-                <ol className="space-y-2">
-                  {setlistItems.map((song, idx) => (
-                    <li key={idx} className="flex items-start gap-3 text-sm">
-                      <span className="text-gray-700 tabular-nums text-xs w-5 shrink-0 pt-px text-right">
-                        {idx + 1}
-                      </span>
-                      <span className="text-gray-200 leading-snug">{song}</span>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            )}
+            {/* Setlist · Technical · Notes — 3-column flat layout, same visual style throughout */}
+            <div className={`grid grid-cols-1 gap-6 ${
+              setlistItems.length > 0 && show.Notes ? 'md:grid-cols-3' :
+              setlistItems.length > 0 || show.Notes ? 'md:grid-cols-2' : ''
+            }`}>
 
-            {/* Technical / Notes tabbed panel */}
-            <div className="border border-white/8 rounded-lg overflow-hidden">
-              {/* Tab bar */}
-              <div className="flex bg-white/3 border-b border-white/8">
-                <button
-                  onClick={() => setMetaTab('technical')}
-                  className={`px-4 py-3 text-xs font-semibold uppercase tracking-[0.15em] transition-colors border-b-2 -mb-px ${
-                    metaTab === 'technical'
-                      ? 'text-gray-300 border-white/30'
-                      : 'text-gray-600 hover:text-gray-400 border-transparent'
-                  }`}
-                >
-                  Technical
-                </button>
-                {show.Notes && (
-                  <button
-                    onClick={() => setMetaTab('notes')}
-                    className={`px-4 py-3 text-xs font-semibold uppercase tracking-[0.15em] transition-colors border-b-2 -mb-px ${
-                      metaTab === 'notes'
-                        ? 'text-gray-300 border-white/30'
-                        : 'text-gray-600 hover:text-gray-400 border-transparent'
-                    }`}
-                  >
-                    Notes
-                  </button>
-                )}
-              </div>
-
-              {/* Tab content */}
-              {metaTab === 'technical' ? (
-                <div className="px-4 py-4 bg-black/20">
-                  <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
-                    {show.VideoCodec && (
-                      <>
-                        <dt className="text-gray-600">Video</dt>
-                        <dd className="text-gray-300 font-mono">{show.VideoCodec}</dd>
-                      </>
-                    )}
-                    {show.AspectRatio && (
-                      <>
-                        <dt className="text-gray-600">Aspect</dt>
-                        <dd className="text-gray-300">{show.AspectRatio}</dd>
-                      </>
-                    )}
-                    {show.TVStandard && (
-                      <>
-                        <dt className="text-gray-600">Standard</dt>
-                        <dd className="text-gray-300">{show.TVStandard}</dd>
-                      </>
-                    )}
-                    {show.Container && (
-                      <>
-                        <dt className="text-gray-600">Container</dt>
-                        <dd className="text-gray-300 font-mono">{show.Container}</dd>
-                      </>
-                    )}
-                    {show.AudioCodec && (
-                      <>
-                        <dt className="text-gray-600">Audio</dt>
-                        <dd className="text-gray-300 font-mono">{show.AudioCodec}</dd>
-                      </>
-                    )}
-                    {show.AudioChannels && (
-                      <>
-                        <dt className="text-gray-600">Channels</dt>
-                        <dd className="text-gray-300">{show.AudioChannels}ch</dd>
-                      </>
-                    )}
-                    {show.AudioSampleRate && (
-                      <>
-                        <dt className="text-gray-600">Sample rate</dt>
-                        <dd className="text-gray-300 font-mono">{(parseInt(show.AudioSampleRate) / 1000).toFixed(1)} kHz</dd>
-                      </>
-                    )}
-                    {show.TotalSizeHuman && (
-                      <>
-                        <dt className="text-gray-600">Size</dt>
-                        <dd className="text-gray-300">{show.TotalSizeHuman}</dd>
-                      </>
-                    )}
-                    {show.FileCount && (
-                      <>
-                        <dt className="text-gray-600">Files</dt>
-                        <dd className="text-gray-300">{show.FileCount}</dd>
-                      </>
-                    )}
-                  </dl>
-                </div>
-              ) : (
-                <div className="px-4 pb-4 pt-3 max-h-80 overflow-y-auto bg-black/20">
-                  <p className="text-xs text-gray-400 whitespace-pre-wrap font-mono leading-relaxed">{show.Notes}</p>
+              {/* Setlist */}
+              {setlistItems.length > 0 && (
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600 mb-4 flex items-center gap-1.5">
+                    <Music className="w-3 h-3" /> Setlist
+                  </p>
+                  <ol className="space-y-2">
+                    {setlistItems.map((song, idx) => (
+                      <li key={idx} className="flex items-start gap-3 text-sm">
+                        <span className="text-gray-700 tabular-nums text-xs w-5 shrink-0 pt-px text-right">
+                          {idx + 1}
+                        </span>
+                        <span className="text-gray-200 leading-snug">{song}</span>
+                      </li>
+                    ))}
+                  </ol>
                 </div>
               )}
+
+              {/* Technical */}
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600 mb-4">
+                  Technical
+                </p>
+                <div className="space-y-2">
+                  {[
+                    show.VideoCodec  && { label: 'Video',       value: show.VideoCodec,       mono: true  },
+                    show.AspectRatio && { label: 'Aspect',      value: show.AspectRatio,       mono: false },
+                    show.TVStandard  && { label: 'Standard',    value: show.TVStandard,        mono: false },
+                    show.Container   && { label: 'Container',   value: show.Container,         mono: true  },
+                    show.AudioCodec  && { label: 'Audio',       value: show.AudioCodec,        mono: true  },
+                    show.AudioChannels && { label: 'Channels',  value: `${show.AudioChannels}ch`, mono: false },
+                    show.AudioSampleRate && { label: 'Sample rate', value: `${(parseInt(show.AudioSampleRate) / 1000).toFixed(1)} kHz`, mono: true },
+                    show.TotalSizeHuman && { label: 'Size',     value: show.TotalSizeHuman,    mono: false },
+                    show.FileCount   && { label: 'Files',       value: show.FileCount,         mono: false },
+                  ].filter(Boolean).map(({ label, value, mono }) => (
+                    <div key={label} className="flex items-start gap-3 text-sm">
+                      <span className="text-gray-700 text-xs w-16 shrink-0 pt-px">{label}</span>
+                      <span className={`text-gray-200 leading-snug ${mono ? 'font-mono' : ''}`}>{value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Notes */}
+              {show.Notes && (
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600 mb-4">
+                    Notes
+                  </p>
+                  <p className="text-xs text-gray-400 whitespace-pre-wrap font-mono leading-relaxed max-h-64 overflow-y-auto">
+                    {show.Notes}
+                  </p>
+                </div>
+              )}
+
             </div>
 
           </div>
