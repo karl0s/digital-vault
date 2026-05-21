@@ -30,7 +30,11 @@ A Netflix-style web interface for browsing a private collection of live concert 
 - **Lazy Image Loading**: Thumbnails load progressively with artist-coloured placeholders
 
 ### Show Detail
-- **Slide-Out Drawer**: Full metadata panel — technical specs, setlist, lineage, source equipment, drive reference
+- **Slide-Out Drawer**: Full metadata panel with a consolidated hero area, badge pills, and a 3-column content grid
+  - **Hero line**: Single subtitle combining date, event/festival or venue, and location — no redundant repetition
+  - **Badge pills**: RecordingType (e.g. Proshot), Duration (auto-formatted from `DurationSec`), TVStandard (e.g. PAL/NTSC) — only shown when the field has a value
+  - **3-column grid**: Setlist (numbered list) | Technical specs (label/value rows) | Notes — columns collapse gracefully when data is absent
+  - **Notes expand**: Long notes are truncated with a gradient fade; a "More ⌄ / Less ⌃" button below reveals or collapses the full text
 - **In-Drawer Image Viewer**: Clicking a screenshot thumbnail expands it inside the drawer using a Framer Motion `layoutId` animation — the image grows from the thumbnail to fill the drawer. Includes prev/next navigation, dot indicators, and keyboard support (arrow keys, ESC closes back to drawer). No full-screen takeover.
 
 ---
@@ -198,7 +202,7 @@ The `_01.jpg` image is used as the card thumbnail. All four are prefetched on ca
 | `components/TopNav.tsx` | Navigation bar |
 | `components/ShowCard.tsx` | Individual show card — renders differently in home vs search mode |
 | `components/SearchResultsGrid.tsx` | Search results layout and header |
-| `components/ShowDrawer.tsx` | Slide-out detail panel — handles image viewing internally via in-drawer viewer (no external lightbox) |
+| `components/ShowDrawer.tsx` | Slide-out detail panel — hero subtitle, badge pills, 3-column Setlist/Technical/Notes grid, Notes expand, in-drawer image viewer (no external lightbox) |
 | `components/CloseButton.tsx` | Shared close button — semi-transparent style, used in `ShowDrawer` and `ImageLightbox` |
 | `components/ArtistRow.tsx` | Single horizontal scrollable row of show cards |
 | `components/Sidebar.tsx` | Artist navigation sidebar |
