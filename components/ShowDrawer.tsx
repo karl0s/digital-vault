@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Clock, HardDrive, Music, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Clock, Music, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Show } from '../App';
 import { LazyImage } from './LazyImage';
 import { CloseButton } from './CloseButton';
@@ -32,7 +32,7 @@ const getColorFromString = (str: string): string => {
 const LAYOUT_TRANSITION = { duration: 0.38, ease: [0.16, 1, 0.3, 1] };
 
 export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
-  const [isNotesExpanded, setIsNotesExpanded] = useState(false);
+  const [metaTab, setMetaTab] = useState<'technical' | 'notes'>('technical');
   // expandedFromIndex: which thumbnail was clicked (anchors the layoutId for open/close animation)
   // viewingIndex: which image is currently shown (changes on prev/next without affecting layoutId)
   const [expandedFromIndex, setExpandedFromIndex] = useState<number | null>(null);
@@ -293,34 +293,56 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
               </div>
             )}
 
-            {/* Setlist + Tech specs side by side */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Setlist */}
+            {setlistItems.length > 0 && (
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600 mb-4 flex items-center gap-1.5">
+                  <Music className="w-3 h-3" /> Setlist
+                </p>
+                <ol className="space-y-2">
+                  {setlistItems.map((song, idx) => (
+                    <li key={idx} className="flex items-start gap-3 text-sm">
+                      <span className="text-gray-700 tabular-nums text-xs w-5 shrink-0 pt-px text-right">
+                        {idx + 1}
+                      </span>
+                      <span className="text-gray-200 leading-snug">{song}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            )}
 
-              {/* Setlist */}
-              {setlistItems.length > 0 && (
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600 mb-4 flex items-center gap-1.5">
-                    <Music className="w-3 h-3" /> Setlist
-                  </p>
-                  <ol className="space-y-2">
-                    {setlistItems.map((song, idx) => (
-                      <li key={idx} className="flex items-start gap-3 text-sm">
-                        <span className="text-gray-700 tabular-nums text-xs w-5 shrink-0 pt-px text-right">
-                          {idx + 1}
-                        </span>
-                        <span className="text-gray-200 leading-snug">{song}</span>
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-              )}
+            {/* Technical / Notes tabbed panel */}
+            <div className="border border-white/8 rounded-lg overflow-hidden">
+              {/* Tab bar */}
+              <div className="flex bg-white/3 border-b border-white/8">
+                <button
+                  onClick={() => setMetaTab('technical')}
+                  className={`px-4 py-3 text-xs font-semibold uppercase tracking-[0.15em] transition-colors border-b-2 -mb-px ${
+                    metaTab === 'technical'
+                      ? 'text-gray-300 border-white/30'
+                      : 'text-gray-600 hover:text-gray-400 border-transparent'
+                  }`}
+                >
+                  Technical
+                </button>
+                {show.Notes && (
+                  <button
+                    onClick={() => setMetaTab('notes')}
+                    className={`px-4 py-3 text-xs font-semibold uppercase tracking-[0.15em] transition-colors border-b-2 -mb-px ${
+                      metaTab === 'notes'
+                        ? 'text-gray-300 border-white/30'
+                        : 'text-gray-600 hover:text-gray-400 border-transparent'
+                    }`}
+                  >
+                    Notes
+                  </button>
+                )}
+              </div>
 
-              {/* Technical specs */}
-              <div className="space-y-5">
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600 mb-3 flex items-center gap-1.5">
-                    <HardDrive className="w-3 h-3" /> Technical
-                  </p>
+              {/* Tab content */}
+              {metaTab === 'technical' ? (
+                <div className="px-4 py-4 bg-black/20">
                   <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
                     {show.VideoCodec && (
                       <>
@@ -378,28 +400,11 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
                     )}
                   </dl>
                 </div>
-              </div>
-            </div>
-
-            {/* Accordions: Notes + Source */}
-            <div className="space-y-2">
-              {show.Notes && (
-                <div className="border border-white/8 rounded-lg overflow-hidden">
-                  <button
-                    onClick={() => setIsNotesExpanded(!isNotesExpanded)}
-                    className="w-full flex items-center justify-between px-4 py-3 bg-white/3 hover:bg-white/5 transition-colors text-left"
-                  >
-                    <span className="text-xs font-semibold uppercase tracking-[0.15em] text-gray-500">Notes</span>
-                    <ChevronDown className={`w-4 h-4 text-gray-600 transition-transform duration-200 ${isNotesExpanded ? 'rotate-180' : ''}`} />
-                  </button>
-                  {isNotesExpanded && (
-                    <div className="px-4 pb-4 pt-2 max-h-80 overflow-y-auto bg-black/20">
-                      <p className="text-xs text-gray-400 whitespace-pre-wrap font-mono leading-relaxed">{show.Notes}</p>
-                    </div>
-                  )}
+              ) : (
+                <div className="px-4 pb-4 pt-3 max-h-80 overflow-y-auto bg-black/20">
+                  <p className="text-xs text-gray-400 whitespace-pre-wrap font-mono leading-relaxed">{show.Notes}</p>
                 </div>
               )}
-
             </div>
 
           </div>
