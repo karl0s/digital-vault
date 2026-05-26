@@ -197,7 +197,7 @@ The `_01.jpg` image is used as the card thumbnail. All four are prefetched on ca
 | File | Purpose |
 |------|---------|
 | `App.tsx` | Root component — data loading, state, mode switching (home / search) |
-| `components/FeaturedRows.tsx` | Home page — geo row + curated horizontal scroll rows; `max-w-[1924px]` centred container; responsive viewport-calc card widths (2→4→5→6→6.5 cols); always-visible edge fades, hover-only arrows |
+| `components/FeaturedRows.tsx` | Home page — geo row + curated rows; `max-w-[1924px]` centred container. Mobile: 2-col vertical grid per row (no scroll, no fades). Desktop: horizontal scroll rows with responsive viewport-calc card widths (4→5→6→6.5 cols), always-visible edge fades, hover-only arrows |
 | `components/HeroSearch.tsx` | Top search input |
 | `components/TopNav.tsx` | Navigation bar — inner content constrained to `max-w-[1924px]` to align with homepage rows |
 | `components/ShowCard.tsx` | Individual show card — renders differently in home vs search mode |
