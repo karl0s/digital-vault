@@ -58,28 +58,25 @@ function FeaturedRow({ title, shows, onShowClick, getImageUrl }: FeaturedRowProp
         {title}
       </h2>
 
-      <div className="relative group/row">
-        {/* Scroll container */}
+      {/* Desktop: horizontal scroll with fades and arrows */}
+      <div className="hidden md:block relative group/row">
         <div
           ref={scrollRef}
-          className="flex gap-3 overflow-x-auto px-4 md:px-8 pb-6 scrollbar-hide"
+          className="flex gap-3 overflow-x-auto px-8 pb-6 scrollbar-hide"
         >
           {shows.map((show) => (
-            <div key={show.ShowID} className="shrink-0 w-[calc((100vw-32px-12px)/2)] md:w-[calc((100vw-64px-36px)/4)] lg:w-[calc((100vw-64px-48px)/5)] xl:w-[calc((100vw-64px-60px)/6)] 2xl:w-[calc((min(100vw,1924px)-64px-72px)/6.5)]">
+            <div key={show.ShowID} className="shrink-0 md:w-[calc((100vw-64px-36px)/4)] lg:w-[calc((100vw-64px-48px)/5)] xl:w-[calc((100vw-64px-60px)/6)] 2xl:w-[calc((min(100vw,1924px)-64px-72px)/6.5)]">
               <ShowCard show={show} onClick={() => onShowClick(show)} getImageUrl={getImageUrl} />
             </div>
           ))}
         </div>
 
-        {/* Left fade — always visible when scrolled right */}
         {showLeft && (
           <div
             className="absolute left-0 top-0 bottom-6 w-24 pointer-events-none z-10"
             style={{ background: 'linear-gradient(to right, #141414 20%, transparent)' }}
           />
         )}
-
-        {/* Left arrow — hover only */}
         {showLeft && (
           <button
             onClick={scrollLeft}
@@ -91,16 +88,12 @@ function FeaturedRow({ title, shows, onShowClick, getImageUrl }: FeaturedRowProp
             </div>
           </button>
         )}
-
-        {/* Right fade — always visible when more content to scroll */}
         {showRight && (
           <div
             className="absolute right-0 top-0 bottom-6 w-24 pointer-events-none z-10"
             style={{ background: 'linear-gradient(to left, #141414 20%, transparent)' }}
           />
         )}
-
-        {/* Right arrow — hover only */}
         {showRight && (
           <button
             onClick={scrollRight}
@@ -112,6 +105,13 @@ function FeaturedRow({ title, shows, onShowClick, getImageUrl }: FeaturedRowProp
             </div>
           </button>
         )}
+      </div>
+
+      {/* Mobile: 2-column vertical grid, no scroll */}
+      <div className="md:hidden grid grid-cols-2 gap-3 px-4">
+        {shows.map((show) => (
+          <ShowCard key={show.ShowID} show={show} onClick={() => onShowClick(show)} getImageUrl={getImageUrl} />
+        ))}
       </div>
     </motion.div>
   );
@@ -205,9 +205,16 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
           {[1, 2, 3].map((i) => (
             <div key={i}>
               <div className="h-3 bg-white/5 rounded w-32 mb-4" />
-              <div className="flex gap-3">
+              {/* Desktop skeleton: horizontal row */}
+              <div className="hidden md:flex gap-3">
                 {[1, 2, 3, 4, 5].map((j) => (
-                  <div key={j} className="shrink-0 w-[calc((100vw-32px-12px)/2)] md:w-[calc((100vw-64px-36px)/4)] lg:w-[calc((100vw-64px-48px)/5)] xl:w-[calc((100vw-64px-60px)/6)] 2xl:w-[calc((min(100vw,1924px)-64px-72px)/6.5)] aspect-4/3 bg-white/5 rounded-md" />
+                  <div key={j} className="shrink-0 md:w-[calc((100vw-64px-36px)/4)] lg:w-[calc((100vw-64px-48px)/5)] xl:w-[calc((100vw-64px-60px)/6)] 2xl:w-[calc((min(100vw,1924px)-64px-72px)/6.5)] aspect-4/3 bg-white/5 rounded-md" />
+                ))}
+              </div>
+              {/* Mobile skeleton: 2-col grid */}
+              <div className="md:hidden grid grid-cols-2 gap-3">
+                {[1, 2, 3, 4].map((j) => (
+                  <div key={j} className="aspect-4/3 bg-white/5 rounded-md" />
                 ))}
               </div>
             </div>
