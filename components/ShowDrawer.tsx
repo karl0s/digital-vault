@@ -180,15 +180,16 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
           )}
         </AnimatePresence>
 
+        {/* Close button — outside scroll div so it never occupies flow space on mobile */}
+        {!isImageExpanded && (
+          <CloseButton
+            onClick={onClose}
+            className="absolute top-4 right-4 md:fixed md:top-6 md:right-6 z-60"
+          />
+        )}
+
         {/* Scrollable content */}
         <div className="h-full overflow-y-auto">
-          {/* Close button — hidden when image viewer is open to avoid z-index conflict with fixed positioning */}
-          {!isImageExpanded && (
-            <CloseButton
-              onClick={onClose}
-              className="sticky md:fixed top-4 md:top-6 right-4 md:right-6 z-60 ml-auto mr-4 mt-4 md:m-0 block"
-            />
-          )}
 
           {/* Hero image — tall, cinematic */}
           <div className="relative h-56 md:h-[42vh] bg-[#0d0d0d] overflow-hidden">
