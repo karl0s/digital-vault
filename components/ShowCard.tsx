@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Show } from '../App';
 import { LazyImage } from './LazyImage';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 
 interface ShowCardProps {
   show: Show;
@@ -114,71 +114,51 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl, searchMo
                 className="w-full h-full object-cover object-center"
                 placeholderColor={getColorFromString(show.Artist)}
               />
-              <AnimatePresence>
-                {active && (
-                  <motion.div
-                    className="absolute inset-0 bg-linear-to-t from-black/85 via-black/15 to-transparent"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  />
-                )}
-              </AnimatePresence>
+              <motion.div
+                className="absolute inset-0 bg-linear-to-t from-black/85 via-black/15 to-transparent pointer-events-none"
+                animate={{ opacity: active ? 1 : 0 }}
+                transition={{ duration: 0.2 }}
+              />
             </>
           ) : (
             <div className={`w-full h-full ${getColorFromString(show.Artist)} flex items-center justify-center`}>
               <span className="text-4xl font-bold text-white/20">{artistInitials}</span>
-              <AnimatePresence>
-                {active && (
-                  <motion.div
-                    className="absolute inset-0 bg-linear-to-t from-black/85 via-black/15 to-transparent"
-                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  />
-                )}
-              </AnimatePresence>
+              <motion.div
+                className="absolute inset-0 bg-linear-to-t from-black/85 via-black/15 to-transparent pointer-events-none"
+                animate={{ opacity: active ? 1 : 0 }}
+                transition={{ duration: 0.2 }}
+              />
             </div>
           )}
 
           {/* Hover overlay — venue + duration */}
-          <AnimatePresence>
-            {active && (
-              <motion.div
-                className="absolute bottom-0 left-0 right-0 p-3"
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 5 }}
-                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              >
-                <div className="space-y-0.5">
-                  {searchMode === 'artist' && (
-                    <p className="text-xs text-gray-200 truncate leading-snug">{show.Artist}</p>
-                  )}
-                  {durationMin > 0 && (
-                    <p className="text-xs text-gray-500">{durationText}</p>
-                  )}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <motion.div
+            className="absolute bottom-0 left-0 right-0 p-3 pointer-events-none"
+            animate={{ opacity: active ? 1 : 0, y: active ? 0 : 5 }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className="space-y-0.5">
+              {searchMode === 'artist' && (
+                <p className="text-xs text-gray-200 truncate leading-snug">{show.Artist}</p>
+              )}
+              {durationMin > 0 && (
+                <p className="text-xs text-gray-500">{durationText}</p>
+              )}
+            </div>
+          </motion.div>
 
           {/* Recording type badge — bottom-right on hover */}
-          <AnimatePresence>
-            {active && show.RecordingType && (
-              <motion.div
-                className="absolute bottom-2 right-2 z-10"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.15 }}
-              >
-                <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium tracking-wide ${getRecordingBadgeStyle(show.RecordingType)}`}>
-                  {show.RecordingType.split(' ')[0].toUpperCase()}
-                </span>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {show.RecordingType && (
+            <motion.div
+              className="absolute bottom-2 right-2 z-10 pointer-events-none"
+              animate={{ opacity: active ? 1 : 0 }}
+              transition={{ duration: 0.15 }}
+            >
+              <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium tracking-wide ${getRecordingBadgeStyle(show.RecordingType)}`}>
+                {show.RecordingType.split(' ')[0].toUpperCase()}
+              </span>
+            </motion.div>
+          )}
         </div>
       </div>
 
