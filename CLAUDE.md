@@ -348,10 +348,11 @@ The homepage and nav share a standard max-width container to keep content visual
 When adding any new full-width homepage section, wrap its content in `max-w-[1924px] mx-auto`. The nav background spans the full viewport; only its inner flex div gets the max-width wrapper.
 
 ### Homepage row card widths
-`FeaturedRows` uses viewport-calc card widths at the same breakpoints as `SearchResultsGrid`, so cards are the same size in both views at every viewport width. Cards are not fixed-width — they scale with the viewport:
+On **mobile** (`< md`), each `FeaturedRow` renders as a 2-column CSS grid flowing vertically — no horizontal scroll, no fades, no arrows. All cards in the row are visible.
+
+On **desktop** (`md+`), `FeaturedRows` uses viewport-calc card widths at the same breakpoints as `SearchResultsGrid`:
 
 ```
-default: calc((100vw - 32px - 12px) / 2)        ← 2 visible
 md:     calc((100vw - 64px - 36px) / 4)          ← 4 visible (= search grid)
 lg:     calc((100vw - 64px - 48px) / 5)          ← 5 visible (= search grid)
 xl:     calc((100vw - 64px - 60px) / 6)          ← 6 visible (= search grid)
@@ -361,9 +362,9 @@ xl:     calc((100vw - 64px - 60px) / 6)          ← 6 visible (= search grid)
 At `2xl` the homepage shows 6.5 (one fewer than the grid's 7) to preserve the visible scroll peek.
 
 ### Homepage row fade gradients
-In `FeaturedRow` (inside `FeaturedRows.tsx`), the left/right edge fades are **always visible** when there is content to scroll — they are separate `pointer-events-none` divs, not part of the arrow buttons. The arrow buttons (`z-20`) are hover-only (`opacity-0` → `opacity-100` on `isRowHovered`). The fade divs (`z-10`) have no opacity transition.
+Desktop only. In `FeaturedRow` (inside `FeaturedRows.tsx`), the left/right edge fades are **always visible** when there is content to scroll — they are separate `pointer-events-none` divs, not part of the arrow buttons. The arrow buttons (`z-20`) are hover-only (`opacity-0` → `opacity-100` on `isRowHovered`). The fade divs (`z-10`) have no opacity transition.
 
-This means users always see the scroll affordance without needing to hover first.
+This means desktop users always see the scroll affordance without needing to hover first. On mobile the grid layout makes fades and arrows unnecessary.
 
 ### Search results grid
 `SearchResultsGrid` uses CSS `grid` with responsive column counts — no fixed card widths (columns size automatically via `1fr`):
@@ -380,6 +381,8 @@ Style: `bg-white/10 hover:bg-white/20 rounded-full`, icon `w-5 h-5 md:w-6 md:h-6
 Pass positioning via `className` prop — the component handles appearance only.
 Standard coordinates: `top-4 right-4` mobile, `top-6 right-6` desktop.
 Currently used in: `ShowDrawer` (drawer close + image overlay close).
+
+**ShowDrawer close button positioning**: the button is rendered **outside** the scrollable content div (sibling to it, inside the fixed drawer `motion.div`). This is intentional — placing it inside the scroll div with `sticky` caused it to occupy flow space on mobile and push the hero image down. With `absolute top-4 right-4 md:fixed md:top-6 md:right-6` it floats over the hero image on mobile without consuming layout space.
 
 ### Hero section (HeroSearch)
 The hero title block (site name, subtitle, quick-search pills) is always mounted but animates to
