@@ -81,12 +81,20 @@ Only slots listed here are served — if a slot isn't in the array, the image is
 
 ### Temp images workflow
 User drops images into `public/images/temp-images/` then asks Claude to assign them to a show.
+
+**Temp image filename convention**: files are always named `vlcsnap-YYYY-MM-DD-HHhMMmSSsNNN.jpg`.
+The user references the hero image by the last 3 digits (`NNN` — the milliseconds portion), e.g. `'839' hero` means the file ending in `s839.jpg` goes to `_01`.
+
+**Slot ordering**: hero image → `_01`. Remaining images in ascending timestamp order (alphabetical by filename) unless the user specifies otherwise.
+
 Steps:
-1. Identify target show (by FolderPath, FolderName, ShowID, or description)
+1. Identify target show (by FolderPath, FolderName, ShowID, or description). When multiple versions of the same show exist, disambiguate by `TotalSizeHuman` — the user will specify the size.
 2. Get the show's `ChecksumSHA1` from shows.json
-3. Copy temp images to `public/images/{checksum}_0{n}.jpg` in the requested order
-4. Update manifest indices
-5. **Delete temp images** before completing the task
+3. Check what slots currently exist on disk: `ls public/images/{checksum}*`
+4. Copy temp images to `public/images/{checksum}_0{n}.jpg` in the correct order
+5. Update manifest indices to exactly match the new slot set
+6. **Delete any old slot files on disk that are no longer in the manifest** — this always happens when replacing 4 images with 3. Skipping this step leaves orphaned files and broken UI image paths.
+7. **Delete temp images** before completing the task
 
 ---
 
@@ -117,6 +125,9 @@ Always use `git add -f public/` or `git add -f public/shows.json` etc.
 
 ### Never commit dist/
 `dist/` is built by CI. Never `git add dist/` — it will be ignored correctly.
+
+### Push 408 timeouts
+GitHub occasionally returns `HTTP 408` on push. The commit is always created successfully — just retry `git push origin main` immediately. It succeeds on the second attempt.
 
 ### Health check runs automatically
 A pre-push hook runs `scripts/health-check.py` before every push.
@@ -175,6 +186,7 @@ Always scan for duplicates when editing any of these fields.
 - Always the full English country name — never abbreviations or codes
 - `"United States"` not `"USA"` / `"US"` / `"U.S.A."`
 - `"United Kingdom"` not `"UK"` / `"U.K."`
+- `"Netherlands"` not `"The Netherlands"` — confirmed collection-wide convention
 - `"South Korea"` not `"Korea"`
 - Apply consistently across all duplicate recordings of the same show
 
@@ -188,6 +200,13 @@ Always scan for duplicates when editing any of these fields.
   - "The Shoreline Amphitheatre" not "Shoreline Amphitheater at Mountain View" for older shows
 - Strip any date prefixes (e.g. `"2001-08-16 - Festival Name"` → `"Festival Name"`)
 - `VenueName` is the physical venue only — festival name goes in `EventOrFestival`
+
+### Known festival metadata (established conventions)
+When enriching or correcting shows for these festivals, use exactly these values:
+
+| Festival | EventOrFestival | VenueName | City | Country |
+|---|---|---|---|---|
+| Pinkpop | `Pinkpop` | `Megaland` | `Landgraaf` | `Netherlands` |
 
 ---
 
