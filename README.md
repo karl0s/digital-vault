@@ -229,6 +229,7 @@ The `_01.jpg` image is used as the card thumbnail. All four are prefetched on ca
 | `tsconfig.json` | TypeScript configuration |
 | `.github/workflows/deploy.yml` | GitHub Actions CI/CD — builds and deploys on push to `main` |
 | `scripts/health-check.py` | Integrity validator — checks shows, images, manifest, dates, temp stubs. Runs automatically as a pre-push git hook. Errors block push; warnings are informational |
+| `scripts/consistency-audit.py` | Metadata consistency audit — reports EventOrFestival name variants, missing values across duplicate recordings, and garbage field values. Run manually: `python3 scripts/consistency-audit.py` |
 | `CLAUDE.md` | Full project guide for Claude — conventions, data model, workflows, hard rules |
 
 ---
