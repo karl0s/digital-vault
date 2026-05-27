@@ -202,11 +202,23 @@ Always scan for duplicates when editing any of these fields.
 - `VenueName` is the physical venue only — festival name goes in `EventOrFestival`
 
 ### Known festival metadata (established conventions)
-When enriching or correcting shows for these festivals, use exactly these values:
+When enriching or correcting shows for these festivals, use exactly these values.
+These are canonical — do not introduce variants.
 
-| Festival | EventOrFestival | VenueName | City | Country |
-|---|---|---|---|---|
-| Pinkpop | `Pinkpop` | `Megaland` | `Landgraaf` | `Netherlands` |
+| Festival / Show | EventOrFestival | VenueName | City | Country | Notes |
+|---|---|---|---|---|---|
+| Pinkpop | `Pinkpop` | `Megaland` | `Landgraaf` | `Netherlands` | |
+| Roskilde Festival | `Roskilde Festival` | `Dyrskuepladsen` | `Roskilde` | `Denmark` | |
+| Eurockéennes (Belfort) | `Eurockéennes Festival` | `Presqu'île de Malsaucy` | `Belfort` | `France` | Not `Les Eurockéennes` |
+| Lowlands | `Lowlands Festival` | `Evenemententerrein Walibi Holland` | `Biddinghuizen` | `Netherlands` | Not just `Lowlands` |
+| SWU (Brazil) | `SWU Music & Arts Festival` | _(blank)_ | `Itu - Sao Paulo` | `Brazil` | Not `SWU Festival` |
+| Letterman | `Late Show w/ David Letterman` | `Ed Sullivan Theater` | `New York` | `United States` | Not `w/ Letterman` or `with David Letterman` |
+| Jools Holland | `Later w/ Jools Holland` | `BBC Television Centre` | `London` | `United Kingdom` | Not `Later... with Jools Holland` |
+| Tonight Show (Fallon) | `The Tonight Show w/ Fallon` | `30 Rockefeller Plaza` | `New York` | `United States` | Shows from 2014 onward |
+| Tonight Show (Leno) | `The Tonight Show` | _(blank)_ | `Burbank` | `United States` | Shows before 2014 |
+| Conan (all eras) | `Conan Show` | _(blank)_ | _(varies)_ | `United States` | Covers both NBC Late Night and TBS Conan eras |
+| MuchMusic (intimate) | `Much Music Intimate & Interactive` | `Chum City Building` | `Toronto` | `Canada` | `&` not `and` |
+| Nissan Live Sets | `Nissan Live Sets on Yahoo! Music` | _(blank)_ | _(varies)_ | `United States` | Full name always |
 
 ---
 

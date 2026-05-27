@@ -188,7 +188,51 @@ if no_images:
 else:
     print('  All shows have a checksum — OK')
 
-# ── 11. Documentation currency ───────────────────────────────────────────────
+# ── 11. EventOrFestival consistency ─────────────────────────────────────────
+
+section('EventOrFestival consistency')
+
+# Known bad values — deprecated variants that must not be re-introduced
+BANNED_EVENT_VALUES = {
+    'Late Show w/ Letterman':           'Late Show w/ David Letterman',
+    'Late Show with David Letterman':   'Late Show w/ David Letterman',
+    'Late Show w/ David Letterman':     None,   # canonical, not banned
+    'Later... with Jools Holland':      'Later w/ Jools Holland',
+    'Les Eurockéennes':                 'Eurockéennes Festival',
+    'Lowlands':                         'Lowlands Festival',
+    'SWU Festival':                     'SWU Music & Arts Festival',
+    'Nissan Live Sets':                 'Nissan Live Sets on Yahoo! Music',
+    'The Tonight Show Starring Jimmy Fallon': 'The Tonight Show w/ Fallon',
+    'Much Music Intimate and Interactive': 'Much Music Intimate & Interactive',
+    'Conan':                            'Conan Show',
+    "Late Night w/ Conan O'Brien":      'Conan Show',
+    'Live from the Basement':           'From the Basement',
+}
+
+# Patterns that are clearly garbage in EventOrFestival
+import re as _re
+event_issues = []
+for s in shows:
+    ev = s.get('EventOrFestival', '') or ''
+    if not ev:
+        continue
+    sid = s['ShowID']
+    artist = s.get('Artist', '')
+
+    if ev in BANNED_EVENT_VALUES and BANNED_EVENT_VALUES[ev] is not None:
+        event_issues.append(f'  Deprecated EventOrFestival: {sid} {artist} — "{ev}" → should be "{BANNED_EVENT_VALUES[ev]}"')
+    elif _re.match(r'^\d{4}-\d{2}-\d{2}$', ev):
+        event_issues.append(f'  Date in EventOrFestival: {sid} {artist} — "{ev}"')
+    elif ev.startswith('----') or ev.startswith('=='):
+        event_issues.append(f'  File content in EventOrFestival: {sid} {artist} — "{ev[:40]}"')
+
+if event_issues:
+    for issue in event_issues:
+        warn(issue)
+else:
+    print('  No deprecated or garbage EventOrFestival values — OK')
+
+# ── 12. Documentation currency ───────────────────────────────────────────────
 
 section('Documentation currency')
 
