@@ -194,18 +194,31 @@ section('EventOrFestival consistency')
 
 # Known bad values — deprecated variants that must not be re-introduced
 BANNED_EVENT_VALUES = {
-    'Late Show w/ Letterman':           'Late Show w/ David Letterman',
-    'Late Show with David Letterman':   'Late Show w/ David Letterman',
-    'Late Show w/ David Letterman':     None,   # canonical, not banned
-    'Later... with Jools Holland':      'Later w/ Jools Holland',
+    # Letterman
+    'Late Show w/ Letterman':           'David Letterman',
+    'Late Show with David Letterman':   'David Letterman',
+    'Late Show w/ David Letterman':     'David Letterman',
+    # Jools Holland
+    'Later... with Jools Holland':      'Jools Holland',
+    'Later w/ Jools Holland':           'Jools Holland',
+    # Tonight Show
+    'The Tonight Show Starring Jimmy Fallon': 'Jimmy Fallon',
+    'The Tonight Show w/ Fallon':       'Jimmy Fallon',
+    'The Tonight Show':                 'Jay Leno',
+    # Conan
+    'Conan Show':                       "Conan O'Brien",
+    'Conan':                            "Conan O'Brien",
+    "Late Night w/ Conan O'Brien":      "Conan O'Brien",
+    # Kimmel
+    'Jimmy Kimmel Live':                'Jimmy Kimmel',
+    # Carson Daly
+    'Last Call w/ Carson Daly':         'Carson Daly',
+    # Festivals
     'Les Eurockéennes':                 'Eurockéennes Festival',
     'Lowlands':                         'Lowlands Festival',
     'SWU Festival':                     'SWU Music & Arts Festival',
     'Nissan Live Sets':                 'Nissan Live Sets on Yahoo! Music',
-    'The Tonight Show Starring Jimmy Fallon': 'The Tonight Show w/ Fallon',
     'Much Music Intimate and Interactive': 'Much Music Intimate & Interactive',
-    'Conan':                            'Conan Show',
-    "Late Night w/ Conan O'Brien":      'Conan Show',
     'Live from the Basement':           'From the Basement',
 }
 
