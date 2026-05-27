@@ -215,10 +215,12 @@ These are canonical — do not introduce variants.
 | Letterman | `David Letterman` | `Ed Sullivan Theater` | `New York` | `United States` | |
 | Jools Holland | `Jools Holland` | `BBC Television Centre` | `London` | `United Kingdom` | |
 | Tonight Show (Fallon) | `Jimmy Fallon` | `30 Rockefeller Plaza` | `New York` | `United States` | Shows from 2014 onward |
-| Tonight Show (Leno) | `Jay Leno` | _(blank)_ | `Burbank` | `United States` | Shows before 2014 |
+| Tonight Show (Leno) | `Jay Leno` | `NBC Studios` | `Burbank` | `United States` | Shows before 2014 |
 | Conan (all eras) | `Conan O'Brien` | _(blank)_ | _(varies)_ | `United States` | Covers both NBC Late Night and TBS Conan eras |
 | Jimmy Kimmel | `Jimmy Kimmel` | `El Capitan Theatre` | `Los Angeles` | `United States` | |
 | Carson Daly | `Carson Daly` | _(blank)_ | `New York` | `United States` | |
+| Saturday Night Live | `Saturday Night Live` | `30 Rockefeller Plaza` | `New York` | `United States` | |
+| KROQ Almost Acoustic Christmas | `KROQ Almost Acoustic Christmas` | _(blank)_ | `Los Angeles` | `United States` | Annual KROQ radio event |
 | MuchMusic (intimate) | `Much Music Intimate & Interactive` | `Chum City Building` | `Toronto` | `Canada` | `&` not `and` |
 | Nissan Live Sets | `Nissan Live Sets on Yahoo! Music` | _(blank)_ | _(varies)_ | `United States` | Full name always |
 
