@@ -125,7 +125,7 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
           className="md:hidden flex justify-center items-center h-8 shrink-0 touch-none cursor-grab active:cursor-grabbing"
           onPointerDown={(e) => dragControls.start(e)}
         >
-          <div className="w-10 h-1 rounded-full bg-white/20" />
+          <div className="w-10 h-1 rounded-full bg-linear-to-r from-transparent via-white/30 to-transparent" />
         </div>
         {/* In-drawer image viewer */}
         <AnimatePresence>
