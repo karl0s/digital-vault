@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useDragControls, useMotionValue, animate } from 'motion/react';
 import { Clock, Music, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { Show } from '../App';
 import { LazyImage } from './LazyImage';
@@ -38,6 +38,18 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
   const [notesExpanded, setNotesExpanded] = useState(false);
   const [viewingIndex, setViewingIndex] = useState(0);
   const isImageExpanded = expandedFromIndex !== null;
+
+  const dragControls = useDragControls();
+  const y = useMotionValue(0);
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
+  const handleDragEnd = (_: unknown, info: { offset: { y: number }; velocity: { y: number } }) => {
+    if (info.offset.y > 100 || info.velocity.y > 500) {
+      onClose();
+    } else {
+      void animate(y, 0, { type: 'spring', stiffness: 400, damping: 40 });
+    }
+  };
 
   const images = show.ChecksumSHA1
     ? [1, 2, 3, 4].map(i => getImageUrl ? getImageUrl(show.ChecksumSHA1!, i) : `/images/${show.ChecksumSHA1}_0${i}.jpg`).filter(Boolean) as string[]
@@ -81,8 +93,6 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
   const artistInitials = show.Artist
     .split(' ').map(w => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
 
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-
   return (
     <>
       {/* Backdrop */}
@@ -97,12 +107,26 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
 
       {/* Drawer — overflow-y-auto moved to inner div so overlay can cover full drawer height */}
       <motion.div
-        className="fixed bottom-0 md:top-0 left-0 md:left-auto right-0 md:right-0 w-full md:w-[58vw] lg:w-[52vw] h-[88vh] md:h-full bg-[#181818] z-50"
+        className="fixed bottom-0 md:top-0 left-0 md:left-auto right-0 md:right-0 w-full md:w-[58vw] lg:w-[52vw] h-[88vh] md:h-full bg-[#181818] z-50 flex flex-col"
+        style={isMobile ? { y } : undefined}
         initial={{ x: isMobile ? 0 : '100%', y: isMobile ? '100%' : 0 }}
         animate={{ x: 0, y: 0 }}
         exit={{ x: isMobile ? 0 : '100%', y: isMobile ? '100%' : 0 }}
         transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+        drag={isMobile ? 'y' : false}
+        dragControls={dragControls}
+        dragListener={false}
+        dragConstraints={{ top: 0 }}
+        dragElastic={{ top: 0, bottom: 0.3 }}
+        onDragEnd={isMobile ? handleDragEnd : undefined}
       >
+        {/* Drag-to-dismiss handle — mobile only */}
+        <div
+          className="md:hidden flex justify-center items-center h-8 shrink-0 touch-none cursor-grab active:cursor-grabbing"
+          onPointerDown={(e) => dragControls.start(e)}
+        >
+          <div className="w-10 h-1 rounded-full bg-white/20" />
+        </div>
         {/* In-drawer image viewer */}
         <AnimatePresence>
           {isImageExpanded && (
@@ -189,7 +213,7 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
         )}
 
         {/* Scrollable content */}
-        <div className="h-full overflow-y-auto">
+        <div className="flex-1 overflow-y-auto min-h-0">
 
           {/* Hero image — tall, cinematic */}
           <div className="relative h-56 md:h-[42vh] bg-[#0d0d0d] overflow-hidden">
