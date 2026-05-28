@@ -80,7 +80,7 @@ function FeaturedRow({ title, shows, onShowClick, getImageUrl }: FeaturedRowProp
         {showLeft && (
           <button
             onClick={scrollLeft}
-            className={`absolute left-2 top-0 bottom-6 z-20 flex items-center transition-opacity duration-200 ${isRowHovered ? 'opacity-100' : 'opacity-0'}`}
+            className={`cursor-pointer absolute left-2 top-0 bottom-6 z-20 flex items-center transition-opacity duration-200 ${isRowHovered ? 'opacity-100' : 'opacity-0'}`}
             aria-label="Scroll left"
           >
             <div className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors duration-150">
@@ -97,7 +97,7 @@ function FeaturedRow({ title, shows, onShowClick, getImageUrl }: FeaturedRowProp
         {showRight && (
           <button
             onClick={scrollRight}
-            className={`absolute right-2 top-0 bottom-6 z-20 flex items-center justify-end transition-opacity duration-200 ${isRowHovered ? 'opacity-100' : 'opacity-0'}`}
+            className={`cursor-pointer absolute right-2 top-0 bottom-6 z-20 flex items-center justify-end transition-opacity duration-200 ${isRowHovered ? 'opacity-100' : 'opacity-0'}`}
             aria-label="Scroll right"
           >
             <div className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors duration-150">
