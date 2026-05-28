@@ -267,12 +267,12 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600 mb-3">
                   Screenshots
                 </p>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <div className="flex gap-2 overflow-x-auto scrollbar-hide md:grid md:grid-cols-4 md:overflow-visible">
                   {images.map((url, idx) => (
                     <button
                       key={idx}
                       onClick={() => openImage(idx)}
-                      className="group/thumb hover:ring-2 hover:ring-white/30 transition-all"
+                      className="shrink-0 w-[42%] md:w-full group/thumb hover:ring-2 hover:ring-white/30 transition-all"
                       style={{ borderRadius: 4 }}
                     >
                       <motion.div
