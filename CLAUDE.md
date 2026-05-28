@@ -280,7 +280,7 @@ Located in `data-pipeline/` — numbered Python scripts for scanning physical ha
 
 ```
 01_scan_hd_shows/     catalog_shows_v3_1.py — scans a drive, outputs CSV + checksums
-04_merge_hd_csvs/     merge_catalogs_safe.py — merges multiple drive CSVs
+04_merge_hd_csvs_identify_duplicates/     merge_catalogs_safe.py — merges multiple drive CSVs
 05_merge_csvs/        enrichment scripts
 07_merge_csvs_create_single_master/  merge_drives_master.py
 08_final_create_master_CSV/          final merge → shows.json
@@ -498,8 +498,8 @@ Current quick-search pills are defined in `components/HeroSearch.tsx` → `QUICK
 
 ## Key stats (as of last update)
 - **823 shows** across **165 artists**
-- Top artists by volume: STP (75), RHCP (52), Soundgarden (46), Smashing Pumpkins (40),
-  Foo Fighters (31), Radiohead (28), Rage Against the Machine (26), Kings of Leon (25),
-  Pearl Jam (24), Jane's Addiction (23)
-- Top festivals: Rock am Ring (36), Glastonbury (27), Reading (19), MTV Unplugged (18),
-  Pinkpop (16), VH1 Storytellers (16)
+- Top artists by volume: STP (78), Smashing Pumpkins (58), Kings of Leon (44),
+  Foo Fighters (31), Soundgarden (31), RHCP (25), Incubus (24), Faith No More (20),
+  Jane's Addiction (19)
+- Top festivals: Rock am Ring (39), Glastonbury Festival (28), Reading Festival (25),
+  MTV Unplugged (19), Bizarre Festival (19), Pinkpop (18), VH1 Storytellers (16)

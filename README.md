@@ -207,7 +207,7 @@ The `_01.jpg` image is used as the card thumbnail. All four are prefetched on ca
 | `components/ArtistRow.tsx` | Single horizontal scrollable row of show cards — responsive viewport-calc widths (2→4→5→6→7 cols), accounts for sidebar offset |
 | `components/Sidebar.tsx` | Artist navigation sidebar |
 | `components/LazyImage.tsx` | Lazy-loading image with colour placeholder |
-| `components/ImageWithFallback.tsx` | Image component with automatic fallback on load error |
+
 
 ### Hooks
 
