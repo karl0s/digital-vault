@@ -106,7 +106,7 @@ export function TopNav({ searchQuery, onSearchChange, onLogoClick, artists = [],
                 onChange={(e) => {
                   onSearchChange(e.target.value);
                 }}
-                className="w-full bg-white/[0.07] border border-white/10 text-white placeholder-gray-600 rounded-lg px-4 py-2.5 pl-10 focus:outline-none focus:ring-1 focus:ring-white/20 focus:bg-white/10 transition-all text-sm"
+                className="w-full bg-white/[0.07] border border-white/10 text-white placeholder-gray-600 rounded-lg px-4 py-2.5 pl-10 focus:outline-none focus:ring-1 focus:ring-white/20 focus:bg-white/10 transition-all text-base"
               />
               {searchQuery && (
                 <button

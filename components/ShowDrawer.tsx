@@ -352,7 +352,7 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
                   </p>
                   <div>
                     <div className="relative">
-                      <p className={`text-xs text-gray-400 whitespace-pre-wrap font-mono leading-relaxed ${notesExpanded ? '' : 'max-h-40 overflow-hidden'}`}>
+                      <p className={`text-xs text-gray-400 whitespace-pre-wrap wrap-break-word font-mono leading-relaxed ${notesExpanded ? '' : 'max-h-40 overflow-hidden'}`}>
                         {show.Notes}
                       </p>
                       {!notesExpanded && show.Notes.length > 320 && (
