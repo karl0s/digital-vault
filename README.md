@@ -14,7 +14,7 @@ A Netflix-style web interface for browsing a private collection of live concert 
 - **All Shows Button**: Ghost link next to pills — lists every show in the collection alphabetically by artist
 
 ### Search
-- **Hero Search Bar**: Always-visible at the top; results appear instantly as you type. The hero title block (site name, subtitle, quick-search pills) animates to zero height while a search is active and restores when cleared
+- **Hero Search Bar**: Always-visible at the top; results appear instantly as you type. The hero title block (site name, subtitle, quick-search pills) animates to zero height while a search is active and restores when cleared. On mobile, tapping the search icon opens the input and raises the keyboard immediately
 - **Chronological Results**: Search results sorted newest-first; undated and compilation shows sorted to the end
 - **Full-Text MiniSearch**: Prefix + fuzzy matching across all metadata fields with field boosts (Artist 4×, RecordingType 2×, Year 2×)
 - **Field-Specific Filters**: Prefix any query with a field name:
@@ -30,12 +30,12 @@ A Netflix-style web interface for browsing a private collection of live concert 
 - **Lazy Image Loading**: Thumbnails load progressively with artist-coloured placeholders
 
 ### Show Detail
-- **Slide-Out Drawer**: Full metadata panel with a consolidated hero area, badge pills, and a 3-column content grid
+- **Slide-Out Drawer**: Full metadata panel with a consolidated hero area, badge pills, and a 3-column content grid. On mobile the drawer fills the full screen height using `dvh` units so it adapts correctly whether or not the browser URL bar is visible
   - **Hero line**: Single subtitle combining date, event/festival or venue, and location — no redundant repetition
   - **Badge pills**: RecordingType (e.g. Proshot), Duration (auto-formatted from `DurationSec`), TVStandard (e.g. PAL/NTSC) — only shown when the field has a value
   - **3-column grid**: Setlist (numbered list) | Technical specs (label/value rows) | Notes — columns collapse gracefully when data is absent
   - **Notes expand**: Long notes are truncated with a gradient fade; a "More ⌄ / Less ⌃" button below reveals or collapses the full text
-- **In-Drawer Image Viewer**: Clicking a screenshot thumbnail expands it inside the drawer using a Framer Motion `layoutId` animation — the image grows from the thumbnail to fill the drawer. Includes prev/next navigation, dot indicators, and keyboard support (arrow keys, ESC closes back to drawer). No full-screen takeover.
+- **In-Drawer Image Viewer**: Clicking a screenshot thumbnail expands it inside the drawer using a Framer Motion `layoutId` animation — the image grows from the thumbnail to fill the drawer. Includes prev/next navigation, dot indicators, and keyboard support (arrow keys, ESC closes back to drawer). No full-screen takeover. On mobile, thumbnails display as a horizontally scrollable row (2 visible + peek of a third)
 
 ---
 

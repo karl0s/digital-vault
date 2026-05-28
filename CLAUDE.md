@@ -420,11 +420,30 @@ Currently used in: `ShowDrawer` (drawer close + image overlay close).
 
 **ShowDrawer close button positioning**: the button is rendered **outside** the scrollable content div (sibling to it, inside the fixed drawer `motion.div`). This is intentional — placing it inside the scroll div with `sticky` caused it to occupy flow space on mobile and push the hero image down. With `absolute top-4 right-4 md:fixed md:top-6 md:right-6` it floats over the hero image on mobile without consuming layout space.
 
+### Mobile input focus and iOS keyboard
+iOS Safari only raises the software keyboard when `input.focus()` is called within the **same synchronous call stack** as the user gesture (tap). Any async path — `setTimeout`, `useEffect`, `Promise.then` — loses the gesture context and the keyboard is silently ignored.
+
+When a mobile input is conditionally rendered (e.g. a search bar that mounts on tap), use `flushSync` from `react-dom` to force a synchronous React render, then call `.focus()` immediately:
+
+```tsx
+import { flushSync } from 'react-dom';
+
+onClick={() => {
+  flushSync(() => setInputVisible(true)); // renders the input into the DOM synchronously
+  inputRef.current?.focus();             // still within the tap gesture — keyboard opens
+}}
+```
+
+Also ensure mobile inputs have `font-size: 16px` (`text-base`) or larger. iOS auto-zooms the page when focusing any input with `font-size < 16px`.
+
 ### Hero section (HeroSearch)
 The hero title block (site name, subtitle, quick-search pills) is always mounted but animates to
 `height: 0 / opacity: 0` when `isSearching` is true. It is driven by Framer Motion's `animate` prop
 (not `AnimatePresence`) so the nav search input is never unmounted while typing.
 `App.tsx` passes `isSearching={isSearching || showAllMode}` to collapse it in both search and all-shows mode.
+
+### ShowDrawer — mobile sizing
+On mobile the drawer is `h-dvh` (`height: 100dvh`) — **not** `h-[88vh]` or `h-screen`. `dvh` is the dynamic viewport height unit: the browser recalculates it live as the URL bar appears or disappears, so the drawer always fills exactly the visible screen. Do not change this to a static `vh` value.
 
 ### Drawer metadata layout (ShowDrawer)
 The drawer hero area and content grid follow this fixed structure:
@@ -440,11 +459,18 @@ The drawer hero area and content grid follow this fixed structure:
 - Column labels use `text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600`
 - Setlist: numbered list from semicolon-split `Setlist` field; `Encore break` rendered as a divider line
 - Technical: array of `{ label, value }` rows — label fixed `w-16 text-gray-500`, value `text-white`; only rows with a value are rendered
-- Notes: `whitespace-pre-wrap font-mono text-xs text-gray-400`; truncated to `max-h-40` with a gradient fade when collapsed; **More ⌄ / Less ⌃** buttons toggle `notesExpanded` state; button only shown when `Notes.length > 320`
+- Notes: `whitespace-pre-wrap wrap-break-word font-mono text-xs text-gray-400`; truncated to `max-h-40` with a gradient fade when collapsed; **More ⌄ / Less ⌃** buttons toggle `notesExpanded` state; button only shown when `Notes.length > 320`. `wrap-break-word` is intentional — pipeline notes often contain long unbroken strings (URLs, codec lines, filenames) that would overflow the container on mobile and cause the browser to zoom
 
 The Source & Files accordion has been removed — drive/folder/file metadata is no longer shown in the drawer.
 
 **Tailwind v4 note**: use `bg-linear-to-t` not `bg-gradient-to-t` for gradient classes — the latter triggers a deprecation warning in v4.
+
+### In-drawer screenshot thumbnails (ShowDrawer)
+The screenshots grid is responsive:
+- **Mobile**: `flex overflow-x-auto scrollbar-hide` — single horizontal scroll row. Each thumbnail is `w-[42%] shrink-0` so two fit fully in view with ~16% of the third peeking to signal scrollability.
+- **Desktop** (`md+`): `grid grid-cols-4` — standard 4-column grid, `w-full` per item.
+
+Both layouts share the same mapped element so `layoutId` refs for the image viewer animation are stable.
 
 ### In-drawer image viewer (ShowDrawer)
 `ShowDrawer` manages image viewing internally — there is no external lightbox call.
