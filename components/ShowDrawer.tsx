@@ -198,7 +198,7 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
                 <img
                   src={images[0]}
                   alt={show.Artist}
-                  className="w-full h-full object-cover object-top opacity-55"
+                  className="w-full h-full object-cover object-center opacity-55"
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-[#181818] via-[#181818]/50 to-transparent" />
               </>
