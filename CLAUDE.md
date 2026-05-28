@@ -109,7 +109,7 @@ Shows with temp checksums (as of last update):
 |---|---|---|
 | `88b30e27e380` | STP — WAAF | 2000-01-01 |
 | `f0516c90fab9` | STP — New York (Proshot) | 2010-01-01 |
-| `864ba0fb6931` | STP — Chicago (Proshot) | 2010-01-01 |
+| `864ba0fb6931` | STP — 2010 Tour | 2010-08-20 |
 | `7df1b178e2a2` | RHCP — Woodstock 1999 | 1999-01-01 |
 
 When the real SHA1 is available: update `ChecksumSHA1` in shows.json, rename the image files,
@@ -223,6 +223,7 @@ These are canonical — do not introduce variants.
 | KROQ Almost Acoustic Christmas | `KROQ Almost Acoustic Christmas` | _(blank)_ | `Los Angeles` | `United States` | Annual KROQ radio event |
 | MuchMusic (intimate) | `Much Music Intimate & Interactive` | `Chum City Building` | `Toronto` | `Canada` | `&` not `and` |
 | Nissan Live Sets | `Nissan Live Sets on Yahoo! Music` | _(blank)_ | _(varies)_ | `United States` | Full name always |
+| Farm Club | `Farm Club` | _(blank)_ | `Los Angeles` | `United States` | USA Network late-night music show (2000–2001) |
 
 ---
 
