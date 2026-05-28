@@ -1,5 +1,6 @@
 import { Search, X } from 'lucide-react';
 import { useRef, useState, useEffect } from 'react';
+import { flushSync } from 'react-dom';
 
 interface TopNavProps {
   searchQuery: string;
@@ -24,11 +25,6 @@ export function TopNav({ searchQuery, onSearchChange, onLogoClick, artists = [],
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  useEffect(() => {
-    if (isMobileSearchOpen) {
-      setTimeout(() => mobileInputRef.current?.focus(), 50);
-    }
-  }, [isMobileSearchOpen]);
 
   const artistsByLetter = artists.reduce((acc, artist) => {
     const letter = artist[0].toUpperCase();
@@ -86,7 +82,14 @@ export function TopNav({ searchQuery, onSearchChange, onLogoClick, artists = [],
           {/* Mobile search toggle */}
           <button
             className="md:hidden p-2 text-gray-400 hover:text-white transition-colors"
-            onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+            onClick={() => {
+              if (!isMobileSearchOpen) {
+                flushSync(() => setIsMobileSearchOpen(true));
+                mobileInputRef.current?.focus();
+              } else {
+                setIsMobileSearchOpen(false);
+              }
+            }}
             aria-label="Search"
           >
             {isMobileSearchOpen ? <X className="w-5 h-5" /> : <Search className="w-5 h-5" />}
