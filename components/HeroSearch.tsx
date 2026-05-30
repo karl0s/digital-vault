@@ -68,7 +68,7 @@ export function HeroSearch({ onSearch, onBrowseAll, isSearching = false }: HeroS
           animate={{ opacity: 1 }}
           transition={{ duration: 0.4, delay: 0.15 }}
         >
-          A collection of rare live recordings
+          Live music worth reliving.
         </motion.p>
 
         {/* Quick-search pills + All Shows */}
