@@ -1,4 +1,5 @@
 import { motion } from 'motion/react';
+import { HalationLogo } from './logos/HalationLogo';
 
 export type SearchType = 'artist' | 'general';
 
@@ -31,7 +32,7 @@ export function HeroSearch({ onSearch, onBrowseAll, isSearching = false }: HeroS
       }}
     >
       {/* Static inner wrapper owns all padding — keeps it out of the height animation */}
-      <div className="relative flex flex-col items-center px-4 pt-28 pb-16 text-center overflow-hidden">
+      <div className="relative flex flex-col items-center px-4 pt-16 pb-8 text-center overflow-hidden">
       {/* Atmospheric radial glow — faint red from above, like stage lighting */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -50,23 +51,18 @@ export function HeroSearch({ onSearch, onBrowseAll, isSearching = false }: HeroS
 
       <div className="relative w-full max-w-5xl">
         {/* Main title */}
-        <motion.h1
-          className="leading-none text-white select-none"
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(72px, 14vw, 160px)',
-            letterSpacing: '0.06em',
-          }}
+        <motion.div
+          className="w-full flex justify-center"
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
         >
-          THE VAULT
-        </motion.h1>
+          <HalationLogo scale={1} style={{ width: '78%', height: 'auto' }} />
+        </motion.div>
 
         {/* Subtitle */}
         <motion.p
-          className="text-gray-500 mt-3 mb-10 text-sm md:text-base tracking-widest uppercase"
+          className="text-gray-500 -mt-2 mb-10 text-sm md:text-base tracking-widest uppercase"
           style={{ letterSpacing: '0.25em' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

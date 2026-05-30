@@ -1,6 +1,7 @@
 import { Search, X } from 'lucide-react';
 import { useRef, useState, useEffect } from 'react';
 import { flushSync } from 'react-dom';
+import { HalationLogo } from './logos/HalationLogo';
 
 interface TopNavProps {
   searchQuery: string;
@@ -48,11 +49,9 @@ export function TopNav({ searchQuery, onSearchChange, onLogoClick, artists = [],
             href="#"
             onClick={(e) => { e.preventDefault(); onLogoClick ? onLogoClick() : window.scrollTo({ top: 0, behavior: 'smooth' }); }}
             className="shrink-0 select-none"
-            style={{ fontFamily: 'var(--font-display)' }}
+            aria-label="The Vault — home"
           >
-            <span className="text-xl md:text-2xl tracking-[0.15em] text-white hover:text-[#E50914] transition-colors duration-200">
-              THE VAULT
-            </span>
+            <HalationLogo scale={0.19} />
           </a>
 
           {/* Desktop search — always visible */}

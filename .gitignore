@@ -107,6 +107,9 @@ storybook-static
 tmp/
 temp/
 
+# Playground — local experiments only, never deployed
+_playground/
+
 # Python (for data-pipeline)
 __pycache__/
 *.py[cod]
