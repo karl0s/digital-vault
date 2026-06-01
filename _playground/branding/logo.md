@@ -269,11 +269,11 @@ positions are measured, then fades to `opacity: 1` over 0.15s. Imperceptible onc
 
 ### Usage in HeroSearch (landing page)
 ```tsx
-<HalationLogo scale={1} style={{ width: '78%', height: 'auto' }} />
-// width:'100%' overrides the fixed CSS width from scale
+<HalationLogo scale={1} style={{ width: '70%', height: 'auto' }} />
+// width:'70%' overrides the fixed CSS width from scale
 // height:'auto' derives from viewBox aspect ratio (1060:300)
 // Wrapped in motion.div for entry fade+slide animation
-// Container is max-w-5xl — logo fills 78% of that
+// Container is max-w-5xl — logo fills 70% of that
 ```
 
 ### Swapping logos in future
