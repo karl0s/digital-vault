@@ -32,7 +32,7 @@ export function HeroSearch({ onSearch, onBrowseAll, isSearching = false }: HeroS
       }}
     >
       {/* Static inner wrapper owns all padding — keeps it out of the height animation */}
-      <div className="relative flex flex-col items-center px-4 pt-16 pb-8 text-center overflow-hidden">
+      <div className="relative flex flex-col items-center px-4 pt-10 pb-8 text-center overflow-hidden">
       {/* Atmospheric radial glow — faint red from above, like stage lighting */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -57,7 +57,7 @@ export function HeroSearch({ onSearch, onBrowseAll, isSearching = false }: HeroS
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
         >
-          <HalationLogo scale={1} style={{ width: '78%', height: 'auto' }} />
+          <HalationLogo scale={1} style={{ width: '70%', height: 'auto' }} />
         </motion.div>
 
         {/* Subtitle */}
