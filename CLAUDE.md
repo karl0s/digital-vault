@@ -25,7 +25,48 @@ src/hooks/              ← custom React hooks
 data-pipeline/          ← numbered Python scripts for scanning hard drives → CSV → shows.json
 scripts/
   health-check.py       ← integrity validator (runs automatically as pre-push hook)
+_playground/            ← isolated UI experiments, never imported by the live app
+  branding/             ← logo and typographic effect experiments
+  grid/                 ← card layout and filter chip experiments
 ```
+
+---
+
+## Playground
+
+`_playground/` is a sandbox for UI experiments. Each subdirectory is a topic area.
+Experiments are routed automatically via `import.meta.glob` + `React.lazy` in `PlaygroundRouter.tsx`.
+
+### Rules
+- Every playground subfolder **must** have exactly one MD file named after the folder (e.g. `branding/logo.md`, `grid/grid.md`).
+- The MD file covers **all** TSX variants in the folder — not just v1. Update it as new variants are added.
+- MD filename must not include a version number. The versions table inside the file tracks individual variants.
+- TSX files are named `v{N}-{slug}.tsx` (e.g. `v3-halation-per-letter.tsx`). The MD file is just `{topic}.md`.
+
+### MD file structure (required sections)
+```
+# {Topic} Playground — Reference & Progress Notes
+
+## Goal
+One paragraph: what is being explored and why.
+
+## Versions
+| File | Description |
+|---|---|
+| `v1-...tsx` | What this version tried |
+| `v2-...tsx` | What changed |
+...
+
+## Key Decisions / Techniques
+Document non-obvious choices: rejected approaches, why a technique was chosen,
+known constraints. Enough context that future work can pick up without re-deriving.
+
+## Live Site Integration  ← only if extracted to the real app
+File path, props, usage examples.
+```
+
+Additional sections (effect vocabulary, locked defaults, filter chains, etc.) are added
+as needed when complexity warrants it. Follow the depth of `branding/logo.md` as a reference.
 
 ---
 
