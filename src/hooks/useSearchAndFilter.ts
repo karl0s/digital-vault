@@ -41,7 +41,14 @@ function isUndated(show: Show): boolean {
 function sortChronological(a: Show, b: Show): number {
   const aUndated = isUndated(a);
   const bUndated = isUndated(b);
-  if (aUndated && bUndated) return 0;
+  if (aUndated && bUndated) {
+    // Deterministic grouping for undated shows (compilations, docs, TV specials).
+    // Order by event/title so like-titled entries (e.g. "TV Compilation 1..6")
+    // cluster together numerically — regardless of the input order, which for
+    // general search is MiniSearch relevance order, NOT shows.json file order.
+    const byEvent = (a.EventOrFestival || '').localeCompare(b.EventOrFestival || '', undefined, { numeric: true });
+    return byEvent !== 0 ? byEvent : a.ShowID.localeCompare(b.ShowID);
+  }
   if (aUndated) return 1;
   if (bUndated) return -1;
   // Most recent first — ShowDate is YYYY-MM-DD so string comparison works
