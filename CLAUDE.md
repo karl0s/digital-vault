@@ -152,6 +152,7 @@ Shows with temp checksums (as of last update):
 | `f0516c90fab9` | STP — New York (Proshot) | 2010-01-01 |
 | `864ba0fb6931` | STP — 2010 Tour | 2010-08-20 |
 | `7df1b178e2a2` | RHCP — Woodstock 1999 | 1999-01-01 |
+| `9da270a1217f` | STP — TV Compilation 6 | (undated) |
 
 When the real SHA1 is available: update `ChecksumSHA1` in shows.json, rename the image files,
 and update the manifest key. Clear the Note.
