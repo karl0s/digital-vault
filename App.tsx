@@ -75,7 +75,12 @@ export default function App() {
       if (artistCmp !== 0) return artistCmp;
       const ad = a.ShowDate || '';
       const bd = b.ShowDate || '';
-      if (!ad && !bd) return 0;
+      if (!ad && !bd) {
+        // Group undated shows by event/title (e.g. "TV Compilation 1..6") so
+        // they cluster together deterministically instead of by array order.
+        const byEvent = (a.EventOrFestival || '').localeCompare(b.EventOrFestival || '', undefined, { numeric: true });
+        return byEvent !== 0 ? byEvent : a.ShowID.localeCompare(b.ShowID);
+      }
       if (!ad) return 1;
       if (!bd) return -1;
       return bd.localeCompare(ad);
