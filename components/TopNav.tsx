@@ -11,11 +11,24 @@ interface TopNavProps {
   onArtistsClick?: () => void;
   isArtistsActive?: boolean;
   searchInputRef?: React.RefObject<HTMLInputElement>;
+  /** Controlled so the mobile tab bar's Search item can open this. */
+  mobileSearchOpen?: boolean;
+  onMobileSearchOpenChange?: (open: boolean) => void;
 }
 
-export function TopNav({ searchQuery, onSearchChange, onLogoClick, onArtistsClick, isArtistsActive = false, searchInputRef }: TopNavProps) {
+export function TopNav({
+  searchQuery, onSearchChange, onLogoClick, onArtistsClick, isArtistsActive = false,
+  searchInputRef, mobileSearchOpen, onMobileSearchOpenChange,
+}: TopNavProps) {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const [uncontrolledMobileSearch, setUncontrolledMobileSearch] = useState(false);
+
+  // Controlled when the host passes a value, uncontrolled otherwise.
+  const isMobileSearchOpen = mobileSearchOpen ?? uncontrolledMobileSearch;
+  const setIsMobileSearchOpen = (open: boolean) => {
+    setUncontrolledMobileSearch(open);
+    onMobileSearchOpenChange?.(open);
+  };
   const localRef = useRef<HTMLInputElement>(null);
   const mobileInputRef = useRef<HTMLInputElement>(null);
   const inputRef = searchInputRef ?? localRef;

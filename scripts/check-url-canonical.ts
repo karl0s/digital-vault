@@ -98,6 +98,14 @@ eq(
   parseFilters('?era=1990s&country=germany'),
 );
 
+console.log('\nview (destination, not a facet)');
+eq('default view is implied', serializeFilters(f({ view: 'browse' })), '');
+eq('non-default view is explicit', serializeFilters(f({ view: 'artists' })), '?view=artists');
+eq('view is emitted first', serializeFilters(f({ view: 'artists', era: ['1990s'], q: 'x' })), '?view=artists&q=x&era=1990s');
+eq('unknown view falls back', parseFilters('?view=bogus').view, 'browse');
+eq('view round-trips', serializeFilters(parseFilters('?view=artists&era=1990s')), '?view=artists&era=1990s');
+eq('isFiltered ignores view', isFiltered(f({ view: 'artists' })), false);
+
 console.log('\nhelpers');
 eq('isFiltered false when empty', isFiltered(EMPTY_FILTERS), false);
 eq('isFiltered true on a facet', isFiltered(f({ era: ['1990s'] })), true);

@@ -5,6 +5,7 @@ import {
   FacetKey,
   FilterState,
   SortKey,
+  ViewKey,
   parseFilters,
   serializeFilters,
 } from '../lib/url';
@@ -23,6 +24,8 @@ interface FilterActions {
   /** Replace a facet's values outright. */
   setFacet: (facet: FacetKey, values: (string | number)[]) => void;
   setQuery: (q: string) => void;
+  /** Change destination. Pushes history rather than replacing — see below. */
+  setView: (view: ViewKey) => void;
   setSort: (sort: SortKey) => void;
   clearFacet: (facet: FacetKey) => void;
   clearAll: () => void;
@@ -80,7 +83,7 @@ export const useFilterStore = create<FilterStore>((set, get) => {
     if (!applyingFromUrl) {
       const s = get();
       commitFilterState({
-        q: s.q, era: s.era, year: s.year, country: s.country,
+        view: s.view, q: s.q, era: s.era, year: s.year, country: s.country,
         festival: s.festival, type: s.type, sort: s.sort,
       });
     }
@@ -99,6 +102,21 @@ export const useFilterStore = create<FilterStore>((set, get) => {
     },
 
     setQuery: q => apply({ q }),
+
+    // Destination changes push a history entry; facet refinements replace one.
+    // Back should step between places you visited, not undo every checkbox.
+    setView: view => {
+      set({ view });
+      const s = get();
+      const next: FilterState = {
+        view: s.view, q: s.q, era: s.era, year: s.year,
+        country: s.country, festival: s.festival, type: s.type, sort: s.sort,
+      };
+      if (typeof window !== 'undefined') {
+        const query = serializeFilters(next);
+        window.history.pushState(null, '', `${window.location.pathname}${query}${window.location.hash}`);
+      }
+    },
 
     setSort: sort => apply({ sort }),
 
@@ -137,7 +155,7 @@ export function initFilterUrlSync(): () => void {
 /** Plain snapshot of the serializable state, without the actions. */
 export function selectFilterState(s: FilterStore): FilterState {
   return {
-    q: s.q, era: s.era, year: s.year, country: s.country,
+    view: s.view, q: s.q, era: s.era, year: s.year, country: s.country,
     festival: s.festival, type: s.type, sort: s.sort,
   };
 }
