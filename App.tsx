@@ -60,6 +60,18 @@ export default function App() {
   const [pillTransitionKey, setPillTransitionKey] = useState(0);
   const [selectedShow, setSelectedShow] = useState<Show | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('hero');
+  /**
+   * PARKED — intentionally unreachable, do not delete as dead code.
+   *
+   * "All shows" mode renders the whole catalogue in one grid. Its only entry
+   * point was the hero's "All Shows →" link, which now goes to the artist
+   * directory instead, so nothing sets this to true today. It is kept for the
+   * planned sidebar, which will link to it again.
+   *
+   * Everything reachable only from here is parked with it: `allShowsSorted`,
+   * `handleShowAllShows`, the Escape-key branch below, and the `showAllMode`
+   * render branch. A dead-code sweep will flag all of them — that is expected.
+   */
   const [showAllMode, setShowAllMode] = useState(false);
   const navSearchRef = useRef<HTMLInputElement>(null);
 
@@ -120,6 +132,8 @@ export default function App() {
     if (query.trim()) setShowAllMode(false);
   }
 
+  // PARKED — see the showAllMode declaration above. No caller today; the
+  // planned sidebar will wire this back up.
   function handleShowAllShows() {
     setShowAllMode(true);
     setSearchQuery('');
@@ -155,7 +169,7 @@ export default function App() {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <HeroSearch onSearch={handleSearchChange} onBrowseAll={handleShowAllShows} isSearching={isSearching || showAllMode} />
+      <HeroSearch onSearch={handleSearchChange} onShowArtists={handleShowArtists} isSearching={isSearching || showAllMode} />
       {/* Content slot: transitions between featured rows, all-shows, and search results */}
       {isSearching ? (
         <div className="px-4 md:px-8 pt-10">

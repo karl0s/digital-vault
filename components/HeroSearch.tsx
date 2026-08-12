@@ -5,20 +5,19 @@ export type SearchType = 'artist' | 'general';
 
 interface HeroSearchProps {
   onSearch: (query: string, type?: SearchType) => void;
-  onBrowseAll: () => void;
+  onShowArtists: () => void;
   isSearching?: boolean;
 }
 
 const QUICK_SEARCHES: { label: string; query: string; type: SearchType }[] = [
-  { label: 'Soundgarden',          query: 'Soundgarden',          type: 'artist'  },
-  { label: 'Stone Temple Pilots',  query: 'Stone Temple Pilots',  type: 'artist'  },
-  { label: 'Smashing Pumpkins',    query: 'Smashing Pumpkins',    type: 'artist'  },
-  { label: "Jane's Addiction",     query: "Jane's Addiction",     type: 'artist'  },
-  { label: 'Radiohead',            query: 'Radiohead',            type: 'artist'  },
-  { label: '1990s',                query: 'nineties',             type: 'general' },
+  { label: 'Soundgarden',           query: 'Soundgarden',           type: 'artist' },
+  { label: 'Stone Temple Pilots',   query: 'Stone Temple Pilots',   type: 'artist' },
+  { label: 'Smashing Pumpkins',     query: 'Smashing Pumpkins',     type: 'artist' },
+  { label: 'Red Hot Chili Peppers', query: 'Red Hot Chili Peppers', type: 'artist' },
+  { label: 'Radiohead',             query: 'Radiohead',             type: 'artist' },
 ];
 
-export function HeroSearch({ onSearch, onBrowseAll, isSearching = false }: HeroSearchProps) {
+export function HeroSearch({ onSearch, onShowArtists, isSearching = false }: HeroSearchProps) {
   return (
     <motion.div
       style={{ overflow: 'hidden' }}
@@ -89,10 +88,10 @@ export function HeroSearch({ onSearch, onBrowseAll, isSearching = false }: HeroS
           ))}
           <span aria-hidden="true" className="text-white/10 select-none mx-1">|</span>
           <button
-            onClick={onBrowseAll}
+            onClick={onShowArtists}
             className="cursor-pointer text-sm text-gray-400 hover:text-white transition-colors duration-200 tracking-wide"
           >
-            All Shows →
+            All artists →
           </button>
         </motion.div>
 
