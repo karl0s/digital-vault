@@ -1,6 +1,5 @@
 import { cva } from 'class-variance-authority';
 import { Clapperboard, LayoutGrid, type LucideIcon, Music2, PanelLeft, Radio } from 'lucide-react';
-import { HalationLogo } from '../logos/HalationLogo';
 import { cn } from '../../src/lib/cn';
 import { ViewKey } from '../../src/lib/url';
 import { useFilterStore } from '../../src/store/filters';
@@ -143,12 +142,6 @@ export function Sidebar({ width, onToggleWidth }: SidebarProps) {
         })}
       </ul>
 
-      {!isRail && (
-        <div className="mt-auto px-3 pt-6">
-          <HalationLogo scale={0.14} />
-          <p className="mt-2 text-xs text-gray-400">Live music worth reliving.</p>
-        </div>
-      )}
     </nav>
   );
 }
