@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Show } from '../App';
+import { Show } from '../../App';
 
 export function useShows() {
   const [shows, setShows] = useState<Show[]>([]);
