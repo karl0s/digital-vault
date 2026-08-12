@@ -192,8 +192,10 @@ Uses conventional commits:
 
 Always end with:
 ```
-Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+Co-Authored-By: Claude <noreply@anthropic.com>
 ```
+Unversioned on purpose — the model name would otherwise need updating every
+time the model changes, and it goes stale silently.
 
 ---
 
