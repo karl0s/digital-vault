@@ -106,7 +106,12 @@ export const useFilterStore = create<FilterStore>((set, get) => {
     // Destination changes push a history entry; facet refinements replace one.
     // Back should step between places you visited, not undo every checkbox.
     setView: view => {
-      set({ view });
+      // Clearing the query is what makes a destination a destination. A live
+      // query outranks the view when rendering, so without this, clicking
+      // "Artists" while searching leaves you on results and the nav looks
+      // broken. Facets are left alone — they refine a view rather than
+      // replace it.
+      set({ view, q: '' });
       const s = get();
       const next: FilterState = {
         view: s.view, q: s.q, era: s.era, year: s.year,

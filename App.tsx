@@ -83,6 +83,26 @@ export default function App() {
   // Back/forward -> store. Once, at the root.
   useEffect(() => initFilterUrlSync(), []);
 
+  /**
+   * Changing destination clears the search.
+   *
+   * The query outranks the view when picking what to render, so without this,
+   * clicking "Artists" in the sidebar while a search is live leaves you looking
+   * at results while the nav claims you are in the directory.
+   *
+   * The store already clears its own `q`; this mirrors it for App's local
+   * search state, which is still the source of truth until the query moves onto
+   * the store in a later slice. The ref skips the mount run so a fresh load
+   * does not scroll or wipe state it never set.
+   */
+  const viewMounted = useRef(false);
+  useEffect(() => {
+    if (!viewMounted.current) { viewMounted.current = true; return; }
+    setSearchQuery('');
+    setShowAllMode(false);
+    scrollToTop();
+  }, [view]);
+
   const { shows, getImageUrl, error } = useShows();
   const debouncedQuery = useDebounce(searchQuery, 150);
   const { filteredShows, songSuggestion } = useSearchAndFilter(shows, debouncedQuery);
