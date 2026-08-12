@@ -145,14 +145,30 @@ When a show is created before files are physically scanned, a random 40-char hex
 as a placeholder checksum. These stubs are identified by:
 - `Notes` field contains `"TEMP CHECKSUM - update when files are scanned"`
 
-Shows with temp checksums (as of last update):
+Shows with temp checksums. Regenerate this table rather than hand-editing it —
+the previous version listed 5 of the 10 that actually exist:
+
+```bash
+python3 -c "
+import json
+for s in sorted(json.load(open('public/shows.json')), key=lambda x: (x['Artist'], x.get('ShowDate') or 'zzzz')):
+    if 'TEMP CHECKSUM' in (s.get('Notes') or ''):
+        print(s['ShowID'], s['Artist'], s.get('ShowDate') or '(undated)')
+"
+```
+
 | ShowID | Show | Date |
 |---|---|---|
-| `88b30e27e380` | STP — WAAF | 2000-01-01 |
-| `f0516c90fab9` | STP — New York (Proshot) | 2010-01-01 |
-| `864ba0fb6931` | STP — 2010 Tour | 2010-08-20 |
-| `7df1b178e2a2` | RHCP — Woodstock 1999 | 1999-01-01 |
-| `9da270a1217f` | STP — TV Compilation 6 | (undated) |
+| `266049ff87ed` | Audioslave — Rock am Ring | 2003-06-07 |
+| `87b69f8144b4` | Radiohead — Jools Holland | 2001-09-06 |
+| `7df1b178e2a2` | Red Hot Chili Peppers — Woodstock 1999 | 1999-01-01 |
+| `884da8e9cd6f` | Soundgarden — Saturday Night Live | 1996-05-18 |
+| `9591d1560110` | Stone Temple Pilots — MTV Unplugged | 1993-11-17 |
+| `88b30e27e380` | Stone Temple Pilots — WAAF | 2000-01-01 |
+| `97a38840a60a` | Stone Temple Pilots — Bizarre Festival | 2001-08-18 |
+| `f0516c90fab9` | Stone Temple Pilots — New York | 2010-01-01 |
+| `864ba0fb6931` | Stone Temple Pilots — 2010 Tour | 2010-08-20 |
+| `9da270a1217f` | Stone Temple Pilots — TV Compilation 6 | (undated) |
 
 When the real SHA1 is available: update `ChecksumSHA1` in shows.json, rename the image files,
 and update the manifest key. Clear the Note.
@@ -563,10 +579,22 @@ Current quick-search pills are defined in `components/HeroSearch.tsx` → `QUICK
 
 ---
 
-## Key stats (as of last update)
-- **823 shows** across **165 artists**
-- Top artists by volume: STP (78), Smashing Pumpkins (58), Kings of Leon (44),
-  Foo Fighters (31), Soundgarden (31), RHCP (25), Incubus (24), Faith No More (20),
-  Jane's Addiction (19)
-- Top festivals: Rock am Ring (39), Glastonbury Festival (28), Reading Festival (25),
-  MTV Unplugged (19), Bizarre Festival (19), Pinkpop (18), VH1 Storytellers (16)
+## Key stats
+Recomputed from `public/shows.json`, not maintained by hand:
+
+```bash
+python3 -c "
+import json, collections
+d = json.load(open('public/shows.json'))
+a = collections.Counter(s['Artist'] for s in d)
+f = collections.Counter(s['EventOrFestival'] for s in d if s.get('EventOrFestival'))
+print(len(d), 'shows /', len(a), 'artists'); print(a.most_common(9)); print(f.most_common(7))
+"
+```
+
+- **829 shows** across **165 artists**
+- Top artists by volume: Stone Temple Pilots (81), Smashing Pumpkins (58),
+  Kings Of Leon (44), Soundgarden (32), Foo Fighters (31), Various Artists (27),
+  Red Hot Chili Peppers (25), Incubus (24), Faith No More (20)
+- Top festivals: Rock am Ring (40), Glastonbury Festival (28), Reading Festival (25),
+  MTV Unplugged (20), Bizarre Festival (20), Pinkpop (18), VH1 Storytellers (16)
