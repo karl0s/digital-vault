@@ -16,6 +16,7 @@ import { ShowGrid } from './components/ShowGrid';
 import { useBrowseResults } from './src/hooks/useBrowseResults';
 import { isFiltered as computeIsFiltered } from './src/lib/url';
 import { useFilterStore, initFilterUrlSync, selectFilterState } from './src/store/filters';
+import { useShallow } from 'zustand/react/shallow';
 
 export interface Show {
   ShowID: string;
@@ -83,7 +84,12 @@ export default function App() {
   const storeQuery = useFilterStore(s => s.q);
   const setStoreQuery = useFilterStore(s => s.setQuery);
   const clearAllFilters = useFilterStore(s => s.clearAll);
-  const filterState = useFilterStore(selectFilterState);
+  // useShallow is required, not optional. selectFilterState builds a new object
+  // on every call, and zustand v5 reads selectors through useSyncExternalStore,
+  // which demands a stable snapshot — without it React re-renders forever with
+  // "The result of getSnapshot should be cached". Shallow comparison works here
+  // because the facet arrays are only ever replaced, never mutated in place.
+  const filterState = useFilterStore(useShallow(selectFilterState));
 
   // Back/forward -> store. Once, at the root.
   useEffect(() => initFilterUrlSync(), []);
