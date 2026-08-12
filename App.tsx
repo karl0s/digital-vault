@@ -150,13 +150,6 @@ export default function App() {
 
   function handleCloseDrawer() { setSelectedShow(null); }
 
-  function handleShowArtists() {
-    setView('artists');
-    setSearchQuery('');
-    setShowAllMode(false);
-    scrollToTop();
-  }
-
   /**
    * Selecting from the artist directory runs the exact-artist facet.
    * viewMode stays 'artists' so clearing the search returns to the directory
@@ -167,8 +160,8 @@ export default function App() {
     scrollToTop();
   }
 
-  // Hero mode: HeroSearch (title + pills) is always mounted; only the slot below it transitions.
-  // This means the nav search input never unmounts while the user is typing.
+  // HeroSearch (wordmark + tagline) is always mounted; only the slot below it
+  // transitions. That way the nav search input never unmounts mid-keystroke.
   const heroContent = (
     <motion.div
       key="hero"
@@ -177,7 +170,7 @@ export default function App() {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <HeroSearch onSearch={handleSearchChange} onShowArtists={handleShowArtists} isSearching={isSearching || showAllMode} />
+      <HeroSearch isSearching={isSearching || showAllMode} />
       {/* Content slot: transitions between featured rows, all-shows, and search results */}
       {isSearching ? (
         <div className="px-4 md:px-8 pt-10">
