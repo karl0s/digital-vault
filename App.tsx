@@ -298,9 +298,6 @@ export default function App() {
             <TopNav
               searchQuery={searchQuery}
               onSearchChange={handleSearchChange}
-              onLogoClick={() => { setSearchQuery(''); setView('browse'); setShowAllMode(false); scrollToTop(); }}
-              onArtistsClick={handleShowArtists}
-              isArtistsActive={view === 'artists'}
               searchInputRef={navSearchRef}
               mobileSearchOpen={mobileSearchOpen}
               onMobileSearchOpenChange={setMobileSearchOpen}

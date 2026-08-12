@@ -1,15 +1,10 @@
 import { Search, X } from 'lucide-react';
 import { useRef, useState, useEffect } from 'react';
 import { flushSync } from 'react-dom';
-import { HalationLogo } from './logos/HalationLogo';
-import { scrollToTop } from '../src/lib/motion';
 
 interface TopNavProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
-  onLogoClick?: () => void;
-  onArtistsClick?: () => void;
-  isArtistsActive?: boolean;
   searchInputRef?: React.RefObject<HTMLInputElement>;
   /** Controlled so the mobile tab bar's Search item can open this. */
   mobileSearchOpen?: boolean;
@@ -17,8 +12,7 @@ interface TopNavProps {
 }
 
 export function TopNav({
-  searchQuery, onSearchChange, onLogoClick, onArtistsClick, isArtistsActive = false,
-  searchInputRef, mobileSearchOpen, onMobileSearchOpenChange,
+  searchQuery, onSearchChange, searchInputRef, mobileSearchOpen, onMobileSearchOpenChange,
 }: TopNavProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [uncontrolledMobileSearch, setUncontrolledMobileSearch] = useState(false);
@@ -49,31 +43,9 @@ export function TopNav({
     >
       <div className="max-w-[1924px] mx-auto">
         <div className="flex items-center gap-4 px-4 md:px-8 h-16">
-          {/* Brand wordmark */}
-          <a
-            href="#"
-            onClick={(e) => { e.preventDefault(); onLogoClick ? onLogoClick() : scrollToTop(); }}
-            className="shrink-0 select-none"
-            aria-label="The Vault — home"
-          >
-            <HalationLogo scale={0.19} />
-          </a>
-
-          {/* Artist directory — the recognition path. Persistent on every
-              screen so the catalogue is browsable without knowing a name.
-              Uses the site's pill idiom (see HeroSearch quick-searches); the
-              active state is that pill's hover state, held open. */}
-          <button
-            onClick={onArtistsClick}
-            aria-current={isArtistsActive ? 'page' : undefined}
-            className={`cursor-pointer shrink-0 px-4 py-1.5 rounded-full text-sm border transition-colors duration-200 ${
-              isArtistsActive
-                ? 'text-white bg-white/10 border-white/20'
-                : 'text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 border-white/8 hover:border-white/20'
-            }`}
-          >
-            Artists
-          </button>
+          {/* No wordmark and no Artists pill here by design. The sidebar owns
+              artist navigation, and the brand lives on the landing view only —
+              repeating either in the header was duplicate chrome. */}
 
           {/* Desktop search — always visible */}
           <div className="relative hidden md:block flex-1 max-w-sm">

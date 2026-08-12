@@ -61,10 +61,11 @@ function FeaturedSection({ title, shows, onShowClick, getImageUrl }: FeaturedSec
 /**
  * Hand-picked landing set, in display order. Exactly 7 so it fills one row at
  * 2xl. Where the archive holds several copies of a show, the ID here is the
- * best copy — largest file, complete date, setlist present.
+ * chosen copy — usually the largest, except where noted.
  */
 const FEATURED_IDS = [
-  '7ba32801defb', // Stone Temple Pilots — MTV Unplugged, 1993-11-17 (3.24 GB, largest of 4 copies)
+  // 539 MB copy, chosen deliberately over the three larger ones (up to 3.24 GB).
+  'ccd7ed3c2fa4', // Stone Temple Pilots — MTV Unplugged, 1993-11-17
   '6b3751fea69f', // Jane's Addiction — Brixton Academy, 2003-09-30 (3.60 GB, dated copy)
   '3d97ae42ed27', // Soundgarden — MTV Live & Loud, 1996-09-20 (1.72 GB)
   '3fe2d2713abb', // Lenny Kravitz — MTV Unplugged, 1994 (1.45 GB, dated copy)
