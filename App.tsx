@@ -11,6 +11,9 @@ import { useShows } from './src/hooks/useShows';
 import { useSearchAndFilter } from './src/hooks/useSearchAndFilter';
 import { useDebounce } from './src/hooks/useDebounce';
 import { scrollToTop } from './src/lib/motion';
+import { AppShell } from './components/shell/AppShell';
+import { useFilterStore } from './src/store/filters';
+import { initFilterUrlSync } from './src/store/filters';
 
 export interface Show {
   ShowID: string;
@@ -52,14 +55,12 @@ export interface Show {
   ExtractionWarnings?: string;
 }
 
-type ViewMode = 'hero' | 'artists';
-
 export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchType, setSearchType] = useState<'artist' | 'general' | undefined>(undefined);
   const [pillTransitionKey, setPillTransitionKey] = useState(0);
   const [selectedShow, setSelectedShow] = useState<Show | null>(null);
-  const [viewMode, setViewMode] = useState<ViewMode>('hero');
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   /**
    * PARKED — intentionally unreachable, do not delete as dead code.
    *
@@ -74,6 +75,13 @@ export default function App() {
    */
   const [showAllMode, setShowAllMode] = useState(false);
   const navSearchRef = useRef<HTMLInputElement>(null);
+
+  // Destination lives in the store so it is linkable; see src/lib/url.ts.
+  const view = useFilterStore(s => s.view);
+  const setView = useFilterStore(s => s.setView);
+
+  // Back/forward -> store. Once, at the root.
+  useEffect(() => initFilterUrlSync(), []);
 
   const { shows, getImageUrl, error } = useShows();
   const debouncedQuery = useDebounce(searchQuery, 150);
@@ -143,7 +151,7 @@ export default function App() {
   function handleCloseDrawer() { setSelectedShow(null); }
 
   function handleShowArtists() {
-    setViewMode('artists');
+    setView('artists');
     setSearchQuery('');
     setShowAllMode(false);
     scrollToTop();
@@ -180,7 +188,7 @@ export default function App() {
             transitionKey={pillTransitionKey}
             songSuggestion={songSuggestion}
             onShowClick={handleShowClick}
-            onClear={() => { setSearchQuery(''); setViewMode('hero'); scrollToTop(); navSearchRef.current?.focus(); }}
+            onClear={() => { setSearchQuery(''); setView('browse'); scrollToTop(); navSearchRef.current?.focus(); }}
             onSearch={(q) => handleSearchChange(q, 'general')}
             getImageUrl={getImageUrl}
           />
@@ -235,9 +243,9 @@ export default function App() {
         </div>
       </motion.div>
     );
-  } else if (viewMode === 'artists' && !isSearching) {
+  } else if (view === 'artists' && !isSearching) {
     mainContent = <ArtistsView shows={shows} onArtistSelect={handleArtistSelect} />;
-  } else if (viewMode === 'artists' && isSearching) {
+  } else if (view === 'artists' && isSearching) {
     mainContent = (
       <motion.div
         key="search"
@@ -279,38 +287,37 @@ export default function App() {
     // reducedMotion="user" makes every motion/react animation honour the OS
     // setting: transform and layout animations are dropped, opacity is kept.
     <MotionConfig reducedMotion="user">
-      <div className="min-h-screen bg-[#141414] text-white">
-        {/* The page's one h1. Visually hidden because the wordmark carries the
-            brand visually, but heading navigation needs a real entry point. */}
-        <h1 className="sr-only">The Vault — live concert archive</h1>
+      {/* The page's one h1. Visually hidden because the wordmark carries the
+          brand visually, but heading navigation needs a real entry point. */}
+      <h1 className="sr-only">The Vault — live concert archive</h1>
 
-        <div {...backgroundInert}>
-          <TopNav
-            searchQuery={searchQuery}
-            onSearchChange={handleSearchChange}
-            onLogoClick={() => { setSearchQuery(''); setViewMode('hero'); setShowAllMode(false); scrollToTop(); }}
-            onArtistsClick={handleShowArtists}
-            isArtistsActive={viewMode === 'artists'}
-            searchInputRef={navSearchRef}
-          />
-
-          {/* overflow-x-clip, not -hidden: `hidden` makes this a scroll container,
-              which breaks `position: sticky` for descendants (the A–Z rail in
-              ArtistsView). `clip` suppresses horizontal overflow without one. */}
-          <main className="pt-16 pb-8 overflow-x-clip">
-            <AnimatePresence mode="wait">
-              {mainContent}
-            </AnimatePresence>
-          </main>
-        </div>
-
-        <AnimatePresence>
-          {selectedShow && (
-            <ShowDrawer show={selectedShow} onClose={handleCloseDrawer} getImageUrl={getImageUrl} />
-          )}
-        </AnimatePresence>
-
+      <div {...backgroundInert}>
+        <AppShell
+          onMobileSearchClick={() => setMobileSearchOpen(true)}
+          topBar={
+            <TopNav
+              searchQuery={searchQuery}
+              onSearchChange={handleSearchChange}
+              onLogoClick={() => { setSearchQuery(''); setView('browse'); setShowAllMode(false); scrollToTop(); }}
+              onArtistsClick={handleShowArtists}
+              isArtistsActive={view === 'artists'}
+              searchInputRef={navSearchRef}
+              mobileSearchOpen={mobileSearchOpen}
+              onMobileSearchOpenChange={setMobileSearchOpen}
+            />
+          }
+        >
+          <AnimatePresence mode="wait">
+            {mainContent}
+          </AnimatePresence>
+        </AppShell>
       </div>
+
+      <AnimatePresence>
+        {selectedShow && (
+          <ShowDrawer show={selectedShow} onClose={handleCloseDrawer} getImageUrl={getImageUrl} />
+        )}
+      </AnimatePresence>
     </MotionConfig>
   );
 }

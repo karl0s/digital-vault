@@ -22,6 +22,17 @@ export type SortKey = 'year-desc' | 'year-asc' | 'artist';
 export const DEFAULT_SORT: SortKey = 'year-desc';
 
 /**
+ * Destinations. Not a facet — a destination decides *what* you are looking at,
+ * facets refine it. Lives in the URL anyway so a view can be linked and shared,
+ * and it is emitted first because it is the coarsest part of the address.
+ */
+export type ViewKey = 'browse' | 'artists';
+
+export const DEFAULT_VIEW: ViewKey = 'browse';
+
+const VIEW_KEYS: readonly ViewKey[] = ['browse', 'artists'];
+
+/**
  * Sentinel for "this field is empty on the record".
  *
  * A show with no Country must stay reachable — 135 of them have none, and 341
@@ -32,6 +43,7 @@ export const DEFAULT_SORT: SortKey = 'year-desc';
 export const NONE = 'none';
 
 export interface FilterState {
+  view: ViewKey;
   q: string;
   era: string[];
   year: number[];
@@ -42,6 +54,7 @@ export interface FilterState {
 }
 
 export const EMPTY_FILTERS: FilterState = {
+  view: DEFAULT_VIEW,
   q: '',
   era: [],
   year: [],
@@ -56,7 +69,7 @@ export const FACET_KEYS = ['era', 'year', 'country', 'festival', 'type'] as cons
 export type FacetKey = (typeof FACET_KEYS)[number];
 
 /** Rule 1. Emission order is fixed here and nowhere else. */
-const PARAM_ORDER = ['q', 'era', 'year', 'country', 'festival', 'type', 'sort'] as const;
+const PARAM_ORDER = ['view', 'q', 'era', 'year', 'country', 'festival', 'type', 'sort'] as const;
 
 const SORT_KEYS: readonly SortKey[] = ['year-desc', 'year-asc', 'artist'];
 
@@ -93,6 +106,12 @@ export function serializeFilters(state: FilterState): string {
   const parts: string[] = [];
 
   for (const key of PARAM_ORDER) {
+    if (key === 'view') {
+      // Default destination is implied, same rule as default sort.
+      if (state.view !== DEFAULT_VIEW) parts.push(`view=${state.view}`);
+      continue;
+    }
+
     if (key === 'q') {
       const q = state.q.trim();
       if (q) parts.push(`q=${encodeURIComponent(q)}`);
@@ -129,6 +148,7 @@ export function parseFilters(search: string): FilterState {
   const params = new URLSearchParams(search.startsWith('?') ? search.slice(1) : search);
 
   const rawSort = params.get('sort') as SortKey | null;
+  const rawView = params.get('view') as ViewKey | null;
   const years = (params.get('year') ?? '')
     .split(',')
     .map(v => Number.parseInt(v, 10))
@@ -136,6 +156,7 @@ export function parseFilters(search: string): FilterState {
     .filter(n => Number.isFinite(n) && n >= 1900 && n <= 2100);
 
   return {
+    view: rawView && VIEW_KEYS.includes(rawView) ? rawView : DEFAULT_VIEW,
     q: (params.get('q') ?? '').trim(),
     era: readList(params, 'era'),
     year: uniqueSortedNums(years),
