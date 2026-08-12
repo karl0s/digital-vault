@@ -28,14 +28,12 @@ export function LazyImage({
       className={`relative ${className}`}
       onClick={onClick}
     >
-      {/* Placeholder with blur effect */}
-      <div 
+      {/* Placeholder. No backdrop-filter: this is an opaque fill, so there is
+          nothing behind it to blur — it only cost a filter pass per image. */}
+      <div
         className={`absolute inset-0 ${placeholderColor} transition-opacity duration-500 ${
           imageSrc && !isLoading ? 'opacity-0' : 'opacity-100'
         }`}
-        style={{
-          backdropFilter: 'blur(10px)',
-        }}
       />
       
       {/* Actual image with fade-in */}
@@ -49,9 +47,11 @@ export function LazyImage({
             isLoading ? 'opacity-0' : 'opacity-100'
           }`}
           style={{
-            // Force GPU acceleration
+            // translateZ(0) already promotes this to its own layer for the
+            // fade. No `will-change: opacity`: it made the promotion permanent
+            // on every card image — hundreds of live layers for a 500ms fade
+            // that has already finished.
             transform: 'translateZ(0)',
-            willChange: 'opacity',
             ...style
           }}
         />

@@ -10,13 +10,25 @@
   display: none;  /* Chrome, Safari and Opera */
 }
 
-/* Smooth scrolling for the whole app */
-html {
-  scroll-behavior: smooth;
+/* Smooth scrolling for the whole app — opt-in, so a stated OS preference wins.
+   The JS scroll calls are wrapped separately in src/lib/motion.ts, and
+   motion/react is handled by <MotionConfig reducedMotion="user"> in App.tsx. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
-
-/* Drawer thumbnail aspect ratio - 4:3 for screenshot thumbnails */
-.drawer-thumbnail {
-  aspect-ratio: 4 / 3;
+/* Gentler, not zero. Movement (transform, width/height, position) snaps to its
+   end state, while opacity and colour keep transitioning — those carry state
+   changes and removing them would lose information, not just motion.
+   Looping decoration (the skeleton pulse) stops entirely. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-property: opacity, color, background-color, border-color, box-shadow, fill, stroke !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
 }

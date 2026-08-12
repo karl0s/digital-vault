@@ -2,6 +2,7 @@ import { Search, X } from 'lucide-react';
 import { useRef, useState, useEffect } from 'react';
 import { flushSync } from 'react-dom';
 import { HalationLogo } from './logos/HalationLogo';
+import { scrollToTop } from '../src/lib/motion';
 
 interface TopNavProps {
   searchQuery: string;
@@ -27,7 +28,7 @@ export function TopNav({ searchQuery, onSearchChange, onLogoClick, onArtistsClic
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 border-b ${
+      className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-300 border-b ${
         isScrolled
           ? 'bg-[#141414]/97 backdrop-blur-md border-white/6'
           : 'bg-linear-to-b from-black/80 via-black/40 to-transparent border-transparent'
@@ -38,7 +39,7 @@ export function TopNav({ searchQuery, onSearchChange, onLogoClick, onArtistsClic
           {/* Brand wordmark */}
           <a
             href="#"
-            onClick={(e) => { e.preventDefault(); onLogoClick ? onLogoClick() : window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+            onClick={(e) => { e.preventDefault(); onLogoClick ? onLogoClick() : scrollToTop(); }}
             className="shrink-0 select-none"
             aria-label="The Vault — home"
           >
@@ -52,7 +53,7 @@ export function TopNav({ searchQuery, onSearchChange, onLogoClick, onArtistsClic
           <button
             onClick={onArtistsClick}
             aria-current={isArtistsActive ? 'page' : undefined}
-            className={`cursor-pointer shrink-0 px-4 py-1.5 rounded-full text-sm border transition-all duration-200 ${
+            className={`cursor-pointer shrink-0 px-4 py-1.5 rounded-full text-sm border transition-colors duration-200 ${
               isArtistsActive
                 ? 'text-white bg-white/10 border-white/20'
                 : 'text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 border-white/8 hover:border-white/20'
@@ -70,12 +71,12 @@ export function TopNav({ searchQuery, onSearchChange, onLogoClick, onArtistsClic
               placeholder="Artist, song, venue, year…"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full bg-white/7 border border-white/10 text-white placeholder-gray-600 rounded-lg px-4 py-2 pl-9 focus:outline-none focus:ring-1 focus:ring-white/20 focus:border-white/20 focus:bg-white/10 transition-all text-sm"
+              className="w-full bg-white/7 border border-white/10 text-white placeholder-gray-400 rounded-lg px-4 py-2 pl-9 focus:border-white/20 focus:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70 transition-colors text-sm"
             />
             {searchQuery && (
               <button
                 onClick={() => { onSearchChange(''); inputRef.current?.focus(); }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-white transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
                 aria-label="Clear search"
               >
                 <X className="w-3.5 h-3.5" />
@@ -115,12 +116,13 @@ export function TopNav({ searchQuery, onSearchChange, onLogoClick, onArtistsClic
                 onChange={(e) => {
                   onSearchChange(e.target.value);
                 }}
-                className="w-full bg-white/[0.07] border border-white/10 text-white placeholder-gray-600 rounded-lg px-4 py-2.5 pl-10 focus:outline-none focus:ring-1 focus:ring-white/20 focus:bg-white/10 transition-all text-base"
+                className="w-full bg-white/[0.07] border border-white/10 text-white placeholder-gray-400 rounded-lg px-4 py-2.5 pl-10 focus:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70 transition-colors text-base"
               />
               {searchQuery && (
                 <button
                   onClick={() => { onSearchChange(''); mobileInputRef.current?.focus(); }}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                  aria-label="Clear search"
                 >
                   <X className="w-4 h-4" />
                 </button>

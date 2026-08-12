@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Show } from '../App';
-import { SAMPLE_SHOWS } from '../data/sampleShows';
 
 export function useShows() {
   const [shows, setShows] = useState<Show[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const [imageManifest, setImageManifest] = useState<Record<string, number[]>>({});
 
   useEffect(() => {
@@ -33,8 +33,12 @@ export function useShows() {
 
         setShows(items);
       } catch (err) {
-        console.error('⚠️ Failed to load shows.json, using sample data fallback.', err);
-        setShows(SAMPLE_SHOWS);
+        // Report the failure rather than substituting sample data. The old
+        // fallback rendered five hardcoded shows, which looked like a working
+        // archive that had lost 824 recordings — indistinguishable from real
+        // data loss, and it hid the actual fault.
+        console.error('Failed to load shows.json', err);
+        setError(err instanceof Error ? err.message : 'Unknown error');
       }
     };
 
@@ -57,5 +61,5 @@ export function useShows() {
     return `${base}images/${checksum}_0${index}.jpg`;
   };
 
-  return { shows, getImageUrl };
+  return { shows, getImageUrl, error };
 }

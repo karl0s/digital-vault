@@ -54,7 +54,7 @@ function FeaturedRow({ title, shows, onShowClick, getImageUrl }: FeaturedRowProp
       onMouseLeave={() => setIsRowHovered(false)}
     >
       {/* Row title */}
-      <h2 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-500 mb-3 px-4 md:px-8">
+      <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400 mb-3 px-4 md:px-8">
         {title}
       </h2>
 
@@ -80,7 +80,7 @@ function FeaturedRow({ title, shows, onShowClick, getImageUrl }: FeaturedRowProp
         {showLeft && (
           <button
             onClick={scrollLeft}
-            className={`cursor-pointer absolute left-2 top-0 bottom-6 z-20 flex items-center transition-opacity duration-200 ${isRowHovered ? 'opacity-100' : 'opacity-0'}`}
+            className={`cursor-pointer absolute left-2 top-0 bottom-6 z-20 flex items-center transition-opacity duration-200 focus-visible:opacity-100 ${isRowHovered ? 'opacity-100' : 'opacity-0'}`}
             aria-label="Scroll left"
           >
             <div className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors duration-150">
@@ -97,7 +97,7 @@ function FeaturedRow({ title, shows, onShowClick, getImageUrl }: FeaturedRowProp
         {showRight && (
           <button
             onClick={scrollRight}
-            className={`cursor-pointer absolute right-2 top-0 bottom-6 z-20 flex items-center justify-end transition-opacity duration-200 ${isRowHovered ? 'opacity-100' : 'opacity-0'}`}
+            className={`cursor-pointer absolute right-2 top-0 bottom-6 z-20 flex items-center justify-end transition-opacity duration-200 focus-visible:opacity-100 ${isRowHovered ? 'opacity-100' : 'opacity-0'}`}
             aria-label="Scroll right"
           >
             <div className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors duration-150">
@@ -201,7 +201,7 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
   if (!sections) {
     return (
       <div className="px-4 md:px-8 py-8 max-w-[1924px] mx-auto">
-        <div className="animate-pulse space-y-10">
+        <div className="animate-pulse space-y-10" role="status" aria-label="Loading shows">
           {[1, 2, 3].map((i) => (
             <div key={i}>
               <div className="h-3 bg-white/5 rounded w-32 mb-4" />

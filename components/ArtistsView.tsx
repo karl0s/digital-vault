@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { Show } from '../App';
 import { getArtistDirectory } from '../src/search/searchIndex';
+import { scrollIntoView } from '../src/lib/motion';
 
 interface ArtistsViewProps {
   shows: Show[];
@@ -103,7 +104,7 @@ export function ArtistsView({ shows, onArtistSelect }: ArtistsViewProps) {
    * highlight on the destination confirms the jump landed.
    */
   const jumpTo = (letter: string) => {
-    sectionRefs.current[letter]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    scrollIntoView(sectionRefs.current[letter], 'start');
     setFlashLetter(letter);
     if (flashTimer.current) clearTimeout(flashTimer.current);
     flashTimer.current = setTimeout(() => setFlashLetter(null), 1200);

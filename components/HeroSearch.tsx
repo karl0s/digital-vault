@@ -62,7 +62,7 @@ export function HeroSearch({ onSearch, onBrowseAll, isSearching = false }: HeroS
 
         {/* Subtitle */}
         <motion.p
-          className="text-gray-500 -mt-2 mb-10 text-sm md:text-base tracking-widest uppercase"
+          className="text-gray-400 -mt-2 mb-10 text-sm md:text-base tracking-widest uppercase"
           style={{ letterSpacing: '0.25em' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -82,15 +82,15 @@ export function HeroSearch({ onSearch, onBrowseAll, isSearching = false }: HeroS
             <button
               key={label}
               onClick={() => onSearch(query, type)}
-              className="cursor-pointer px-4 py-1.5 rounded-full text-sm text-gray-500 hover:text-white bg-white/5 hover:bg-white/10 border border-white/8 hover:border-white/20 transition-all duration-200"
+              className="cursor-pointer px-4 py-1.5 rounded-full text-sm text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 border border-white/8 hover:border-white/20 transition-colors duration-200"
             >
               {label}
             </button>
           ))}
-          <span className="text-white/10 select-none mx-1">|</span>
+          <span aria-hidden="true" className="text-white/10 select-none mx-1">|</span>
           <button
             onClick={onBrowseAll}
-            className="cursor-pointer text-sm text-gray-600 hover:text-gray-300 transition-colors duration-200 tracking-wide"
+            className="cursor-pointer text-sm text-gray-400 hover:text-white transition-colors duration-200 tracking-wide"
           >
             All Shows →
           </button>
