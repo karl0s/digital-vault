@@ -6,7 +6,6 @@ import { motion } from 'motion/react';
 interface ShowCardProps {
   show: Show;
   onClick: () => void;
-  focused?: boolean;
   getImageUrl?: (checksum: string, index: number) => string | null;
   searchMode?: 'artist' | 'search';
 }
@@ -27,7 +26,7 @@ const getRecordingBadgeStyle = (_type: string): string => {
   return 'bg-black text-white border border-white/10';
 };
 
-export function ShowCard({ show, onClick, focused = false, getImageUrl, searchMode }: ShowCardProps) {
+export function ShowCard({ show, onClick, getImageUrl, searchMode }: ShowCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [prefetchedImages, setPrefetchedImages] = useState<string[]>([]);
 
@@ -82,26 +81,28 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl, searchMo
     }
   }, [isHovered, show.ChecksumSHA1, prefetchedImages.length, getImageUrl]);
 
-  const active = focused || isHovered;
+  const active = isHovered;
 
   return (
-    <div
+    // A real <button>, not a div: this is the only way to open a show, so it
+    // has to be reachable by keyboard. Focus drives the same `active` state as
+    // hover, so keyboard users get the overlay the mouse path already showed.
+    <button
+      type="button"
       id={`show-${show.ShowID}`}
       data-show-year={year}
-      className={`group cursor-pointer w-full ${focused ? 'relative z-20' : 'relative z-0'}`}
+      className="group cursor-pointer w-full relative z-0 block text-left"
       onClick={onClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onFocus={() => setIsHovered(true)}
+      onBlur={() => setIsHovered(false)}
     >
       {/* Thumbnail */}
       <div
         className={`
           relative overflow-hidden rounded-md transition-transform duration-300 ease-out
-          ${focused
-            ? 'scale-[1.03] ring-2 ring-[#E50914] shadow-2xl shadow-black/70'
-            : isHovered
-              ? 'scale-[1.02] shadow-xl shadow-black/60'
-              : ''}
+          ${isHovered ? 'scale-[1.02] shadow-xl shadow-black/60' : ''}
         `}
         style={{ willChange: active ? 'transform' : 'auto' }}
       >
@@ -174,6 +175,6 @@ export function ShowCard({ show, onClick, focused = false, getImageUrl, searchMo
           <p className="text-[11px] text-gray-600 truncate mt-0.5 leading-snug">{line2}</p>
         )}
       </div>
-    </div>
+    </button>
   );
 }

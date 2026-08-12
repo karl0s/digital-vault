@@ -7,13 +7,12 @@ interface TopNavProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   onLogoClick?: () => void;
-  artists?: string[];
-  onArtistJump?: (artist: string) => void;
-  hasSidebar?: boolean;
+  onArtistsClick?: () => void;
+  isArtistsActive?: boolean;
   searchInputRef?: React.RefObject<HTMLInputElement>;
 }
 
-export function TopNav({ searchQuery, onSearchChange, onLogoClick, artists = [], onArtistJump, hasSidebar = false, searchInputRef }: TopNavProps) {
+export function TopNav({ searchQuery, onSearchChange, onLogoClick, onArtistsClick, isArtistsActive = false, searchInputRef }: TopNavProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const localRef = useRef<HTMLInputElement>(null);
@@ -26,17 +25,9 @@ export function TopNav({ searchQuery, onSearchChange, onLogoClick, artists = [],
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-
-  const artistsByLetter = artists.reduce((acc, artist) => {
-    const letter = artist[0].toUpperCase();
-    if (!acc[letter]) acc[letter] = [];
-    acc[letter].push(artist);
-    return acc;
-  }, {} as Record<string, string[]>);
-
   return (
     <nav
-      className={`fixed top-0 left-0 ${hasSidebar ? 'md:left-16' : ''} right-0 z-40 transition-all duration-300 border-b ${
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 border-b ${
         isScrolled
           ? 'bg-[#141414]/97 backdrop-blur-md border-white/6'
           : 'bg-linear-to-b from-black/80 via-black/40 to-transparent border-transparent'
@@ -53,6 +44,22 @@ export function TopNav({ searchQuery, onSearchChange, onLogoClick, artists = [],
           >
             <HalationLogo scale={0.19} />
           </a>
+
+          {/* Artist directory — the recognition path. Persistent on every
+              screen so the catalogue is browsable without knowing a name.
+              Uses the site's pill idiom (see HeroSearch quick-searches); the
+              active state is that pill's hover state, held open. */}
+          <button
+            onClick={onArtistsClick}
+            aria-current={isArtistsActive ? 'page' : undefined}
+            className={`cursor-pointer shrink-0 px-4 py-1.5 rounded-full text-sm border transition-all duration-200 ${
+              isArtistsActive
+                ? 'text-white bg-white/10 border-white/20'
+                : 'text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 border-white/8 hover:border-white/20'
+            }`}
+          >
+            Artists
+          </button>
 
           {/* Desktop search — always visible */}
           <div className="relative hidden md:block flex-1 max-w-sm">

@@ -1,8 +1,7 @@
 
 import { useRef, useState, useEffect, useMemo } from 'react';
 import { TopNav } from './components/TopNav';
-import { Sidebar } from './components/Sidebar';
-import { ArtistRow } from './components/ArtistRow';
+import { ArtistsView } from './components/ArtistsView';
 import { ShowDrawer } from './components/ShowDrawer';
 import { SearchResultsGrid } from './components/SearchResultsGrid';
 import { HeroSearch } from './components/HeroSearch';
@@ -10,8 +9,6 @@ import { FeaturedRows } from './components/FeaturedRows';
 import { AnimatePresence, motion } from 'motion/react';
 import { useShows } from './src/hooks/useShows';
 import { useSearchAndFilter } from './src/hooks/useSearchAndFilter';
-import { useScrollSpy } from './src/hooks/useScrollSpy';
-import { useKeyboardNavigation } from './src/hooks/useKeyboardNavigation';
 import { useDebounce } from './src/hooks/useDebounce';
 
 export interface Show {
@@ -54,7 +51,7 @@ export interface Show {
   ExtractionWarnings?: string;
 }
 
-type ViewMode = 'hero' | 'browse';
+type ViewMode = 'hero' | 'artists';
 
 export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -67,7 +64,7 @@ export default function App() {
 
   const { shows, getImageUrl } = useShows();
   const debouncedQuery = useDebounce(searchQuery, 150);
-  const { filteredShows, groupedShows, sortedArtists } = useSearchAndFilter(shows, debouncedQuery);
+  const { filteredShows, songSuggestion } = useSearchAndFilter(shows, debouncedQuery);
 
   const allShowsSorted = useMemo(() =>
     [...shows].sort((a, b) => {
@@ -87,8 +84,6 @@ export default function App() {
     }), [shows]);
 
   const isSearching = debouncedQuery.trim().length > 0;
-  // isHeroMode drives layout (sidebar visibility, padding) — independent of search state
-  const isHeroMode = viewMode === 'hero';
 
   // Auto-focus the nav search bar on initial load
   useEffect(() => {
@@ -124,11 +119,6 @@ export default function App() {
     if (query.trim()) setShowAllMode(false);
   }
 
-  function handleBrowseAll() {
-    setViewMode('browse');
-    setSearchQuery('');
-  }
-
   function handleShowAllShows() {
     setShowAllMode(true);
     setSearchQuery('');
@@ -137,71 +127,22 @@ export default function App() {
 
   function handleCloseDrawer() { setSelectedShow(null); }
 
-  function handleArtistJump(artist: string) {
-    const element = document.getElementById(`artist-${artist.replace(/\s+/g, '-')}`);
-    element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  function handleShowArtists() {
+    setViewMode('artists');
+    setSearchQuery('');
+    setShowAllMode(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  const {
-    focusedIndex,
-    setFocusedIndex,
-    setIsKeyboardMode,
-  } = useKeyboardNavigation(sortedArtists, groupedShows, selectedShow, handleShowClick, handleArtistJump);
-
-  const { currentArtistIndex, mainRef } = useScrollSpy(sortedArtists, focusedIndex);
-
-  const handleArtistJumpWithState = (artist: string) => {
-    setFocusedIndex(null);
-    setIsKeyboardMode(false);
-    setViewMode('browse');
-    handleArtistJump(artist);
-  };
-
-  function getFocusedShowId() {
-    if (!focusedIndex) return null;
-    const { artistIndex, showIndex } = focusedIndex;
-    const artist = sortedArtists[artistIndex];
-    return groupedShows[artist]?.[showIndex]?.ShowID || null;
+  /**
+   * Selecting from the artist directory runs the exact-artist facet.
+   * viewMode stays 'artists' so clearing the search returns to the directory
+   * the user came from rather than dumping them on the homepage.
+   */
+  function handleArtistSelect(artist: string) {
+    handleSearchChange(artist, 'artist');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-
-  const currentArtist = sortedArtists[currentArtistIndex] || 'Browse Shows';
-  const currentLetter = currentArtist ? currentArtist[0].toUpperCase() : '';
-
-  const browseContent = (
-    <motion.div
-      key="browse"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
-    >
-      {sortedArtists.length === 0 ? (
-        <div className="text-center py-20 text-gray-400">No shows found</div>
-      ) : (
-        <div className="space-y-0">
-          {sortedArtists.map((artist, index) => {
-            const distanceFromCenter = Math.abs(index - currentArtistIndex);
-            const opacity = distanceFromCenter === 0 ? 1 : distanceFromCenter === 1 ? 0.4 : 0.15;
-            return (
-              <ArtistRow
-                key={artist}
-                artist={artist}
-                shows={groupedShows[artist]}
-                onShowClick={handleShowClick}
-                focusedShowId={getFocusedShowId()}
-                opacity={opacity}
-                isCenter={index === currentArtistIndex}
-                getImageUrl={getImageUrl}
-                allArtists={sortedArtists}
-                onArtistJump={handleArtistJumpWithState}
-                currentArtist={currentArtist}
-              />
-            );
-          })}
-        </div>
-      )}
-    </motion.div>
-  );
 
   // Hero mode: HeroSearch (title + pills) is always mounted; only the slot below it transitions.
   // This means the nav search input never unmounts while the user is typing.
@@ -222,8 +163,10 @@ export default function App() {
             query={debouncedQuery}
             searchType={searchType}
             transitionKey={pillTransitionKey}
+            songSuggestion={songSuggestion}
             onShowClick={handleShowClick}
             onClear={() => { setSearchQuery(''); setViewMode('hero'); window.scrollTo({ top: 0, behavior: 'smooth' }); navSearchRef.current?.focus(); }}
+            onSearch={(q) => handleSearchChange(q, 'general')}
             getImageUrl={getImageUrl}
           />
         </div>
@@ -248,11 +191,13 @@ export default function App() {
     </motion.div>
   );
 
-  // Outer AnimatePresence only switches between hero ↔ browse (not triggered by typing)
+  // Outer AnimatePresence only switches between hero ↔ artists (not triggered by typing).
+  // Searching from the artist directory renders results in place, so clearing
+  // the query returns to the directory rather than the homepage.
   let mainContent: React.ReactNode;
-  if (viewMode === 'hero') {
-    mainContent = heroContent;
-  } else if (isSearching) {
+  if (viewMode === 'artists' && !isSearching) {
+    mainContent = <ArtistsView shows={shows} onArtistSelect={handleArtistSelect} />;
+  } else if (viewMode === 'artists' && isSearching) {
     mainContent = (
       <motion.div
         key="search"
@@ -260,20 +205,28 @@ export default function App() {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
+        // Same gutter as the hero-mode results and ArtistsView. This used to
+        // come from a conditional class on <main>, which went away with the
+        // browse-mode cleanup.
+        className="px-4 md:px-8 pt-10"
       >
         <SearchResultsGrid
           shows={filteredShows}
           query={debouncedQuery}
           searchType={searchType}
           transitionKey={pillTransitionKey}
+          songSuggestion={songSuggestion}
           onShowClick={handleShowClick}
-          onClear={() => { setSearchQuery(''); setViewMode('hero'); window.scrollTo({ top: 0, behavior: 'smooth' }); navSearchRef.current?.focus(); }}
+          onClear={() => { setSearchQuery(''); window.scrollTo({ top: 0, behavior: 'smooth' }); navSearchRef.current?.focus(); }}
+          // Clearing here returns to the artist directory, not to all shows.
+          clearLabel="Back to artists"
+          onSearch={(q) => handleSearchChange(q, 'general')}
           getImageUrl={getImageUrl}
         />
       </motion.div>
     );
   } else {
-    mainContent = browseContent;
+    mainContent = heroContent;
   }
 
   return (
@@ -282,40 +235,19 @@ export default function App() {
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
         onLogoClick={() => { setSearchQuery(''); setViewMode('hero'); setShowAllMode(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-        artists={sortedArtists}
-        onArtistJump={handleArtistJumpWithState}
-        hasSidebar={!isHeroMode}
+        onArtistsClick={handleShowArtists}
+        isArtistsActive={viewMode === 'artists'}
         searchInputRef={navSearchRef}
       />
 
-      <div className="flex">
-        {/* Sidebar only in browse mode */}
-        {!isHeroMode && (
-          <div className="hidden md:block">
-            <Sidebar
-              artists={sortedArtists}
-              activeLetter={currentLetter}
-              onLetterClick={(letter) => {
-                setFocusedIndex(null);
-                setIsKeyboardMode(false);
-                setViewMode('browse');
-                const element = document.getElementById(`artist-${letter}`);
-                element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              }}
-              onArtistClick={handleArtistJumpWithState}
-            />
-          </div>
-        )}
-
-        <main
-          ref={mainRef}
-          className={`flex-1 ${isHeroMode ? '' : 'ml-0 md:ml-16'} pt-16 ${!isHeroMode && isSearching ? 'px-4 md:px-8' : ''} pb-8 overflow-x-hidden`}
-        >
-          <AnimatePresence mode="wait">
-            {mainContent}
-          </AnimatePresence>
-        </main>
-      </div>
+      {/* overflow-x-clip, not -hidden: `hidden` makes this a scroll container,
+          which breaks `position: sticky` for descendants (the A–Z rail in
+          ArtistsView). `clip` suppresses horizontal overflow without one. */}
+      <main className="pt-16 pb-8 overflow-x-clip">
+        <AnimatePresence mode="wait">
+          {mainContent}
+        </AnimatePresence>
+      </main>
 
       <AnimatePresence>
         {selectedShow && (
