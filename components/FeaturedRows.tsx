@@ -59,11 +59,13 @@ function FeaturedSection({ title, shows, onShowClick, getImageUrl }: FeaturedSec
 }
 
 /**
- * Hand-picked landing set, in display order. Exactly 7 so it fills one row at
- * 2xl. Where the archive holds several copies of a show, the ID here is the
- * chosen copy — usually the largest, except where noted.
+ * Hand-picked landing set, in display order. A multiple of 7 so it fills whole
+ * rows at 2xl — currently 14, i.e. two rows. Where the archive holds several
+ * copies of a show, the ID here is the chosen copy, noted where it is not
+ * simply the largest.
  */
 const FEATURED_IDS = [
+  // Row 1
   // 539 MB copy, chosen deliberately over the three larger ones (up to 3.24 GB).
   'ccd7ed3c2fa4', // Stone Temple Pilots — MTV Unplugged, 1993-11-17
   '6b3751fea69f', // Jane's Addiction — Brixton Academy, 2003-09-30 (3.60 GB, dated copy)
@@ -72,6 +74,18 @@ const FEATURED_IDS = [
   '6cd303bce708', // Rage Against the Machine — Rock am Ring, 1996-05-24
   '730be7647294', // Red Hot Chili Peppers — Madison Square Gardens, 1996-02-09
   'a939ab1baf17', // Radiohead — New York, 1997-12-19
+
+  // Row 2
+  '761b022efa1e', // Beastie Boys — SECC Glasgow, 1999-05-03 (3.15 GB, of four Glasgow copies)
+  // Folder name is "Nirvana - Live N Loud1993-12-13", so this IS the Pier 48
+  // show — but the record is filed as MTV Unplugged on 1993-11-18, with Seattle
+  // in VenueName and "WA" in City. Four metadata errors; flagged, not yet fixed.
+  '4dba0c8ff6ae', // Nirvana — MTV Live and Loud, Pier 48 Seattle, 1993-12-13
+  'bfac3916a5f1', // Smashing Pumpkins — Belfort, 1997-07-04 (4.34 GB; EventOrFestival blank)
+  '14f712b69dd7', // The Strokes — San Francisco, 2001 (999.94 MB)
+  '19e3ce93b3d2', // Supergrass — MTV Five Night Stand, 1999-05-13
+  'b3adea22181d', // Blur — Glastonbury Festival, 2009-06-28
+  'd6f2b50df44c', // Foo Fighters — Melbourne, 2000-02-01 (1.61 GB, the 2000 copy)
 ];
 
 interface FeaturedRowsProps {
