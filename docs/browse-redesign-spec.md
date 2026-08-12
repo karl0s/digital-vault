@@ -377,38 +377,91 @@ playground folder of work and should not be collateral damage:
 | Element | Moves to |
 |---|---|
 | `HalationLogo` wordmark | Sidebar header, top-left — the YouTube position |
-| Quick-search pills | A **"Jump to"** row above the grid, or promoted into the Artist facet as pinned options |
-| "Live music worth reliving." tagline | Sidebar footer, or retired |
+| Quick-search pills | **Pinned options at the top of the Artist facet** (see chrome budget below) |
+| "Live music worth reliving." tagline | Sidebar footer |
 | `HeroSearch.tsx` | Deleted once the above have homes |
 
-### What the grid shows on arrival
+### What the grid shows on arrival — LOCKED: curated strip + full grid
 
-"Land in the browse grid" leaves open *which* shows, in what order. Three candidates,
-and this needs a call before Phase 1 builds:
+One horizontal `FeaturedRow` above the full grid, preserving the editorial work in
+`FEATURED_IDS`. Keeps the tool framing while giving the eye somewhere to land before
+the wall of cards, and it is closest to what YouTube's home actually does.
 
-1. **All 829, `Year — newest first`.** Honest and complete. Also the heaviest first
-   paint, and arguably a wall rather than a welcome.
-2. **A default slice** — most recent ~60 with "Show all". Fast, but the archive looks
-   smaller than it is, which is the exact problem this redesign exists to fix.
-3. **Curated strip + grid** — keep the existing `FeaturedRows` content as one
-   horizontal row above the full grid. Closest to YouTube's actual home, preserves
-   the editorial work already in `FEATURED_IDS`, and gives the eye somewhere to land
-   before the wall of cards.
+#### The strip is conditional — this is the load-bearing rule
 
-Option 3 is the recommendation. It keeps the "tool" framing while retaining the
-curation, and it makes the first paint feel designed rather than dumped.
+**The featured strip renders only when no filter is active.** The moment any facet
+or query is applied, it disappears and the view becomes pure results.
+
+A curated strip sitting above filtered results is actively wrong: it ignores the
+filter the user just set, so it reads as either broken or as results that don't
+match. Two states, one rule:
+
+| State | Renders |
+|---|---|
+| No filters, no query | Featured strip → results header → full grid, `Year — newest first` |
+| Any filter or query active | Results header → filtered grid. **No strip** |
+
+#### Vertical chrome budget
+
+Option 3 stacks a lot above the first card. The running total on arrival:
+
+```
+header / search          ~64px
+filter bar               ~52px
+[active chips]           ~40px   (conditional — only when filtering)
+featured strip          ~260px   (conditional — only when NOT filtering)
+results header           ~40px
+─────────────────────────────
+first card at            ~416px on arrival, ~196px once filtering
+```
+
+The two conditional rows are mutually exclusive by the rule above, which is what
+keeps this from becoming four stacked bars. Nothing further may be added above the
+grid without removing something.
+
+#### Consequence: the quick-search pills fold into the Artist facet
+
+With a featured strip already above the grid, a separate "Jump to" pill row would be
+a fourth bar of chrome competing with it. The six pills become **pinned options at
+the top of the Artist facet popover** instead — same shortcut, no extra chrome, and
+they gain the counts every other facet option has.
+
+The tagline moves to the sidebar footer.
+
+---
+
+## Build order — Phase 1
+
+Bottom-up: everything downstream depends on the first two, and both are pure
+functions that can be verified without any UI.
+
+| # | Slice | Notes |
+|---|---|---|
+| 1 | `src/lib/url.ts` — canonical serializer + parser | Pure. Must exist before any URL does |
+| 2 | `src/store/filters.ts` — zustand + URL hydration | Pure. One direction each way |
+| 3 | `useFacetCounts` — the counting engine | Pure `useMemo` over 829 records |
+| 4 | `AppShell` + `Sidebar` + mobile tab bar | Structure before controls |
+| 5 | `FilterBar` + `FacetPopover` (base-ui) | Era · Year · Country · Festival |
+| 6 | `ActiveFilterChips` + `ResultsHeader` + sort | |
+| 7 | Landing composition — conditional strip, grid | Wire `FeaturedRow`, retire `HeroSearch` |
+| 8 | `ShowCard` — remove recording-type badge | Small, independent |
+| 9 | **Measure** unfiltered grid on a mid-range phone | Decides the Virtuoso question |
+
+Slices 1–3 carry no visual change and are individually testable — good first commit
+boundary. Phase 1 is unblocked by Phase 0 except the `Country` facet, which will
+show `England` and `US` as separate rows until the data lands on `main`.
 
 ---
 
 ## Open questions
 
-1. **What the grid shows on arrival** — options above; option 3 recommended.
-2. **Quick-search pills** — keep them as a "Jump to" row, or fold into the Artist facet?
-3. **Tagline** — keep in the sidebar footer, or retire it?
-4. **Analytics tool** — GA confirmed, later. No action now beyond the seam.
+1. **Analytics tool** — GA confirmed, later. No action now beyond the seam.
 
 ### Resolved
 
 - ~~Mobile navigation~~ → bottom tab bar
 - ~~Landing view~~ → browse grid (provisional)
 - ~~Sort options~~ → Year newest / Year oldest / Artist A–Z
+- ~~Arrival composition~~ → curated strip + full grid, strip hidden while filtering
+- ~~Quick-search pills~~ → pinned options in the Artist facet
+- ~~Tagline~~ → sidebar footer
