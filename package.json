@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "check:url": "esbuild scripts/check-url-canonical.ts --bundle --platform=node --format=esm --outfile=node_modules/.cache/check-url.mjs --log-level=error && node node_modules/.cache/check-url.mjs",
     "check:facets": "esbuild scripts/check-facets.ts --bundle --platform=node --format=esm --outfile=node_modules/.cache/check-facets.mjs --log-level=error && node node_modules/.cache/check-facets.mjs",
-    "check": "npm run check:url && npm run check:facets"
+    "check": "npm run check:url && npm run check:facets && npm run check:store",
+    "check:store": "esbuild scripts/check-store.ts --bundle --platform=node --format=esm --outfile=node_modules/.cache/check-store.mjs --log-level=error && node node_modules/.cache/check-store.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
