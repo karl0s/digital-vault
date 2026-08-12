@@ -24,6 +24,21 @@ import { ShowCard } from './ShowCard';
 export const GRID_COLS =
   'grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-x-3 gap-y-6';
 
+/**
+ * Fisher–Yates. Deliberately not `sort(() => Math.random() - 0.5)`, which this
+ * file used to use: comparator-based shuffles are not uniform, and with a small
+ * fixed set the bias is visible as certain shows favouring certain positions
+ * across reloads.
+ */
+function shuffle<T>(input: T[]): T[] {
+  const out = [...input];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
 interface FeaturedSectionProps {
   title: string;
   shows: Show[];
@@ -99,9 +114,16 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
     if (shows.length === 0) return null;
 
     const byId = new Map(shows.map(s => [s.ShowID, s]));
-    // Order follows FEATURED_IDS, not the catalogue — this row is curated, and
-    // a missing ID drops out silently rather than leaving a hole.
-    const featured = FEATURED_IDS.map(id => byId.get(id)).filter(Boolean) as Show[];
+    // Curated set, shuffled once per load so the landing looks different on
+    // each visit and no show is permanently buried on the second row. A missing
+    // ID drops out silently rather than leaving a hole.
+    //
+    // Shuffling inside useMemo keyed on `shows` is what keeps it to once per
+    // load: re-randomising on every render would reorder the grid under the
+    // pointer whenever anything else in the tree updated.
+    const featured = shuffle(
+      FEATURED_IDS.map(id => byId.get(id)).filter(Boolean) as Show[],
+    );
 
     const soundboards = shows
       .filter(s => s.RecordingType?.toLowerCase().includes('soundboard'))
@@ -133,7 +155,7 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
   return (
     <div className="mx-auto max-w-[1924px] pb-16">
       <FeaturedSection
-        title="Featured"
+        title="Featured shows"
         shows={sections.featured}
         onShowClick={onShowClick}
         getImageUrl={getImageUrl}
