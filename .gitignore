@@ -38,6 +38,16 @@ lerna-debug.log*
 *.sln
 *.sw?
 
+# Claude Code — locally installed agent skills.
+# Third-party skills fetched via `npx skills add`; they are a local authoring
+# aid, not part of the site, and never ship (Vite only copies public/ into
+# dist/). Kept out of git so they don't enter this public repo's history.
+# Reinstall with:  npx skills@latest add <owner>/<repo> --agent claude-code
+.claude/skills/
+# Manifest written by the same tool (source + hashes, no skill content).
+# Commit this instead if you ever want the skill set to be reproducible.
+skills-lock.json
+
 # OS files
 .DS_Store
 .DS_Store?
