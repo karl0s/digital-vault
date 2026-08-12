@@ -6,10 +6,11 @@ import { ShowDrawer } from './components/ShowDrawer';
 import { SearchResultsGrid } from './components/SearchResultsGrid';
 import { HeroSearch } from './components/HeroSearch';
 import { FeaturedRows } from './components/FeaturedRows';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, motion, MotionConfig } from 'motion/react';
 import { useShows } from './src/hooks/useShows';
 import { useSearchAndFilter } from './src/hooks/useSearchAndFilter';
 import { useDebounce } from './src/hooks/useDebounce';
+import { scrollToTop } from './src/lib/motion';
 
 export interface Show {
   ShowID: string;
@@ -62,7 +63,7 @@ export default function App() {
   const [showAllMode, setShowAllMode] = useState(false);
   const navSearchRef = useRef<HTMLInputElement>(null);
 
-  const { shows, getImageUrl } = useShows();
+  const { shows, getImageUrl, error } = useShows();
   const debouncedQuery = useDebounce(searchQuery, 150);
   const { filteredShows, songSuggestion } = useSearchAndFilter(shows, debouncedQuery);
 
@@ -122,7 +123,7 @@ export default function App() {
   function handleShowAllShows() {
     setShowAllMode(true);
     setSearchQuery('');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToTop();
   }
 
   function handleCloseDrawer() { setSelectedShow(null); }
@@ -131,7 +132,7 @@ export default function App() {
     setViewMode('artists');
     setSearchQuery('');
     setShowAllMode(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToTop();
   }
 
   /**
@@ -141,7 +142,7 @@ export default function App() {
    */
   function handleArtistSelect(artist: string) {
     handleSearchChange(artist, 'artist');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToTop();
   }
 
   // Hero mode: HeroSearch (title + pills) is always mounted; only the slot below it transitions.
@@ -165,7 +166,7 @@ export default function App() {
             transitionKey={pillTransitionKey}
             songSuggestion={songSuggestion}
             onShowClick={handleShowClick}
-            onClear={() => { setSearchQuery(''); setViewMode('hero'); window.scrollTo({ top: 0, behavior: 'smooth' }); navSearchRef.current?.focus(); }}
+            onClear={() => { setSearchQuery(''); setViewMode('hero'); scrollToTop(); navSearchRef.current?.focus(); }}
             onSearch={(q) => handleSearchChange(q, 'general')}
             getImageUrl={getImageUrl}
           />
@@ -177,7 +178,7 @@ export default function App() {
             query="All Shows"
             searchType="general"
             onShowClick={handleShowClick}
-            onClear={() => { setShowAllMode(false); window.scrollTo({ top: 0, behavior: 'smooth' }); navSearchRef.current?.focus(); }}
+            onClear={() => { setShowAllMode(false); scrollToTop(); navSearchRef.current?.focus(); }}
             getImageUrl={getImageUrl}
           />
         </div>
@@ -195,7 +196,32 @@ export default function App() {
   // Searching from the artist directory renders results in place, so clearing
   // the query returns to the directory rather than the homepage.
   let mainContent: React.ReactNode;
-  if (viewMode === 'artists' && !isSearching) {
+  if (error) {
+    // Every view depends on shows.json, so the failure is handled once here
+    // rather than as an empty state in each of them.
+    mainContent = (
+      <motion.div
+        key="error"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="px-4 md:px-8 pt-24 pb-16"
+      >
+        <div className="max-w-[1860px] mx-auto text-center" role="alert">
+          <h2 className="text-2xl font-bold text-white">The archive didn’t load</h2>
+          <p className="text-gray-400 text-sm mt-2">
+            Something went wrong fetching the show catalogue. Reloading usually fixes it.
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="cursor-pointer mt-5 px-4 py-1.5 rounded-full text-sm text-white bg-white/10 hover:bg-white/20 border border-white/20 transition-colors duration-200"
+          >
+            Reload
+          </button>
+          <p className="text-gray-400 text-xs mt-6 font-mono">{error}</p>
+        </div>
+      </motion.div>
+    );
+  } else if (viewMode === 'artists' && !isSearching) {
     mainContent = <ArtistsView shows={shows} onArtistSelect={handleArtistSelect} />;
   } else if (viewMode === 'artists' && isSearching) {
     mainContent = (
@@ -217,7 +243,7 @@ export default function App() {
           transitionKey={pillTransitionKey}
           songSuggestion={songSuggestion}
           onShowClick={handleShowClick}
-          onClear={() => { setSearchQuery(''); window.scrollTo({ top: 0, behavior: 'smooth' }); navSearchRef.current?.focus(); }}
+          onClear={() => { setSearchQuery(''); scrollToTop(); navSearchRef.current?.focus(); }}
           // Clearing here returns to the artist directory, not to all shows.
           clearLabel="Back to artists"
           onSearch={(q) => handleSearchChange(q, 'general')}
@@ -229,32 +255,48 @@ export default function App() {
     mainContent = heroContent;
   }
 
+  // React 18 has no `inert` prop type; the attribute passes through as a string.
+  // While the drawer is open this takes the whole page behind it out of the tab
+  // order and the accessibility tree, which is the half of the modal contract
+  // a focus trap alone can't provide.
+  const backgroundInert = selectedShow ? ({ inert: '' } as Record<string, string>) : {};
+
   return (
-    <div className="min-h-screen bg-[#141414] text-white">
-      <TopNav
-        searchQuery={searchQuery}
-        onSearchChange={handleSearchChange}
-        onLogoClick={() => { setSearchQuery(''); setViewMode('hero'); setShowAllMode(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-        onArtistsClick={handleShowArtists}
-        isArtistsActive={viewMode === 'artists'}
-        searchInputRef={navSearchRef}
-      />
+    // reducedMotion="user" makes every motion/react animation honour the OS
+    // setting: transform and layout animations are dropped, opacity is kept.
+    <MotionConfig reducedMotion="user">
+      <div className="min-h-screen bg-[#141414] text-white">
+        {/* The page's one h1. Visually hidden because the wordmark carries the
+            brand visually, but heading navigation needs a real entry point. */}
+        <h1 className="sr-only">The Vault — live concert archive</h1>
 
-      {/* overflow-x-clip, not -hidden: `hidden` makes this a scroll container,
-          which breaks `position: sticky` for descendants (the A–Z rail in
-          ArtistsView). `clip` suppresses horizontal overflow without one. */}
-      <main className="pt-16 pb-8 overflow-x-clip">
-        <AnimatePresence mode="wait">
-          {mainContent}
+        <div {...backgroundInert}>
+          <TopNav
+            searchQuery={searchQuery}
+            onSearchChange={handleSearchChange}
+            onLogoClick={() => { setSearchQuery(''); setViewMode('hero'); setShowAllMode(false); scrollToTop(); }}
+            onArtistsClick={handleShowArtists}
+            isArtistsActive={viewMode === 'artists'}
+            searchInputRef={navSearchRef}
+          />
+
+          {/* overflow-x-clip, not -hidden: `hidden` makes this a scroll container,
+              which breaks `position: sticky` for descendants (the A–Z rail in
+              ArtistsView). `clip` suppresses horizontal overflow without one. */}
+          <main className="pt-16 pb-8 overflow-x-clip">
+            <AnimatePresence mode="wait">
+              {mainContent}
+            </AnimatePresence>
+          </main>
+        </div>
+
+        <AnimatePresence>
+          {selectedShow && (
+            <ShowDrawer show={selectedShow} onClose={handleCloseDrawer} getImageUrl={getImageUrl} />
+          )}
         </AnimatePresence>
-      </main>
 
-      <AnimatePresence>
-        {selectedShow && (
-          <ShowDrawer show={selectedShow} onClose={handleCloseDrawer} getImageUrl={getImageUrl} />
-        )}
-      </AnimatePresence>
-
-    </div>
+      </div>
+    </MotionConfig>
   );
 }

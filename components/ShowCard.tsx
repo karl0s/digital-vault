@@ -143,7 +143,7 @@ export function ShowCard({ show, onClick, getImageUrl, searchMode }: ShowCardPro
                 <p className="text-xs text-gray-200 truncate leading-snug">{show.Artist}</p>
               )}
               {durationMin > 0 && (
-                <p className="text-xs text-gray-500">{durationText}</p>
+                <p className="text-xs text-gray-300">{durationText}</p>
               )}
             </div>
           </motion.div>
@@ -168,11 +168,11 @@ export function ShowCard({ show, onClick, getImageUrl, searchMode }: ShowCardPro
         <div className="flex items-baseline justify-between gap-2">
           <p className="text-[13px] font-medium text-white truncate leading-snug">{line1}</p>
           {year && (
-            <span className="text-[11px] text-gray-600 shrink-0 tabular-nums">{year}</span>
+            <span className="text-[11px] text-gray-400 shrink-0 tabular-nums">{year}</span>
           )}
         </div>
         {line2 && (
-          <p className="text-[11px] text-gray-600 truncate mt-0.5 leading-snug">{line2}</p>
+          <p className="text-[11px] text-gray-400 truncate mt-0.5 leading-snug">{line2}</p>
         )}
       </div>
     </button>

@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Clock, Music, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { Show } from '../App';
-import { LazyImage } from './LazyImage';
 import { CloseButton } from './CloseButton';
 
 interface ShowDrawerProps {
@@ -38,6 +37,31 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
   const [notesExpanded, setNotesExpanded] = useState(false);
   const [viewingIndex, setViewingIndex] = useState(0);
   const isImageExpanded = expandedFromIndex !== null;
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const titleId = `drawer-title-${show.ShowID}`;
+
+  /**
+   * Which way the drawer leaves. Read from matchMedia rather than a one-off
+   * window.innerWidth snapshot, which never updated — rotate a tablet with the
+   * drawer open and it used to exit sideways off a phone-shaped viewport.
+   */
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== 'undefined' && !window.matchMedia('(min-width: 768px)').matches,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 768px)');
+    const onChange = () => setIsMobile(!mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  // Move focus in on open, restore it to the card that opened the drawer on
+  // close. Without this, focus stays on a card behind an inert subtree.
+  useEffect(() => {
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    drawerRef.current?.focus();
+    return () => previouslyFocused?.focus?.();
+  }, []);
 
   const images = show.ChecksumSHA1
     ? [1, 2, 3, 4].map(i => getImageUrl ? getImageUrl(show.ChecksumSHA1!, i) : `/images/${show.ChecksumSHA1}_0${i}.jpg`).filter(Boolean) as string[]
@@ -57,6 +81,32 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
       if (isImageExpanded) {
         if (e.key === 'ArrowLeft') prevImage();
         if (e.key === 'ArrowRight') nextImage();
+      }
+      // Focus trap. The background is inert, so without this Tab would fall
+      // through to the browser chrome and strand the user outside the drawer.
+      if (e.key === 'Tab' && drawerRef.current) {
+        const focusables = Array.from(
+          drawerRef.current.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])',
+          ),
+        ).filter(el => el.offsetParent !== null);
+        if (focusables.length === 0) return;
+
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        const active = document.activeElement;
+
+        // Focus sitting on the drawer container itself (right after open).
+        if (active === drawerRef.current) {
+          e.preventDefault();
+          (e.shiftKey ? last : first).focus();
+        } else if (e.shiftKey && active === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && active === last) {
+          e.preventDefault();
+          first.focus();
+        }
       }
     };
     window.addEventListener('keydown', onKey);
@@ -81,8 +131,6 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
   const artistInitials = show.Artist
     .split(' ').map(w => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
 
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-
   return (
     <>
       {/* Backdrop */}
@@ -97,7 +145,12 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
 
       {/* Drawer — overflow-y-auto moved to inner div so overlay can cover full drawer height */}
       <motion.div
-        className="fixed bottom-0 md:top-0 left-0 md:left-auto right-0 md:right-0 w-full md:w-[58vw] lg:w-[52vw] h-dvh md:h-full bg-[#181818] z-50"
+        ref={drawerRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
+        className="fixed bottom-0 md:top-0 left-0 md:left-auto right-0 md:right-0 w-full md:w-[58vw] lg:w-[52vw] h-dvh md:h-full bg-[#181818] z-50 focus:outline-none"
         initial={{ x: isMobile ? 0 : '100%', y: isMobile ? '100%' : 0 }}
         animate={{ x: 0, y: 0 }}
         exit={{ x: isMobile ? 0 : '100%', y: isMobile ? '100%' : 0 }}
@@ -122,7 +175,7 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
 
               {/* Counter — same vertical level, mirrored to the left */}
               {images.length > 1 && (
-                <span className="absolute top-4 left-4 md:top-6 md:left-6 py-2 md:py-3 text-xs text-gray-500 tabular-nums">
+                <span className="absolute top-4 left-4 md:top-6 md:left-6 py-2 md:py-3 text-xs text-gray-400 tabular-nums">
                   {viewingIndex + 1} / {images.length}
                 </span>
               )}
@@ -153,18 +206,25 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
                   >
                     <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
                   </button>
-                  <div className="flex gap-1.5 items-center">
+                  {/* The dot stays 6–8px; the button around it is 24×24 so the
+                      target clears the WCAG minimum. Padding, not a bigger dot. */}
+                  <div className="flex items-center">
                     {images.map((_, i) => (
                       <button
                         key={i}
                         onClick={() => setViewingIndex(i)}
-                        className={`rounded-full transition-all duration-200 ${
-                          i === viewingIndex
-                            ? 'w-2 h-2 bg-white'
-                            : 'w-1.5 h-1.5 bg-white/30 hover:bg-white/60'
-                        }`}
+                        className="p-2 flex items-center justify-center"
                         aria-label={`Go to image ${i + 1}`}
-                      />
+                        aria-current={i === viewingIndex ? 'true' : undefined}
+                      >
+                        <span
+                          className={`block rounded-full transition-[width,height,background-color] duration-200 ${
+                            i === viewingIndex
+                              ? 'w-2 h-2 bg-white'
+                              : 'w-1.5 h-1.5 bg-white/30 hover:bg-white/60'
+                          }`}
+                        />
+                      </button>
                     ))}
                   </div>
                   <button
@@ -195,9 +255,11 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
           <div className="relative h-56 md:h-[42vh] bg-[#0d0d0d] overflow-hidden">
             {images.length > 0 ? (
               <>
+                {/* Decorative: it sits at 55% behind a gradient, and the artist
+                    name is the heading directly on top of it. */}
                 <img
                   src={images[0]}
-                  alt={show.Artist}
+                  alt=""
                   className="w-full h-full object-cover object-center opacity-55"
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-[#181818] via-[#181818]/50 to-transparent" />
@@ -214,7 +276,10 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
 
             {/* Artist info over hero */}
             <div className="absolute bottom-0 left-0 right-0 px-5 md:px-8 pb-5">
-              <h1
+              {/* h2, not h1 — the page owns the single h1, and this heading is
+                  also the dialog's accessible name via aria-labelledby. */}
+              <h2
+                id={titleId}
                 className="text-white leading-none mb-2"
                 style={{
                   fontFamily: 'var(--font-display)',
@@ -223,7 +288,7 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
                 }}
               >
                 {show.Artist}
-              </h1>
+              </h2>
               <p className="text-gray-400 text-sm md:text-base mb-3">
                 {[
                   show.ShowDate || 'Date Unknown',
@@ -264,7 +329,7 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
             {/* Screenshots */}
             {images.length > 0 && (
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600 mb-3">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-3">
                   Screenshots
                 </p>
                 <div className="flex gap-2 overflow-x-auto scrollbar-hide md:grid md:grid-cols-4 md:overflow-visible">
@@ -272,7 +337,7 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
                     <button
                       key={idx}
                       onClick={() => openImage(idx)}
-                      className="shrink-0 w-[42%] md:w-full group/thumb hover:ring-2 hover:ring-white/30 transition-all"
+                      className="shrink-0 w-[42%] md:w-full group/thumb hover:ring-2 hover:ring-white/30 transition-shadow"
                       style={{ borderRadius: 4 }}
                     >
                       <motion.div
@@ -303,13 +368,13 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
               {/* Setlist */}
               {setlistItems.length > 0 && (
                 <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600 mb-4 flex items-center gap-1.5">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4 flex items-center gap-1.5">
                     <Music className="w-3 h-3" /> Setlist
                   </p>
                   <ol className="space-y-2">
                     {setlistItems.map((song, idx) => (
                       <li key={idx} className="flex items-start gap-3 text-sm">
-                        <span className="text-gray-700 tabular-nums text-xs w-5 shrink-0 pt-px text-right">
+                        <span className="text-gray-400 tabular-nums text-xs w-5 shrink-0 pt-px text-right">
                           {idx + 1}
                         </span>
                         <span className="text-gray-200 leading-snug">{song}</span>
@@ -321,7 +386,7 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
 
               {/* Technical */}
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600 mb-4">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4">
                   Technical
                 </p>
                 <div className="space-y-2">
@@ -337,7 +402,7 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
                     show.FileCount   && { label: 'Files',       value: show.FileCount,         mono: false },
                   ].filter(Boolean).map(({ label, value, mono }) => (
                     <div key={label} className="flex items-start gap-3 text-sm">
-                      <span className="text-gray-700 text-xs w-16 shrink-0 pt-px">{label}</span>
+                      <span className="text-gray-400 text-xs w-16 shrink-0 pt-px">{label}</span>
                       <span className={`text-gray-200 leading-snug ${mono ? 'font-mono' : ''}`}>{value}</span>
                     </div>
                   ))}
@@ -347,7 +412,7 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
               {/* Notes */}
               {show.Notes && (
                 <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600 mb-4">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4">
                     Notes
                   </p>
                   <div>
@@ -362,7 +427,7 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
                     {!notesExpanded && show.Notes.length > 320 && (
                       <button
                         onClick={() => setNotesExpanded(true)}
-                        className="mt-2 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600 hover:text-gray-400 transition-colors"
+                        className="mt-2 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 hover:text-gray-400 transition-colors"
                       >
                         More <ChevronDown className="w-3 h-3" />
                       </button>
@@ -370,7 +435,7 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
                     {notesExpanded && (
                       <button
                         onClick={() => setNotesExpanded(false)}
-                        className="mt-2 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600 hover:text-gray-400 transition-colors"
+                        className="mt-2 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 hover:text-gray-400 transition-colors"
                       >
                         Less <ChevronUp className="w-3 h-3" />
                       </button>
