@@ -8,12 +8,14 @@ import { HeroSearch } from './components/HeroSearch';
 import { FeaturedRows } from './components/FeaturedRows';
 import { AnimatePresence, motion, MotionConfig } from 'motion/react';
 import { useShows } from './src/hooks/useShows';
-import { useSearchAndFilter } from './src/hooks/useSearchAndFilter';
 import { useDebounce } from './src/hooks/useDebounce';
 import { scrollToTop } from './src/lib/motion';
 import { AppShell } from './components/shell/AppShell';
-import { useFilterStore } from './src/store/filters';
-import { initFilterUrlSync } from './src/store/filters';
+import { FilterBar } from './components/filters/FilterBar';
+import { ShowGrid } from './components/ShowGrid';
+import { useBrowseResults } from './src/hooks/useBrowseResults';
+import { isFiltered as computeIsFiltered } from './src/lib/url';
+import { useFilterStore, initFilterUrlSync, selectFilterState } from './src/store/filters';
 
 export interface Show {
   ShowID: string;
@@ -78,7 +80,10 @@ export default function App() {
 
   // Destination lives in the store so it is linkable; see src/lib/url.ts.
   const view = useFilterStore(s => s.view);
-  const setView = useFilterStore(s => s.setView);
+  const storeQuery = useFilterStore(s => s.q);
+  const setStoreQuery = useFilterStore(s => s.setQuery);
+  const clearAllFilters = useFilterStore(s => s.clearAll);
+  const filterState = useFilterStore(selectFilterState);
 
   // Back/forward -> store. Once, at the root.
   useEffect(() => initFilterUrlSync(), []);
@@ -105,7 +110,31 @@ export default function App() {
 
   const { shows, getImageUrl, error } = useShows();
   const debouncedQuery = useDebounce(searchQuery, 150);
-  const { filteredShows, songSuggestion } = useSearchAndFilter(shows, debouncedQuery);
+
+  // One pipeline: text query -> facets -> sort, plus the counts the bar needs.
+  const { results, counts, songSuggestion } = useBrowseResults(shows, filterState);
+  const filtered = computeIsFiltered(filterState);
+
+  /**
+   * The input stays local for responsiveness; only the debounced value reaches
+   * the store, and therefore the URL. Writing on every keystroke would call
+   * replaceState per character and thrash the address bar.
+   */
+  useEffect(() => {
+    if (debouncedQuery !== storeQuery) setStoreQuery(debouncedQuery);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedQuery]);
+
+  /**
+   * The return trip: when the store's query changes from somewhere else — back
+   * button, Clear all, switching destination — pull it back into the input.
+   * Guarded against the value we just pushed, or the two would ping-pong.
+   */
+  useEffect(() => {
+    if (storeQuery !== debouncedQuery) setSearchQuery(storeQuery);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storeQuery]);
+
 
   const allShowsSorted = useMemo(() =>
     [...shows].sort((a, b) => {
@@ -180,50 +209,46 @@ export default function App() {
     scrollToTop();
   }
 
-  // HeroSearch (wordmark + tagline) is always mounted; only the slot below it
-  // transitions. That way the nav search input never unmounts mid-keystroke.
-  const heroContent = (
+  /**
+   * Browse: masthead, sticky filter bar, then results.
+   *
+   * The Featured strip renders ONLY when nothing is filtering. A curated row
+   * sitting above filtered results ignores the filter the user just set, so it
+   * reads either as broken or as results that do not match.
+   *
+   * The grid below always shows `results` — the full catalogue when nothing is
+   * active, the filtered set otherwise — so the count in the bar always
+   * describes what is on screen.
+   */
+  const browseContent = (
     <motion.div
-      key="hero"
+      key="browse"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <HeroSearch isSearching={isSearching || showAllMode} />
-      {/* Content slot: transitions between featured rows, all-shows, and search results */}
-      {isSearching ? (
-        <div className="px-4 md:px-8 pt-10">
-          <SearchResultsGrid
-            shows={filteredShows}
-            query={debouncedQuery}
-            searchType={searchType}
-            transitionKey={pillTransitionKey}
-            songSuggestion={songSuggestion}
-            onShowClick={handleShowClick}
-            onClear={() => { setSearchQuery(''); setView('browse'); scrollToTop(); navSearchRef.current?.focus(); }}
-            onSearch={(q) => handleSearchChange(q, 'general')}
-            getImageUrl={getImageUrl}
-          />
-        </div>
-      ) : showAllMode ? (
-        <div className="px-4 md:px-8">
-          <SearchResultsGrid
-            shows={allShowsSorted}
-            query="All Shows"
-            searchType="general"
-            onShowClick={handleShowClick}
-            onClear={() => { setShowAllMode(false); scrollToTop(); navSearchRef.current?.focus(); }}
-            getImageUrl={getImageUrl}
-          />
-        </div>
-      ) : (
-        <FeaturedRows
-          shows={shows}
+      <HeroSearch isSearching={filtered} />
+
+      <FilterBar counts={counts} resultCount={results.length} />
+
+      {!filtered && (
+        <FeaturedRows shows={shows} onShowClick={handleShowClick} getImageUrl={getImageUrl} />
+      )}
+
+      <div className="mx-auto max-w-[1924px] px-4 pt-6 md:px-8">
+        {!filtered && (
+          <h2 className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+            All shows
+          </h2>
+        )}
+        <ShowGrid
+          shows={results}
           onShowClick={handleShowClick}
           getImageUrl={getImageUrl}
+          onClearFilters={clearAllFilters}
         />
-      )}
+      </div>
     </motion.div>
   );
 
@@ -272,7 +297,7 @@ export default function App() {
         className="px-4 md:px-8 pt-10"
       >
         <SearchResultsGrid
-          shows={filteredShows}
+          shows={results}
           query={debouncedQuery}
           searchType={searchType}
           transitionKey={pillTransitionKey}
@@ -287,7 +312,7 @@ export default function App() {
       </motion.div>
     );
   } else {
-    mainContent = heroContent;
+    mainContent = browseContent;
   }
 
   // React 18 has no `inert` prop type; the attribute passes through as a string.

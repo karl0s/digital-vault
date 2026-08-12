@@ -81,6 +81,30 @@ function facetValueOf(d: DerivedShow, facet: FacetKey): string {
   }
 }
 
+const TYPE_LABELS: Record<string, string> = {
+  live: 'Live shows',
+  documentary: 'Documentaries',
+};
+
+/**
+ * Human label for an option. Values are slugs, so the label comes from the
+ * record's original string — that keeps "Rock am Ring" readable rather than
+ * showing "rock-am-ring", without needing a reverse slug table.
+ *
+ * The NONE sentinel is labelled per facet: the data meaning is identical
+ * ("field is empty") but "Unknown location" and "No festival" say different
+ * things to a reader.
+ */
+function facetLabelOf(d: DerivedShow, facet: FacetKey): string {
+  switch (facet) {
+    case 'era': return d.era === NONE ? 'Undated' : d.era;
+    case 'year': return d.year === null ? 'Undated' : String(d.year);
+    case 'country': return d.show.Country?.trim() || 'Unknown location';
+    case 'festival': return d.show.EventOrFestival?.trim() || 'No festival';
+    case 'type': return TYPE_LABELS[d.type] ?? d.type;
+  }
+}
+
 /**
  * Does this show survive the active filters?
  *
@@ -109,6 +133,8 @@ function matches(
 
 export interface FacetOption {
   value: string;
+  /** Display string — the record's original text, not the slug. */
+  label: string;
   count: number;
   selected: boolean;
 }
@@ -137,9 +163,14 @@ export function computeFacetCounts(
 
   for (const facet of ['era', 'year', 'country', 'festival', 'type'] as FacetKey[]) {
     const tally = new Map<string, number>();
+    const labels = new Map<string, string>();
 
     // Every value in the corpus starts at zero so options never disappear.
-    for (const d of derived) tally.set(facetValueOf(d, facet), 0);
+    for (const d of derived) {
+      const value = facetValueOf(d, facet);
+      tally.set(value, 0);
+      if (!labels.has(value)) labels.set(value, facetLabelOf(d, facet));
+    }
 
     for (const d of derived) {
       if (!matches(d, state, searchIds, facet)) continue;
@@ -149,7 +180,12 @@ export function computeFacetCounts(
 
     const selected = new Set(state[facet].map(String));
     counts[facet] = [...tally.entries()]
-      .map(([value, count]) => ({ value, count, selected: selected.has(value) }))
+      .map(([value, count]) => ({
+        value,
+        label: labels.get(value) ?? value,
+        count,
+        selected: selected.has(value),
+      }))
       .sort(sortFacetOptions(facet));
   }
 
