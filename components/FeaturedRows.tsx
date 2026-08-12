@@ -1,121 +1,77 @@
-import { useMemo, useRef, useState, useEffect, useCallback } from 'react';
+import { useMemo } from 'react';
 import { motion } from 'motion/react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Show } from '../App';
 import { ShowCard } from './ShowCard';
-import { useGeoLocation } from '../src/hooks/useGeoLocation';
 
-const shuffle = <T,>(arr: T[]): T[] => [...arr].sort(() => Math.random() - 0.5);
+/**
+ * Landing sections.
+ *
+ * Cards use the SAME grid as SearchResultsGrid rather than the horizontal
+ * scroller this file used to own. Two layouts for one card type meant the
+ * landing and the results never quite matched: the scroller sized cards from
+ * the viewport (6.5 visible at 2xl, to leave a scroll peek) while the grid
+ * sized them from column count (7 at 2xl). Same breakpoints, different widths,
+ * visible seam when moving between the two.
+ *
+ * One grid, one set of column counts, defined once in GRID_COLS below.
+ */
 
-interface FeaturedRowProps {
+/**
+ * Shared with SearchResultsGrid — if these diverge the landing stops matching
+ * the results again. 7 columns at 2xl is why the Featured set is exactly 7:
+ * it fills one clean row on a wide screen.
+ */
+export const GRID_COLS =
+  'grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-x-3 gap-y-6';
+
+interface FeaturedSectionProps {
   title: string;
   shows: Show[];
   onShowClick: (show: Show) => void;
   getImageUrl: (checksum: string, index: number) => string | null;
 }
 
-function FeaturedRow({ title, shows, onShowClick, getImageUrl }: FeaturedRowProps) {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [showLeft, setShowLeft] = useState(false);
-  const [showRight, setShowRight] = useState(false);
-  const [isRowHovered, setIsRowHovered] = useState(false);
-
-  const SCROLL_AMOUNT = 560;
-
-  const updateGradients = useCallback(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setShowLeft(el.scrollLeft > 2);
-    setShowRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 2);
-  }, []);
-
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    updateGradients();
-    el.addEventListener('scroll', updateGradients, { passive: true });
-    const ro = new ResizeObserver(updateGradients);
-    ro.observe(el);
-    return () => { el.removeEventListener('scroll', updateGradients); ro.disconnect(); };
-  }, [shows, updateGradients]);
-
-  const scrollLeft = () => scrollRef.current?.scrollBy({ left: -SCROLL_AMOUNT, behavior: 'smooth' });
-  const scrollRight = () => scrollRef.current?.scrollBy({ left: SCROLL_AMOUNT, behavior: 'smooth' });
-
+function FeaturedSection({ title, shows, onShowClick, getImageUrl }: FeaturedSectionProps) {
   if (shows.length === 0) return null;
 
   return (
-    <motion.div
+    <motion.section
       className="mb-10"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      onMouseEnter={() => setIsRowHovered(true)}
-      onMouseLeave={() => setIsRowHovered(false)}
     >
-      {/* Row title */}
-      <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400 mb-3 px-4 md:px-8">
+      <h2 className="mb-3 px-4 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400 md:px-8">
         {title}
       </h2>
-
-      {/* Desktop: horizontal scroll with fades and arrows */}
-      <div className="hidden md:block relative group/row">
-        <div
-          ref={scrollRef}
-          className="flex gap-3 overflow-x-auto px-8 pb-6 scrollbar-hide"
-        >
-          {shows.map((show) => (
-            <div key={show.ShowID} className="shrink-0 md:w-[calc((100vw-64px-36px)/4)] lg:w-[calc((100vw-64px-48px)/5)] xl:w-[calc((100vw-64px-60px)/6)] 2xl:w-[calc((min(100vw,1924px)-64px-72px)/6.5)]">
-              <ShowCard show={show} onClick={() => onShowClick(show)} getImageUrl={getImageUrl} />
-            </div>
-          ))}
-        </div>
-
-        {showLeft && (
-          <div
-            className="absolute left-0 top-0 bottom-6 w-24 pointer-events-none z-10"
-            style={{ background: 'linear-gradient(to right, #141414 20%, transparent)' }}
+      <div className={`${GRID_COLS} px-4 md:px-8`}>
+        {shows.map(show => (
+          <ShowCard
+            key={show.ShowID}
+            show={show}
+            onClick={() => onShowClick(show)}
+            getImageUrl={getImageUrl}
           />
-        )}
-        {showLeft && (
-          <button
-            onClick={scrollLeft}
-            className={`cursor-pointer absolute left-2 top-0 bottom-6 z-20 flex items-center transition-opacity duration-200 focus-visible:opacity-100 ${isRowHovered ? 'opacity-100' : 'opacity-0'}`}
-            aria-label="Scroll left"
-          >
-            <div className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors duration-150">
-              <ChevronLeft className="w-4 h-4 text-white" />
-            </div>
-          </button>
-        )}
-        {showRight && (
-          <div
-            className="absolute right-0 top-0 bottom-6 w-24 pointer-events-none z-10"
-            style={{ background: 'linear-gradient(to left, #141414 20%, transparent)' }}
-          />
-        )}
-        {showRight && (
-          <button
-            onClick={scrollRight}
-            className={`cursor-pointer absolute right-2 top-0 bottom-6 z-20 flex items-center justify-end transition-opacity duration-200 focus-visible:opacity-100 ${isRowHovered ? 'opacity-100' : 'opacity-0'}`}
-            aria-label="Scroll right"
-          >
-            <div className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center transition-colors duration-150">
-              <ChevronRight className="w-4 h-4 text-white" />
-            </div>
-          </button>
-        )}
-      </div>
-
-      {/* Mobile: 2-column vertical grid, no scroll */}
-      <div className="md:hidden grid grid-cols-2 gap-3 px-4">
-        {shows.map((show) => (
-          <ShowCard key={show.ShowID} show={show} onClick={() => onShowClick(show)} getImageUrl={getImageUrl} />
         ))}
       </div>
-    </motion.div>
+    </motion.section>
   );
 }
+
+/**
+ * Hand-picked landing set, in display order. Exactly 7 so it fills one row at
+ * 2xl. Where the archive holds several copies of a show, the ID here is the
+ * best copy — largest file, complete date, setlist present.
+ */
+const FEATURED_IDS = [
+  '7ba32801defb', // Stone Temple Pilots — MTV Unplugged, 1993-11-17 (3.24 GB, largest of 4 copies)
+  '6b3751fea69f', // Jane's Addiction — Brixton Academy, 2003-09-30 (3.60 GB, dated copy)
+  '3d97ae42ed27', // Soundgarden — MTV Live & Loud, 1996-09-20 (1.72 GB)
+  '3fe2d2713abb', // Lenny Kravitz — MTV Unplugged, 1994 (1.45 GB, dated copy)
+  '6cd303bce708', // Rage Against the Machine — Rock am Ring, 1996-05-24
+  '730be7647294', // Red Hot Chili Peppers — Madison Square Gardens, 1996-02-09
+  'a939ab1baf17', // Radiohead — New York, 1997-12-19
+];
 
 interface FeaturedRowsProps {
   shows: Show[];
@@ -124,97 +80,32 @@ interface FeaturedRowsProps {
 }
 
 export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsProps) {
-  const geo = useGeoLocation();
-
   const sections = useMemo(() => {
     if (shows.length === 0) return null;
 
-    const artistShows: Record<string, Show[]> = {};
-    shows.forEach((show) => {
-      if (!artistShows[show.Artist]) artistShows[show.Artist] = [];
-      artistShows[show.Artist].push(show);
-    });
-
-    const TOP_ARTISTS = ['Stone Temple Pilots', 'Smashing Pumpkins', 'Soundgarden', 'Supergrass'];
-    const topArtistShows = shuffle(
-      TOP_ARTISTS.flatMap(name => {
-        const list = artistShows[name];
-        if (!list) return [];
-        return shuffle(list).slice(0, 2);
-      })
-    );
-
-    const FEATURED_IDS = [
-      '3d97ae42ed27', 'ccd7ed3c2fa4', '3fe2d2713abb',
-      '3620031b5215', 'e16f55a36df2', '4dba0c8ff6ae', '6cd303bce708',
-      '730be7647294', 'a939ab1baf17', '7a560b04c0fb', '6b3751fea69f',
-    ];
-    const showById = new Map(shows.map(s => [s.ShowID, s]));
-    const recent = shuffle(FEATURED_IDS.map(id => showById.get(id)).filter(Boolean) as Show[]);
+    const byId = new Map(shows.map(s => [s.ShowID, s]));
+    // Order follows FEATURED_IDS, not the catalogue — this row is curated, and
+    // a missing ID drops out silently rather than leaving a hole.
+    const featured = FEATURED_IDS.map(id => byId.get(id)).filter(Boolean) as Show[];
 
     const soundboards = shows
-      .filter((s) => s.RecordingType?.toLowerCase().includes('soundboard'))
+      .filter(s => s.RecordingType?.toLowerCase().includes('soundboard'))
       .sort((a, b) => (b.ShowDate || '').localeCompare(a.ShowDate || ''))
-      .slice(0, 24);
+      .slice(0, 14);
 
-    const countryCandidates = (() => {
-      if (!geo?.countryName) return [];
-      const names = [geo.countryName];
-      if (geo.countryName === 'United Kingdom') {
-        if (geo.region) names.push(geo.region);
-        names.push('UK', 'Britain');
-      }
-      if (geo.countryName === 'United States') names.push('USA', 'US');
-      return names.map(n => n.toLowerCase());
-    })();
-
-    let geoShows: Show[] = [];
-    let geoRowTitle = 'Shows Near You';
-
-    if (geo) {
-      if (geo.city) {
-        const cityMatches = shows.filter(s =>
-          s.City?.toLowerCase() === geo.city!.toLowerCase()
-        );
-        if (cityMatches.length >= 3) {
-          geoShows = shuffle(cityMatches).slice(0, 24);
-          geoRowTitle = `Shows from ${geo.city}`;
-        }
-      }
-      if (geoShows.length === 0 && countryCandidates.length > 0) {
-        const countryMatches = shows.filter(s =>
-          countryCandidates.includes(s.Country?.toLowerCase() || '')
-        );
-        if (countryMatches.length >= 3) {
-          geoShows = shuffle(countryMatches).slice(0, 24);
-          const label = (geo.countryName === 'United Kingdom' && geo.region)
-            ? geo.region
-            : geo.countryName;
-          geoRowTitle = `Shows from ${label}`;
-        }
-      }
-    }
-
-    return { topArtistShows, recent, soundboards, geoShows, geoRowTitle };
-  }, [shows, geo]);
+    return { featured, soundboards };
+  }, [shows]);
 
   if (!sections) {
     return (
-      <div className="px-4 md:px-8 py-8 max-w-[1924px] mx-auto">
-        <div className="animate-pulse space-y-10" role="status" aria-label="Loading shows">
-          {[1, 2, 3].map((i) => (
+      <div className="mx-auto max-w-[1924px] px-4 py-8 md:px-8" role="status" aria-label="Loading shows">
+        <div className="animate-pulse space-y-10">
+          {[1, 2].map(i => (
             <div key={i}>
-              <div className="h-3 bg-white/5 rounded w-32 mb-4" />
-              {/* Desktop skeleton: horizontal row */}
-              <div className="hidden md:flex gap-3">
-                {[1, 2, 3, 4, 5].map((j) => (
-                  <div key={j} className="shrink-0 md:w-[calc((100vw-64px-36px)/4)] lg:w-[calc((100vw-64px-48px)/5)] xl:w-[calc((100vw-64px-60px)/6)] 2xl:w-[calc((min(100vw,1924px)-64px-72px)/6.5)] aspect-4/3 bg-white/5 rounded-md" />
-                ))}
-              </div>
-              {/* Mobile skeleton: 2-col grid */}
-              <div className="md:hidden grid grid-cols-2 gap-3">
-                {[1, 2, 3, 4].map((j) => (
-                  <div key={j} className="aspect-4/3 bg-white/5 rounded-md" />
+              <div className="mb-4 h-3 w-32 rounded bg-white/5" />
+              <div className={GRID_COLS}>
+                {Array.from({ length: 7 }, (_, j) => (
+                  <div key={j} className="aspect-4/3 rounded-md bg-white/5" />
                 ))}
               </div>
             </div>
@@ -225,37 +116,19 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
   }
 
   return (
-    <div className="pb-16 max-w-[1924px] mx-auto">
-      {sections.recent.length > 0 && (
-        <FeaturedRow
-          title="Featured"
-          shows={sections.recent}
-          onShowClick={onShowClick}
-          getImageUrl={getImageUrl}
-        />
-      )}
-      <FeaturedRow
-        title="Top Artists"
-        shows={sections.topArtistShows}
+    <div className="mx-auto max-w-[1924px] pb-16">
+      <FeaturedSection
+        title="Featured"
+        shows={sections.featured}
         onShowClick={onShowClick}
         getImageUrl={getImageUrl}
       />
-      {sections.geoShows.length > 0 && (
-        <FeaturedRow
-          title={sections.geoRowTitle}
-          shows={sections.geoShows}
-          onShowClick={onShowClick}
-          getImageUrl={getImageUrl}
-        />
-      )}
-      {sections.soundboards.length > 0 && (
-        <FeaturedRow
-          title="Soundboard Recordings"
-          shows={sections.soundboards}
-          onShowClick={onShowClick}
-          getImageUrl={getImageUrl}
-        />
-      )}
+      <FeaturedSection
+        title="Soundboard Recordings"
+        shows={sections.soundboards}
+        onShowClick={onShowClick}
+        getImageUrl={getImageUrl}
+      />
     </div>
   );
 }

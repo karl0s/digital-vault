@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { Show } from '../App';
 import { ShowCard } from './ShowCard';
+import { GRID_COLS } from './FeaturedRows';
 import type { SongSuggestion } from '../src/search/searchIndex';
 
 interface SearchResultsGridProps {
@@ -75,21 +76,22 @@ export function SearchResultsGrid({ shows, query, searchType, transitionKey, son
         <AnimatePresence mode="wait">
           <motion.div
             key={transitionKey ?? cardMode}
-            className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-x-3 gap-y-6"
+            // Shared with the landing sections so card size and spacing match
+            // across every view. Defined once in FeaturedRows.
+            className={GRID_COLS}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2, ease: 'easeInOut' }}
           >
             {shows.map((show) => (
-              <div key={show.ShowID}>
-                <ShowCard
-                  show={show}
-                  onClick={() => onShowClick(show)}
-                  getImageUrl={getImageUrl}
-                  searchMode={cardMode}
-                />
-              </div>
+              <ShowCard
+                key={show.ShowID}
+                show={show}
+                onClick={() => onShowClick(show)}
+                getImageUrl={getImageUrl}
+                searchMode={cardMode}
+              />
             ))}
           </motion.div>
         </AnimatePresence>

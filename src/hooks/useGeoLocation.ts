@@ -1,3 +1,13 @@
+/**
+ * PARKED — no callers today, do not delete as dead code.
+ *
+ * This powered the "Shows from <your country>" row on the landing page, which
+ * was removed when the landing was pared back to Featured + Soundboards. The
+ * removal was explicitly "for now", so the hook stays ready to wire back up.
+ *
+ * A dead-code sweep will flag this file as an orphan module — that is expected.
+ */
+
 import { useMemo } from 'react';
 
 interface GeoLocation {
