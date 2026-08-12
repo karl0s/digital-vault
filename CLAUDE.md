@@ -408,10 +408,33 @@ Claude will scan the artist's shows, identify gaps, research each one, and prese
 
 ## Hard drives in the collection
 
-| Drive | Contents |
-|---|---|
-| Big Daddy | Main collection — bulk of all shows |
-| Seagate Expansion Drive | Overflow + 2010–2013 era shows |
+Figures below are measured from `public/shows.json` (deduplicated) and the
+`data-pipeline/` scan CSVs (raw). Sizes are GiB — multiply by 1.074 for the
+decimal GB used on drive labels.
+
+| Drive | Shows (deduped) | Size | Contents |
+|---|---:|---:|---|
+| Seagate Expansion Drive | 470 (57%) | 1,392 GiB | **Main collection** — the largest single source |
+| Big Daddy | 347 (42%) | 1,043 GiB | Second collection, broadly the same era mix |
+| `Untitled` (DVD archive) | 2 | 6 GiB | 316 scanned, but 313 are byte-identical duplicates of the above |
+| **Unique total** | **829** | **~2,441 GiB** | ~2.4 TiB / ~2.6 TB. Add ~30 GiB for 10 shows with no recorded size |
+
+**Both drives span the same eras** — roughly 1990s and 2000s heavy, with a
+2010s tail. Neither is era-specific.
+
+### Duplication across media
+Raw scans total **1,421 show folders / 3,931 GiB (3.84 TiB)** across the three
+volumes. After dedup that resolves to 829 unique shows / 2,441 GiB, so roughly
+**1,490 GiB is redundant copies**. The `Untitled` volume is a DVD backup
+archive: of its 316 folders, 313 match an existing `ChecksumSHA1` exactly and
+were correctly dropped by the pipeline. Its one non-duplicate entry
+(`Mainly Hunting - Target 2009`, filed under artist "DVDs") is not a concert
+recording and is intentionally excluded.
+
+> Historical note: this table previously described Big Daddy as the "bulk of
+> all shows" and the Seagate as "overflow + 2010–2013 era". Both were wrong —
+> the Seagate is larger on every measure, and only 13% of its shows fall in
+> 2010–2013.
 
 ---
 
