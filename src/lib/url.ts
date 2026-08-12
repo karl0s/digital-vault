@@ -45,8 +45,19 @@ export const NONE = 'none';
 export interface FilterState {
   view: ViewKey;
   q: string;
-  era: string[];
-  year: number[];
+  /**
+   * Inclusive year range. `null` on either end means unbounded, which is why
+   * the serializer never needs to know the archive's actual span — a new 1962
+   * recording cannot make a hardcoded bound go stale.
+   */
+  from: number | null;
+  to: number | null;
+  /**
+   * Undated shows are excluded from a year range by default: a show with no
+   * date is not "in" 1993-2011. This opts the 64 of them back in, so they stay
+   * reachable rather than silently vanishing whenever a range is set.
+   */
+  undated: boolean;
   country: string[];
   festival: string[];
   type: string[];
@@ -56,20 +67,36 @@ export interface FilterState {
 export const EMPTY_FILTERS: FilterState = {
   view: DEFAULT_VIEW,
   q: '',
-  era: [],
-  year: [],
+  from: null,
+  to: null,
+  undated: false,
   country: [],
   festival: [],
   type: [],
   sort: DEFAULT_SORT,
 };
 
-/** Facet keys only — `q` and `sort` are not facets and are handled separately. */
-export const FACET_KEYS = ['era', 'year', 'country', 'festival', 'type'] as const;
+/**
+ * Multi-select facets only. The year range is deliberately not one of these —
+ * it is a range with its own controls, not a list of checkboxes.
+ */
+export const FACET_KEYS = ['country', 'festival', 'type'] as const;
 export type FacetKey = (typeof FACET_KEYS)[number];
 
 /** Rule 1. Emission order is fixed here and nowhere else. */
-const PARAM_ORDER = ['view', 'q', 'era', 'year', 'country', 'festival', 'type', 'sort'] as const;
+const PARAM_ORDER = [
+  'view', 'q', 'from', 'to', 'undated', 'country', 'festival', 'type', 'sort',
+] as const;
+
+/** Rejects nonsense years from a hand-edited URL without pinning the data span. */
+const YEAR_FLOOR = 1900;
+const YEAR_CEILING = 2100;
+
+function parseYear(raw: string | null): number | null {
+  if (!raw) return null;
+  const n = Number.parseInt(raw, 10);
+  return Number.isFinite(n) && n >= YEAR_FLOOR && n <= YEAR_CEILING ? n : null;
+}
 
 const SORT_KEYS: readonly SortKey[] = ['year-desc', 'year-asc', 'artist'];
 
@@ -92,10 +119,6 @@ export function slugify(value: string): string {
 
 function uniqueSorted(values: string[]): string[] {
   return [...new Set(values.filter(Boolean))].sort();
-}
-
-function uniqueSortedNums(values: number[]): number[] {
-  return [...new Set(values.filter(n => Number.isFinite(n)))].sort((a, b) => a - b);
 }
 
 /**
@@ -124,9 +147,15 @@ export function serializeFilters(state: FilterState): string {
       continue;
     }
 
-    if (key === 'year') {
-      const years = uniqueSortedNums(state.year);
-      if (years.length) parts.push(`year=${years.join(',')}`);
+    if (key === 'from' || key === 'to') {
+      const value = state[key];
+      if (value !== null) parts.push(`${key}=${value}`);
+      continue;
+    }
+
+    if (key === 'undated') {
+      // Only the non-default is spelled out, same rule as sort and view.
+      if (state.undated) parts.push('undated=1');
       continue;
     }
 
@@ -149,17 +178,19 @@ export function parseFilters(search: string): FilterState {
 
   const rawSort = params.get('sort') as SortKey | null;
   const rawView = params.get('view') as ViewKey | null;
-  const years = (params.get('year') ?? '')
-    .split(',')
-    .map(v => Number.parseInt(v, 10))
-    // Bounded to plausible concert years so ?year=99999999 can't reach the UI.
-    .filter(n => Number.isFinite(n) && n >= 1900 && n <= 2100);
+
+  let from = parseYear(params.get('from'));
+  let to = parseYear(params.get('to'));
+  // A reversed range is a typo, not an empty result set. Swap rather than
+  // silently returning nothing.
+  if (from !== null && to !== null && from > to) [from, to] = [to, from];
 
   return {
     view: rawView && VIEW_KEYS.includes(rawView) ? rawView : DEFAULT_VIEW,
     q: (params.get('q') ?? '').trim(),
-    era: readList(params, 'era'),
-    year: uniqueSortedNums(years),
+    from,
+    to,
+    undated: params.get('undated') === '1',
     country: readList(params, 'country'),
     festival: readList(params, 'festival'),
     type: readList(params, 'type'),
@@ -171,11 +202,17 @@ export function parseFilters(search: string): FilterState {
 export function isFiltered(state: FilterState): boolean {
   return (
     state.q.trim().length > 0 ||
+    state.from !== null ||
+    state.to !== null ||
+    state.undated ||
     FACET_KEYS.some(key => state[key].length > 0)
   );
 }
 
 /** Count of active facet values, for the "Clear all" affordance. */
 export function activeFilterCount(state: FilterState): number {
-  return FACET_KEYS.reduce((n, key) => n + state[key].length, 0) + (state.q.trim() ? 1 : 0);
+  const facets = FACET_KEYS.reduce((n, key) => n + state[key].length, 0);
+  // A range counts once however many ends are set — it reads as one chip.
+  const range = state.from !== null || state.to !== null ? 1 : 0;
+  return facets + range + (state.undated ? 1 : 0) + (state.q.trim() ? 1 : 0);
 }

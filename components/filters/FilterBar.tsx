@@ -17,9 +17,8 @@ import { FacetPopover } from './FacetPopover';
  * by era would mean explaining what an artist's era is.
  */
 
+// Years are handled by their own range control, not as a multi-select facet.
 const FACETS: { key: FacetKey; label: string }[] = [
-  { key: 'era', label: 'Era' },
-  { key: 'year', label: 'Year' },
   { key: 'country', label: 'Country' },
   { key: 'festival', label: 'Festival' },
 ];

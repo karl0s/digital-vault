@@ -9,8 +9,8 @@
 
 import { readFileSync } from 'node:fs';
 import { Show } from '../App';
-import { EMPTY_FILTERS, FacetKey, FilterState, NONE } from '../src/lib/url';
-import { applyFilters, computeFacetCounts, deriveAll, sortShows } from '../src/search/facets';
+import { EMPTY_FILTERS, FACET_KEYS, FacetKey, FilterState, NONE } from '../src/lib/url';
+import { applyFilters, computeFacetCounts, computeYearHistogram, deriveAll, sortShows } from '../src/search/facets';
 
 const shows: Show[] = JSON.parse(readFileSync('public/shows.json', 'utf8'));
 const derived = deriveAll(shows);
@@ -42,7 +42,7 @@ ok('everything passes', applyFilters(derived, f(), null).length === shows.length
 
 console.log('\ncounts predict results — the core guarantee');
 // For each facet, pick its top option, apply it, and check the count was right.
-for (const facet of ['era', 'year', 'country', 'festival', 'type'] as FacetKey[]) {
+for (const facet of FACET_KEYS as readonly FacetKey[]) {
   const counts = computeFacetCounts(derived, f(), null);
   const top = counts[facet].filter(o => o.value !== NONE && o.count > 0)[0];
   if (!top) { ok(`${facet}: has options`, false); continue; }
@@ -56,25 +56,83 @@ for (const facet of ['era', 'year', 'country', 'festival', 'type'] as FacetKey[]
 
 console.log('\ncounts exclude their own facet, include the others');
 {
-  const base = f({ era: ['1990s'] });
+  const base = f({ from: 1990, to: 1999 });
   const counts = computeFacetCounts(derived, base, null);
-
-  // Country counts must respect era=1990s.
   const germany = counts.country.find(o => o.value === 'germany');
-  const actualGermany = applyFilters(derived, f({ era: ['1990s'], country: ['germany'] }), null).length;
+  const actual = applyFilters(derived, f({ from: 1990, to: 1999, country: ['germany'] }), null).length;
   ok(
-    `country "germany" under era=1990s: advertises ${germany?.count}, yields ${actualGermany}`,
-    germany?.count === actualGermany,
+    `country "germany" under 1990-1999: advertises ${germany?.count}, yields ${actual}`,
+    germany?.count === actual,
   );
 
-  // Era counts must NOT respect era=1990s — otherwise 2000s would read as 0
-  // and the user could never widen their selection.
-  const twoThousands = counts.era.find(o => o.value === '2000s');
+  const withCountry = computeFacetCounts(derived, f({ country: ['germany'] }), null);
+  const japan = withCountry.country.find(o => o.value === 'japan');
   ok(
-    `era "2000s" still counts ${twoThousands?.count} while era=1990s is active`,
-    (twoThousands?.count ?? 0) > 0,
+    `country "japan" still counts ${japan?.count} while germany is selected`,
+    (japan?.count ?? 0) > 0,
     'own-facet exclusion is broken — widening a selection would be impossible',
   );
+}
+
+console.log('\nyear range');
+{
+  const nineties = applyFilters(derived, f({ from: 1990, to: 1999 }), null).length;
+  const expected = shows.filter(s => /^199\d/.test(s.ShowDate || '')).length;
+  ok(`1990-1999 yields ${nineties} (expected ${expected})`, nineties === expected);
+
+  const openStart = applyFilters(derived, f({ to: 1979 }), null).length;
+  const expectedOpen = shows.filter(s => {
+    const y = Number.parseInt((s.ShowDate || '').slice(0, 4), 10);
+    return Number.isFinite(y) && y <= 1979;
+  }).length;
+  ok(`open start (<=1979) yields ${openStart} (expected ${expectedOpen})`, openStart === expectedOpen);
+
+  const single = applyFilters(derived, f({ from: 1996, to: 1996 }), null).length;
+  ok(`single year 1996 yields ${single} (expected 52)`, single === 52);
+
+  ok('no range means undated shows are included',
+     applyFilters(derived, f(), null).length === shows.length);
+
+  const undatedExcluded = applyFilters(derived, f({ from: 1990, to: 1999 }), null)
+    .filter(s => !/^\d{4}/.test(s.ShowDate || '')).length;
+  ok('a range excludes undated by default', undatedExcluded === 0);
+
+  const withUndated = applyFilters(derived, f({ from: 1990, to: 1999, undated: true }), null);
+  const undatedIn = withUndated.filter(s => !/^\d{4}/.test(s.ShowDate || '')).length;
+  ok(`opting in adds all 64 undated back (got ${undatedIn})`, undatedIn === 64);
+  ok('and keeps the dated ones', withUndated.length === nineties + 64);
+}
+
+console.log('\nyear histogram');
+{
+  const full = computeYearHistogram(derived, f(), null);
+  ok(`spans ${full.minYear}-${full.maxYear}`, full.minYear === 1965 && full.maxYear === 2016);
+  ok('bins are contiguous, empty years included',
+     full.bins.length === full.maxYear - full.minYear + 1);
+  ok('bin totals match the dated corpus',
+     full.bins.reduce((n, b) => n + b.count, 0) === shows.length - 64);
+  ok(`undatedCount is ${full.undatedCount} (expected 64)`, full.undatedCount === 64);
+  ok('peak is the tallest bar', full.peak === Math.max(...full.bins.map(b => b.count)));
+
+  // The load-bearing rule: the histogram must ignore its OWN range, or every
+  // bar outside the selection collapses and there is nothing left to aim at.
+  const narrowed = computeYearHistogram(derived, f({ from: 1996, to: 1996 }), null);
+  ok('histogram ignores its own range — full span survives a 1-year selection',
+     narrowed.bins.length === full.bins.length,
+     'narrowing the range collapsed the histogram; the brush would be unusable');
+  ok('and the bars are unchanged',
+     JSON.stringify(narrowed.bins) === JSON.stringify(full.bins));
+
+  // But it must still respect the other facets.
+  const german = computeYearHistogram(derived, f({ country: ['germany'] }), null);
+  const germanTotal = german.bins.reduce((n, b) => n + b.count, 0) + german.undatedCount;
+  ok(`histogram respects other facets (${germanTotal} German shows)`,
+     germanTotal === shows.filter(s => (s.Country || '').toLowerCase() === 'germany').length);
+
+  const bin1996 = full.bins.find(b => b.year === 1996);
+  const actual1996 = applyFilters(derived, f({ from: 1996, to: 1996 }), null).length;
+  ok(`bar for 1996 (${bin1996?.count}) equals selecting it (${actual1996})`,
+     bin1996?.count === actual1996);
 }
 
 console.log('\nzero-count options are returned, not dropped');
@@ -98,13 +156,13 @@ console.log('\nNONE keeps sparse records reachable');
 
 console.log('\nmulti-select is OR within a facet, AND across facets');
 {
-  const a = applyFilters(derived, f({ era: ['1990s'] }), null).length;
-  const b = applyFilters(derived, f({ era: ['2000s'] }), null).length;
-  const both = applyFilters(derived, f({ era: ['1990s', '2000s'] }), null).length;
-  ok(`era OR: ${a} + ${b} = ${both}`, a + b === both);
+  const de = applyFilters(derived, f({ country: ['germany'] }), null).length;
+  const jp = applyFilters(derived, f({ country: ['japan'] }), null).length;
+  const both = applyFilters(derived, f({ country: ['germany', 'japan'] }), null).length;
+  ok(`country OR: ${de} + ${jp} = ${both}`, de + jp === both);
 
-  const andCase = applyFilters(derived, f({ era: ['1990s'], country: ['germany'] }), null).length;
-  ok(`era AND country narrows (${andCase} <= ${a})`, andCase <= a && andCase > 0);
+  const andCase = applyFilters(derived, f({ country: ['germany'], from: 1990, to: 1999 }), null).length;
+  ok(`country AND year range narrows (${andCase} <= ${de})`, andCase <= de && andCase > 0);
 }
 
 console.log('\nsorting');
