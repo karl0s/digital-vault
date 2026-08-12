@@ -10,7 +10,7 @@ import type { Show } from '../../App';
  * test harness can never drift from what the app actually runs.
  */
 
-export interface SearchDoc {
+interface SearchDoc {
   id: string;
   artist: string;
   year: string;
@@ -22,7 +22,7 @@ export interface SearchDoc {
   searchText: string;
 }
 
-export const SEARCH_FIELDS = [
+const SEARCH_FIELDS = [
   'artist', 'year', 'venue', 'city', 'country', 'type', 'event', 'searchText',
 ] as const;
 
@@ -37,14 +37,14 @@ export const SEARCH_FIELDS = [
  * Long terms keep the forgiving behaviour that makes search feel good
  * ("radioh" → Radiohead, "soundgardn" → Soundgarden).
  */
-export const SEARCH_OPTIONS = {
+const SEARCH_OPTIONS = {
   prefix: (term: string) => term.length >= 4,
   fuzzy: (term: string) => (term.length >= 5 ? 0.15 : false),
   boost: { artist: 4, type: 2, year: 2, event: 1.5 },
   combineWith: 'AND' as const,
 };
 
-export function toSearchDoc(show: Show): SearchDoc {
+function toSearchDoc(show: Show): SearchDoc {
   const year = show.ShowDate ? show.ShowDate.split('-')[0] : '';
   return {
     id: show.ShowID,
@@ -74,7 +74,7 @@ export function toSearchDoc(show: Show): SearchDoc {
   };
 }
 
-export interface SearchIndex {
+interface SearchIndex {
   ms: MiniSearch<SearchDoc>;
   showById: Record<string, Show>;
   artistNames: string[];
@@ -139,7 +139,7 @@ function isUndated(show: Show): boolean {
   return false;
 }
 
-export function sortChronological(a: Show, b: Show): number {
+function sortChronological(a: Show, b: Show): number {
   const aUndated = isUndated(a);
   const bUndated = isUndated(b);
   if (aUndated && bUndated) {
@@ -165,7 +165,7 @@ export function sortChronological(a: Show, b: Show): number {
  * Keys are compared after normalisation, so punctuation and case are ignored.
  * Extend freely — anything not listed simply falls through to normal search.
  */
-export const ARTIST_ALIASES: Record<string, string> = {
+const ARTIST_ALIASES: Record<string, string> = {
   stp: 'Stone Temple Pilots',
   rhcp: 'Red Hot Chili Peppers',
   qotsa: 'Queens of the Stone Age',
@@ -200,16 +200,16 @@ export function resolveArtist(query: string, artistNames: string[]): string | nu
 }
 
 /** Every show by exactly this artist, newest first. */
-export function getArtistShows(shows: Show[], artist: string): Show[] {
+function getArtistShows(shows: Show[], artist: string): Show[] {
   return shows.filter(show => show.Artist === artist).sort(sortChronological);
 }
 
-export interface ArtistEntry {
+interface ArtistEntry {
   name: string;
   count: number;
 }
 
-export interface ArtistGroup {
+interface ArtistGroup {
   /** "#" for names starting with a digit or symbol, otherwise A–Z */
   letter: string;
   artists: ArtistEntry[];
