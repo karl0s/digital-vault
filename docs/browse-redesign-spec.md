@@ -28,6 +28,9 @@ legible**, and let people move through it by recognition.
 | URL state | **Query params on the root path** |
 | Analytics | GA later, not now — but the URL seam is built from commit one |
 | Map | Last. Ambitious, agency-grade, `Cobe` earmarked |
+| Mobile navigation | **Bottom tab bar**, not an overlay sheet |
+| Landing view | **Straight into the browse grid** (provisional — "for now") |
+| Sort | **Year newest / Year oldest / Artist A–Z.** Never "recently added" |
 
 ### Why query params, not path segments
 
@@ -106,7 +109,25 @@ a filter, which is correct — it is a different *kind* of thing, not a refineme
 |---|---|---|
 | Expanded | `256px` | Desktop default, `≥1280px` |
 | Rail | `72px`, icons only, labels on hover | Toggled, or default `768–1279px` |
-| Overlay | Full sheet over content | `<768px`, opened from the hamburger |
+| **Bottom tab bar** | Full width, fixed to the bottom edge | `<768px` — replaces the sidebar entirely |
+
+### Mobile: bottom tab bar
+
+Below `768px` there is **no sidebar at all**. Destinations move to a fixed bottom
+bar, which suits a phone better than a hamburger-and-sheet: one tap instead of two,
+and it sits under the thumb rather than at the top-left corner.
+
+- Four items maximum — **Browse · Artists · Search · Map**. `ContentType`
+  (Live/Docs/TV) demotes to a facet on mobile rather than a nav item; there isn't
+  room for seven destinations and a tab bar with seven items is a menu in disguise.
+- Height `56px` + `env(safe-area-inset-bottom)`. Without the safe-area padding the
+  bar sits under the iOS home indicator.
+- The results grid needs matching bottom padding or the last row hides behind it.
+- Icons carry visible labels; icon-only tab bars fail recognition for infrequent users.
+- Active item gets `aria-current="page"`.
+
+This is a genuine divergence from YouTube, which uses a sheet. A tab bar is the
+better phone pattern and the parallel is not worth preserving here.
 
 - Toggle state persists to `localStorage`.
 - Rail items need accessible names — icon-only buttons get `aria-label`.
@@ -162,6 +183,34 @@ option. Never let a record become unreachable through the UI.
 
 154 events, 91 appearing exactly once. Show the 23 with 5+ shows, then
 **"Show all 154"** behind the popover's text filter. A flat list of 154 is unusable.
+
+---
+
+## Sort
+
+Three options. The labels matter more than usual here.
+
+| Label in UI | Field | Direction |
+|---|---|---|
+| `Year — newest first` | `ShowDate` | desc (default) |
+| `Year — oldest first` | `ShowDate` | asc |
+| `Artist A–Z` | `Artist` | `localeCompare`, `sensitivity: 'base'` |
+
+**Why not "Newest".** `LastScannedAt` is populated on 819 of 829 shows, so
+"recently added to the collection" is a real, available sort — which makes a bare
+"Newest" genuinely ambiguous on an archive of decades-old concerts. Labelling the
+axis (`Year — …`) removes the ambiguity at zero cost. Sorting by acquisition date
+is explicitly **not wanted**.
+
+**Undated handling.** Reuse the existing `sortChronological` in
+`src/search/searchIndex.ts`, which already groups undated shows deterministically
+and sorts them last.
+
+> The 64 undated shows sort **last in both directions.** Undated is not "year zero" —
+> flipping to oldest-first must not surface 64 unknowns above a 1968 recording.
+
+The 142 `YYYY-01-01` stubs sort within their year, which is correct: the year is
+real, only the day is unknown.
 
 ---
 
@@ -279,10 +328,23 @@ From `/pick-ui-library`:
 | 3D globe | **Cobe** | 3 |
 | Animation | **motion** | installed |
 
-**Virtuoso deliberately deferred.** The threshold is 1,000+ rows; the worst case here
-is 829 and filtering only shrinks it. `LazyImage` already defers the real cost.
-`@tanstack/react-virtual` was removed in `76452e6` as unused — do not re-add a
-virtualizer without a measurement showing the grid stutters.
+**Virtuoso — deferred, but the case got stronger. Measure in Phase 1.**
+
+The original reasoning was: worst case 829 rows, under the 1,000 threshold, and
+filtering only shrinks it. Landing straight in the browse grid **weakens that
+argument** — the unfiltered 829 is no longer a rare worst case, it is the *default
+first paint on every cold load*.
+
+Rough shape of the problem: 829 cards × ~15 DOM nodes ≈ 12,000 nodes on mount.
+`LazyImage` still defers image bytes via IntersectionObserver, so the network cost
+stays bounded; the exposure is initial render time and scroll jank.
+
+Still not adding it blind — `@tanstack/react-virtual` was removed in `76452e6` as
+unused and re-adding a virtualizer on a hunch repeats that mistake. **Action:** build
+the grid unvirtualized, profile the unfiltered landing on a mid-range phone, and add
+Virtuoso if it stutters. Decide with a number, not a guess.
+
+The default-slice question below may remove the problem entirely.
 
 ---
 
@@ -300,11 +362,53 @@ especially against a `main` that keeps absorbing data changes.
 
 ---
 
+## Landing view
+
+Decision: land straight in the browse grid. This turns the site from a homepage
+into a tool, and pulls two loose threads.
+
+### What happens to the hero
+
+`HeroSearch` currently owns the wordmark, the tagline, and six quick-search pills.
+Landing in the grid means it no longer has a screen to live on. Proposed disposition
+rather than deletion — the `HalationLogo` in particular is the product of a whole
+playground folder of work and should not be collateral damage:
+
+| Element | Moves to |
+|---|---|
+| `HalationLogo` wordmark | Sidebar header, top-left — the YouTube position |
+| Quick-search pills | A **"Jump to"** row above the grid, or promoted into the Artist facet as pinned options |
+| "Live music worth reliving." tagline | Sidebar footer, or retired |
+| `HeroSearch.tsx` | Deleted once the above have homes |
+
+### What the grid shows on arrival
+
+"Land in the browse grid" leaves open *which* shows, in what order. Three candidates,
+and this needs a call before Phase 1 builds:
+
+1. **All 829, `Year — newest first`.** Honest and complete. Also the heaviest first
+   paint, and arguably a wall rather than a welcome.
+2. **A default slice** — most recent ~60 with "Show all". Fast, but the archive looks
+   smaller than it is, which is the exact problem this redesign exists to fix.
+3. **Curated strip + grid** — keep the existing `FeaturedRows` content as one
+   horizontal row above the full grid. Closest to YouTube's actual home, preserves
+   the editorial work already in `FEATURED_IDS`, and gives the eye somewhere to land
+   before the wall of cards.
+
+Option 3 is the recommendation. It keeps the "tool" framing while retaining the
+curation, and it makes the first paint feel designed rather than dumped.
+
+---
+
 ## Open questions
 
-1. **Sidebar on mobile** — overlay sheet (spec'd) or bottom tab bar? Overlay matches
-   YouTube; a tab bar suits a phone-first audience better. Needs a call before Phase 1.
-2. **Default landing view** — keep the current hero, or land straight in the filtered
-   browse grid? The hero is beautiful but adds a click before the archive appears.
-3. **Sort options** — Newest / Oldest / Artist proposed. Anything else worth having?
+1. **What the grid shows on arrival** — options above; option 3 recommended.
+2. **Quick-search pills** — keep them as a "Jump to" row, or fold into the Artist facet?
+3. **Tagline** — keep in the sidebar footer, or retire it?
 4. **Analytics tool** — GA confirmed, later. No action now beyond the seam.
+
+### Resolved
+
+- ~~Mobile navigation~~ → bottom tab bar
+- ~~Landing view~~ → browse grid (provisional)
+- ~~Sort options~~ → Year newest / Year oldest / Artist A–Z
