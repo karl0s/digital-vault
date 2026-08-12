@@ -24,6 +24,9 @@ interface FilterActions {
   /** Replace a facet's values outright. */
   setFacet: (facet: FacetKey, values: (string | number)[]) => void;
   setQuery: (q: string) => void;
+  /** Commit a year range. Nulls mean unbounded; call with (null, null) to clear. */
+  setYearRange: (from: number | null, to: number | null) => void;
+  toggleUndated: () => void;
   /** Change destination. Pushes history rather than replacing — see below. */
   setView: (view: ViewKey) => void;
   setSort: (sort: SortKey) => void;
@@ -70,11 +73,8 @@ function toggleValue(list: (string | number)[], value: string | number): string[
   return current.includes(key) ? current.filter(v => v !== key) : [...current, key];
 }
 
-/** Years live in state as numbers; every other facet as slug strings. */
-function coerce(facet: FacetKey, values: string[]): string[] | number[] {
-  if (facet !== 'year') return values;
-  return values.map(v => Number.parseInt(v, 10)).filter(Number.isFinite);
-}
+// Every remaining facet holds slug strings — years moved to a range and are no
+// longer a multi-select facet, so the numeric special case is gone.
 
 export const useFilterStore = create<FilterStore>((set, get) => {
   /** Applies a partial change, then syncs the URL unless we came from the URL. */
@@ -83,8 +83,8 @@ export const useFilterStore = create<FilterStore>((set, get) => {
     if (!applyingFromUrl) {
       const s = get();
       commitFilterState({
-        view: s.view, q: s.q, era: s.era, year: s.year, country: s.country,
-        festival: s.festival, type: s.type, sort: s.sort,
+        view: s.view, q: s.q, from: s.from, to: s.to, undated: s.undated,
+        country: s.country, festival: s.festival, type: s.type, sort: s.sort,
       });
     }
   };
@@ -93,15 +93,25 @@ export const useFilterStore = create<FilterStore>((set, get) => {
     ...readInitialState(),
 
     toggleFacet: (facet, value) => {
-      const next = toggleValue(get()[facet], value);
-      apply({ [facet]: coerce(facet, next) } as Partial<FilterState>);
+      apply({ [facet]: toggleValue(get()[facet], value) } as Partial<FilterState>);
     },
 
     setFacet: (facet, values) => {
-      apply({ [facet]: coerce(facet, values.map(String)) } as Partial<FilterState>);
+      apply({ [facet]: values.map(String) } as Partial<FilterState>);
     },
 
     setQuery: q => apply({ q }),
+
+    // Called on pointerup, never during a drag: handle positions live in
+    // component state while the gesture runs so replaceState stays off the
+    // 60fps path.
+    setYearRange: (from, to) => {
+      const lo = from !== null && to !== null ? Math.min(from, to) : from;
+      const hi = from !== null && to !== null ? Math.max(from, to) : to;
+      apply({ from: lo, to: hi });
+    },
+
+    toggleUndated: () => apply({ undated: !get().undated }),
 
     // Destination changes push a history entry; facet refinements replace one.
     // Back should step between places you visited, not undo every checkbox.
@@ -114,7 +124,7 @@ export const useFilterStore = create<FilterStore>((set, get) => {
       set({ view, q: '' });
       const s = get();
       const next: FilterState = {
-        view: s.view, q: s.q, era: s.era, year: s.year,
+        view: s.view, q: s.q, from: s.from, to: s.to, undated: s.undated,
         country: s.country, festival: s.festival, type: s.type, sort: s.sort,
       };
       if (typeof window !== 'undefined') {
@@ -129,7 +139,8 @@ export const useFilterStore = create<FilterStore>((set, get) => {
 
     // Sort deliberately survives "clear all" — it is a view preference, not a
     // filter, and resetting it would silently reorder results the user is reading.
-    clearAll: () => apply({ q: '', era: [], year: [], country: [], festival: [], type: [] }),
+    clearAll: () =>
+      apply({ q: '', from: null, to: null, undated: false, country: [], festival: [], type: [] }),
 
     hydrateFromUrl: search => {
       applyingFromUrl = true;
@@ -160,8 +171,8 @@ export function initFilterUrlSync(): () => void {
 /** Plain snapshot of the serializable state, without the actions. */
 export function selectFilterState(s: FilterStore): FilterState {
   return {
-    view: s.view, q: s.q, era: s.era, year: s.year, country: s.country,
-    festival: s.festival, type: s.type, sort: s.sort,
+    view: s.view, q: s.q, from: s.from, to: s.to, undated: s.undated,
+    country: s.country, festival: s.festival, type: s.type, sort: s.sort,
   };
 }
 

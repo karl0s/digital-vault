@@ -52,30 +52,48 @@ console.log('\nsnapshot stability (the infinite-loop guard)');
 
 console.log('\nfacet arrays are replaced, never mutated');
 {
-  const before = store.getState().era;
-  store.getState().toggleFacet('era', '1990s');
-  const after = store.getState().era;
+  const before = store.getState().country;
+  store.getState().toggleFacet('country', 'germany');
+  const after = store.getState().country;
   ok('toggling produces a new array reference', before !== after);
   ok('the previous array is untouched', before.length === 0);
-  ok('the new array holds the value', after.map(String).includes('1990s'));
+  ok('the new array holds the value', after.map(String).includes('germany'));
 }
 
 console.log('\nactions');
 {
-  store.getState().toggleFacet('era', '2000s');
-  ok('multi-select accumulates', store.getState().era.length === 2);
+  store.getState().toggleFacet('country', 'japan');
+  ok('multi-select accumulates', store.getState().country.length === 2);
 
-  store.getState().toggleFacet('era', '2000s');
-  ok('toggling the same value removes it', store.getState().era.map(String).join() === '1990s');
+  store.getState().toggleFacet('country', 'japan');
+  ok('toggling the same value removes it', store.getState().country.map(String).join() === 'germany');
 
   store.getState().setQuery('nirvana');
-  store.getState().setFacet('country', ['germany']);
-  ok('setFacet replaces outright', store.getState().country.join() === 'germany');
+  store.getState().setFacet('festival', ['rock-am-ring']);
+  ok('setFacet replaces outright', store.getState().festival.join() === 'rock-am-ring');
 
+  store.getState().setYearRange(2011, 1993);
+  ok('setYearRange normalises a reversed range',
+     store.getState().from === 1993 && store.getState().to === 2011);
+
+  store.getState().setYearRange(null, null);
+  ok('setYearRange(null, null) clears the range',
+     store.getState().from === null && store.getState().to === null);
+
+  store.getState().setYearRange(1990, 1999);
+  store.getState().toggleUndated();
+  ok('toggleUndated flips on', store.getState().undated === true);
+  store.getState().toggleUndated();
+  ok('toggleUndated flips off', store.getState().undated === false);
+
+  store.getState().setYearRange(1990, 1999);
+  store.getState().toggleUndated();
   store.getState().setSort('artist');
   store.getState().clearAll();
   const s = store.getState();
-  ok('clearAll empties every facet', s.era.length === 0 && s.country.length === 0);
+  ok('clearAll empties every facet', s.country.length === 0 && s.festival.length === 0);
+  ok('clearAll clears the range', s.from === null && s.to === null);
+  ok('clearAll clears undated', s.undated === false);
   ok('clearAll clears the query', s.q === '');
   ok('clearAll preserves sort (a view preference, not a filter)', s.sort === 'artist');
 
@@ -89,10 +107,12 @@ console.log('\nactions');
 
 console.log('\nhydration');
 {
-  store.getState().hydrateFromUrl('?view=artists&era=1990s&country=germany&sort=year-asc');
+  store.getState().hydrateFromUrl('?view=artists&from=1993&to=2011&undated=1&country=germany&sort=year-asc');
   const s = store.getState();
   ok('hydrate restores view', s.view === 'artists');
-  ok('hydrate restores facets', s.era.join() === '1990s' && s.country.join() === 'germany');
+  ok('hydrate restores the range', s.from === 1993 && s.to === 2011);
+  ok('hydrate restores undated', s.undated === true);
+  ok('hydrate restores facets', s.country.join() === 'germany');
   ok('hydrate restores sort', s.sort === 'year-asc');
 
   store.getState().hydrateFromUrl('');

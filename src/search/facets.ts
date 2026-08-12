@@ -1,5 +1,5 @@
 import { Show } from '../../App';
-import { FacetKey, FilterState, NONE, SortKey, slugify } from '../lib/url';
+import { FACET_KEYS, FacetKey, FilterState, NONE, SortKey, slugify } from '../lib/url';
 
 /**
  * Faceted filtering, counting and sorting over the show catalogue.
@@ -73,8 +73,6 @@ export function deriveAll(shows: Show[]): DerivedShow[] {
 
 function facetValueOf(d: DerivedShow, facet: FacetKey): string {
   switch (facet) {
-    case 'era': return d.era;
-    case 'year': return d.year === null ? NONE : String(d.year);
     case 'country': return d.country;
     case 'festival': return d.festival;
     case 'type': return d.type;
@@ -97,12 +95,26 @@ const TYPE_LABELS: Record<string, string> = {
  */
 function facetLabelOf(d: DerivedShow, facet: FacetKey): string {
   switch (facet) {
-    case 'era': return d.era === NONE ? 'Undated' : d.era;
-    case 'year': return d.year === null ? 'Undated' : String(d.year);
     case 'country': return d.show.Country?.trim() || 'Unknown location';
     case 'festival': return d.show.EventOrFestival?.trim() || 'No festival';
     case 'type': return TYPE_LABELS[d.type] ?? d.type;
   }
+}
+
+/**
+ * Does this show fall inside the active year range?
+ *
+ * Undated shows are out unless explicitly opted in — a show with no date is not
+ * "in" 1993-2011 — but when no range is set at all they are simply included,
+ * because then nothing is being asked about years.
+ */
+function matchesYear(d: DerivedShow, state: FilterState): boolean {
+  const bounded = state.from !== null || state.to !== null;
+
+  if (d.year === null) return bounded ? state.undated : true;
+  if (state.from !== null && d.year < state.from) return false;
+  if (state.to !== null && d.year > state.to) return false;
+  return true;
 }
 
 /**
@@ -115,11 +127,12 @@ function matches(
   d: DerivedShow,
   state: FilterState,
   searchIds: Set<string> | null,
-  except?: FacetKey,
+  except?: FacetKey | 'year',
 ): boolean {
   if (searchIds && !searchIds.has(d.show.ShowID)) return false;
+  if (except !== 'year' && !matchesYear(d, state)) return false;
 
-  for (const facet of ['era', 'year', 'country', 'festival', 'type'] as FacetKey[]) {
+  for (const facet of FACET_KEYS) {
     if (facet === except) continue;
     const selected = state[facet];
     if (selected.length === 0) continue;
@@ -161,7 +174,7 @@ export function computeFacetCounts(
 ): FacetCounts {
   const counts = {} as FacetCounts;
 
-  for (const facet of ['era', 'year', 'country', 'festival', 'type'] as FacetKey[]) {
+  for (const facet of FACET_KEYS) {
     const tally = new Map<string, number>();
     const labels = new Map<string, string>();
 
@@ -197,13 +210,77 @@ export function computeFacetCounts(
  * useful options surface above a long tail (154 festivals, 91 of them singletons).
  * NONE always sinks to the bottom — it is a fallback, not a headline.
  */
-function sortFacetOptions(facet: FacetKey) {
+function sortFacetOptions(_facet: FacetKey) {
   return (a: FacetOption, b: FacetOption): number => {
     if (a.value === NONE) return 1;
     if (b.value === NONE) return -1;
-    if (facet === 'era' || facet === 'year') return a.value.localeCompare(b.value);
     if (b.count !== a.count) return b.count - a.count;
     return a.value.localeCompare(b.value);
+  };
+}
+
+// ─── year histogram ──────────────────────────────────────────────────────────
+
+export interface YearBin {
+  year: number;
+  count: number;
+}
+
+export interface YearHistogram {
+  bins: YearBin[];
+  minYear: number;
+  maxYear: number;
+  /** Tallest bar, for scaling. 1 rather than 0 so an empty result cannot divide by zero. */
+  peak: number;
+  /** Undated shows surviving every other filter — the checkbox's live count. */
+  undatedCount: number;
+}
+
+/**
+ * Per-year counts for the brush, computed against every filter EXCEPT the year
+ * range itself.
+ *
+ * Excluding its own range is what keeps the control usable: count the histogram
+ * against its own selection and every bar outside the range collapses to zero
+ * the moment you drag, leaving nothing to aim at. The bars must always show the
+ * full distribution as it stands under the *other* filters.
+ *
+ * Bins are contiguous — years with no shows are present with count 0 — so the
+ * x-axis stays linear in time and gaps read as genuinely empty rather than
+ * being silently closed up.
+ */
+export function computeYearHistogram(
+  derived: DerivedShow[],
+  state: FilterState,
+  searchIds: Set<string> | null,
+): YearHistogram {
+  const tally = new Map<number, number>();
+  let undatedCount = 0;
+
+  for (const d of derived) {
+    if (!matches(d, state, searchIds, 'year')) continue;
+    if (d.year === null) { undatedCount++; continue; }
+    tally.set(d.year, (tally.get(d.year) ?? 0) + 1);
+  }
+
+  const dated = [...tally.keys()];
+  if (dated.length === 0) {
+    return { bins: [], minYear: 0, maxYear: 0, peak: 1, undatedCount };
+  }
+
+  const minYear = Math.min(...dated);
+  const maxYear = Math.max(...dated);
+  const bins: YearBin[] = [];
+  for (let year = minYear; year <= maxYear; year++) {
+    bins.push({ year, count: tally.get(year) ?? 0 });
+  }
+
+  return {
+    bins,
+    minYear,
+    maxYear,
+    peak: Math.max(1, ...bins.map(b => b.count)),
+    undatedCount,
   };
 }
 
