@@ -37,6 +37,18 @@ _playground/            ← isolated UI experiments, never imported by the live 
 `_playground/` is a sandbox for UI experiments. Each subdirectory is a topic area.
 Experiments are routed automatically via `import.meta.glob` + `React.lazy` in `PlaygroundRouter.tsx`.
 
+**Dev only — the playground never ships.** `main.tsx` gates the router behind
+`import.meta.env.DEV` and loads it with a dynamic `import()`. Vite substitutes a
+literal `false` for that flag in a production build, so Rollup drops the branch
+and the glob with it: `dist/` contains no playground code at all.
+
+Two consequences worth knowing:
+- Run experiments with `npm run dev` and visit `/playground`. They are
+  unreachable in a preview or deployed build by design.
+- Keep the import dynamic and inside the `if`. A top-level
+  `import { PlaygroundRouter } from './PlaygroundRouter'` is unconditional and
+  bundles every experiment back into `dist/` regardless of the DEV check.
+
 ### Rules
 - Every playground subfolder **must** have exactly one MD file named after the folder (e.g. `branding/logo.md`, `grid/grid.md`).
 - The MD file covers **all** TSX variants in the folder — not just v1. Update it as new variants are added.
