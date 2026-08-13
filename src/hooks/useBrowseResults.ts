@@ -1,7 +1,15 @@
 import { useMemo } from 'react';
 import { Show } from '../../App';
 import { FilterState } from '../lib/url';
-import { FacetCounts, applyFilters, computeFacetCounts, deriveAll, sortShows } from '../search/facets';
+import {
+  FacetCounts,
+  YearHistogram,
+  applyFilters,
+  computeFacetCounts,
+  computeYearHistogram,
+  deriveAll,
+  sortShows,
+} from '../search/facets';
 import { getSongSuggestion, resolveArtist, runSearch, SongSuggestion } from '../search/searchIndex';
 import { useSearchEngine } from './useSearchEngine';
 
@@ -24,6 +32,8 @@ export interface BrowseResults {
   results: Show[];
   /** Per-facet options with counts, for the filter bar. */
   counts: FacetCounts;
+  /** Per-year bins for the range brush, excluding the year filter itself. */
+  histogram: YearHistogram;
   /** Total before facets, after text search — for "38 of 240". */
   matchedByQuery: number;
   songSuggestion: SongSuggestion | null;
@@ -51,6 +61,11 @@ export function useBrowseResults(shows: Show[], state: FilterState): BrowseResul
     [derived, state, searchIds],
   );
 
+  const histogram = useMemo(
+    () => computeYearHistogram(derived, state, searchIds),
+    [derived, state, searchIds],
+  );
+
   const results = useMemo(
     () => sortShows(applyFilters(derived, state, searchIds), state.sort),
     [derived, state, searchIds],
@@ -65,6 +80,7 @@ export function useBrowseResults(shows: Show[], state: FilterState): BrowseResul
   return {
     results,
     counts,
+    histogram,
     matchedByQuery: searchIds ? searchIds.size : shows.length,
     songSuggestion,
   };

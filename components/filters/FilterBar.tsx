@@ -1,9 +1,10 @@
 import { X } from 'lucide-react';
 import { cn } from '../../src/lib/cn';
 import { FacetKey, SortKey } from '../../src/lib/url';
-import { FacetCounts } from '../../src/search/facets';
+import { FacetCounts, YearHistogram } from '../../src/search/facets';
 import { useFilterStore } from '../../src/store/filters';
 import { FacetPopover } from './FacetPopover';
+import { YearRangePopover } from './YearRangePopover';
 
 /**
  * Sticky refinement bar for the browse view.
@@ -31,18 +32,45 @@ const SORTS: { key: SortKey; label: string }[] = [
 
 interface FilterBarProps {
   counts: FacetCounts;
+  histogram: YearHistogram;
   resultCount: number;
 }
 
-export function FilterBar({ counts, resultCount }: FilterBarProps) {
+export function FilterBar({ counts, histogram, resultCount }: FilterBarProps) {
   const state = useFilterStore();
-  const { toggleFacet, clearFacet, clearAll, setSort } = state;
+  const { toggleFacet, clearFacet, clearAll, setSort, setYearRange, toggleUndated } = state;
 
-  const active = FACETS.flatMap(({ key }) =>
+  const facetChips = FACETS.flatMap(({ key }) =>
     counts[key]
       .filter(o => o.selected)
-      .map(o => ({ facet: key, value: o.value, label: o.label })),
+      .map(o => ({
+        id: `${key}:${o.value}`,
+        label: o.label,
+        remove: () => toggleFacet(key, o.value),
+      })),
   );
+
+  // The range reads as one chip however many ends are set — "1993–2011" is a
+  // single idea, and two chips would imply they can be removed separately.
+  const rangeChip =
+    state.from !== null || state.to !== null
+      ? {
+          id: 'years',
+          label:
+            state.from !== null && state.to !== null && state.from === state.to
+              ? `${state.from}`
+              : `${state.from ?? '…'}–${state.to ?? '…'}`,
+          remove: () => setYearRange(null, null),
+        }
+      : null;
+
+  const undatedChip = state.undated
+    ? { id: 'undated', label: 'Incl. undated', remove: toggleUndated }
+    : null;
+
+  const active = [rangeChip, undatedChip, ...facetChips].filter(Boolean) as {
+    id: string; label: string; remove: () => void;
+  }[];
 
   return (
     // top-16 clears the fixed header. z-30 sits under the header (z-40) and the
@@ -50,6 +78,7 @@ export function FilterBar({ counts, resultCount }: FilterBarProps) {
     <div className="sticky top-16 z-30 border-b border-white/6 bg-[#141414]/97 backdrop-blur-md">
       <div className="mx-auto max-w-[1924px] px-4 md:px-8">
         <div className="flex gap-2 overflow-x-auto py-3 scrollbar-hide">
+          <YearRangePopover histogram={histogram} />
           {FACETS.map(({ key, label }) => (
             <FacetPopover
               key={key}
@@ -66,8 +95,8 @@ export function FilterBar({ counts, resultCount }: FilterBarProps) {
           <div className="flex flex-wrap items-center gap-2 pb-3">
             {active.map(chip => (
               <button
-                key={`${chip.facet}:${chip.value}`}
-                onClick={() => toggleFacet(chip.facet, chip.value)}
+                key={chip.id}
+                onClick={chip.remove}
                 className="flex cursor-pointer items-center gap-1.5 rounded-full bg-white/10 py-1 pl-3 pr-2 text-sm text-white transition-colors duration-150 hover:bg-white/20"
                 aria-label={`Remove filter ${chip.label}`}
               >

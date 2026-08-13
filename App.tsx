@@ -118,7 +118,7 @@ export default function App() {
   const debouncedQuery = useDebounce(searchQuery, 150);
 
   // One pipeline: text query -> facets -> sort, plus the counts the bar needs.
-  const { results, counts, songSuggestion } = useBrowseResults(shows, filterState);
+  const { results, counts, histogram, songSuggestion } = useBrowseResults(shows, filterState);
   const filtered = computeIsFiltered(filterState);
 
   /**
@@ -236,7 +236,7 @@ export default function App() {
     >
       <HeroSearch isSearching={filtered} />
 
-      <FilterBar counts={counts} resultCount={results.length} />
+      <FilterBar counts={counts} histogram={histogram} resultCount={results.length} />
 
       {!filtered && (
         <FeaturedRows shows={shows} onShowClick={handleShowClick} getImageUrl={getImageUrl} />
