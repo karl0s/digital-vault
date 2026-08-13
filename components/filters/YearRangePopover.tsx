@@ -99,10 +99,13 @@ export function YearRangePopover({ histogram }: YearRangePopoverProps) {
       </Popover.Trigger>
 
       <Popover.Portal>
-        <Popover.Positioner sideOffset={8} align="start">
+        {/* z-50 must live on the Positioner: that is the element base-ui
+              positions, and the portal otherwise sits at z-auto and loses to the
+              sticky filter bar's z-30. */}
+          <Popover.Positioner sideOffset={8} align="start" className="z-50">
           <Popover.Popup
             className={cn(
-              'z-50 w-[min(24rem,calc(100vw-2rem))] rounded-xl border border-white/10 bg-[#1f1f1f] p-3',
+              'w-[min(24rem,calc(100vw-2rem))] rounded-xl border border-white/10 bg-[#1f1f1f] p-3',
               'shadow-2xl shadow-black/60 outline-none',
               'origin-[var(--transform-origin)] transition-[opacity,transform] duration-150 ease-out',
               'data-[starting-style]:scale-[0.96] data-[starting-style]:opacity-0',

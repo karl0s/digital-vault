@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import {
+  CLICK_SLOP,
   Handle,
   Track,
   dragHandle,
@@ -81,6 +82,7 @@ export function YearHistogram({
     // Capture so the drag survives the pointer leaving the element — without
     // it, sliding off the edge silently drops the gesture.
     svgRef.current?.setPointerCapture(e.pointerId);
+    setHovered(null); // the readout would otherwise linger over the drag
 
     const grabbed = hasRange ? nearestHandle(m.x, selFrom, selTo, m.track) : null;
 
@@ -115,7 +117,9 @@ export function YearHistogram({
       liveRef.current = { from: next.from, to: next.to };
       onDrag(next.from, next.to);
     } else {
-      const next = dragNew(mode.anchorX, m.x, m.track);
+      // CLICK_SLOP so a click that jitters a pixel or two still selects one
+      // bar rather than two — columns are only ~7px wide here.
+      const next = dragNew(mode.anchorX, m.x, m.track, CLICK_SLOP);
       liveRef.current = next;
       onDrag(next.from, next.to);
     }

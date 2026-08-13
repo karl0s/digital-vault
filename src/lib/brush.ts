@@ -116,13 +116,35 @@ export function dragHandle(
     : { from, to: year, handle: 'to' };
 }
 
-/** A fresh drag across empty track: anchor where it started, follow the pointer. */
+/**
+ * Movement below this is a click, not a drag.
+ *
+ * Columns are only ~7px wide in the real popover, and a pointer almost always
+ * jitters a pixel or two between down and up. Without a slop threshold that
+ * jitter crosses a column boundary and a click on one bar selects two years.
+ */
+export const CLICK_SLOP = 5;
+
+/** True when the pointer has not moved far enough to count as a drag. */
+export function isClick(anchorX: number, x: number, slop = CLICK_SLOP): boolean {
+  return Math.abs(x - anchorX) < slop;
+}
+
+/**
+ * A fresh drag across empty track: anchor where it started, follow the pointer.
+ *
+ * Within `slop` of the anchor this collapses to the single year under it, so a
+ * click selects exactly one bar. Defaults to 0 so the geometry stays exact for
+ * callers that have already decided a drag is in progress.
+ */
 export function dragNew(
   anchorX: number,
   x: number,
   track: Track,
+  slop = 0,
 ): { from: number; to: number } {
   const a = xToYear(anchorX, track);
+  if (isClick(anchorX, x, slop)) return { from: a, to: a };
   const b = xToYear(x, track);
   return { from: Math.min(a, b), to: Math.max(a, b) };
 }
