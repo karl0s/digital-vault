@@ -146,7 +146,7 @@ export function YearHistogram({
         role="img"
         aria-label={label}
         // touch-action:none stops a horizontal drag from scrolling the page.
-        className="h-24 w-full cursor-crosshair touch-none"
+        className="h-28 w-full cursor-crosshair touch-none"
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={endDrag}
@@ -165,9 +165,9 @@ export function YearHistogram({
           return (
             <rect
               key={bin.year}
-              x={i + 0.1}
+              x={i + 0.06}
               y={VIEW_H - h}
-              width={0.8}
+              width={0.88}
               height={h}
               className={
                 bin.count === 0

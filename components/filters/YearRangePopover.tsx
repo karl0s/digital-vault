@@ -2,7 +2,7 @@ import { Popover } from '@base-ui/react/popover';
 import { Check, ChevronDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { cn } from '../../src/lib/cn';
-import { YearHistogram as YearHistogramData } from '../../src/search/facets';
+import { YearBin, YearHistogram as YearHistogramData } from '../../src/search/facets';
 import { useFilterStore } from '../../src/store/filters';
 import { YearHistogram } from './YearHistogram';
 
@@ -24,10 +24,28 @@ interface YearRangePopoverProps {
   histogram: YearHistogramData;
 }
 
-function decadesWithin(minYear: number, maxYear: number): number[] {
-  const first = Math.floor(minYear / 10) * 10;
+/**
+ * A decade chip is a shortcut, so it has to be worth the tap. The 1960s hold
+ * two shows in this archive — offering it as a preset costs horizontal space
+ * and returns almost nothing.
+ *
+ * Threshold rather than a hardcoded start year, so the row maintains itself as
+ * the collection grows. Nothing becomes unreachable: the brush and the From/To
+ * inputs still cover every year in the data.
+ */
+const MIN_DECADE_SHOWS = 5;
+
+function decadesWithin(bins: YearBin[], minYear: number, maxYear: number): number[] {
+  const totals = new Map<number, number>();
+  for (const b of bins) {
+    const decade = Math.floor(b.year / 10) * 10;
+    totals.set(decade, (totals.get(decade) ?? 0) + b.count);
+  }
+
   const out: number[] = [];
-  for (let d = first; d <= maxYear; d += 10) out.push(d);
+  for (let d = Math.floor(minYear / 10) * 10; d <= maxYear; d += 10) {
+    if ((totals.get(d) ?? 0) >= MIN_DECADE_SHOWS) out.push(d);
+  }
   return out;
 }
 
@@ -105,7 +123,7 @@ export function YearRangePopover({ histogram }: YearRangePopoverProps) {
           <Popover.Positioner sideOffset={8} align="start" className="z-50">
           <Popover.Popup
             className={cn(
-              'w-[min(24rem,calc(100vw-2rem))] rounded-xl border border-white/10 bg-[#1f1f1f] p-3',
+              'w-[min(32rem,calc(100vw-2rem))] rounded-xl border border-white/10 bg-[#1f1f1f] p-3',
               'shadow-2xl shadow-black/60 outline-none',
               'origin-[var(--transform-origin)] transition-[opacity,transform] duration-150 ease-out',
               'data-[starting-style]:scale-[0.96] data-[starting-style]:opacity-0',
@@ -113,7 +131,7 @@ export function YearRangePopover({ histogram }: YearRangePopoverProps) {
             )}
           >
             <div className="mb-3 flex flex-wrap gap-1.5">
-              {decadesWithin(minYear, maxYear).map(d => {
+              {decadesWithin(bins, minYear, maxYear).map(d => {
                 const active = from === Math.max(d, minYear) && to === Math.min(d + 9, maxYear);
                 return (
                   <button
