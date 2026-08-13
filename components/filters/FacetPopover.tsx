@@ -59,10 +59,13 @@ export function FacetPopover({
       </Popover.Trigger>
 
       <Popover.Portal>
-        <Popover.Positioner sideOffset={8} align="start">
+        {/* z-50 must live on the Positioner: that is the element base-ui
+              positions, and the portal otherwise sits at z-auto and loses to the
+              sticky filter bar's z-30. */}
+          <Popover.Positioner sideOffset={8} align="start" className="z-50">
           <Popover.Popup
             className={cn(
-              'z-50 max-h-[min(26rem,60dvh)] w-[17rem] overflow-hidden rounded-xl border border-white/10',
+              'max-h-[min(26rem,60dvh)] w-[17rem] overflow-hidden rounded-xl border border-white/10',
               'bg-[#1f1f1f] shadow-2xl shadow-black/60 outline-none',
               // Scale from the trigger, never from scale(0) — see docs/browse-redesign-spec.md.
               'origin-[var(--transform-origin)] transition-[opacity,transform] duration-150 ease-out',

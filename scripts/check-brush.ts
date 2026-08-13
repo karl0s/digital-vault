@@ -9,10 +9,12 @@
  */
 
 import {
+  CLICK_SLOP,
   Track,
   clampYear,
   dragHandle,
   dragNew,
+  isClick,
   isFullSpan,
   nearestHandle,
   rangeToSpan,
@@ -103,6 +105,25 @@ console.log('\ndragging a new range');
   eq('left to right', dragNew(250, 350, track), { from: 1990, to: 2000 });
   eq('right to left produces the same range', dragNew(350, 250, track), { from: 1990, to: 2000 });
   eq('no movement is a single year', dragNew(255, 255, track), { from: 1990, to: 1990 });
+}
+
+console.log('\nclick vs drag (the jitter guard)');
+{
+  ok('no movement is a click', isClick(255, 255));
+  ok('a pixel of jitter is still a click', isClick(255, 256));
+  ok(`${CLICK_SLOP - 1}px is still a click`, isClick(255, 255 + CLICK_SLOP - 1));
+  ok(`${CLICK_SLOP}px is a drag`, !isClick(255, 255 + CLICK_SLOP));
+  ok('jitter in the other direction too', isClick(255, 255 - (CLICK_SLOP - 1)));
+
+  // The actual bug: at ~7px per column a 3px wobble crossed a boundary and a
+  // click on one bar selected two years.
+  const tight: Track = { trackWidth: 364, minYear: 1965, maxYear: 2016 }; // 7px columns
+  eq('without slop, jitter across a boundary selects two years',
+     dragNew(69, 72, tight), { from: 1974, to: 1975 });
+  eq('with slop, the same jitter selects one',
+     dragNew(69, 72, tight, CLICK_SLOP), { from: 1974, to: 1974 });
+  eq('a real drag still works with slop on',
+     dragNew(69, 200, tight, CLICK_SLOP), { from: 1974, to: 1993 });
 }
 
 console.log('\nfull-span detection (equivalent to no filter)');
