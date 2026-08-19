@@ -168,18 +168,38 @@ def ratio(s, default=(1,1)):
         return default
 
 
+def fit_no_downsample(w, h, dar):
+    """Reach the display shape by GROWING one dimension - never by shrinking.
+
+    A 720x480 NTSC frame with SAR 8:9 displays as 4:3. Scaling to 640x480 gets
+    that shape by discarding 80 columns of real samples; scaling to 720x540 gets
+    the IDENTICAL shape while keeping every one of them - 26% more pixels for
+    the same picture. VLC does the latter, which is exactly why hand-taken grabs
+    looked visibly better than this pipeline's output for months.
+
+    Only ever upscale along the axis that is under-sampled relative to display.
+    """
+    if dar >= w / h:
+        tw, th = int(round(h * dar)), h   # display is wider than stored -> grow width
+    else:
+        tw, th = w, int(round(w / dar))   # display is taller than stored -> grow height
+    return tw + (tw % 2), th + (th % 2)
+
+
 def compute_target(st):
     w, h = int(st["width"]), int(st["height"])
     sn, sd = ratio(st.get("sample_aspect_ratio"), (1,1))
     dn, dd = ratio(st.get("display_aspect_ratio"), (0,0))
     if abs(sn/sd - 1.0) <= 0.01:      # 999:1000 and friends are encoder noise
         sn, sd = 1, 1
-    tw = int(round(w * sn / sd))
-    tw += tw % 2                      # keep it even
-    th = h
-    dar = (dn/dd) if dn and dd else (tw/th)
+    # computed_ar stays the shape SAR *implies*, so gate 1 still cross-checks
+    # SAR against the declared DAR. Deriving it from the output would make the
+    # gate trivially true, because the output is now built to match DAR.
+    implied = (w * sn / sd) / h
+    dar = (dn/dd) if dn and dd else implied
+    tw, th = fit_no_downsample(w, h, dar)
     return {"w":w,"h":h,"sar":"%d:%d"%(sn,sd),"dar_str":("%d:%d"%(dn,dd)) if dn else "",
-            "target_w":tw,"target_h":th,"dar":dar,"computed_ar":tw/th,
+            "target_w":tw,"target_h":th,"dar":dar,"computed_ar":implied,
             "interlaced": str(st.get("field_order","")).lower() in ("tt","bb","tb","bt"),
             "field_order": st.get("field_order",""),
             "fps": st.get("avg_frame_rate","")}
@@ -210,9 +230,7 @@ def apply_override(it, t):
         if "dar" in rule:
             dn, dd = ratio(rule["dar"], (16, 9))
             t["dar"] = dn / dd
-            tw = int(round(t["target_h"] * dn / dd)); tw += tw % 2
-            t["target_w"] = tw
-            t["computed_ar"] = tw / t["target_h"]
+            t["target_w"], t["target_h"] = fit_no_downsample(t["w"], t["h"], dn / dd)
             t["override"] = "DAR forced to %s (%s)" % (rule["dar"], rule.get("why", ""))
         if "crop" in rule:                      # w:h:x:y, applied before scaling
             t["crop"] = rule["crop"]
@@ -221,10 +239,9 @@ def apply_override(it, t):
             # and the sample aspect - not from the full frame's DAR, which
             # included the black bars and is meaningless once they are gone.
             sn, sd = ratio(t["sar"], (1, 1))
-            tw = int(round(cw * sn / sd)); tw += tw % 2
-            t["target_w"], t["target_h"] = tw, ch
-            t["dar"] = tw / ch
-            t["computed_ar"] = tw / ch
+            t["dar"] = (cw * sn / sd) / ch
+            t["computed_ar"] = t["dar"]
+            t["target_w"], t["target_h"] = fit_no_downsample(cw, ch, t["dar"])
             t["override"] = (t.get("override","") + " crop %s (%s)" % (rule["crop"], rule.get("why",""))).strip()
     return t
 
@@ -348,18 +365,55 @@ def cmd_plan(a):
 
 
 # ---------------------------------------------------------------- capture
-def build_vf(t, deint="pp=lb"):
-    parts = []
-    if t.get("crop"):
-        parts.append("crop=%s" % t["crop"])      # strip baked-in letterbox first
-    if t["interlaced"] and deint:
-        parts.append(deint)                                  # deinterlace at native res
-    parts.append("scale=%d:%d:flags=lanczos" % (t["target_w"], t["target_h"]))
-    parts.append("setsar=1")
-    return ",".join(parts)
+DEFAULT_DEINT = "bwdif=mode=send_frame:parity=auto:deint=all"
+
+# Motion-adaptive deinterlacers need the frames either side of the one they are
+# producing. Hand them a non-consecutive stream - which is what `select` does -
+# and they degrade silently: measured on three Aerosmith DVDs, bwdif placed
+# after `select` produced output BYTE-IDENTICAL to no deinterlacing at all.
+# pp=lb is purely spatial and is immune, which is why the bug stayed hidden.
+TEMPORAL_DEINT = ("bwdif", "yadif", "w3fdif", "estdif", "nnedi", "bobweaver")
+
+# How many consecutive frames to decode around a wanted frame so a temporal
+# deinterlacer has real neighbours on both sides.
+DEINT_WINDOW = 9
+DEINT_MID    = 4
+
+
+def is_temporal(deint):
+    return bool(deint) and any(deint.startswith(x) for x in TEMPORAL_DEINT)
+
+
+def vf_parts(t, deint=DEFAULT_DEINT):
+    """(head, deint, tail) so callers can insert frame selection at the right
+    point in the chain. Order is always crop -> deinterlace -> scale."""
+    head = ("crop=%s" % t["crop"]) if t.get("crop") else ""
+    di   = deint if (t["interlaced"] and deint) else ""
+    tail = "scale=%d:%d:flags=lanczos,setsar=1" % (t["target_w"], t["target_h"])
+    return head, di, tail
+
+
+def build_vf(t, deint=DEFAULT_DEINT):
+    head, di, tail = vf_parts(t, deint)
+    return ",".join(x for x in (head, di, tail) if x)
+
+
+def build_vf_seek(t, deint=DEFAULT_DEINT):
+    """Chain for the -ss seek path. With a temporal deinterlacer, skip past the
+    first few frames so the one we keep has neighbours on both sides."""
+    head, di, tail = vf_parts(t, deint)
+    mid = "select='eq(n\\,%d)'" % DEINT_MID if is_temporal(di) else ""
+    return ",".join(x for x in (head, di, mid, tail) if x)
 
 
 def grab(src, ts, vf, out: Path, timeout=90):
+    """Seek-based single frame.
+
+    A temporal deinterlacer has no `prev` frame at the start of a stream, so the
+    very first frame after a seek falls back to spatial-only interpolation. When
+    the chain contains one, decode a few frames past the seek point and take a
+    frame that has real neighbours on both sides. Costs ~4 extra decoded frames.
+    """
     assert_readonly_target(out)
     out.parent.mkdir(parents=True, exist_ok=True)
     r = run(["ffmpeg","-hide_banner","-loglevel","error","-y",
@@ -382,7 +436,7 @@ def verify(path: Path, t):
     return True, "%dx%d" % (w,h)
 
 
-def capture_singlepass(s, vf_tail, outdir: Path, n: int):
+def capture_singlepass(s, vf_tail, outdir: Path, n: int, deint=DEFAULT_DEINT):
     """One decode pass, taking every Kth frame.
 
     Needed for MPEG-PS DVDs whose container timestamps are broken: the demux pass
@@ -401,14 +455,30 @@ def capture_singlepass(s, vf_tail, outdir: Path, n: int):
     if tmp.exists(): shutil.rmtree(tmp)
     tmp.mkdir(parents=True, exist_ok=True)
     assert_readonly_target(tmp)
-    vf = "select='not(mod(n\\,%d))'," % k + vf_tail
+
+    head, di, tail = vf_parts(s, deint)
+    if is_temporal(di) and k > DEINT_WINDOW:
+        # Keep a short RUN of consecutive frames at each sample point, deinterlace
+        # the run, then take its middle frame. Selecting single frames first would
+        # feed the deinterlacer a stream of unrelated moments - it then silently
+        # falls back to spatial-only output, which measured byte-identical to no
+        # deinterlacing at all. Only DEINT_WINDOW/k of frames reach the filter,
+        # so this costs very little over the plain path.
+        pre  = "select='lt(mod(n\\,%d)\\,%d)'" % (k, DEINT_WINDOW)
+        post = "select='eq(mod(n\\,%d)\\,%d)'" % (DEINT_WINDOW, DEINT_MID)
+        vf = ",".join(x for x in (pre, head, di, post, tail) if x)
+        offset = DEINT_MID
+    else:
+        vf = ",".join(x for x in ("select='not(mod(n\\,%d))'" % k, head, di, tail) if x)
+        offset = 0
+
     r = run(["ffmpeg","-hide_banner","-loglevel","error","-y","-i",s["src"],
              "-vf",vf,"-vsync","0","-frames:v",str(n),"-q:v","2",
              "-pix_fmt","yuvj420p",str(tmp/"f_%04d.jpg")], timeout=3600)
     made = sorted(tmp.glob("f_*.jpg"))
     ok = 0
     for i, f in enumerate(made):
-        ts = (i * k) / fps
+        ts = (i * k + offset) / fps
         hh=int(ts//3600); mm=int(ts%3600//60); ss=int(ts%60)
         dest = outdir / ("%s_c%03d_t%02d-%02d-%02d.jpg" % (s["key"], i, hh, mm, ss))
         good, why = verify(f, s)
@@ -429,7 +499,7 @@ def cmd_capture(a):
         outdir = WORK / s["key"]
         if a.fresh and outdir.exists(): shutil.rmtree(outdir)
         outdir.mkdir(parents=True, exist_ok=True)
-        vf = build_vf(s, a.deint)
+        vf = build_vf_seek(s, a.deint)
         dur, n = s["duration"], s["n"]
         lo, hi = dur*0.05, dur*0.95
         step = (hi-lo)/max(1,n-1)
@@ -478,9 +548,7 @@ def cmd_capture(a):
         if ok == 0 and bad > 0:
             print("\n      %sseek path failed entirely - retrying with a single decode pass%s"
                   % (YELLOW,RESET))
-            tail = vf.split(",",1)[1] if vf.startswith("pp=") or vf.startswith("bwdif") or vf.startswith("yadif") else vf
-            tail = vf   # keep the full chain; select is prepended inside
-            ok2, rc = capture_singlepass(s, tail, outdir, s["n"])
+            ok2, rc = capture_singlepass(s, vf, outdir, s["n"], a.deint)
             print("      single-pass recovered %s%d%s frames (ffmpeg rc=%d)" % (GREEN,ok2,RESET,rc))
             ok, bad = ok2, max(0, bad-ok2)
         print("   %s%dx%d verified%s%s" % (GREEN,s["target_w"],s["target_h"],RESET,
@@ -738,7 +806,7 @@ def main():
                     ("archive",cmd_archive),("ab",cmd_ab)):
         sp=sub.add_parser(name); sp.set_defaults(func=fn)
         if name=="capture":
-            sp.add_argument("--deint",default="pp=lb"); sp.add_argument("--workers",type=int,default=3)
+            sp.add_argument("--deint",default=DEFAULT_DEINT); sp.add_argument("--workers",type=int,default=3)
             sp.add_argument("--only"); sp.add_argument("--fresh",action="store_true")
         if name=="score":
             sp.add_argument("--top",type=int,default=20); sp.add_argument("--mindist",type=int,default=12)
