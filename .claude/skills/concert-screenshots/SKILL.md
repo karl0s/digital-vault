@@ -600,7 +600,81 @@ eyeballing a list.
 
 ---
 
-## 17. Reference implementation
+## 17. Runbook — the exact order for one artist
+
+Every step that lived only in my head across two artists caused a bug. This is the sequence;
+follow it in order.
+
+```bash
+cd ~/VaultShots
+A="Stone Temple Pilots"
+
+# 1. SCOPE (seconds) - how many images are actually wrong? See §14.
+#    If nothing is squashed and the stills are fine, stop here.
+
+# 2. PLAN - probe every folder, compute targets, run gates 1-4
+python3 shots.py --artist "$A" plan          # --artist is GLOBAL: before the subcommand
+#    Read the output. Check: no 0-minute runtimes, no absurd runtimes, targets sane,
+#    overrides needed for any suspicious aspect flags (§4.4).
+
+# 3. CAPTURE - extract and verify every frame
+python3 shots.py capture --deint "pp=lb" --workers 3 --fresh
+#    Check: 0 rejected, and no show fell back to single-pass unexpectedly.
+
+# 4. SCORE + SHEETS + INDEX
+python3 shots.py score --top 24 --mindist 12 --workers 6
+python3 shots.py contact
+python3 shots.py index                       # -> reports/<artist>_contact.html
+#    Check: every show kept >=24. Flag any that are starved.
+
+# 5. REVIEW - open the index, read ONE contact sheet per show, pick by TIMESTAMP.
+#    Budget one large image read per show; this is the expensive step.
+#    Write data/picks.json as {fragment: [[label, "HH-MM-SS"], ...]}
+
+# 6. MATERIALISE - after EVERY edit to picks.json, no exceptions
+python3 shots.py picks                       # copies to picks/, builds the picks page
+#    It asserts attempted == resolved + unresolved. Anything UNRESOLVED must be
+#    re-captured from source before going further (§5.2 for broken containers).
+
+# 7. PROMOTE
+python3 promote.py --propose-map             # draft mapping; CONFIRM each line
+#    save the confirmed version to data/promote_map.json
+python3 promote.py                           # dry run - read the OLD->NEW column
+python3 promote.py --apply
+
+# 8. VERIFY + COMMIT
+python3 scripts/health-check.py              # in the repo
+git add -f public/images/ public/image-manifest.json
+#    assert every manifest entry is tracked or staged (§11), then commit
+
+# 9. ARCHIVE - park the run so the next artist starts clean
+python3 shots.py archive
+```
+
+**Step 9 is not optional.** Leftover `picks.json` / `scores.json` from the previous artist
+will silently skip or mis-resolve during the next promotion.
+
+### Scale expectations
+
+| Shows | Frames | Capture | Review |
+|---:|---:|---|---|
+| 7 | ~3,500 | ~20 min | 7 sheet reads |
+| 21 | ~7,500 | ~45 min | 21 sheet reads |
+
+Storage runs ~600 MB during capture, dropping to ~50 MB after pruning (§12).
+
+### Outcomes that are NOT failures
+
+- **"No true close-up exists in this source."** Wide-camera arena broadcasts genuinely have
+  none. Label the pick as the closest available; do not pass a wide shot off as a close-up.
+- **Fewer than four picks** on a compilation where the artist appears briefly.
+- **A show skipped at promotion** because promoting would replace more good images with fewer.
+
+Say these plainly. A thin, honest result beats a padded one.
+
+---
+
+## 18. Reference implementation
 
 `shots.py` and `subject.py` in this skill directory implement the above.
 
@@ -610,7 +684,14 @@ python3 shots.py --artist "<Artist>" plan    # probe, compute targets, run gates
 python3 shots.py capture --deint "pp=lb"      # extract + verify every frame
 python3 shots.py score --top 24 --mindist 12  # filter crowds/graphics/blur, rank
 python3 shots.py contact                      # contact sheet per show
+python3 shots.py index                        # HTML index of all sheets
+python3 shots.py picks                        # materialise picks/ + picks page
+python3 shots.py archive                      # park a finished artist
 python3 shots.py ab                           # deinterlace A/B comparison
+
+python3 promote.py --propose-map              # draft the show mapping
+python3 promote.py                            # dry run
+python3 promote.py --apply                    # write images + manifest
 ```
 
 Paths at the top of `shots.py` (`HD_ROOT`, `REPO`, `HOME`) are the only things to change per

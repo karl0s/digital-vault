@@ -23,7 +23,7 @@ Commands:
 """
 from __future__ import annotations
 
-import argparse, json, math, os, re, shutil, sqlite3, subprocess, sys, time
+import argparse, glob, json, math, os, re, shutil, sqlite3, subprocess, sys, time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
@@ -588,6 +588,127 @@ def cmd_contact(a):
     return 0
 
 
+# ---------------------------------------------------------------- picks & pages
+PICKS_JSON = DATA/"picks.json"
+
+
+def cmd_picks(a):
+    """Materialise picks/ from picks.json and build the picks page.
+
+    Run this after EVERY edit to picks.json. Picks chosen after the last run
+    exist only as timestamps; if work/ has since been pruned they cannot be
+    resolved at all. Doing it as one command removes the ordering trap.
+    """
+    import html as _h
+    state=json.loads(STATE.read_text(encoding="utf-8")); BY={x["key"]:x for x in state["shows"]}
+    if not PICKS_JSON.exists(): print("  no picks.json yet"); return 1
+    P=json.loads(PICKS_JSON.read_text(encoding="utf-8"))
+    out=HOME/"picks"; out.mkdir(parents=True, exist_ok=True)
+    attempted=ok=miss=0; missing=[]
+    doc=[HTML_HEAD % (_h.escape(state.get("artist","")), _h.escape(state.get("artist","")))]
+    for frag,sel in P.items():
+        ks=[k for k in BY if frag in k]
+        if not ks:
+            print("  %sNO SHOW for %s%s"%(RED,frag,RESET)); attempted+=len(sel); miss+=len(sel); continue
+        k=ks[0]; sh=BY[k]; name=sh["FolderName"].replace("/","_")[:44]
+        doc.append('<h2>%s<span>%dx%d</span></h2><div class=g>'
+                   %(_h.escape(sh["FolderName"]), sh["target_w"], sh["target_h"]))
+        for label,ts in sel:
+            attempted+=1; tag=label.split()[0]
+            dest=out/("%s__%s.jpg"%(name,tag))
+            hits=glob.glob(str(HOME/"work"/k/("*_t%s.jpg"%ts)))
+            if hits:
+                shutil.copy2(hits[0],dest); ok+=1
+            elif dest.exists():
+                ok+=1                      # already materialised from an earlier run
+            else:
+                miss+=1; missing.append((frag,label,ts))
+                doc.append('<div class="c"><div class="miss">UNRESOLVED %s</div></div>'%_h.escape(ts))
+                continue
+            doc.append('<div class="c"><img loading="lazy" src="../picks/%s">'
+                       '<div class="l"><b>%s</b><span>%s</span></div></div>'
+                       %(_h.escape(dest.name),_h.escape(label),ts.replace("-",":")))
+        doc.append('</div>')
+    doc.append("</div>")
+    page=REPORTS/("%s_picks.html"%re.sub(r"[^a-z0-9]+","_",state.get("artist","artist").lower()).strip("_"))
+    assert_readonly_target(page); REPORTS.mkdir(parents=True,exist_ok=True)
+    page.write_text("".join(doc),encoding="utf-8")
+    print("  attempted %d  resolved %s%d%s  unresolved %s%d%s"
+          %(attempted,GREEN,ok,RESET,(RED if miss else DIM),miss,RESET))
+    for frag,label,ts in missing:
+        print("     %sUNRESOLVED%s %-26s %-24s %s  (re-capture from source)"%(RED,RESET,frag,label,ts))
+    assert attempted==ok+miss, "counts do not add up"
+    print("  -> %s"%page)
+    return 1 if miss else 0
+
+
+def cmd_index(a):
+    """Build the contact-sheet index page for the current artist."""
+    import html as _h
+    state=json.loads(STATE.read_text(encoding="utf-8"))
+    sc=json.loads((DATA/"scores.json").read_text(encoding="utf-8")) if (DATA/"scores.json").exists() else {}
+    rows=[(s,sc.get(s["key"],{}).get("keep",[]),CONTACT/("%s_contact.jpg"%s["key"]))
+          for s in sorted(state["shows"],key=lambda x:x["FolderName"].lower())]
+    rows=[(s,k,f) for s,k,f in rows if f.exists()]
+    art=state.get("artist","")
+    d=[HTML_HEAD % (_h.escape(art)+" — contact sheets", _h.escape(art)+" — contact sheets"),"<nav>"]
+    for s,k,f in rows: d.append('<a href="#%s">%s</a> &nbsp;·&nbsp; '%(s["key"],_h.escape(s["FolderName"][:38])))
+    d.append("</nav>")
+    for s,keep,f in rows:
+        d.append('<div class="s" id="%s"><div class="hh"><b>%s</b> <span>%dx%d</span> '
+                 '<span>%s</span> <span class="gn">%d candidates</span>%s</div>'
+                 '<img loading="lazy" src="../contact/%s"></div>'
+                 %(s["key"],_h.escape(s["FolderName"]),s["target_w"],s["target_h"],
+                   "interlaced" if s["interlaced"] else "progressive",len(keep),
+                   (' <span class="ov">%s</span>'%_h.escape(s.get("override","")[:60])) if s.get("override") else "",
+                   f.name))
+    d.append("</div>")
+    p=REPORTS/("%s_contact.html"%re.sub(r"[^a-z0-9]+","_",art.lower()).strip("_"))
+    assert_readonly_target(p); REPORTS.mkdir(parents=True,exist_ok=True)
+    p.write_text("".join(d),encoding="utf-8")
+    print("  %d sheets -> %s"%(len(rows),p)); return 0
+
+
+def cmd_archive(a):
+    """Park a finished artist's run so the next one starts clean.
+
+    Leftover picks.json / scores.json from a previous artist will silently skip
+    or mis-resolve during the next promotion. Archiving is not optional.
+    """
+    name=a.name or json.loads(STATE.read_text(encoding="utf-8")).get("artist","artist")
+    slug=re.sub(r"[^a-z0-9]+","_",name.lower()).strip("_")
+    dest=HOME/"archive"/slug
+    if dest.exists(): return print("  %s already exists - pick another --name"%dest) or 1
+    dest.mkdir(parents=True)
+    assert_readonly_target(dest)
+    for sub in ("picks","contact"):
+        if (HOME/sub).exists(): shutil.copytree(HOME/sub, dest/sub)
+    for f in ("picks.json","scores.json","state.json","overrides.json","promote_map.json"):
+        if (DATA/f).exists(): shutil.copy2(DATA/f, dest/f)
+    for f in ("picks.json","scores.json"):
+        if (DATA/f).exists(): (DATA/f).unlink()
+    for sub in ("picks","contact","work"):
+        shutil.rmtree(HOME/sub, ignore_errors=True); (HOME/sub).mkdir(parents=True, exist_ok=True)
+    print("  archived %s -> %s   (picks/contact/work reset)"%(name,dest)); return 0
+
+
+HTML_HEAD = """<!doctype html><meta charset=utf-8><title>%s</title>
+<style>body{background:#0e1013;color:#e8ecf1;font:14px -apple-system,BlinkMacSystemFont,Helvetica,Arial;margin:0}
+.w,body>*{max-width:1500px;margin-left:auto;margin-right:auto}body{padding:22px 24px 80px}
+h1{font-size:20px;margin:0 0 14px}h2{font-size:15px;margin:26px 0 10px;padding-bottom:7px;border-bottom:1px solid #252c36}
+h2 span{color:#6b7686;font-weight:400;font-size:12px;font-family:ui-monospace,Menlo,monospace;margin-left:10px}
+.g{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:1100px){.g{grid-template-columns:repeat(2,1fr)}}
+.c,.s{background:#161a20;border:1px solid #252c36;border-radius:10px;overflow:hidden;margin-bottom:12px}
+.c img,.s img{width:100%%;display:block}.c .l{padding:8px 10px;font-size:12px}
+.c .l b{color:#3ddc97;display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.c .l span,.hh span{color:#98a2b3;font-family:ui-monospace,Menlo,monospace;font-size:11.5px}
+.hh{padding:11px 15px;border-bottom:1px solid #252c36}.hh .gn{color:#3ddc97}.hh .ov{color:#ffb454}
+.miss{padding:36px 12px;color:#ff6b6b;font-size:12px}a{color:#5aa9ff}
+nav{position:sticky;top:0;background:rgba(14,16,19,.95);padding:10px 0;border-bottom:1px solid #252c36;
+margin-bottom:16px;font-size:12.5px;line-height:2}</style><h1>%s</h1>"""
+
+
 # ---------------------------------------------------------------- A/B deinterlace
 def cmd_ab(a):
     state=json.loads(STATE.read_text(encoding="utf-8"))
@@ -613,7 +734,8 @@ def main():
     p.add_argument("--artist",default="30 Seconds to Mars")
     sub=p.add_subparsers(dest="cmd",required=True)
     for name,fn in (("plan",cmd_plan),("capture",cmd_capture),("score",cmd_score),
-                    ("contact",cmd_contact),("ab",cmd_ab)):
+                    ("contact",cmd_contact),("picks",cmd_picks),("index",cmd_index),
+                    ("archive",cmd_archive),("ab",cmd_ab)):
         sp=sub.add_parser(name); sp.set_defaults(func=fn)
         if name=="capture":
             sp.add_argument("--deint",default="pp=lb"); sp.add_argument("--workers",type=int,default=3)
@@ -622,6 +744,7 @@ def main():
             sp.add_argument("--top",type=int,default=20); sp.add_argument("--mindist",type=int,default=12)
             sp.add_argument("--workers",type=int,default=6)
         if name=="ab": sp.add_argument("--only")
+        if name=="archive": sp.add_argument("--name")
     a=p.parse_args()
     HOME.mkdir(parents=True,exist_ok=True)
     return a.func(a)

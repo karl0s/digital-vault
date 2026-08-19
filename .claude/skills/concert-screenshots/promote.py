@@ -14,7 +14,7 @@ The ONLY step in this pipeline that writes to the repo. Guardrails:
   --apply actually writes; without it this is a dry run.
 """
 from __future__ import annotations
-import argparse, glob, hashlib, json, os, shutil, sys
+import argparse, glob, hashlib, json, os, re, shutil, sys
 from pathlib import Path
 
 H     = Path.home()/"VaultShots"
@@ -53,9 +53,48 @@ def audit(mani):
     return miss,orph
 
 
+def propose_map():
+    """Print a draft drive-folder -> shows.json FolderName mapping.
+
+    Typing FolderName strings by hand is error-prone: one character wrong
+    ("(Upgrade Version)" vs "(Upgrade)") and the show is silently skipped.
+    This proposes matches by token overlap for a human to confirm, and never
+    writes the map itself.
+    """
+    import unicodedata
+    shows=json.loads(SHOWS.read_text(encoding="utf-8"))
+    state=json.loads((H/"data/state.json").read_text(encoding="utf-8"))
+    artist=state.get("artist","")
+    mine=[s for s in shows if s.get("Artist")==artist]
+    picks=json.loads((H/"data/picks.json").read_text(encoding="utf-8"))
+    def toks(x):
+        x=unicodedata.normalize("NFKD",x or "").encode("ascii","ignore").decode().casefold()
+        return set(t for t in re.sub(r"[^a-z0-9]+"," ",x).split() if len(t)>1)
+    atk=toks(artist)
+    BY={s["key"]:s for s in state["shows"]}
+    print("  // draft data/promote_map.json for %s - CONFIRM each line before using" % artist)
+    print("  {")
+    for frag in picks:
+        ks=[k for k in BY if frag in k]
+        drive=BY[ks[0]]["FolderName"] if ks else frag
+        want=toks(drive)-atk
+        best,score=None,0
+        for sh in mine:
+            n=len(want & (toks(sh.get("FolderName") or "")-atk))
+            if n>score: best,score=sh,n
+        flag="" if score>=2 else "   // WEAK MATCH - verify"
+        print('    "%s": %s,%s' % (frag, json.dumps((best or {}).get("FolderName","?")), flag))
+    print("  }")
+    print("\n  %d shows.json records exist for %s:" % (len(mine),artist))
+    for sh in sorted(mine,key=lambda x:(x.get("FolderName") or "")):
+        print("     %r" % (sh.get("FolderName") or ""))
+
+
 def main():
     ap=argparse.ArgumentParser(); ap.add_argument("--apply",action="store_true")
+    ap.add_argument("--propose-map",action="store_true")
     a=ap.parse_args()
+    if a.propose_map: return propose_map() or 0
 
     shows=json.loads(SHOWS.read_text(encoding="utf-8"))
     shows_before=hashlib.sha256(SHOWS.read_bytes()).hexdigest()
