@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Vault — Show Editor</title>
+<style>
+:root{
+  --bg:#0e1013;--panel:#161a20;--panel2:#1c222a;--line:#252c36;
+  --text:#e8ecf1;--dim:#98a2b3;--faint:#6b7686;
+  --ok:#3ddc97;--warn:#ffb454;--info:#5aa9ff;--bad:#ff6b6b;--violet:#b388ff;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+  font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+.wrap{max-width:1500px;margin:0 auto;padding:0 24px}
+
+header{position:sticky;top:0;z-index:50;background:rgba(14,16,19,.94);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.hrow{display:flex;gap:12px;align-items:center;padding:13px 0;flex-wrap:wrap}
+h1{margin:0;font-size:16px;font-weight:700;letter-spacing:-.01em;white-space:nowrap}
+h1 span{color:var(--faint);font-weight:400;font-size:12.5px;margin-left:8px}
+input[type=search],select,input[type=text],textarea{
+  background:var(--panel2);border:1px solid var(--line);color:var(--text);
+  border-radius:8px;padding:7px 10px;font-size:13px;font-family:inherit}
+input[type=search]{flex:1;min-width:200px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--info)}
+button{background:var(--panel2);border:1px solid var(--line);color:var(--dim);
+  border-radius:8px;padding:7px 12px;font-size:12.5px;cursor:pointer;font-family:inherit}
+button:hover{color:var(--text);border-color:var(--info)}
+button.go{background:rgba(61,220,151,.14);border-color:rgba(61,220,151,.45);color:var(--ok);font-weight:700}
+button.go:hover{background:rgba(61,220,151,.22)}
+button:disabled{opacity:.4;cursor:default}
+.count{font-family:var(--mono);font-size:12px;color:var(--faint);white-space:nowrap}
+.count b{color:var(--warn)}
+
+.note{background:#12161c;border:1px solid var(--line);border-radius:10px;
+  padding:10px 14px;margin:16px 0;color:var(--dim);font-size:12.5px}
+.note b{color:var(--text)}
+
+/* ---- rows ---- */
+details.show{background:var(--panel);border:1px solid var(--line);border-radius:11px;
+  margin-bottom:7px;overflow:hidden}
+details.show>summary{display:flex;gap:13px;align-items:center;padding:9px 13px;
+  cursor:pointer;list-style:none}
+details.show>summary::-webkit-details-marker{display:none}
+details.show>summary:hover{background:var(--panel2)}
+details.show[open]{border-color:#33404f}
+details.show[open]>summary{background:var(--panel2);border-bottom:1px solid var(--line)}
+details.show.dirty{border-color:rgba(255,180,84,.5)}
+.thumb{width:64px;height:38px;flex:none;border-radius:5px;object-fit:cover;
+  background:#0a0c0f;border:1px solid var(--line)}
+.thumb.ph{display:flex;align-items:center;justify-content:center;color:#39424f;font-size:9px}
+.tt{flex:1;min-width:0}
+.tt b{font-weight:600;font-size:13.5px}
+.tt small{display:block;color:var(--dim);font-size:12px;font-family:var(--mono);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.badges{display:flex;gap:5px;flex:none;flex-wrap:wrap;justify-content:flex-end}
+.gap{font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  padding:2px 6px;border-radius:999px;background:rgba(155,165,180,.1);
+  color:var(--faint);border:1px solid rgba(155,165,180,.2);white-space:nowrap}
+.gap.d{background:rgba(255,180,84,.12);color:var(--warn);border-color:rgba(255,180,84,.3)}
+.pend{font-size:10px;font-weight:800;letter-spacing:.05em;padding:3px 8px;border-radius:999px;
+  background:rgba(255,180,84,.16);color:var(--warn);border:1px solid rgba(255,180,84,.45);
+  white-space:nowrap;flex:none}
+
+/* ---- expanded body ---- */
+.body{padding:15px 14px 16px}
+.cols{display:grid;grid-template-columns:1.05fr .85fr 1.1fr;gap:16px}
+@media(max-width:1150px){.cols{grid-template-columns:1fr}}
+.col h4{margin:0 0 9px;font-size:10px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--faint);font-weight:700}
+.f{margin-bottom:9px}
+.f label{display:block;font-size:11px;color:var(--faint);margin-bottom:3px}
+.f input,.f select,.f textarea{width:100%}
+.f textarea{resize:vertical;min-height:56px;line-height:1.45}
+.f.changed label{color:var(--warn);font-weight:700}
+.f.changed input,.f.changed select,.f.changed textarea{border-color:var(--warn);background:#1d1a12}
+.f .hint{font-size:10.5px;color:var(--faint);margin-top:3px}
+.f .hint.bad{color:var(--bad)}
+.sl textarea{min-height:230px;font-family:var(--mono);font-size:12.2px}
+.nt textarea{min-height:120px;font-family:var(--mono);font-size:11.8px}
+dl.lock{display:grid;grid-template-columns:auto 1fr;gap:3px 11px;margin:0;font-size:12px}
+dl.lock dt{color:var(--faint);white-space:nowrap}
+dl.lock dd{margin:0;font-family:var(--mono);color:var(--dim);word-break:break-all}
+.acts{display:flex;gap:8px;align-items:center;margin-top:14px;padding-top:13px;
+  border-top:1px solid var(--line);flex-wrap:wrap}
+.acts .sp{flex:1}
+.empty{padding:60px;text-align:center;color:var(--faint)}
+footer{padding:26px 0 70px;color:var(--faint);font-size:12px;text-align:center}
+</style></head><body>
+
+<header><div class="wrap"><div class="hrow">
+  <h1>Show Editor <span id="tot"></span></h1>
+  <input type="search" id="q" placeholder="Search artist, venue, city, festival, folder…">
+  <select id="filt">
+    <option value="">All shows</option>
+    <option value="setlist">Missing setlist</option>
+    <option value="venue">Missing venue</option>
+    <option value="city">Missing city</option>
+    <option value="country">Missing country</option>
+    <option value="event">Missing event/festival</option>
+    <option value="date">Missing date</option>
+    <option value="phdate">Placeholder date (YYYY-01-01)</option>
+    <option value="dirty">Edited but not copied</option>
+  </select>
+  <select id="sort">
+    <option value="az">Artist A–Z</option>
+    <option value="date">Date, oldest first</option>
+    <option value="datedesc">Date, newest first</option>
+  </select>
+  <span class="count" id="pc"></span>
+  <button class="go" id="copyall" disabled>Copy all pending</button>
+  <button id="clear" disabled>Discard all</button>
+</div></div></header>
+
+<div class="wrap">
+  <div class="note">
+    <b>This page cannot change anything.</b> It has no server and never writes to disk —
+    <code>shows.json</code>, the image manifest and your images were read once when the page
+    was generated. Edits live only in this browser until you press <b>Copy</b> and paste them
+    to Claude. Nothing is applied until you do.
+  </div>
+  <div class="note" id="cleared" style="display:none"></div>
+  <div id="list"></div>
+  <footer>Regenerate after changes: <code>python3 tools/show-editor/build.py</code></footer>
+</div>
+
+<datalist id="dl-hidden"></datalist>
+<script>
+const D = __DATA__;
+const SHOWS = D.shows, VOCAB = D.vocab;
+const EDIT = D.editable.concat([
+  {f:"Setlist", kind:"setlist", label:"Setlist"},
+  {f:"Notes",   kind:"notes",   label:"Notes"}
+]);
+const EDIT_FIELDS = EDIT.map(e=>e.f);
+const $ = s => document.querySelector(s);
+const esc = s => String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const byId = {}; SHOWS.forEach(s=>byId[s.ShowID]=s);
+
+/* ---------- pending edits ---------- */
+const LS="vault.showeditor.v1";
+let E={};
+try{E=JSON.parse(localStorage.getItem(LS)||"{}")}catch(e){E={}}
+function save(){try{localStorage.setItem(LS,JSON.stringify(E))}catch(e){}}
+
+/* Self-clearing pending edits.
+   This page is regenerated from shows.json. So on load, any pending edit whose
+   value ALREADY matches the fresh data has clearly been applied - drop it.
+   That means after Claude applies a batch and you rebuild, your applied edits
+   disappear on their own; no hand-discarding.
+
+   An edit that was applied DIFFERENTLY (or not at all) deliberately survives,
+   so a divergence between what you asked for and what landed stays visible. */
+let AUTO_CLEARED=0, AUTO_SHOWS=0;
+(function pruneApplied(){
+  for(const id of Object.keys(E)){
+    if(!byId[id]){ delete E[id]; AUTO_SHOWS++; continue; }   // show no longer exists
+    for(const f of Object.keys(E[id])){
+      const o=byId[id][f];
+      if(String(o==null?"":o)===String(E[id][f])){ delete E[id][f]; AUTO_CLEARED++; }
+    }
+    if(!Object.keys(E[id]).length){ delete E[id]; AUTO_SHOWS++; }
+  }
+  if(AUTO_CLEARED||AUTO_SHOWS) save();
+})();
+function orig(id,f){const v=byId[id][f]; return v==null?"":String(v)}
+function cur(id,f){return (E[id]&&f in E[id])?E[id][f]:orig(id,f)}
+function setF(id,f,v){
+  if(v===orig(id,f)){ if(E[id]){delete E[id][f]; if(!Object.keys(E[id]).length)delete E[id];} }
+  else { E[id]=E[id]||{}; E[id][f]=v; }
+  save();
+}
+const dirtyFields = id => E[id]?Object.keys(E[id]):[];
+const totalPending = () => Object.keys(E).length;
+
+/* ---------- setlist <-> lines ---------- */
+const slToLines = s => !s?"":String(s).split(";").map(x=>x.trim()).filter(Boolean).join("\n");
+const linesToSl = t => !t?"":String(t).split("\n").map(x=>x.trim()).filter(Boolean).join("; ");
+
+/* ---------- line diff (LCS) so removals are reported exactly ---------- */
+function lineDiff(a,b){
+  const A=a?String(a).split("\n"):[], B=b?String(b).split("\n"):[];
+  const n=A.length,m=B.length;
+  const dp=[]; for(let i=0;i<=n;i++)dp.push(new Uint32Array(m+1));
+  for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)
+    dp[i][j]=A[i]===B[j]?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);
+  const rem=[],add=[]; let i=0,j=0;
+  while(i<n&&j<m){
+    if(A[i]===B[j]){i++;j++;}
+    else if(dp[i+1][j]>=dp[i][j+1])rem.push(A[i++]);
+    else add.push(B[j++]);
+  }
+  while(i<n)rem.push(A[i++]);
+  while(j<m)add.push(B[j++]);
+  return {rem,add,an:n,bn:m};
+}
+
+/* ---------- patch text ---------- */
+function patchFor(id){
+  const s=byId[id], fs=dirtyFields(id);
+  if(!fs.length) return "";
+  const L=[];
+  L.push("SHOW "+id+"  —  "+(s.Artist||"?")+", "+(s.ShowDate||"no date"));
+  if(s.FolderName) L.push("Folder: "+s.FolderName);
+  L.push("File: public/shows.json");
+  L.push("");
+  L.push("CHANGED "+fs.length+" FIELD"+(fs.length>1?"S":""));
+  const order=EDIT_FIELDS.filter(f=>fs.indexOf(f)>=0);
+  order.forEach(f=>{
+    const o=orig(id,f), nv=cur(id,f);
+    L.push("");
+    const multi = f==="Setlist"||f==="Notes"||f==="Lineage";
+    if(f==="Setlist"){
+      const d=lineDiff(slToLines(o),slToLines(nv));
+      const bits=[];
+      if(d.rem.length)bits.push("removed "+d.rem.length);
+      if(d.add.length)bits.push("added "+d.add.length);
+      L.push("Setlist  ("+(bits.join(", ")||"reordered")+" — "+d.an+" → "+d.bn+" songs)");
+      d.rem.forEach(x=>L.push("  - "+x));
+      d.add.forEach(x=>L.push("  + "+x));
+      L.push('  to: "'+nv+'"');
+    } else if(multi){
+      const d=lineDiff(o,nv);
+      const bits=[];
+      if(d.rem.length)bits.push("removed "+d.rem.length+" line"+(d.rem.length>1?"s":""));
+      if(d.add.length)bits.push("added "+d.add.length+" line"+(d.add.length>1?"s":""));
+      L.push(f+"  ("+(bits.join(", ")||"changed")+")");
+      d.rem.forEach(x=>L.push("  - "+x));
+      d.add.forEach(x=>L.push("  + "+x));
+      L.push("  to (full new value):");
+      L.push("  <<<"); String(nv).split("\n").forEach(x=>L.push("  "+x)); L.push("  >>>");
+    } else {
+      L.push(f);
+      L.push('  from: "'+o+'"');
+      L.push('  to:   "'+nv+'"');
+    }
+  });
+  L.push("");
+  L.push("(every other field on this show is unchanged — leave them exactly as they are)");
+  return L.join("\n");
+}
+function patchAll(){
+  const ids=Object.keys(E).filter(id=>byId[id]&&dirtyFields(id).length);
+  ids.sort((a,b)=>(byId[a].Artist||"").localeCompare(byId[b].Artist||""));
+  if(!ids.length)return "";
+  const head="EDITS FOR "+ids.length+" SHOW"+(ids.length>1?"S":"")+
+    " — apply exactly as written, change nothing else.\n"+"=".repeat(66);
+  return head+"\n\n"+ids.map(patchFor).join("\n\n"+"-".repeat(66)+"\n\n");
+}
+
+/* ---------- gaps ---------- */
+function gaps(s){
+  const g=[];
+  const v=f=>String(cur(s.ShowID,f)||"").trim();
+  if(!v("Setlist"))g.push(["no setlist",0]);
+  if(!v("VenueName"))g.push(["no venue",0]);
+  if(!v("City"))g.push(["no city",0]);
+  if(!v("Country"))g.push(["no country",0]);
+  if(!v("ShowDate"))g.push(["no date",1]);
+  else if(/-01-01$/.test(v("ShowDate")))g.push(["placeholder date",1]);
+  return g;
+}
+
+/* ---------- render ---------- */
+function matches(s){
+  const q=$("#q").value.toLowerCase().trim(), f=$("#filt").value;
+  if(q){
+    const hay=[s.Artist,s.VenueName,s.City,s.Country,s.EventOrFestival,s.FolderName,s.ShowDate,s.ShowID]
+      .map(x=>String(x||"").toLowerCase()).join(" ");
+    if(hay.indexOf(q)<0)return false;
+  }
+  const v=fl=>String(cur(s.ShowID,fl)||"").trim();
+  if(f==="setlist"&&v("Setlist"))return false;
+  if(f==="venue"&&v("VenueName"))return false;
+  if(f==="city"&&v("City"))return false;
+  if(f==="country"&&v("Country"))return false;
+  if(f==="event"&&v("EventOrFestival"))return false;
+  if(f==="date"&&v("ShowDate"))return false;
+  if(f==="phdate"&&!/-01-01$/.test(v("ShowDate")))return false;
+  if(f==="dirty"&&!dirtyFields(s.ShowID).length)return false;
+  return true;
+}
+function sorted(list){
+  const m=$("#sort").value;
+  const c=list.slice();
+  if(m==="az")c.sort((a,b)=>(a.Artist||"").localeCompare(b.Artist||"")||
+    (a.ShowDate||"zzzz").localeCompare(b.ShowDate||"zzzz"));
+  if(m==="date")c.sort((a,b)=>(a.ShowDate||"zzzz").localeCompare(b.ShowDate||"zzzz"));
+  if(m==="datedesc")c.sort((a,b)=>(b.ShowDate||"").localeCompare(a.ShowDate||""));
+  return c;
+}
+function summaryHTML(s){
+  const id=s.ShowID, n=dirtyFields(id).length;
+  const line=[cur(id,"ShowDate")||"date unknown",
+              cur(id,"EventOrFestival")||cur(id,"VenueName"),
+              [cur(id,"City"),cur(id,"Country")].filter(Boolean).join(", ")]
+             .filter(Boolean).join("  ·  ");
+  const th=s._img?'<img class="thumb" loading="lazy" src="'+esc(s._img)+'" alt="">'
+                 :'<div class="thumb ph">no image</div>';
+  return th+
+    '<span class="tt"><b>'+esc(cur(id,"Artist"))+'</b><small>'+esc(line)+'</small></span>'+
+    '<span class="badges">'+gaps(s).map(g=>'<span class="gap'+(g[1]?" d":"")+'">'+g[0]+'</span>').join("")+'</span>'+
+    (n?'<span class="pend">'+n+" edit"+(n>1?"s":"")+'</span>':"");
+}
+/* Update a row's summary text in place. Rebuilding the whole summary would
+   re-create the <img> and make the thumbnail flicker on every keystroke. */
+function refreshSummary(det){
+  const id=det.dataset.id, s=byId[id], sm=det.querySelector("summary");
+  const line=[cur(id,"ShowDate")||"date unknown",
+              cur(id,"EventOrFestival")||cur(id,"VenueName"),
+              [cur(id,"City"),cur(id,"Country")].filter(Boolean).join(", ")]
+             .filter(Boolean).join("  \u00b7  ");
+  sm.querySelector(".tt b").textContent=cur(id,"Artist");
+  sm.querySelector(".tt small").textContent=line;
+  sm.querySelector(".badges").innerHTML=
+    gaps(s).map(g=>'<span class="gap'+(g[1]?" d":"")+'">'+g[0]+'</span>').join("");
+  const n=dirtyFields(id).length;
+  let p=sm.querySelector(".pend");
+  if(n){ if(!p){p=document.createElement("span");p.className="pend";sm.appendChild(p);}
+         p.textContent=n+" edit"+(n>1?"s":""); }
+  else if(p){ p.remove(); }
+}
+function render(){
+  const list=sorted(SHOWS.filter(matches));
+  $("#tot").textContent=list.length===SHOWS.length
+    ? SHOWS.length+" shows"
+    : list.length+" of "+SHOWS.length+" shows";
+  const open=new Set([...document.querySelectorAll("details.show[open]")].map(d=>d.dataset.id));
+  $("#list").innerHTML = list.length===0 ? '<div class="empty">Nothing matches.</div>'
+    : list.map(s=>'<details class="show'+(dirtyFields(s.ShowID).length?" dirty":"")+'" data-id="'+
+        esc(s.ShowID)+'"'+(open.has(s.ShowID)?" open":"")+'><summary>'+summaryHTML(s)+
+        '</summary><div class="body"></div></details>').join("");
+  list.forEach(s=>{ if(open.has(s.ShowID)) fillBody(document.querySelector('details[data-id="'+CSS.escape(s.ShowID)+'"]')); });
+  paintCounts();
+}
+function paintCounts(){
+  const n=totalPending();
+  const fields=Object.values(E).reduce((a,o)=>a+Object.keys(o).length,0);
+  $("#pc").innerHTML = n?("<b>"+n+"</b> show"+(n>1?"s":"")+" · "+fields+" field"+(fields>1?"s":"")+" pending"):"no pending edits";
+  $("#copyall").disabled=!n; $("#clear").disabled=!n;
+}
+
+/* ---------- expanded body, built lazily on first open ---------- */
+function fieldHTML(id,e){
+  const val=cur(id,e.f), changed=E[id]&&(e.f in E[id]);
+  const cls="f"+(changed?" changed":"")+(e.f==="Setlist"?" sl":"")+(e.f==="Notes"?" nt":"");
+  let ctl="";
+  if(e.kind==="select"||e.kind==="suggest"){
+    const opts=(VOCAB[e.f]||[]);
+    ctl='<input type="text" list="dl-'+esc(e.f)+'" data-f="'+esc(e.f)+'" value="'+esc(val)+'">';
+    if(!document.getElementById("dl-"+e.f)){
+      const dl=document.createElement("datalist"); dl.id="dl-"+e.f;
+      dl.innerHTML=opts.map(o=>'<option value="'+esc(o)+'">').join("");
+      document.body.appendChild(dl);
+    }
+  } else if(e.kind==="setlist"){
+    ctl='<textarea data-f="Setlist" spellcheck="false">'+esc(slToLines(val))+'</textarea>';
+  } else if(e.kind==="notes"||e.kind==="textarea"){
+    ctl='<textarea data-f="'+esc(e.f)+'" spellcheck="false">'+esc(val)+'</textarea>';
+  } else {
+    ctl='<input type="text" data-f="'+esc(e.f)+'" value="'+esc(val)+'">';
+  }
+  let hint="";
+  if(e.f==="ShowDate")hint='<div class="hint'+(val&&!/^\d{4}-\d{2}-\d{2}$/.test(val)?" bad":"")+
+    '">YYYY-MM-DD, or blank for compilations/documentaries</div>';
+  if(e.kind==="setlist")hint='<div class="hint">One song per line. Keep a line reading '+
+    '<b>Encore break</b> where the encore starts. Saved back as “A; B; C”.</div>';
+  return '<div class="'+cls+'" data-wrap="'+esc(e.f)+'"><label>'+esc(e.label)+'</label>'+ctl+hint+'</div>';
+}
+function fillBody(det){
+  if(!det||det.dataset.filled)return;
+  const id=det.dataset.id, s=byId[id];
+  const left=D.editable.filter(e=>["Artist","ShowDate","EventOrFestival","VenueName","City","Country"].indexOf(e.f)>=0);
+  const mid=D.editable.filter(e=>left.indexOf(e)<0);
+  const lockRows=D.locked.map(l=>{
+    const v=s[l.f]; if(v===null||v===undefined||v==="")return "";
+    return "<dt>"+esc(l.label)+"</dt><dd>"+esc(v)+"</dd>";
+  }).join("");
+  det.querySelector(".body").innerHTML =
+    '<div class="cols">'+
+      '<div class="col"><h4>Event</h4>'+left.map(e=>fieldHTML(id,e)).join("")+
+        '<h4 style="margin-top:16px">Source detail</h4>'+mid.map(e=>fieldHTML(id,e)).join("")+'</div>'+
+      '<div class="col"><h4>From the scan — read only</h4><dl class="lock">'+lockRows+'</dl></div>'+
+      '<div class="col"><h4>Setlist</h4>'+fieldHTML(id,{f:"Setlist",kind:"setlist",label:"Songs, one per line"})+
+        '<h4 style="margin-top:14px">Notes</h4>'+fieldHTML(id,{f:"Notes",kind:"notes",label:"Notes"})+'</div>'+
+    '</div>'+
+    '<div class="acts">'+
+      '<button class="go" data-copy="'+esc(id)+'">Copy changes</button>'+
+      '<button data-revert="'+esc(id)+'">Discard this show’s edits</button>'+
+      '<span class="sp"></span>'+
+      '<span class="count" data-n="'+esc(id)+'"></span>'+
+    '</div>';
+  det.dataset.filled="1";
+  syncActs(det);
+}
+function syncActs(det){
+  const id=det.dataset.id, n=dirtyFields(id).length;
+  const c=det.querySelector('[data-copy]'), r=det.querySelector('[data-revert]'),
+        t=det.querySelector('[data-n]');
+  if(!c)return;
+  c.disabled=!n; r.disabled=!n;
+  c.textContent=n?("Copy "+n+" change"+(n>1?"s":"")):"Copy changes";
+  t.textContent=n?"":"no changes yet";
+}
+
+/* ---------- events ---------- */
+$("#list").addEventListener("toggle",e=>{
+  const d=e.target.closest("details.show"); if(d&&d.open)fillBody(d);
+},true);
+
+$("#list").addEventListener("input",e=>{
+  const el=e.target, f=el.dataset.f; if(!f)return;
+  const det=el.closest("details.show"), id=det.dataset.id;
+  setF(id,f, f==="Setlist"?linesToSl(el.value):el.value);
+  const wrap=el.closest("[data-wrap]");
+  const changed=E[id]&&(f in E[id]);
+  wrap.classList.toggle("changed",!!changed);
+  if(f==="ShowDate"){
+    const h=wrap.querySelector(".hint"), v=el.value.trim();
+    if(h)h.classList.toggle("bad",!!v&&!/^\d{4}-\d{2}-\d{2}$/.test(v));
+  }
+  det.classList.toggle("dirty",dirtyFields(id).length>0);
+  refreshSummary(det);
+  syncActs(det); paintCounts();
+});
+
+document.addEventListener("click",e=>{
+  const c=e.target.closest("[data-copy]");
+  if(c){ e.preventDefault();
+    copy(patchFor(c.dataset.copy),c,"Copy changes"); return; }
+  const r=e.target.closest("[data-revert]");
+  if(r){ e.preventDefault();
+    const id=r.dataset.revert;
+    if(!dirtyFields(id).length)return;
+    if(!confirm("Discard your unsaved edits to this show? Nothing on disk is affected."))return;
+    delete E[id]; save();
+    const det=r.closest("details.show");
+    det.dataset.filled=""; fillBody(det);
+    det.classList.remove("dirty");
+    refreshSummary(det);
+    paintCounts(); return; }
+});
+function copy(text,btn,label){
+  if(!text)return;
+  navigator.clipboard.writeText(text).then(()=>{
+    const t=btn.textContent; btn.textContent="Copied ✓";
+    setTimeout(()=>{btn.textContent=t},1500);
+  }).catch(()=>{
+    const ta=document.createElement("textarea");
+    ta.value=text; document.body.appendChild(ta); ta.select();
+    try{document.execCommand("copy");btn.textContent="Copied ✓";}catch(err){alert(text)}
+    ta.remove(); setTimeout(()=>{btn.textContent=label},1500);
+  });
+}
+$("#copyall").onclick=()=>copy(patchAll(),$("#copyall"),"Copy all pending");
+$("#clear").onclick=()=>{
+  const n=totalPending(); if(!n)return;
+  if(!confirm("Discard pending edits on "+n+" show"+(n>1?"s":"")+"? Nothing on disk is affected."))return;
+  E={}; save(); render();
+};
+if(AUTO_CLEARED||AUTO_SHOWS){
+  const c=$("#cleared"); c.style.display="";
+  c.innerHTML="<b>"+AUTO_CLEARED+" pending edit"+(AUTO_CLEARED===1?"":"s")+
+    " cleared automatically</b> — they already match the current shows.json, so they have "+
+    "been applied. Anything still showing as pending was either not applied, or applied "+
+    "differently from what you asked.";
+}
+["#q","#filt","#sort"].forEach(s=>$(s).addEventListener("input",render));
+window.addEventListener("beforeunload",ev=>{ if(totalPending()){ev.preventDefault();ev.returnValue=""} });
+render();
+</script></body></html>

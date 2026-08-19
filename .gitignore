@@ -148,3 +148,6 @@ data-pipeline/**/*.numbers
 # But ignore if they're generated
 # public/images/
 # public/shows.json
+
+# Show Editor: generated page (rebuild with tools/show-editor/build.py)
+tools/show-editor/index.html
