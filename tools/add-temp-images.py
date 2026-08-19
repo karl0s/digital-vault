@@ -75,8 +75,14 @@ def main():
 
     files=sorted(p.name for p in TEMP.glob("*.jpg") if not p.name.startswith("."))
     if not files: sys.exit("no .jpg files in temp-images")
-    hero=a.hero if a.hero in files else next(
-        (f for f in files if f.lower().rstrip(".jpg").endswith(a.hero.lower().lstrip("s"))), None)
+    # rstrip(".jpg") strips CHARACTERS, not the suffix - it would eat a trailing
+    # "j"/"p"/"g" from the stem too. Match on the stem explicitly.
+    def stem(x): return re.sub(r"\.jpg$", "", x, flags=re.I).lower()
+    want=stem(a.hero).lstrip("s")
+    hero=(a.hero if a.hero in files else
+          next((f for f in files if stem(f)==stem(a.hero)), None) or
+          next((f for f in files if stem(f).endswith(want)), None) or
+          next((f for f in files if want in stem(f)), None))
     if not hero: sys.exit(f"REFUSING: hero {a.hero!r} not found among {files}")
     order=[hero]+[f for f in files if f!=hero]
 
