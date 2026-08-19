@@ -24,24 +24,13 @@ MANI  = REPO/"public"/"image-manifest.json"
 SHOWS = REPO/"public"/"shows.json"
 BACKUP= H/"promote-backup"
 
-# drive-folder key fragment -> exact shows.json FolderName. Confirmed, not guessed.
-MAP = {
- "Malaysia_1080":                 "Malaysia 1080",
- "Rock_am_Ring_2010_TS":          "Rock am Ring 2010 TS",
- "Reading_Festival":              "Reading Festival",
- "Russia_2010":                   "Russia 2010 HD Multi",
- "Rock_am_Ring_2007_16x9":        "Rock am Ring 2007 - 16x9 Master",
- "Rock_am_Ring_2007_Markus":      "Rock am Ring 2007 (Markus Master)",
- "Rock_am_Ring_2010_KO_Master_1": "16-9 recording",
- "Rock_am_Ring_2010_KO_Master_4": "4-3 recording",
- "Video_Hits":                    "30 Seconds to Mars - Video Hits",
- "BBC_Radio_1":                   "BBC Radio 1",
- # Last Call and 30STM EMAs deliberately excluded: the band appear only briefly
- # on those discs, so only ONE usable frame each was found. Replacing three good
- # existing images with one would be a downgrade. They need a targeted capture
- # window around the band's segment instead.
- "Rock_In_Rio":                   "30 Seconds To Mars 2013-09-14, Rock In Rio, Rio de Janeiro, Brazil TV broadcast DVD",
-}
+# Drive-folder key fragment -> exact shows.json FolderName. Confirmed, not guessed.
+# Kept in data/promote_map.json so the script is artist-agnostic; a value may be a
+# plain string, or [folder, artist] when two records share one FolderName.
+MAPFILE = H/"data"/"promote_map.json"
+MAP = json.loads(MAPFILE.read_text(encoding="utf-8")) if MAPFILE.exists() else {}
+MAP = {k:(tuple(v) if isinstance(v,list) else v) for k,v in MAP.items()}
+
 ORDER = ["A","B","C","spare"]
 
 
