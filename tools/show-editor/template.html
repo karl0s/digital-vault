@@ -96,7 +96,6 @@ footer{padding:26px 0 70px;color:var(--faint);font-size:12px;text-align:center}
   <select id="filt">
     <option value="">All shows</option>
     <option value="setlist">Missing setlist</option>
-    <option value="venue">Missing venue</option>
     <option value="city">Missing city</option>
     <option value="country">Missing country</option>
     <option value="event">Missing event/festival</option>
@@ -255,7 +254,6 @@ function gaps(s){
   const g=[];
   const v=f=>String(cur(s.ShowID,f)||"").trim();
   if(!v("Setlist"))g.push(["no setlist",0]);
-  if(!v("VenueName"))g.push(["no venue",0]);
   if(!v("City"))g.push(["no city",0]);
   if(!v("Country"))g.push(["no country",0]);
   if(!v("ShowDate"))g.push(["no date",1]);
@@ -273,7 +271,6 @@ function matches(s){
   }
   const v=fl=>String(cur(s.ShowID,fl)||"").trim();
   if(f==="setlist"&&v("Setlist"))return false;
-  if(f==="venue"&&v("VenueName"))return false;
   if(f==="city"&&v("City"))return false;
   if(f==="country"&&v("Country"))return false;
   if(f==="event"&&v("EventOrFestival"))return false;
