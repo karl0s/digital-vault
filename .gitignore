@@ -151,3 +151,7 @@ data-pipeline/**/*.numbers
 
 # Show Editor: generated page (rebuild with tools/show-editor/build.py)
 tools/show-editor/index.html
+
+# Staging folder for hand-taken screenshots; never belongs in the repo
+# (Vite copies public/ into dist/, so anything here would ship).
+public/images/temp-images/
