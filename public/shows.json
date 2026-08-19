@@ -34812,7 +34812,7 @@
   {
     "ShowID": "0a99c85ac773",
     "Artist": "30 Seconds to Mars",
-    "ShowDate": "",
+    "ShowDate": "2011-01-01",
     "EventOrFestival": "MTV Unplugged",
     "VenueName": "",
     "City": "",
@@ -34843,7 +34843,7 @@
     "ChecksumSHA1": "f3b7272cafcfde0e01495a2c9aa4eddfd27626f3",
     "DuplicateOf": "",
     "Setlist": "",
-    "Notes": "Date not yet established.",
+    "Notes": "Year-only placeholder date: the MTV Unplugged EP was released in 2011 but the exact recording date is not established. Per the YYYY-01-01 convention.",
     "LastScannedAt": "",
     "ExtractionWarnings": "",
     "SourceCatalog": "LiveMusic",
