@@ -56,7 +56,11 @@ Rules:
 - **Enumerate folders on the drive as they exist right now.** The drive is ground truth.
 - Match the artist by **normalised tokens, not substring.** Loose files use underscores
   (`30_seconds_to_mars_-_live_at_mexico_city...`), which a substring test on the artist name
-  misses entirely. Require ≥2 artist tokens, or a known alias (`30stm`).
+  misses entirely.
+- **Scale the token requirement to the artist's own name length:**
+  `need = min(2, len(artist_tokens))`. A fixed "≥2 tokens" rule silently matches **nothing**
+  for a single-word artist like Aerosmith or Muse. Add per-artist aliases (`30stm`) where the
+  collection uses them.
 - **Accept loose single files, not just directories.** A `.mkv`/`.ts` sitting at the drive
   root is a show. An `is_dir()` check silently drops these — it cost 5 of 21 shows.
 - **Exclude backup/duplicate trees** (e.g. a "PC backup" folder) by path substring.
@@ -173,10 +177,14 @@ Offer an A/B on one interlaced show before committing a whole artist.
 **Failure this prevents:** a 472 MB VOB reported `duration=13.87s` and `bit_rate=283 Mbps`.
 Six of 21 shows reported near-zero runtime, which would stack every frame at t=0.
 
-Trust the container only when its duration implies a sane bitrate:
+Trust the container only when its duration implies a sane bitrate — and check **both**
+directions. An under-reported duration looks like an absurdly *high* bitrate; an over-reported
+one looks like an absurdly *low* bitrate. One DVD claimed **53 hours**, which works out at
+167 kbps, and sailed through a one-sided check:
 
 ```python
-if reported > 1 and total_bytes * 8 / reported < 30e6:
+bps = total_bytes * 8 / reported
+if reported > 1 and 4e5 < bps < 30e6:      # 0.4 - 30 Mbps
     use reported
 else:
     ffmpeg -i SRC -c copy -f null -      # demux only, ~90x realtime
@@ -202,6 +210,22 @@ K = int(duration × fps) // N
 Rename outputs to `t = (i × K) / fps` afterwards so timestamps stay meaningful.
 
 **QA gate:** if any show finishes with 0 usable frames, the run is not complete.
+
+**A worse variant: seeking that returns the SAME frame every time.** One DVD produced 500
+valid, correctly-sized, byte-**identical** frames — timestamps spread properly across the
+runtime, dimensions all correct, `ok == 500`, so neither the zero-frame fallback nor any
+dimension gate fired. It only surfaced because de-duplication collapsed 500 candidates to 1.
+
+Always verify **content distinctness** after the seek pass:
+
+```python
+distinct = len({md5(f.read_bytes()) for f in frames[:400]})
+if distinct < max(2, len(frames[:400]) // 2):
+    discard everything and use the single-pass path
+```
+
+Validity is not the same as usefulness. A check that only asks "did I get a file of the right
+size?" will pass happily on 500 copies of one frame.
 
 **This applies to targeted single-frame re-captures too.** Grabbing one replacement frame
 from an affected DVD with `-ss` will silently produce nothing. Use the same frame-number
@@ -369,6 +393,16 @@ Check what a folder actually contains before picking. Real examples from one art
 
 For these: capture a **targeted time window** around the band's segment rather than the whole
 runtime, and tell the user the folder is mislabelled. Flag it for metadata correction.
+
+**Picking rule for compilations and split bills: only the target artist counts.** Frames of the
+other act, the interview segments, the host or the awards ceremony are all rejected regardless
+of how well they score. If that leaves fewer than four usable frames, say so and promote fewer
+rather than padding with someone else's band.
+
+**Read the footage for ground truth.** Broadcast overlays routinely contradict the folder name
+and are more reliable than it. Two folders in the reference run were wrong in both halves of
+their title, and the on-screen captions gave the correct venue, city and second artist
+outright. Always check the credits, lower-thirds and title cards before trusting a folder.
 
 ---
 
@@ -548,6 +582,7 @@ eyeballing a list.
 - [ ] Letterbox checked at ≥2 timestamps
 - [ ] Full-collection dimension audit reports **0 wrong dimensions**
 - [ ] No show finished with 0 usable frames
+- [ ] Seek pass produced DISTINCT frames (not N copies of one) — check content hashes
 - [ ] Every show retains ≥24 candidates after filtering (flag any that don't)
 - [ ] Contact sheets built for every show
 - [ ] Picks recorded by timestamp and **all resolve** to files
@@ -570,7 +605,8 @@ eyeballing a list.
 `shots.py` and `subject.py` in this skill directory implement the above.
 
 ```
-python3 shots.py plan --artist "<Artist>"     # probe, compute targets, run gates
+python3 shots.py --artist "<Artist>" plan    # probe, compute targets, run gates
+#   NOTE: --artist is a GLOBAL flag and must precede the subcommand
 python3 shots.py capture --deint "pp=lb"      # extract + verify every frame
 python3 shots.py score --top 24 --mindist 12  # filter crowds/graphics/blur, rank
 python3 shots.py contact                      # contact sheet per show

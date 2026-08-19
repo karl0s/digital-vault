@@ -76,6 +76,7 @@ def discover(artist: str):
         x = unicodedata.normalize("NFKD", x or "").encode("ascii","ignore").decode().casefold()
         return set(t for t in re.sub(r"[^a-z0-9]+", " ", x).split() if len(t) > 1)
     artist_toks = toks(artist)
+    ALIASES = {"30stm"} if "mars" in artist_toks else set()
 
     con = sqlite3.connect("file:%s?mode=ro" % DEDUPE_DB, uri=True)
     con.row_factory = sqlite3.Row
@@ -93,7 +94,10 @@ def discover(artist: str):
         # ("30_seconds_to_mars_-_live_at_mexico_city...") which a plain
         # substring test on the artist name would miss entirely.
         rt = toks(rel)
-        if not (len(artist_toks & rt) >= 2 or "30stm" in rt):
+        # A single-word artist ("Aerosmith", "Muse") can never satisfy a fixed
+        # ">=2 tokens" rule, so scale the requirement to the artist's own length.
+        need = min(2, len(artist_toks))
+        if not (len(artist_toks & rt) >= need or (ALIASES & rt)):
             continue
         folder = HD_ROOT / rel
         if not (folder.is_dir() or folder.is_file()):   # loose single-file shows count
@@ -266,8 +270,14 @@ def demux_duration(src, timeout=900):
 def true_duration(src, files, reported):
     """Trust the container only when its duration implies a sane bitrate."""
     total = sum(f.stat().st_size for f in files) if files else 0
-    if reported > 1 and total and (total * 8 / reported) < 30e6:
-        return reported, "reported"
+    # Two-sided plausibility. An UNDER-reported duration shows up as an absurd
+    # bitrate (a 472 MB VOB claiming 13.9 s implies 283 Mbps). An OVER-reported
+    # one shows up as an absurdly low bitrate - one DVD claimed 53 hours, which
+    # works out at 167 kbps. A one-sided check accepts the second kind happily.
+    if reported > 1 and total:
+        bps = total * 8 / reported
+        if 4e5 < bps < 30e6:
+            return reported, "reported"
     d = demux_duration(src)
     if d > 1:
         return d, "demuxed"
@@ -449,6 +459,22 @@ def cmd_capture(a):
                     print("\r  [%2d/%2d] %-30s %3d/%3d  ok=%d bad=%d  %.0fs" %
                           (si,len(shows),s["FolderName"][:30],k,len(futs),ok,bad,time.time()-t0),
                           end="", flush=True)
+        # A broken container can make every -ss seek return the SAME frame: 500
+        # valid, correctly-sized, byte-identical images. ok>0 so the zero-frame
+        # fallback never fires, and dimension checks pass. Detect it by content.
+        if ok > 4:
+            import hashlib as _hl
+            seen=set()
+            for f in list(outdir.glob("*.jpg"))[:400]:
+                try: seen.add(_hl.md5(f.read_bytes()).hexdigest())
+                except OSError: pass
+            if len(seen) < max(2, min(ok,400)//2):
+                print("\n      %sseeking returned %d distinct frames from %d grabs - "
+                      "the container cannot be seeked; discarding and using a single pass%s"
+                      % (YELLOW,len(seen),min(ok,400),RESET))
+                for f in outdir.glob("*.jpg"): f.unlink()
+                ok, bad = 0, s["n"]
+
         if ok == 0 and bad > 0:
             print("\n      %sseek path failed entirely - retrying with a single decode pass%s"
                   % (YELLOW,RESET))
