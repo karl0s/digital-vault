@@ -37,8 +37,9 @@ def assert_readonly_target(p, staging_root, drive_root):
 
 ## 1. Prerequisites
 
-- `ffmpeg` + `ffprobe` with **libpostproc** (`ffmpeg -version | grep enable-postproc`) for
-  `pp=lb` blend deinterlacing.
+- `ffmpeg` + `ffprobe`. `bwdif` is the default deinterlacer (§4.6) and is built in.
+  **libpostproc** (`ffmpeg -version | grep enable-postproc`) is only needed for the `pp=lb`
+  fallback.
 - Python 3 with **numpy** and **Pillow**. **Do NOT install OpenCV.** Face detection is the
   wrong tool: valid shots include hands on a drum kit or guitar, a body, a silhouette — all
   faceless. Region-based scoring (§6) handles these; a face gate rejects them.
@@ -97,22 +98,46 @@ key  = "%s__%s" % (slug, hashlib.sha1(rel_path.encode()).hexdigest()[:6])
 DVD and broadcast pixels are **not square**. This is the cause of every "squashed", "thin"
 or "stretched" screenshot.
 
-### 4.1 Compute the target from SAR
+### 4.1 Compute the target from SAR — and NEVER downsample
 
+The display shape is `(width × SAR) / height`. There are always two ways to reach it:
+grow one axis, or shrink the other. **Always grow.**
+
+```python
+def fit_no_downsample(w, h, dar):
+    if dar >= w / h:
+        tw, th = round(h * dar), h      # display wider than stored -> grow width
+    else:
+        tw, th = w, round(w / dar)      # display taller than stored -> grow height
+    return tw + tw % 2, th + th % 2     # keep both even
 ```
-target_w = round(width × SAR_num / SAR_den)   # round to even
-target_h = height
-```
 
-Real examples from one artist's collection:
+**Failure this prevents:** the original rule was `target_w = round(w × SAR); target_h = h`,
+which is only correct when SAR ≥ 1. For NTSC 4:3 material (SAR 8:9 or 10:11) it *shrinks*
+the width — 720×480 became 640×480, discarding 80 columns of real samples. Both are exactly
+4:3, so every aspect gate passed and the bug survived two full artists.
 
-| Stored | SAR | Correct output | Naive output | Error |
-|---|---|---|---|---|
-| 704×576 | 12:11 | **768×576** | 704×576 | 8% squash |
-| 720×576 | 64:45 | **1024×576** | 720×576 | **30% squash** |
-| 720×576 | 16:15 | **768×576** | 720×576 | 7% squash |
-| 720×480 | 32:27 | **854×480** | 720×480 | 16% squash |
-| 1920×1080 | 1:1 | 1920×1080 | 1920×1080 | correct |
+It surfaced only when the user compared hand-taken VLC grabs against pipeline output and
+said they looked clearer. VLC grows the height instead: 720×480 → **720×540**, same shape,
+**26% more pixels**, nothing discarded.
+
+| Stored | SAR | Display | Correct output | Old (downsampling) rule | Cost |
+|---|---|---|---|---|---|
+| 720×480 | 8:9 | 4:3 | **720×540** | 640×480 | **21% of pixels thrown away** |
+| 704×480 | 10:11 | 4:3 | **704×528** | 640×480 | **19% thrown away** |
+| 704×576 | 12:11 | 4:3 | **768×576** | 768×576 | correct either way |
+| 720×576 | 64:45 | 16:9 | **1024×576** | 1024×576 | correct either way |
+| 720×576 | 16:15 | 4:3 | **768×576** | 768×576 | correct either way |
+| 720×480 | 32:27 | 16:9 | **854×480** | 854×480 | correct either way |
+| 1920×1080 | 1:1 | 16:9 | 1920×1080 | 1920×1080 | correct either way |
+
+Note the pattern: **only SAR < 1 sources were affected**, which is why PAL 16:9 material
+(SAR 64:45, grows width) looked fine throughout and hid the problem.
+
+**Keep `computed_ar` as the shape SAR *implies*** — `(w × SAR) / h` — not as the shape of
+the output. Deriving it from the output makes gate 1 (§8) trivially true, because the output
+is now constructed to match DAR by definition. The gate must still be able to catch a source
+whose SAR and DAR disagree.
 
 ### 4.2 Snap near-square SAR to 1:1
 
@@ -152,21 +177,76 @@ evidence. Never bury an override in code.
 
 ```
 crop=<w:h:x:y>          # only if letterboxed; strips bars FIRST
-pp=lb                   # blend deinterlace, ONLY if interlaced, at native resolution
+bwdif=mode=send_frame:parity=auto:deint=all    # ONLY if interlaced, at native resolution
 scale=<tw>:<th>:flags=lanczos
 setsar=1
 ```
 
-Order matters: deinterlace **before** scaling, or you blend already-resampled lines. Crop
-before both.
+Order matters: deinterlace **before** scaling, or you interpolate already-resampled lines.
+Crop before both.
 
-### 4.6 Deinterlace conditionally
+### 4.6 Deinterlace conditionally — and use bwdif
 
 Read `field_order` from ffprobe. `tt`/`bb`/`tb`/`bt` = interlaced → deinterlace.
-`progressive` → **do not touch it**; blending a progressive HD source softens it for nothing.
+`progressive` → **do not touch it**; deinterlacing a progressive HD source softens it for nothing.
 
-`pp=lb` (linear blend) is artifact-free on motion but soft. `bwdif` is sharper on stills.
-Offer an A/B on one interlaced show before committing a whole artist.
+**Use `bwdif`.** Measured on three Aerosmith DVDs, same frames, same geometry:
+
+| Deinterlacer | Sharpness (vs `pp=lb`) | Comb ratio | Verdict |
+|---|---|---|---|
+| `pp=lb` (blend) | 100% | 1.08 | clean but soft — averages both fields together |
+| none | 214% | **4.53** | heavily combed, unusable |
+| **`bwdif`** | **173%** | **1.20** | **sharpest clean result** |
+| `yadif` | 159% | 1.36 | clean, but bwdif beats it |
+
+`pp=lb` averages the two fields, which removes combing by destroying real vertical detail.
+`bwdif` is motion-adaptive: it keeps a full progressive frame where the picture is static
+and interpolates only where it moves.
+
+**Sharpness alone is a trap — always measure combing too.** A variance-of-Laplacian score
+counts comb lines as texture, so *disabling* deinterlacing scores best of all while looking
+obviously worse. Measure the two independently:
+
+```python
+comb_ratio = mean(|2·row[y] − row[y−1] − row[y+1]|) / mean(|2·col[x] − col[x−1] − col[x+1]|)
+# ~1.0–1.5 clean · >2.4 visibly striped
+```
+
+Build the A/B as a page of full frames **each with a 200% centre crop underneath** and look
+at it. Combing is obvious by eye and ambiguous by metric.
+
+### 4.7 Temporal deinterlacers need consecutive frames — `select` breaks them
+
+**Failure this prevents:** `bwdif` placed *after* a `select` filter produced output
+**byte-identical to no deinterlacing at all**, on all three test DVDs. It scored 214% sharp
+with a comb ratio of 4.5 and was very nearly adopted as "the sharpest option".
+
+`bwdif`, `yadif`, `w3fdif`, `estdif` and `nnedi` all need the frames either side of the one
+they emit. Hand them a stream of unrelated moments — which is exactly what `select` produces
+— and they silently degrade to spatial-only or pass through untouched. **`pp=lb` is purely
+spatial and immune, which is why the bug stayed hidden while it was the default.**
+
+Three call sites need care:
+
+1. **Seek path (`-ss`)** — the first frame after a seek has no predecessor, so it falls back
+   to spatial-only. Decode a few frames past the seek point and keep one with neighbours:
+   `…,bwdif,select='eq(n\,4)',scale=…` and `-frames:v 1`. Costs ~4 extra decoded frames.
+
+2. **Single-pass sweep** — keep a short *run* of consecutive frames at each sample point,
+   deinterlace the run, then take its middle frame:
+   ```
+   select='lt(mod(n\,K)\,9)' , crop , bwdif , select='eq(mod(n\,9)\,4)' , scale , setsar=1
+   ```
+   Only 9/K of frames reach the filter, so the cost over plain selection is negligible.
+   Timestamps shift by the window offset: `ts = (i×K + 4) / fps`.
+
+3. **Targeted re-capture of specific frames** — select the union of 9-frame windows around
+   each wanted frame, deinterlace, then select the middle of each window by its *position in
+   the filtered stream*, not its original frame number. Merge overlapping windows first.
+
+**QA gate:** after any change to the deinterlacer or the chain order, hash the output of the
+deinterlaced variant against the no-deinterlace variant. **If they are byte-identical, the
+deinterlacer did nothing.** This is a one-line check that would have caught it immediately.
 
 ---
 
@@ -208,6 +288,10 @@ K = int(duration × fps) // N
 ```
 
 Rename outputs to `t = (i × K) / fps` afterwards so timestamps stay meaningful.
+
+**With a temporal deinterlacer this exact chain is WRONG** — `select` starves `bwdif` of the
+neighbouring frames it needs and it silently stops working. Use the windowed form from §4.7
+instead, and offset the timestamps by the window centre.
 
 **QA gate:** if any show finishes with 0 usable frames, the run is not complete.
 
@@ -340,8 +424,14 @@ After writing each frame:
 5. **Re-open the JPEG** — actual pixel dimensions must equal the computed target exactly
 6. **Final aspect assertion** — within 1% of DAR
 7. **Per-show consistency** — every frame from one show shares identical dimensions
+8. **No downsampling** — `target_w ≥ width` and `target_h ≥ height` (§4.1). A target smaller
+   than the stored frame on either axis means the geometry rule has regressed.
+9. **The deinterlacer actually ran** — on interlaced sources, output must NOT be
+   byte-identical to the same frame rendered with no deinterlacer (§4.7), and comb ratio
+   should sit below ~1.6.
 
 Any frame failing 5–7 is **deleted and logged**, never kept. Report the count.
+Gates 8–9 are cheap spot-checks; run them on one frame per show, not all 500.
 
 **Final audit:** re-open every surviving frame and assert dimensions per show. Target:
 `0 wrong dimensions`.
@@ -460,6 +550,19 @@ Always finish with:
 git add -f public/images/ public/image-manifest.json
 ```
 
+**The same trap applies to this skill's own directory.** `.gitignore` also lists
+`.claude/skills/`. Files already tracked show up as modified, so edits to `SKILL.md` or
+`shots.py` commit normally — but any **new** bundled script (`repick.py`, a new helper) is
+silently invisible to `git add`. It looks committed, and the skill is then broken for anyone
+who clones. Whenever a file is added to the bundle:
+
+```bash
+git add -f .claude/skills/concert-screenshots/
+```
+
+Verify with `git status --porcelain` showing nothing left, **and** `git ls-files` listing
+every file in the directory. Two gitignored-but-tracked directories, one habit.
+
 **Then verify against git, not the filesystem:** every manifest entry must map to a file that
 is tracked *or staged*. A disk-only audit cannot catch this class of bug.
 
@@ -490,6 +593,42 @@ Picks chosen *after* the picks page was last generated exist only as timestamps 
 there is no image on disk yet. If `work/` has since been pruned, they cannot be resolved at
 all and must be re-captured from source. **Always regenerate `picks/` immediately after
 editing `picks.json`,** and assert every entry produced a file.
+
+---
+
+## 12b. Re-rendering already-chosen picks (`repick.py`)
+
+When capture *settings* change — geometry, deinterlacer, crop — the selections are still
+valid but the pixels are stale. `repick.py` re-renders exactly the frames already listed in
+`picks.json` at the current settings, without re-scoring or re-choosing anything.
+
+**The trap it exists to avoid:** pick timestamps are stored floored to whole seconds
+(`t00-53-04`). Re-deriving a frame number as `round(seconds × fps)` can land up to a full
+second — ~25-30 frames — from the frame that was actually chosen, which is easily a different
+moment on stage. Instead, recover the exact frame by fitting `ts = a·i + b` across that
+show's existing `work/` filenames, since that linear relationship is what generated the
+timestamps in the first place:
+
+```python
+a, b = numpy.polyfit(indices, floored_seconds + 0.5, 1)   # +0.5 de-biases the floor
+frame = round((a * i + b) * fps)
+```
+
+Then render with the §4.7 windowed chain, merging overlapping windows, so a temporal
+deinterlacer still has neighbours.
+
+```bash
+python3 repick.py            # dry run: renders to _repick/, verifies, reports comb ratios
+python3 repick.py --apply    # copies into work/ under the ORIGINAL filenames
+python3 shots.py --artist "<Artist>" picks   # re-materialise picks/ + rebuild the page
+```
+
+Renders are cached per show, so the dry run costs the decode and `--apply` is free. Both
+steps verify dimensions via `shots.verify()` and reject anything mis-shaped.
+
+**Always produce a before/after page** — old and new side by side with pixel counts,
+sharpness and comb ratio per frame — and look at it before promoting. Numbers alone have
+already been wrong twice on this pipeline.
 
 ---
 
@@ -618,7 +757,7 @@ python3 shots.py --artist "$A" plan          # --artist is GLOBAL: before the su
 #    overrides needed for any suspicious aspect flags (§4.4).
 
 # 3. CAPTURE - extract and verify every frame
-python3 shots.py capture --deint "pp=lb" --workers 3 --fresh
+python3 shots.py capture --workers 3 --fresh        # bwdif is the default
 #    Check: 0 rejected, and no show fell back to single-pass unexpectedly.
 
 # 4. SCORE + SHEETS + INDEX
@@ -681,7 +820,7 @@ Say these plainly. A thin, honest result beats a padded one.
 ```
 python3 shots.py --artist "<Artist>" plan    # probe, compute targets, run gates
 #   NOTE: --artist is a GLOBAL flag and must precede the subcommand
-python3 shots.py capture --deint "pp=lb"      # extract + verify every frame
+python3 shots.py capture                      # extract + verify every frame
 python3 shots.py score --top 24 --mindist 12  # filter crowds/graphics/blur, rank
 python3 shots.py contact                      # contact sheet per show
 python3 shots.py index                        # HTML index of all sheets
