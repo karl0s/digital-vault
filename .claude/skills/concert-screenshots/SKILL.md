@@ -203,6 +203,17 @@ Rename outputs to `t = (i × K) / fps` afterwards so timestamps stay meaningful.
 
 **QA gate:** if any show finishes with 0 usable frames, the run is not complete.
 
+**This applies to targeted single-frame re-captures too.** Grabbing one replacement frame
+from an affected DVD with `-ss` will silently produce nothing. Use the same frame-number
+select, computing `n = round(timestamp × fps)` for just the frames you need:
+
+```
+-vf "select='eq(n\,1125)+eq(n\,22500)+eq(n\,55625)'" -vsync 0 -frames:v 3
+```
+
+Output arrives in **decode order**, not the order you listed - sort your targets by timestamp
+before zipping them back to their labels.
+
 ---
 
 ## 6. Frame selection — why naive sharpness fails
@@ -430,9 +441,103 @@ Only after picks are locked **and verified to resolve**:
 Reference run: 7,509 frames / 598 MB → 506 frames / 36 MB. Keeping the shortlist means picks
 can be revised without re-capturing.
 
+### `picks/` is the source of truth for promotion — never `work/`
+
+**Failure this prevents:** promotion originally resolved each pick by globbing `work/` for a
+timestamp. Pruning `work/` afterwards broke it completely — the next promotion run resolved
+nothing. (The guard caught it: 0 promoted, nothing damaged.)
+
+`work/` holds disposable candidates. `picks/` holds the locked, named selections. Promotion
+must read `picks/<Folder Name>__<A|B|C|spare>.jpg` and only fall back to `work/` if absent.
+
+### Re-materialise `picks/` whenever `picks.json` changes
+
+Picks chosen *after* the picks page was last generated exist only as timestamps in JSON —
+there is no image on disk yet. If `work/` has since been pruned, they cannot be resolved at
+all and must be re-captured from source. **Always regenerate `picks/` immediately after
+editing `picks.json`,** and assert every entry produced a file.
+
 ---
 
-## 13. End-to-end QA checklist
+## 13. Shows the original scan never catalogued
+
+**Loose media files at the drive root are systematically missing.** The scan pipeline walks
+*folders*; a `.ts` or `.mkv` sitting at the top level is never catalogued, so it cannot appear
+on the site at all. In the reference artist this accounted for **5 of 22 shows** — nearly a
+quarter — all invisible. Check for these on every artist.
+
+To create a record, match the pipeline's own algorithms exactly:
+
+```python
+ShowID       = sha1(str(full_folder_path)).hexdigest()[:12]
+ChecksumSHA1 = sha1(concatenated representative media, in order).hexdigest()
+#   representative media = the DVD's VTS_*_[1-9].VOB segments in order,
+#   otherwise the single LARGEST video file in the folder
+```
+
+Populate the technical fields from `ffprobe` (container, codecs, width, height, duration,
+`AspectRatio` as `"<DAR> (native)"`, `TVStandard` from frame rate), `FileCount` and
+`TotalSizeBytes` from the filesystem. Leave `Setlist` blank. Record any uncertainty in `Notes`
+rather than inventing a value; use the `YYYY-01-01` convention when only the year is known.
+
+**Validate before writing:** `ShowID` unique, `ChecksumSHA1` unique, `ShowDate` either empty
+or exactly `YYYY-MM-DD`, and the record count increases by exactly the number added.
+
+### Split bills need a DERIVED checksum
+
+One folder holding two artists' sets needs **two records** so each act appears under its own
+name with its own stills. But images are keyed by `ChecksumSHA1`, and in the reference
+collection **no checksum is shared by two records** — sharing one would give both acts
+identical pictures and break that invariant.
+
+Give the second record a derived key and say so plainly in `Notes`:
+
+```python
+derived = sha1((primary_checksum + "|" + artist).encode()).hexdigest()
+ShowID  = sha1((folder_path + "|" + artist).encode()).hexdigest()[:12]
+```
+
+Document that it is **not a content hash**, so nobody later mistakes it for a scan artefact.
+
+---
+
+## 14. Scoping an artist cheaply before capturing
+
+Before running the pipeline, audit what is actually wrong. Compare each existing image's pixel
+aspect against its show's recorded `AspectRatio` — seconds of work, no video decoding:
+
+```python
+with Image.open(img) as im: w,h = im.size
+declared = parse "<n>:<d>" from show["AspectRatio"]
+squashed = abs(w/h - declared) / declared > 0.02
+```
+
+In the reference collection roughly **75% of all images** failed this test — stored at raw
+pixel dimensions (720×576 shown at 1.250:1 rather than 1.333:1). Use it to decide which
+artists are worth doing and to prove the improvement afterwards.
+
+---
+
+## 15. Never write a check that can fail silently
+
+**Failure this prevents:** a re-capture helper was written as
+
+```python
+if out.exists():
+    print(...)          # prints dimensions and OK/MISMATCH
+```
+
+When ffmpeg failed, the file never appeared, the branch never ran, and the script produced
+**no output at all** — reading as success. The real error (broken-container seeking) was
+invisible.
+
+Every verification must have an explicit failure branch that prints, and every batch must
+report counts that add up: `attempted == succeeded + failed`. Prefer asserting the total over
+eyeballing a list.
+
+---
+
+## 16. End-to-end QA checklist
 
 - [ ] Staging directory is outside the repo and outside the drive; assertion in place
 - [ ] Work-dir keys unique — `len(set(keys)) == len(keys)`
@@ -450,10 +555,17 @@ can be revised without re-capturing.
 - [ ] Content traps identified and reported (compilations, split bills, awards shows)
 - [ ] Collection drive unmodified; repo clean
 - [ ] Pruning only after picks verified
+- [ ] `picks/` regenerated after any `picks.json` edit; every pick resolved to a file
+- [ ] Promotion sources from `picks/`, not `work/`
+- [ ] Loose media files at the drive root checked for missing records
+- [ ] New records: unique ShowID, unique checksum, valid date format
+- [ ] Split bills given derived checksums, documented in Notes
+- [ ] `git add -f` used; every manifest entry tracked or staged (verify against git, not disk)
+- [ ] No verification step can pass silently on failure
 
 ---
 
-## 14. Reference implementation
+## 17. Reference implementation
 
 `shots.py` and `subject.py` in this skill directory implement the above.
 
