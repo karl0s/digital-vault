@@ -390,7 +390,15 @@ Rules:
 - If a setlist is partial/incomplete, append ` (incomplete)` at the end of the string
 
 ### Setlist sourcing
-Before writing any setlist, **2+ independent sources must agree** on the songs and order.
+
+**Exception, and check it first: a sidecar inside the show's own folder is truth on its
+own.** `*.nfo`, `*.txt`, `info.txt`, `*.md5` — these were written by whoever made the disc,
+from the disc. They are primary evidence about *this recording*, not a reconstruction of the
+event, so the rule below does not apply to them. Write the setlist, and say in `Notes` which
+file it came from. House formatting still applies.
+
+For everything else, before writing any setlist **2+ independent sources must agree** on the
+songs and order.
 
 Acceptable sources (ranked by reliability):
 1. setlist.fm (check user-confirmed count — higher = more reliable)

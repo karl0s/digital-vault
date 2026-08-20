@@ -69,6 +69,17 @@ Rules:
   Weak name matching mapped 14 different folders onto 7 records. Record the link as metadata;
   never let it define identity.
 
+### Sidecars are authoritative for their own show
+
+A sidecar inside the show's folder does not need corroboration. It was written from the
+disc by whoever made it, so it is primary evidence about this recording. Read every one
+before capture, and write what it says into the record with the filename in `Notes`.
+
+Fenix Underground is the worked example: `Info/chris cornell dime torrent.txt` gave a
+14-song setlist for a record that had none, and the lineage `Sky HDTV Receptor > Samsung
+DVD Recorder R150 > DVD-R` - an HDTV source, which independently confirmed the 16:9 aspect
+correction that a squashed still had prompted.
+
 ### A COMMON-WORD artist name matches other artists' folders
 
 **Failure this prevents:** planning "Bush" pulled in *Smashing Pumpkins — Shepherd's Bush
