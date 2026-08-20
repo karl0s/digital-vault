@@ -103,6 +103,37 @@ def discover(artist: str):
         if not (folder.is_dir() or folder.is_file()):   # loose single-file shows count
             continue
         base = os.path.basename(rel)
+        # A short, common-word artist name matches folders belonging to OTHER artists:
+        # "Bush" pulled in "Smashing Pumpkins - Shepherd's Bush Empire" and "TRAIN Live
+        # At O2 Empire, Shepherd's Bush". Before accepting a folder, check whether it
+        # matches some OTHER artist's record more strongly than this one's - if so it is
+        # their folder, not ours.
+        base_toks = toks(base)
+        best_other, best_other_sc = None, 0
+        for sh in shows:
+            oa = (sh.get("Artist") or "").strip()
+            if not oa or oa == artist:
+                continue
+            oat = toks(oa)
+            sc = len(oat & base_toks)
+            if sc > best_other_sc:
+                best_other, best_other_sc = oa, sc
+        mine_sc = len(artist_toks & base_toks)
+        # A folder that BEGINS with another artist's name is theirs, even on a tie:
+        # "TRAIN Live At O2 Empire, Shepherd's Bush" matches "Bush" and "Train" equally
+        # on token count, but only one of them opens the name.
+        lead = None
+        for sh in shows:
+            oa = (sh.get("Artist") or "").strip()
+            if not oa or oa == artist:
+                continue
+            oan = re.sub(r"[^a-z0-9]+", " ", oa.lower()).strip()
+            basen = re.sub(r"[^a-z0-9]+", " ", base.lower()).strip()
+            if oan and basen.startswith(oan + " "):
+                lead = oa; break
+        if lead or (best_other_sc >= 2 and best_other_sc > mine_sc):
+            print("  %sskip%s %-52s belongs to %s" % (DIM, RESET, base[:52], lead or best_other))
+            continue
         cand = toks(base) - artist_toks
         best, bestsc = None, 0
         for sh in mine:
@@ -792,10 +823,21 @@ def cmd_score(a):
         rows = [r for r in rows if not r.get("blank")]
         base = [r for r in rows if not r.get("crowd")] or rows
         sharp = rows
+        floor_relaxed = None
         if base:
             ref = float(np.percentile([r["subject"] for r in base], 95))
             floor = max(250.0, 0.35*ref)
             sharp = [r for r in rows if r["subject"] >= floor]
+            # The 250 is an ABSOLUTE floor and assumes a minimum source quality. A
+            # universally soft source - a VHS-sourced clip show - can sit almost
+            # entirely below it, so it rejects nearly everything: one show scored
+            # 256-279 across the board and kept 3 frames of 500. The floor's job is
+            # to drop the blurriest frames RELATIVE TO THIS SHOW, so when it starves
+            # a show, lower it until enough survive, and say so.
+            while len(sharp) < a.top and floor > 40.0:
+                floor *= 0.7
+                sharp = [r for r in rows if r["subject"] >= floor]
+                floor_relaxed = floor
         rows  = [r for r in sharp if not r.get("crowd")]
 
         # The crowd test is `subjectness < 0.60`, calibrated on rock stages: a lit
@@ -822,16 +864,44 @@ def cmd_score(a):
         # by score would order the re-admitted ones arbitrarily. Fall back to subject
         # sharpness among equals.
         rows.sort(key=lambda r: (-r["score"], -r.get("subject", 0)))
-        # de-duplicate: keep a frame only if it differs enough from those kept
+        # Shot-scale diversity. Scoring rewards a sharp subject against a quiet
+        # background, which on a well-lit stage reliably surfaces the performer. On a
+        # DARK show it does not: in a night set or an unlit club the brightest,
+        # highest-contrast frames are wide shots of the crowd and the lighting rig,
+        # so close-ups and instrument detail lose on score even when they are the
+        # better picture. Two shows were handed over with no close-up and no guitar
+        # in the whole shortlist for exactly this reason.
+        #
+        # `conc` (subject brightness over the median tile) is high when one region
+        # dominates the frame - which is what a close-up is. Reserve a third of the
+        # shortlist for the best of those BEFORE filling the rest by score, so a
+        # close-up can never be crowded out by a brighter wide shot.
+        def _distinct(r, kept):
+            return all(bin(r["dhash"] ^ k["dhash"]).count("1") >= a.mindist for k in kept)
+
+        n_close = max(4, a.top // 3)
+        by_conc = sorted(rows, key=lambda r: -r.get("conc", 0.0))
         keep=[]
+        for r in by_conc:
+            if len(keep) >= n_close: break
+            if _distinct(r, keep): keep.append(r)
         for r in rows:
-            if all(bin(r["dhash"] ^ k["dhash"]).count("1") >= a.mindist for k in keep):
-                keep.append(r)
             if len(keep) >= a.top: break
+            if _distinct(r, keep): keep.append(r)
+        keep.sort(key=lambda r: -r["score"])
+
+        # Report darkness so the reviewer knows to expect a harder shortlist.
+        import statistics as _st
+        med_lum = _st.median([r.get("mean", 128) for r in rows]) if rows else 128
         out[s["key"]] = {"all":len(rows), "keep":keep, "relaxed":relaxed}
         note = ""
         if nblank:
             note += "  %d blank/filler dropped" % nblank
+        if floor_relaxed is not None:
+            note += "  %sBLUR FLOOR RELAXED to %.0f (soft source)%s" % (YELLOW, floor_relaxed, RESET)
+        if med_lum < 60:
+            note += "  %sDARK SOURCE (median luma %.0f) - %d close-up slots reserved%s" % (
+                CYAN, med_lum, n_close, RESET)
         if relaxed is not None:
             note = "  %sCROWD TEST RELAXED to subjectness>=%.2f%s" % (YELLOW, relaxed, RESET)
         if len(keep) < a.top:
@@ -888,7 +958,7 @@ def cmd_picks(a):
     if not PICKS_JSON.exists(): print("  no picks.json yet"); return 1
     P=json.loads(PICKS_JSON.read_text(encoding="utf-8"))
     out=HOME/"picks"; out.mkdir(parents=True, exist_ok=True)
-    attempted=ok=miss=0; missing=[]
+    attempted=ok=miss=0; missing=[]; written=set()
     doc=[HTML_HEAD % (_h.escape(state.get("artist","")), _h.escape(state.get("artist","")))]
     for frag,sel in P.items():
         ks=[k for k in BY if frag in k]
@@ -917,9 +987,9 @@ def cmd_picks(a):
             dest=out/("%s__%s.jpg"%(name,tag))
             hits=glob.glob(str(HOME/"work"/k/("*_t%s.jpg"%ts)))
             if hits:
-                shutil.copy2(hits[0],dest); ok+=1
+                shutil.copy2(hits[0],dest); ok+=1; written.add(dest.name)
             elif dest.exists():
-                ok+=1                      # already materialised from an earlier run
+                ok+=1; written.add(dest.name)   # already materialised from an earlier run
             else:
                 miss+=1; missing.append((frag,label,ts))
                 doc.append('<div class="c"><div class="miss">UNRESOLVED %s</div></div>'%_h.escape(ts))
@@ -938,11 +1008,21 @@ def cmd_picks(a):
     print("  attempted %d  resolved %s%d%s  unresolved %s%d%s  files on disk %s%d%s"
           %(attempted,GREEN,ok,RESET,(RED if miss else DIM),miss,RESET,
             (GREEN if on_disk==ok else RED),on_disk,RESET))
-    if on_disk != ok:
+    if on_disk < ok:
         print("  %sLOST PICKS: %d resolved but only %d files on disk. Either two records "
               "produce the same filename, or two picks in one show share a brief tag "
               "(see DUPLICATE BRIEF TAG above)%s" % (RED, ok, on_disk, RESET))
         return 1
+    if on_disk > ok:
+        # Left over from a previous run - picks/ is not cleared between runs, so a
+        # show that has been re-split or renamed leaves its old files behind and they
+        # would be promoted alongside the current ones.
+        stale = sorted(set(p.name for p in out.glob("*.jpg")) - written)
+        print("  %sSTALE PICKS: %d files on disk but only %d picks resolved. Removing %d "
+              "left over from an earlier run.%s" % (YELLOW, on_disk, ok, len(stale), RESET))
+        for nm in stale:
+            print("    removed %s" % nm)
+            (out/nm).unlink(missing_ok=True)
     for frag,label,ts in missing:
         print("     %sUNRESOLVED%s %-26s %-24s %s  (re-capture from source)"%(RED,RESET,frag,label,ts))
     assert attempted==ok+miss, "counts do not add up"

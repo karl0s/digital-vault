@@ -69,6 +69,31 @@ Rules:
   Weak name matching mapped 14 different folders onto 7 records. Record the link as metadata;
   never let it define identity.
 
+### A COMMON-WORD artist name matches other artists' folders
+
+**Failure this prevents:** planning "Bush" pulled in *Smashing Pumpkins — Shepherd's Bush
+Empire* and *TRAIN Live At O2 Empire, Shepherd's Bush*. Both would have been captured and had
+another band's stills promoted onto Bush records. **Nothing downstream catches this** — the
+frames are valid, correctly shaped and correctly deinterlaced, just of the wrong band.
+
+Compare each folder against **every** artist's records, not only the one being planned:
+
+```python
+best_other_sc = max(len(toks(other_artist) & base_toks) for other_artist in all_artists)
+if best_other_sc >= 2 and best_other_sc > len(artist_toks & base_toks):
+    skip                      # another artist matches more strongly
+if basename.startswith(other_artist_normalised + " "):
+    skip                      # the folder OPENS with their name - decisive on a tie
+```
+
+Both rules are needed. Token count caught Smashing Pumpkins (2 tokens vs 1) but not TRAIN,
+where "Bush" and "Train" each match exactly one token — there, only the leading-name test
+breaks the tie. Print the skip and the artist it belongs to; a silent omission is worse than
+the bug.
+
+The collection contains **Train, Filter, Live, Garbage, Cake, Tool and Bush** — every one a
+common word that will collide with venue names, song titles or other bands' folders.
+
 ### Work-directory keys MUST be unique per drive folder
 
 **Failure this prevents:** keying work directories by `ShowID` caused 14 folders to share 7
@@ -604,6 +629,46 @@ things. Treat it as a **review** obligation rather than a filter:
 The related content traps in §10 (music-video compilations, awards shows, split bills) apply
 to whole folders; this one applies **inside** a single show's runtime.
 
+### 6.2e DARK shows need shot-scale diversity, not just score
+
+**Failure this prevents:** two shows were handed over with **no close-up and no instrument shot
+anywhere in the shortlist** — a night festival set and an unlit club broadcast. Nothing was
+broken; the scoring did exactly what it was designed to do, and that was the problem.
+
+Scoring rewards a sharp subject against a quiet background. On a lit stage that reliably
+surfaces the performer. **On a dark show it inverts:** the brightest, highest-contrast frames
+are wide shots of the crowd and the lighting rig, so a close-up of a face or a hand on a
+fretboard — dim, low-contrast, small tonal range — loses on score every time. Rank by score
+alone and the entire shortlist is wide shots.
+
+The fix is not to re-weight the score, which would damage the shows where it works. It is to
+**reserve shortlist slots by shot scale before filling the rest by score**:
+
+```python
+# conc = subject brightness / median tile. High when ONE region dominates the
+# frame, which is what a close-up is.
+n_close = max(4, top // 3)
+for r in sorted(rows, key=lambda r: -r["conc"]):     # close-up reserve FIRST
+    if len(keep) >= n_close: break
+    if distinct(r, keep): keep.append(r)
+for r in rows:                                        # then best by score
+    if len(keep) >= top: break
+    if distinct(r, keep): keep.append(r)
+```
+
+A third of the shortlist is reserved, so a close-up can never be crowded out by a brighter
+wide shot. This runs on every show — it costs a well-lit show nothing, because there the
+high-`conc` frames are close-ups that would have scored well anyway.
+
+**Report darkness explicitly.** When the median frame luma is below 60, the run prints
+`DARK SOURCE (median luma N) - M close-up slots reserved`, so the reviewer knows to expect a
+harder shortlist and to check the briefs rather than trust the ranking.
+
+**And never hand over a score-ranked shortlist as if it were picked.** Score order is a
+starting point for review, not a substitute for it. If picks are auto-selected to save time,
+say which shows they are — the ones where score and judgement diverge are exactly the ones the
+reviewer will notice.
+
 ### 6.3 Adaptive blur floor
 
 Sharpness scales with resolution and bitrate, so an absolute cutoff guts SD sources and
@@ -885,6 +950,52 @@ Encode parameters are a useful secondary tell: `VTS_01`–`05` all sat at 9.56 M
 `VTS_06` sat at 7.82 Mbps. A bitrate or geometry change mid-folder means a different
 authoring session, which usually means different source material.
 
+### A TITLESET BOUNDARY IS NOT A SHOW BOUNDARY
+
+**Failure this prevents:** one MuchMusic *Intimate & Interactive* broadcast was split into
+**three** separate records, then a fourth titleset was nearly split off as well. The disc simply
+chaptered one hour-long programme across five titlesets, and every boundary looked like a new
+show. The user caught it twice.
+
+The trap is that a magazine-format broadcast genuinely changes appearance across a single
+programme: live performance, then viewer calls, then a pre-recorded insert with its own title
+card. Each looked like a different show. One insert even carried a **VANCOUVER** caption, which
+produced a record for a Vancouver concert that never happened — it was a Speakers Corner segment
+played into a Toronto studio broadcast.
+
+**Structure suggests; continuity decides.** Before splitting, check whether these hold ACROSS
+the boundary:
+
+| Signal | Same show if… |
+|---|---|
+| Presenter | same person, **same clothing** |
+| Microphone / bug | same station flag on the mic, same corner bug |
+| Caption house style | `CALLER: Name, Town, PROV` in the same typeface throughout |
+| On-screen furniture | same phone number, email, hashtag |
+| Set and audience | same room, same crowd |
+
+Any one of those persisting across a titleset boundary means one programme. The clothing test is
+the cheapest and was decisive here: the same presenter in the same metallic top appeared in
+three "different shows".
+
+A pre-recorded insert with its own title card is **part of the programme it appears in**, not a
+separate show — however emphatically the card names another city.
+
+### After splitting, RENAME THE ORIGINAL RECORD TOO
+
+**Failure this prevents:** splitting produced new records named for their titleset
+(`… (VTS_01 - Hard Rock Cafe)`) while the original kept the whole-folder name
+(`… HBO Reverb + Hard Rock Cafe`). Listed together they read as duplicates — the original
+appears to contain everything its siblings also claim.
+
+Every record from a split must name **only the part it covers**, the original included:
+
+```
+Bush - HBO Reverb + Hard Rock Cafe   →  Bush - HBO Reverb (VTS_02)
+DVD 1                                →  DVD 1 (VTS_01-02 - Much Music Intimate & Interactive)
+Bush - Woodstock 99                  →  Bush - Woodstock 99 (Bush set)
+```
+
 ### Step 3 — Decide which record keeps the original checksum
 
 **The record that keeps the original `ChecksumSHA1` must be the show whose files were
@@ -1136,6 +1247,16 @@ nothing. (The guard caught it: 0 promoted, nothing damaged.)
 `work/` holds disposable candidates. `picks/` holds the locked, named selections. Promotion
 must read `picks/<Folder Name>__<A|B|C|spare>.jpg` and only fall back to `work/` if absent.
 
+### `picks/` is not cleared between runs — remove stale files
+
+**Failure this prevents:** after a show was re-split and renamed, `picks/` held **68 files where
+52 were expected**. The extras were the previous run's picks under their old names, and they
+would have been promoted alongside the current ones.
+
+The file-count guard originally only understood "fewer than expected". It must handle both
+directions: fewer means picks were lost to a name collision; more means stale files from an
+earlier run. Track what the current run actually wrote and delete the remainder by name.
+
 ### Re-materialise `picks/` whenever `picks.json` changes
 
 Picks chosen *after* the picks page was last generated exist only as timestamps in JSON —
@@ -1312,6 +1433,9 @@ eyeballing a list.
 - [ ] Every pick in a show has a distinct brief tag (A/B/C/spare) — a duplicate silently
       overwrites (§11)
 - [ ] Shortlists reviewed for COMMERCIALS on any off-air source (§6.2d)
+- [ ] Every shortlist contains at least one CLOSE-UP and one instrument/detail frame — on dark
+      sources score alone will not produce them (§6.2e)
+- [ ] Any show marked DARK SOURCE reviewed against the briefs, not accepted on rank
 - [ ] Picks page shows real images, not index numbers
 - [ ] Content traps identified and reported (compilations, split bills, awards shows)
 - [ ] `find_multishow.py` run for this artist; every hit resolved or explicitly cleared (§10b)
@@ -1320,6 +1444,10 @@ eyeballing a list.
 - [ ] Report links verified with `check_report_links.py` before any page is opened
 - [ ] For any folder with >1 titleset: each titleset probed, frames compared, broadcaster bug
       checked, and the record's `RepVideoFiles` confirmed to describe the show it claims to be
+- [ ] Before splitting: continuity checked ACROSS the boundary (presenter and their clothing,
+      mic flag, caption style, on-screen furniture) — a titleset boundary is not a show boundary
+- [ ] After splitting: the ORIGINAL record renamed to name only its part, not the whole folder
+- [ ] No folder belonging to a DIFFERENT artist was planned — check the skip lines
 - [ ] Any new record from a split keyed by a REAL content hash where the files allow it
 - [ ] Collection drive unmodified; repo clean
 - [ ] Pruning only after picks verified
