@@ -513,7 +513,15 @@ def capture_singlepass(s, vf_tail, outdir: Path, n: int, deint=DEFAULT_DEINT):
         if float(den): fps = float(num)/float(den)
     except Exception: pass
     total = max(1, int(s["duration"] * fps))
-    k = max(1, total // max(1, n))
+    # Skip the first and last 5%, exactly as the seek path does. Without this the
+    # single-pass fallback sweeps the WHOLE file, so opening logos and the closing
+    # credit roll become candidates - and credits score superbly, because crisp
+    # white text is about the sharpest thing on a DVD. On the Alanis MTV Unplugged
+    # shortlist nine of twenty-two frames were end credits before this was fixed.
+    start = int(total * 0.05)
+    end   = int(total * 0.95)
+    span  = max(1, end - start)
+    k = max(1, span // max(1, n))
     tmp = outdir / "_pass"
     if tmp.exists(): shutil.rmtree(tmp)
     tmp.mkdir(parents=True, exist_ok=True)
@@ -527,12 +535,15 @@ def capture_singlepass(s, vf_tail, outdir: Path, n: int, deint=DEFAULT_DEINT):
         # falls back to spatial-only output, which measured byte-identical to no
         # deinterlacing at all. Only DEINT_WINDOW/k of frames reach the filter,
         # so this costs very little over the plain path.
-        pre  = "select='lt(mod(n\\,%d)\\,%d)'" % (k, DEINT_WINDOW)
+        pre  = ("select='gte(n\\,%d)*lte(n\\,%d)*lt(mod(n-%d\\,%d)\\,%d)'"
+                % (start, end, start, k, DEINT_WINDOW))
         post = "select='eq(mod(n\\,%d)\\,%d)'" % (DEINT_WINDOW, DEINT_MID)
         vf = ",".join(x for x in (pre, head, di, post, tail) if x)
         offset = DEINT_MID
     else:
-        vf = ",".join(x for x in ("select='not(mod(n\\,%d))'" % k, head, di, tail) if x)
+        pre = ("select='gte(n\\,%d)*lte(n\\,%d)*not(mod(n-%d\\,%d))'"
+               % (start, end, start, k))
+        vf = ",".join(x for x in (pre, head, di, tail) if x)
         offset = 0
 
     r = run(["ffmpeg","-hide_banner","-loglevel","error","-y","-i",s["src"],
@@ -541,7 +552,7 @@ def capture_singlepass(s, vf_tail, outdir: Path, n: int, deint=DEFAULT_DEINT):
     made = sorted(tmp.glob("f_*.jpg"))
     ok = 0
     for i, f in enumerate(made):
-        ts = (i * k + offset) / fps
+        ts = (start + i * k + offset) / fps
         hh=int(ts//3600); mm=int(ts%3600//60); ss=int(ts%60)
         dest = outdir / ("%s_c%03d_t%02d-%02d-%02d.jpg" % (s["key"], i, hh, mm, ss))
         good, why = verify(f, s)
@@ -667,24 +678,58 @@ def cmd_score(a):
                 try: m=f.result()
                 except Exception: continue
                 m["file"]=p.name; m["t"]=p.stem.split("_t")[-1]; rows.append(m)
-        rows = [r for r in rows if not r.get("crowd")]
         # Adaptive blur floor: sharpness scales with resolution and bitrate, so an
         # absolute cutoff would gut the SD sources and pass soft HD frames. Judge
         # each show against its own best.
-        if rows:
-            ref = float(np.percentile([r["subject"] for r in rows], 95))
+        # Derive the floor from NON-crowd frames only. Crowd frames are the busiest
+        # texture in any show, so including them inflates the 95th percentile and
+        # tightens the floor for everything else - the opposite of the intent.
+        base = [r for r in rows if not r.get("crowd")] or rows
+        sharp = rows
+        if base:
+            ref = float(np.percentile([r["subject"] for r in base], 95))
             floor = max(250.0, 0.35*ref)
-            rows = [r for r in rows if r["subject"] >= floor]
-        rows.sort(key=lambda r:-r["score"])
+            sharp = [r for r in rows if r["subject"] >= floor]
+        rows  = [r for r in sharp if not r.get("crowd")]
+
+        # The crowd test is `subjectness < 0.60`, calibrated on rock stages: a lit
+        # performer against a dark surround. An evenly-lit venue - an acoustic
+        # theatre, a daylight festival - has few dark tiles and low tile-contrast,
+        # so it reads as "uniformly busy" exactly like a crowd. On the Alanis MTV
+        # Unplugged set it rejected 83% of frames (median subjectness 0.49) and left
+        # a shortlist of 11.
+        #
+        # Rather than weaken the test everywhere, re-admit the best of what it threw
+        # out, but ONLY when the show would otherwise be starved, and say so. A thin
+        # shortlist must never pass silently - that is how a show ends up with four
+        # near-identical stills and nobody notices.
+        relaxed = None
+        if len(rows) < a.top:
+            spare = sorted([r for r in sharp if r.get("crowd")],
+                           key=lambda r: -r.get("subjectness", 0))
+            need = a.top - len(rows)
+            take = spare[:need * 3]          # headroom for the de-dup pass below
+            if take:
+                relaxed = min(r.get("subjectness", 0) for r in take)
+                rows = rows + take
+        # Crowd-flagged frames short-circuit the score formula to 0, so a plain sort
+        # by score would order the re-admitted ones arbitrarily. Fall back to subject
+        # sharpness among equals.
+        rows.sort(key=lambda r: (-r["score"], -r.get("subject", 0)))
         # de-duplicate: keep a frame only if it differs enough from those kept
         keep=[]
         for r in rows:
             if all(bin(r["dhash"] ^ k["dhash"]).count("1") >= a.mindist for k in keep):
                 keep.append(r)
             if len(keep) >= a.top: break
-        out[s["key"]] = {"all":len(rows), "keep":keep}
-        print("  %-40s %4d usable -> top %2d kept (best %.0f)" %
-              (s["FolderName"][:40], len(rows), len(keep), keep[0]["score"] if keep else 0))
+        out[s["key"]] = {"all":len(rows), "keep":keep, "relaxed":relaxed}
+        note = ""
+        if relaxed is not None:
+            note = "  %sCROWD TEST RELAXED to subjectness>=%.2f%s" % (YELLOW, relaxed, RESET)
+        if len(keep) < a.top:
+            note += "  %sSTARVED: %d < %d%s" % (RED, len(keep), a.top, RESET)
+        print("  %-40s %4d usable -> top %2d kept (best %.0f)%s" %
+              (s["FolderName"][:40], len(rows), len(keep), keep[0]["score"] if keep else 0, note))
     p = DATA/"scores.json"; assert_readonly_target(p)
     p.write_text(json.dumps(out, indent=1), encoding="utf-8")
     print("  -> %s" % p)
@@ -741,7 +786,14 @@ def cmd_picks(a):
         ks=[k for k in BY if frag in k]
         if not ks:
             print("  %sNO SHOW for %s%s"%(RED,frag,RESET)); attempted+=len(sel); miss+=len(sel); continue
-        k=ks[0]; sh=BY[k]; name=sh["FolderName"].replace("/","_")[:44]
+        # The ShowID suffix is REQUIRED, not cosmetic. Two records split out of one
+        # folder share a FolderName prefix, and truncating to 44 chars made them
+        # collide: the second show's picks silently overwrote the first's, while the
+        # attempted/resolved tally still read 16 because it counted copies, not
+        # distinct files. Filenames must be unique per RECORD, not per folder.
+        k=ks[0]; sh=BY[k]
+        name="%s_%s" % (sh["FolderName"].replace("/","_")[:44].rstrip(),
+                        (sh.get("ShowID") or k)[:6])
         doc.append('<h2>%s<span>%dx%d</span></h2><div class=g>'
                    %(_h.escape(sh["FolderName"]), sh["target_w"], sh["target_h"]))
         for label,ts in sel:
@@ -764,8 +816,16 @@ def cmd_picks(a):
     page=REPORTS/("%s_picks.html"%re.sub(r"[^a-z0-9]+","_",state.get("artist","artist").lower()).strip("_"))
     assert_readonly_target(page); REPORTS.mkdir(parents=True,exist_ok=True)
     page.write_text("".join(doc),encoding="utf-8")
-    print("  attempted %d  resolved %s%d%s  unresolved %s%d%s"
-          %(attempted,GREEN,ok,RESET,(RED if miss else DIM),miss,RESET))
+    # Count files on disk, not successful copies: a name collision produces a
+    # successful copy that destroys an earlier one, and only the disk knows.
+    on_disk = len(list(out.glob("*.jpg")))
+    print("  attempted %d  resolved %s%d%s  unresolved %s%d%s  files on disk %s%d%s"
+          %(attempted,GREEN,ok,RESET,(RED if miss else DIM),miss,RESET,
+            (GREEN if on_disk==ok else RED),on_disk,RESET))
+    if on_disk != ok:
+        print("  %sFILENAME COLLISION: %d picks resolved but only %d files exist - "
+              "two records are producing the same filename%s" % (RED, ok, on_disk, RESET))
+        return 1
     for frag,label,ts in missing:
         print("     %sUNRESOLVED%s %-26s %-24s %s  (re-capture from source)"%(RED,RESET,frag,label,ts))
     assert attempted==ok+miss, "counts do not add up"
