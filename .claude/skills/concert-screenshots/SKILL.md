@@ -139,6 +139,68 @@ the output. Deriving it from the output makes gate 1 (§8) trivially true, becau
 is now constructed to match DAR by definition. The gate must still be able to catch a source
 whose SAR and DAR disagree.
 
+### 4.1b Canonical output sizes — what consistency actually means
+
+**Policy: native max, no upscaling beyond the source.** Reach the display shape by growing
+the under-sampled axis. Never invent pixels to make two shows match, and never discard real
+ones. Sizes therefore vary by source standard — that is correct and intended.
+
+Two shows are "consistent" when their **aspect ratio is exact** and each is at **the largest
+size its source honestly supports**. Forcing every 4:3 show to one arbitrary size would mean
+upscaling NTSC by up to 20%, which produces matching dimensions with mismatched sharpness —
+uniformity on paper, not on screen.
+
+Every size the collection legitimately produces (measured across 796 catalogued shows):
+
+| Source | Standard | Display | **Output** | Shows |
+|---|---|---|---|---:|
+| 720×576 | PAL | 4:3 | **768×576** | 224 |
+| 720×480 | NTSC | 4:3 | **720×540** | 239 |
+| 720×576 | PAL | 16:9 | **1024×576** | 110 |
+| 704×480 | NTSC | 4:3 | **704×528** | 54 |
+| 704×576 | PAL | 4:3 | **768×576** | 24 |
+| 720×480 | NTSC | 16:9 | **854×480** | 24 |
+| 704×576 | PAL | 16:9 | **1024×576** | 6 |
+| 480×576 | PAL | 4:3 | **768×576** | 3 |
+| 352×480 | NTSC | 4:3 | **640×480** | 3 |
+| 1280×720 | either | 16:9 | **1280×720** | 10 |
+| 1920×1080 | either | 16:9 | **1920×1080** | 77 |
+| 1440×1080 | PAL | 16:9 | **1920×1080** | 6 |
+
+Eight distinct output sizes in total: `640×480`, `704×528`, `720×540`, `768×576`,
+`854×480`, `1024×576`, `1280×720`, `1920×1080`.
+
+**A show's images must all share one size** — if slot 1 is 768×576 and slot 3 is 720×576,
+something re-captured half of them under a different rule. §8 gate 7 catches it per run; the
+collection-wide audit (§4.1c) catches it retrospectively.
+
+Half-D1 sources (352×480, 480×576) legitimately upscale their *width* substantially — 352 →
+640 is an 82% stretch. That is not a violation: the horizontal axis is genuinely
+under-sampled, and the alternative is a picture squashed to half its proper width.
+
+### 4.1c Auditing the whole collection
+
+`scripts/audit-image-geometry.py` in the site repo recomputes the correct target for every
+show from `shows.json` (`Width`, `Height`, `AspectRatio`) and compares it to what is on disk.
+
+```bash
+python3 scripts/audit-image-geometry.py                    # summary + per-artist worklist
+python3 scripts/audit-image-geometry.py --artist "Foo Fighters"
+python3 scripts/audit-image-geometry.py --list             # every affected show
+```
+
+It classifies each show as `correct`, `SQUASHED` (wrong aspect — raw pixel dimensions),
+`SMALL` (right shape, below target), `MIXED` (slots disagree with each other),
+`LETTERBOX` (needs cropdetect, cannot be judged from metadata) or unknown geometry.
+
+**It deliberately re-implements `fit_no_downsample` rather than importing it**, so the audit
+still fails if the pipeline's rule regresses. Two independent statements of the rule are the
+point; sharing one would let a bug hide from its own test.
+
+Baseline at the time of writing: **7.3% correct, 67.5% squashed, 9.6% undersized,
+11.2% internally inconsistent.** The squashed majority predates this pipeline — those images
+were written at raw pixel dimensions with no SAR correction at all.
+
 ### 4.2 Snap near-square SAR to 1:1
 
 Encoders emit noise like `999:1000` and `1287:1280`. Within 1% of square, force `1:1` —
@@ -247,6 +309,31 @@ Three call sites need care:
 **QA gate:** after any change to the deinterlacer or the chain order, hash the output of the
 deinterlaced variant against the no-deinterlace variant. **If they are byte-identical, the
 deinterlacer did nothing.** This is a one-line check that would have caught it immediately.
+
+---
+
+### 4.8 Encode settings that must never vary
+
+Consistency across artists depends on these being identical every run. Changing any of them
+means the collection no longer matches itself, so treat them as fixed unless there is a
+measured reason to change — and if one does change, **re-run every artist**, not just the
+next one.
+
+| Setting | Value | Why |
+|---|---|---|
+| Scaler | `flags=lanczos` | Sharpest of the practical resamplers; bilinear visibly softens |
+| Deinterlace | `bwdif`, conditional on `field_order` | §4.6. Never applied to progressive sources |
+| Sample aspect | `setsar=1` | Without it the browser re-stretches a correctly-scaled image |
+| JPEG quality | `-q:v 2` | ffmpeg's scale is 2 (best) to 31. ~50 KB per SD frame |
+| Pixel format | `-pix_fmt yuvj420p` | Full-range JPEG; `yuv420p` shifts levels and washes out blacks |
+| Sharpening | **none** | An unsharp pass exaggerates DVD ringing and looks worse at card size |
+| Denoise | **none** | Removes film grain and fine detail; the source is what it is |
+| Colour | **untouched** | No auto-levels, no saturation — broadcasts differ, and that is authentic |
+| Watermarks | **kept** | Broadcaster bugs, tickers and TV-PG marks are part of the recording (§9) |
+
+Storage: at `-q:v 2`, four SD frames per show is roughly 200 KB. Across 831 shows that is
+about 170 MB — acceptable for a repo that already ships the images. Do not lower quality to
+save space; drop to three frames per show instead if it ever matters.
 
 ---
 
@@ -717,6 +804,14 @@ eyeballing a list.
 - [ ] Every show has a plausible duration (no zeros; demuxed where the container lied)
 - [ ] Interlaced shows deinterlaced; progressive shows untouched
 - [ ] Every show's target dimensions derived from SAR, not assumed
+- [ ] Target is never SMALLER than the source on either axis (§4.1 — no downsampling)
+- [ ] Output size is one of the eight canonical sizes (§4.1b), or the source is unusual
+      enough to justify a new one — say which
+- [ ] All slots within a show share one size
+- [ ] Encode settings unchanged from §4.8 (lanczos, `-q:v 2`, `yuvj420p`, `setsar=1`,
+      no sharpen/denoise/colour)
+- [ ] Deinterlacer demonstrably ran — output NOT byte-identical to the undeinterlaced frame,
+      comb ratio below ~1.6 on a normal shot (§4.7)
 - [ ] Suspicious aspect flags (SD 4:3 dated ≥2008, non-standard ratios) visually verified
 - [ ] Letterbox checked at ≥2 timestamps
 - [ ] Full-collection dimension audit reports **0 wrong dimensions**
@@ -734,7 +829,9 @@ eyeballing a list.
 - [ ] Loose media files at the drive root checked for missing records
 - [ ] New records: unique ShowID, unique checksum, valid date format
 - [ ] Split bills given derived checksums, documented in Notes
-- [ ] `git add -f` used; every manifest entry tracked or staged (verify against git, not disk)
+- [ ] `git add -f` used for BOTH `public/` and `.claude/skills/` (§11); every manifest entry
+      tracked or staged (verify against git, not disk)
+- [ ] `scripts/audit-image-geometry.py --artist "<name>"` reports 100% correct for this artist
 - [ ] No verification step can pass silently on failure
 
 ---
@@ -748,8 +845,10 @@ follow it in order.
 cd ~/VaultShots
 A="Stone Temple Pilots"
 
-# 1. SCOPE (seconds) - how many images are actually wrong? See §14.
-#    If nothing is squashed and the stills are fine, stop here.
+# 1. SCOPE (seconds) - how many images are actually wrong?
+python3 ~/Desktop/Projects/the-vault/scripts/audit-image-geometry.py --artist "$A"
+#    Gives the exact worklist: SQUASHED / SMALL / MIXED / LETTERBOX per show (§4.1c).
+#    If it already reports 100% correct and the stills look fine, stop here. See also §14.
 
 # 2. PLAN - probe every folder, compute targets, run gates 1-4
 python3 shots.py --artist "$A" plan          # --artist is GLOBAL: before the subcommand
@@ -782,8 +881,10 @@ python3 promote.py                           # dry run - read the OLD->NEW colum
 python3 promote.py --apply
 
 # 8. VERIFY + COMMIT
-python3 scripts/health-check.py              # in the repo
+python3 scripts/health-check.py                        # in the repo
+python3 scripts/audit-image-geometry.py --artist "$A"  # must be 100% correct now
 git add -f public/images/ public/image-manifest.json
+git add -f .claude/skills/concert-screenshots/         # if any bundled script changed
 #    assert every manifest entry is tracked or staged (§11), then commit
 
 # 9. ARCHIVE - park the run so the next artist starts clean

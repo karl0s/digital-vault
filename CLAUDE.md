@@ -127,10 +127,49 @@ Only slots listed here are served — if a slot isn't in the array, the image is
 - Images are named `{ChecksumSHA1}_01.jpg`, `_02.jpg`, `_03.jpg`, `_04.jpg`
 - Only `.jpg` format
 - Up to 4 images per show; slot 1 is the primary (shown on cards)
+- **All slots within a show must share identical pixel dimensions**
 - When adding/replacing images:
   1. Copy new files to `public/images/` with correct `{checksum}_0{n}.jpg` name
   2. Update `public/image-manifest.json` to reflect the new set of indices
   3. **Never** leave files in `public/images/temp-images/` — clean it up every task
+
+### Image geometry — display shape, not stored shape
+
+DVD and broadcast pixels are not square. An image written at the source's raw
+`Width`×`Height` is **squashed** — 720×576 PAL displays as 4:3 or 16:9, never as its stored
+1.25 ratio. The correct output is derived from the sample aspect ratio.
+
+**Rule: reach the display shape by growing the under-sampled axis. Never downscale, and
+never upscale past native just to make two shows match.** Sizes legitimately differ by
+broadcast standard; what must be exact is the aspect ratio.
+
+| Source | Standard | Display | Correct output |
+|---|---|---|---|
+| 720×576 | PAL | 4:3 | 768×576 |
+| 720×576 | PAL | 16:9 | 1024×576 |
+| 720×480 | NTSC | 4:3 | 720×540 |
+| 720×480 | NTSC | 16:9 | 854×480 |
+| 704×480 | NTSC | 4:3 | 704×528 |
+| 1440×1080 | — | 16:9 | 1920×1080 |
+| 1280×720 / 1920×1080 | — | 16:9 | unchanged |
+
+Audit the whole collection at any time — read-only, changes nothing:
+
+```bash
+python3 scripts/audit-image-geometry.py                     # summary + per-artist worklist
+python3 scripts/audit-image-geometry.py --artist "Nirvana"  # detail for one artist
+```
+
+As of the last run: **7.3% of shows correct, 67.5% squashed, 9.6% undersized, 11.2%
+internally inconsistent.** The bad majority predates the capture pipeline. Aerosmith is fully
+corrected; 30 Seconds to Mars is mostly corrected; everything else is outstanding.
+
+Capture and replacement is handled by the `concert-screenshots` skill
+(`.claude/skills/concert-screenshots/SKILL.md`), which owns the full procedure, the fixed
+encode settings (lanczos, `-q:v 2`, `yuvj420p`, `setsar=1`, no sharpening or colour changes)
+and the read-only safety rules. Do not hand-roll ffmpeg calls for this.
+
+---
 
 ### Temp images workflow
 User drops images into `public/images/temp-images/` then asks Claude to assign them to a show.
