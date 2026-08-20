@@ -134,9 +134,19 @@ def pick_source(folder: Path, only_vts=None, only_vobs=None):
     """
     if folder.is_file():                      # loose single-file show
         return str(folder), "file", [folder]
-    vts = sorted([q for q in folder.rglob("*")
-                  if q.is_file() and re.match(r"VTS_\d+_[1-9]\.VOB$", q.name, re.I)],
-                 key=lambda q: q.name.upper())
+    # Look ONLY at this disc's own VOBs - folder/VIDEO_TS/ or the folder itself -
+    # never recursively. A folder can CONTAIN other complete discs: the Audioslave
+    # compilation has rar/, pp/ and hul/ subfolders, each a DVD in its own right and
+    # each already a separate unit. rglob swept all four into one source, interleaved
+    # them by filename (root VTS_01_1, then rar/VTS_01_1, ...) and reported a runtime
+    # of 1675 minutes for a two-hour disc.
+    cand = []
+    for d in (folder/"VIDEO_TS", folder):
+        if d.is_dir():
+            cand = [q for q in d.iterdir()
+                    if q.is_file() and re.match(r"VTS_\d+_[1-9]\.VOB$", q.name, re.I)]
+            if cand: break
+    vts = sorted(cand, key=lambda q: q.name.upper())
     if only_vts:
         want = {str(v).zfill(2) for v in only_vts}
         vts = [q for q in vts
@@ -155,7 +165,9 @@ def pick_source(folder: Path, only_vts=None, only_vobs=None):
             return None, None, []
     if vts:
         return "concat:" + "|".join(str(q) for q in vts), "dvd", vts
-    vids = sorted([q for q in folder.rglob("*")
+    # Same reasoning for loose video: do not reach into nested discs or subfolders
+    # that are separate units in their own right.
+    vids = sorted([q for q in folder.iterdir()
                    if q.is_file() and q.suffix.lower() in VIDEO_EXT
                    and q.stat().st_size > 20*1024*1024],
                   key=lambda q: q.stat().st_size, reverse=True)

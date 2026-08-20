@@ -201,6 +201,33 @@ Baseline at the time of writing: **7.3% correct, 67.5% squashed, 9.6% undersized
 11.2% internally inconsistent.** The squashed majority predates this pipeline — those images
 were written at raw pixel dimensions with no SAR correction at all.
 
+### 4.1c-2 A folder can CONTAIN other complete discs — never glob recursively
+
+**Failure this prevents:** `pick_source` gathered VOBs with `rglob`, so a folder holding nested
+discs swept all of them into one source. The Audioslave compilation has `rar/`, `pp/` and
+`hul/` subfolders, each a complete DVD and each already its own capture unit. All four were
+concatenated and — because the sort key was the *filename* — interleaved: root `VTS_01_1`,
+then `rar/VTS_01_1`, then `pp/VTS_01_1`, and so on. Four different concerts spliced together.
+
+The only visible symptom was an implausible runtime: **1675 minutes for a two-hour disc**. No
+gate fired, because every frame it would have produced is validly shaped.
+
+Gather from the disc's own level only:
+
+```python
+for d in (folder/"VIDEO_TS", folder):
+    if d.is_dir():
+        cand = [q for q in d.iterdir() if VOB_RX.match(q.name)]
+        if cand: break
+```
+
+Same for loose video files: `iterdir`, not `rglob`. A nested folder that holds media is a
+separate unit and will be planned separately.
+
+**QA gate:** a runtime that disagrees wildly with `size ÷ bitrate` means the source list is
+wrong, not just the duration. Check what `pick_source` actually returned before trusting a
+demux to fix it.
+
 ### 4.1d One titleset can mix geometries — ffprobe only reports the first stream
 
 **Failure this prevents:** the Alice in Chains Unplugged disc holds the show **twice**.
@@ -866,6 +893,25 @@ python3 titleset_checksums.py "<folder name>"
 different show to make the metadata look tidier** — the checksum is the key that images are
 filed under, and it is the one field that is verifiable from the drive.
 
+### Re-keying a record ORPHANS its old images
+
+**Failure this prevents:** resolving a temp-checksum stub changed a record's `ChecksumSHA1`
+from the placeholder to a real content hash. The images filed under the *old* checksum stayed
+on disk and in the manifest, now referenced by no record at all — invisible on the site,
+counted by nothing, and never cleaned up. Promotion's own post-flight passed, because it
+checks manifest-vs-disk and both still agreed.
+
+Whenever a checksum changes — a resolved stub, a corrected mis-key, a split — audit for
+manifest entries that **no record references**:
+
+```python
+recs = {s["ChecksumSHA1"] for s in shows if s.get("ChecksumSHA1")}
+orphans = [k for k in manifest if k not in recs]
+```
+
+Delete the files and the manifest entry, but **only after asserting the checksum is genuinely
+unreferenced**. `scripts/audit-image-geometry.py` reports these as `no show record`.
+
 ### Step 4 — Key the new record
 
 **Prefer a real content hash.** When the shows are separable at file level — distinct
@@ -1213,6 +1259,10 @@ eyeballing a list.
 - [ ] Blank/filler frames dropped, and the count reported (§6.2c)
 - [ ] Any titleset whose reported geometry looks implausible for its size/bitrate has been
       probed VOB-by-VOB for mixed geometry (§4.1d)
+- [ ] No unit's source list reaches into a nested disc — check any folder with subfolders
+      that contain their own VIDEO_TS (§4.1c-2)
+- [ ] Every planned runtime is plausible for the media size; an absurd one means the SOURCE
+      LIST is wrong, not merely the duration
 - [ ] Contact sheets built for every show
 - [ ] Picks recorded by timestamp and **all resolve** to files
 - [ ] Pick FILE COUNT ON DISK equals the resolved count — no filename collisions (§11)
@@ -1234,7 +1284,8 @@ eyeballing a list.
 - [ ] Split bills given derived checksums, documented in Notes
 - [ ] `git add -f` used for BOTH `public/` and `.claude/skills/` (§11); every manifest entry
       tracked or staged (verify against git, not disk)
-- [ ] `scripts/audit-image-geometry.py --artist "<name>"` reports 100% correct for this artist
+- [ ] `scripts/audit-image-geometry.py --artist "<name>"` reports 100% correct for this artist,
+      with no `no show record` rows — those are images orphaned by a checksum change (§10b)
 - [ ] No verification step can pass silently on failure
 
 ---
