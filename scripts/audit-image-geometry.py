@@ -51,7 +51,9 @@ def parse_dar(s):
     s = (s or "").strip()
     if not s:
         return None, False
-    letterboxed = "letterbox" in s.lower()
+    # "pillarboxed" is the same situation rotated - bars at the sides rather than
+    # top and bottom - and the real picture shape is likewise the SECOND ratio.
+    letterboxed = "letterbox" in s.lower() or "pillarbox" in s.lower()
     nums = re.findall(r"(\d+)\s*:\s*(\d+)", s)
     if not nums:
         return None, letterboxed
