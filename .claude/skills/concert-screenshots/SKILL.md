@@ -201,6 +201,29 @@ Baseline at the time of writing: **7.3% correct, 67.5% squashed, 9.6% undersized
 11.2% internally inconsistent.** The squashed majority predates this pipeline — those images
 were written at raw pixel dimensions with no SAR correction at all.
 
+### 4.1d One titleset can mix geometries — ffprobe only reports the first stream
+
+**Failure this prevents:** the Alice in Chains Unplugged disc holds the show **twice**.
+`VTS_01_1` is a 352×240 copy that runs out into minutes of blank green filler; `VTS_01_2`–`_4`
+are the real 720×480 broadcast. `ffprobe` on the concatenated titleset reports the **first**
+video stream it finds, so the whole 3.8 GB disc was catalogued as 352×240 — a quarter of the
+true resolution, and the reason that show's images were wrong on the site.
+
+Probe **each VOB separately** whenever a titleset's reported geometry looks implausible for
+its size or bitrate — 352×240 at 8.8 Mbps is a contradiction, since quarter-D1 needs nothing
+like that:
+
+```bash
+for f in VTS_01_*.VOB; do
+  ffprobe -v error -select_streams v -show_entries stream=width,height,sample_aspect_ratio \
+          -of csv=p=0 "$f"
+done | sort -u          # more than one line = mixed geometry
+```
+
+Then restrict capture to the good files with `vobs` in `splits.json` (§10b step 7). Selecting
+files rather than a time window matters here: it makes ffprobe report the **right** geometry,
+because the bad stream is no longer first.
+
 ### 4.2 Snap near-square SAR to 1:1
 
 Encoders emit noise like `999:1000` and `1287:1280`. Within 1% of square, force `1:1` —
@@ -509,6 +532,51 @@ Crowd-flagged frames short-circuit the score formula to **0**, so sort by
 show, so including them inflates the 95th percentile and tightens the floor for everything
 else — the opposite of the intent. Getting this wrong cost one show 10 usable frames.
 
+### 6.2c Blank and filler frames — palette is the only reliable signal
+
+Discs carry more dead air than expected: black between segments on almost every DVD, and in
+one case **minutes of solid green** where a low-resolution copy ran out.
+
+None of the other tests catch these. `graphic` requires an extreme luminance tail, `crowd2`
+requires a large palette, and a *grainy* monochrome field defeats both `flat` and `contrast` —
+the green filler measured `flat 0.54` and `contrast 19.6`, indistinguishable from real
+texture, because it came off VHS with noise on it.
+
+What a blank frame cannot fake is having almost no distinct colours:
+
+```
+palette = distinct colours after 4-bit-per-channel quantisation
+blank if palette < 90 or contrast < 4.0 or flat > 0.97
+```
+
+**Calibrate the threshold against labelled frames, don't guess it.** Across a mixed set
+(bright studio, dark club, daylight festival, news graphics) the lowest palette on a genuine
+frame was **109**; blanks measured **49** (grainy green), **21** (near-black) and **1** (pure
+black). 90 sits in that gap with margin either side. Re-check the margin on any artist whose
+sources are unusually dark.
+
+Blank frames are dropped outright and **must never be eligible for the crowd relaxation**
+(§6.2b) — a green field is not a shot of anything. Report the count that was dropped.
+
+### 6.2d Off-air recordings contain COMMERCIALS
+
+**Failure this prevents:** the Alice in Chains Unplugged disc is an off-air tape with the ad
+breaks left in. Four commercials — a deodorant product shot, a beer logo, a cartoon, a car —
+reached the 24-frame shortlist, because ads are bright, sharp, high-contrast and centrally
+composed, which is exactly what the scoring rewards.
+
+No cheap signal separates a commercial from a performance: both are real photographs of real
+things. Treat it as a **review** obligation rather than a filter:
+
+- Expect ads on anything sourced from broadcast tape rather than a disc master. A sidecar
+  saying "VHS > DVDR" is the tell.
+- Scan the contact sheet for frames that do not look like a stage, and discard them by eye.
+- Say so in the hand-off. A pick that is secretly a deodorant advert is worse than a thin
+  shortlist.
+
+The related content traps in §10 (music-video compilations, awards shows, split bills) apply
+to whole folders; this one applies **inside** a single show's runtime.
+
 ### 6.3 Adaptive blur floor
 
 Sharpness scales with resolution and bitrate, so an absolute cutoff guts SD sources and
@@ -609,6 +677,24 @@ if on_disk != ok:
 ```
 
 This is §15 in miniature: the tally being checked was the one the bug could not affect.
+
+### Each pick in a show needs a DISTINCT brief tag
+
+**Failure this prevents:** the brief tag is the label's first token, so swapping which pick is
+the hero by relabelling both entries "B …" makes both write `__B.jpg`, and one silently
+destroys the other. 20 picks resolved, 18 files on disk.
+
+The file-count guard above catches the symptom; check the cause explicitly too:
+
+```python
+tags = [label.split()[0] for label, _ in sel]
+dup  = [t for t in set(tags) if tags.count(t) > 1]
+if dup: print("DUPLICATE BRIEF TAG %s in %s" % (",".join(sorted(dup)), frag))
+```
+
+When re-ordering picks, change the **labels** as well as the timestamps: the hero entry must
+begin with `A`, whatever it depicts. `"A  multiple members (hero)"` is right;
+`"B  multiple members (hero)"` silently loses a pick.
 
 ### Record picks by TIMESTAMP, not sheet index
 
@@ -845,6 +931,18 @@ Declare the split in `data/splits.json`, keyed by the folder's basename on the d
   ]
 }
 ```
+
+Three selectors, which compose:
+
+| Selector | Use when |
+|---|---|
+| `vts` | Shows are separate **titlesets** (`VTS_01` vs `VTS_02`) |
+| `vobs` | One titleset **mixes geometries or sources** — name the good files (§4.1d) |
+| `from` / `to` | Shows share one continuous stream and can only be separated by **time** |
+
+Accepts `90`, `"1:30"` or `"00:01:30"`. A time window narrows the show **before** the frame
+budget and the plan display are computed, so both describe the segment actually being
+captured — otherwise a 6-minute extract is given a 500-frame budget meant for an hour.
 
 `plan` expands each listed folder into one capture unit per entry. Each unit gets:
 
@@ -1112,9 +1210,15 @@ eyeballing a list.
       crowd threshold or a STARVED marker is reported, never silent
 - [ ] Candidate timestamps fall inside the 5%/95% trim window on BOTH capture paths (§5.2) —
       no opening logos, no end credits in the shortlist
+- [ ] Blank/filler frames dropped, and the count reported (§6.2c)
+- [ ] Any titleset whose reported geometry looks implausible for its size/bitrate has been
+      probed VOB-by-VOB for mixed geometry (§4.1d)
 - [ ] Contact sheets built for every show
 - [ ] Picks recorded by timestamp and **all resolve** to files
 - [ ] Pick FILE COUNT ON DISK equals the resolved count — no filename collisions (§11)
+- [ ] Every pick in a show has a distinct brief tag (A/B/C/spare) — a duplicate silently
+      overwrites (§11)
+- [ ] Shortlists reviewed for COMMERCIALS on any off-air source (§6.2d)
 - [ ] Picks page shows real images, not index numbers
 - [ ] Content traps identified and reported (compilations, split bills, awards shows)
 - [ ] `find_multishow.py` run for this artist; every hit resolved or explicitly cleared (§10b)
@@ -1146,6 +1250,10 @@ A="Stone Temple Pilots"
 
 # 0. MULTI-SHOW CHECK - does any folder hold more than one concert? (§10b)
 python3 find_multishow.py --artist "$A"
+#    Then READ EVERY SIDECAR it reports. info.txt / Info.txt / *.nfo are written by the
+#    person who made the disc and are the single most informative artefact available:
+#    across two artists they revealed a two-show disc, a three-programme disc, a wrong
+#    date, a source lineage and two full setlists - all before decoding a single frame.
 #    Resolve every hit BEFORE capturing: capturing a two-show folder as one show
 #    produces stills of the wrong concert and there is no later step that catches it.
 
