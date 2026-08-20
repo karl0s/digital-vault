@@ -676,7 +676,14 @@ def capture_singlepass(s, vf_tail, outdir: Path, n: int, deint=DEFAULT_DEINT):
 def cmd_capture(a):
     state = json.loads(STATE.read_text(encoding="utf-8"))
     shows = state["shows"]
-    if a.only: shows = [s for s in shows if s["key"] in set(a.only.split(","))]
+    if a.only:
+        want = [w.strip() for w in a.only.split(",") if w.strip()]
+        # Substring match, because the exact key is long and hashed - and an
+        # exact-only filter that matches nothing captured 0 shows and exited 0,
+        # which reads as success. A filter that selects nothing is a mistake.
+        shows = [s for s in shows if any(w in s["key"] for w in want)]
+        if not shows:
+            print("  %s--only %s matched no show%s" % (RED, a.only, RESET)); return 1
     print(BOLD + "\nCapture — %d shows, deinterlace=%s" % (len(shows), a.deint or "off") + RESET)
     grand_ok = grand_bad = 0
     for si, s in enumerate(shows, 1):
