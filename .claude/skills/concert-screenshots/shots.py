@@ -648,7 +648,16 @@ def cmd_capture(a):
             hh=int(ts//3600); mm=int(ts%3600//60); ss=int(ts%60)
             out = outdir / ("%s_c%03d_t%02d-%02d-%02d.jpg" % (s["key"], i, hh, mm, ss))
             if out.exists() and not a.fresh: return (True,"cached",out,ts)
-            if not grab(s["src"], ts, vf, out): return (False,"ffmpeg failed",out,ts)
+            grab(s["src"], ts, vf, out)
+            # Judge the FILE, not ffmpeg's exit code. ffmpeg exits non-zero on some
+            # .ts streams (decode warnings at a discontinuity) while still writing a
+            # perfectly good frame: 11 valid frames were counted as failures on one
+            # show, and - worse - they stayed on disk having never been verified.
+            # Trusting the exit code both under-counts successes and lets unverified
+            # files through. Whatever exists must pass verify() or be deleted, so the
+            # frames on disk and the success count can never disagree.
+            if not out.exists():
+                return (False,"ffmpeg produced no file",out,ts)
             good, why = verify(out, s)
             if not good:
                 try: out.unlink()
@@ -689,8 +698,11 @@ def cmd_capture(a):
             ok2, rc = capture_singlepass(s, vf, outdir, s["n"], a.deint)
             print("      single-pass recovered %s%d%s frames (ffmpeg rc=%d)" % (GREEN,ok2,RESET,rc))
             ok, bad = ok2, max(0, bad-ok2)
-        print("   %s%dx%d verified%s%s" % (GREEN,s["target_w"],s["target_h"],RESET,
-              ("  %s%d rejected%s"%(YELLOW,bad,RESET)) if bad else ""))
+        on_disk = len(list(outdir.glob("*.jpg")))
+        mismatch = ("  %sDISK/COUNT MISMATCH: %d files but ok=%d%s" % (RED,on_disk,ok,RESET)
+                    if on_disk != ok else "")
+        print("   %s%dx%d verified%s%s%s" % (GREEN,s["target_w"],s["target_h"],RESET,
+              ("  %s%d rejected%s"%(YELLOW,bad,RESET)) if bad else "", mismatch))
         grand_ok+=ok; grand_bad+=bad
     print("\n  captured %s%d%s frames, rejected %s%d%s" % (GREEN,grand_ok,RESET,YELLOW,grand_bad,RESET))
     return 0
@@ -957,9 +969,29 @@ def cmd_archive(a):
         if (DATA/f).exists(): shutil.copy2(DATA/f, dest/f)
     for f in ("picks.json","scores.json"):
         if (DATA/f).exists(): (DATA/f).unlink()
+
+    # Move this artist's report pages in WITH their images and repair the links.
+    # Archiving used to empty picks/ and contact/ while leaving the HTML in
+    # reports/ still pointing at "../picks/..." - so every review page for a
+    # finished artist silently became a page of broken images. Inside the archive
+    # those directories sit alongside the html, so the relative prefix is dropped.
+    slug_rx = re.sub(r"[^a-z0-9]+", "[_-]?", name.lower()).strip("_")
+    moved = 0
+    for f in sorted(REPORTS.glob("*.html")):
+        stem = f.stem.lower()
+        if not (re.search(slug_rx, stem) or stem.startswith(slug)):
+            continue
+        html = f.read_text(encoding="utf-8", errors="replace")
+        for a_, b_ in (("../picks/","picks/"), ("../contact/","contact/"),
+                       ("../ident/","ident/"), ("../work/","work/")):
+            html = html.replace(a_, b_)
+        (dest/f.name).write_text(html, encoding="utf-8")
+        f.unlink(); moved += 1
+
     for sub in ("picks","contact","work"):
         shutil.rmtree(HOME/sub, ignore_errors=True); (HOME/sub).mkdir(parents=True, exist_ok=True)
-    print("  archived %s -> %s   (picks/contact/work reset)"%(name,dest)); return 0
+    print("  archived %s -> %s   (picks/contact/work reset, %d report(s) moved)"
+          %(name,dest,moved)); return 0
 
 
 HTML_HEAD = """<!doctype html><meta charset=utf-8><title>%s</title>
