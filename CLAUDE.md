@@ -213,8 +213,8 @@ When a show is created before files are physically scanned, a random 40-char hex
 as a placeholder checksum. These stubs are identified by:
 - `Notes` field contains `"TEMP CHECKSUM - update when files are scanned"`
 
-Shows with temp checksums. Regenerate this table rather than hand-editing it —
-the previous version listed 5 of the 10 that actually exist:
+Shows with temp checksums — **9 remain**. Regenerate this table rather than
+hand-editing it; earlier versions have twice drifted out of date:
 
 ```bash
 python3 -c "
@@ -227,7 +227,6 @@ for s in sorted(json.load(open('public/shows.json')), key=lambda x: (x['Artist']
 
 | ShowID | Show | Date |
 |---|---|---|
-| `266049ff87ed` | Audioslave — Rock am Ring | 2003-06-07 |
 | `87b69f8144b4` | Radiohead — Jools Holland | 2001-09-06 |
 | `7df1b178e2a2` | Red Hot Chili Peppers — Woodstock 1999 | 1999-01-01 |
 | `884da8e9cd6f` | Soundgarden — Saturday Night Live | 1996-05-18 |
