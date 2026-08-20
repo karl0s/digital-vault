@@ -380,6 +380,23 @@ Rename outputs to `t = (i × K) / fps` afterwards so timestamps stay meaningful.
 neighbouring frames it needs and it silently stops working. Use the windowed form from §4.7
 instead, and offset the timestamps by the window centre.
 
+**The single-pass path must apply the same 5%/95% trim as the seek path.** The seek path
+computes its timestamps inside `dur*0.05 … dur*0.95`; the fallback originally swept the whole
+file from frame 0, so **opening logos and the closing credit roll became candidates**. Credits
+score superbly — crisp white text is about the sharpest thing on a DVD — so they flood the
+shortlist. On one show **nine of twenty-two shortlisted frames were end credits**. Restrict
+the selection and offset the timestamps:
+
+```
+start = int(total * 0.05);  end = int(total * 0.95)
+k     = max(1, (end - start) // n)
+select='gte(n\,START)*lte(n\,END)*lt(mod(n-START\,K)\,9)'   # windowed, temporal deint
+ts    = (start + i*K + 4) / fps
+```
+
+**QA gate:** print the first and last candidate timestamp per show and check both fall inside
+the trim window. A show whose last frame is at 99% of runtime did not apply it.
+
 **QA gate:** if any show finishes with 0 usable frames, the run is not complete.
 
 **A worse variant: seeking that returns the SAME frame every time.** One DVD produced 500
@@ -467,6 +484,31 @@ graphic if (lit_frac < 0.11 or lit_frac > 0.93)
 Dark cards ("JOIN US @…") and bright cards ("LET THERE BE MUSIC") both occur — test both
 tails. Gradient-background cards still slip through; reject those by eye.
 
+### 6.2b The crowd test is calibrated on rock stages — relax it rather than weaken it
+
+`subjectness < 0.60` assumes a lit performer against a dark surround. An **evenly-lit venue**
+— an acoustic theatre, a daylight festival — has few dark tiles and low tile-contrast, so it
+reads as "uniformly busy" exactly like a crowd. On the Alanis MTV Unplugged set it rejected
+**83% of frames** (median subjectness 0.49) and left a shortlist of 11.
+
+Do not lower the threshold globally; it is doing real work on the festival shows in the same
+artist. Instead, **re-admit the best of what it rejected, but only when the show would
+otherwise be starved**, and print what was relaxed:
+
+```python
+if len(rows) < want:
+    spare = sorted([r for r in sharp if r["crowd"]], key=lambda r: -r["subjectness"])
+    rows += spare[:(want - len(rows)) * 3]      # headroom for the de-dup pass
+    print("CROWD TEST RELAXED to subjectness>=%.2f" % min(r["subjectness"] for r in ...))
+```
+
+Crowd-flagged frames short-circuit the score formula to **0**, so sort by
+`(-score, -subject)` or the re-admitted ones land in arbitrary order.
+
+**Derive the blur floor from non-crowd frames only.** Crowds are the busiest texture in any
+show, so including them inflates the 95th percentile and tightens the floor for everything
+else — the opposite of the intent. Getting this wrong cost one show 10 usable frames.
+
 ### 6.3 Adaptive blur floor
 
 Sharpness scales with resolution and bitrate, so an absolute cutoff guts SD sources and
@@ -545,6 +587,28 @@ Default briefs (adjust per user):
 - Publish a **self-contained HTML index** of all sheets, and a **picks page** showing the
   chosen frames as actual images. Never report picks as bare index numbers — they're
   meaningless to anyone not looking at the same sheet.
+
+### Pick filenames must be unique per RECORD, not per folder
+
+**Failure this prevents:** pick files were named from `FolderName` truncated to 44 characters.
+Two records split out of one folder share that prefix — `Alanis Morissette - MTV Unplugged
+1999 (Pete` for both the Unplugged show and the Canada Day show — so **the second show's picks
+silently overwrote the first's**. Only 12 of 16 files existed, and the run still reported
+`resolved 16`, because a copy that destroys an earlier file is still a successful copy.
+
+Two fixes, both needed:
+
+1. Put the **ShowID** in the filename. The folder no longer identifies the show (§10b).
+2. **Count files on disk, not successful copies**, and fail loudly when they disagree:
+
+```python
+on_disk = len(list(out.glob("*.jpg")))
+if on_disk != ok:
+    print("FILENAME COLLISION: %d resolved but only %d files exist" % (ok, on_disk))
+    return 1
+```
+
+This is §15 in miniature: the tally being checked was the one the bug could not affect.
 
 ### Record picks by TIMESTAMP, not sheet index
 
@@ -681,6 +745,23 @@ python3 find_multishow.py --min-score 3 --kind "MULTI-SHOW LIKELY"
 5. **Corroborate externally** — 2+ independent sources for date, venue and event, exactly as
    for any metadata (setlist.fm, Last.fm, Concert Archives, published reviews).
 
+**The footage identifies itself more often than expected.** Four things to look for, all of
+which resolved real questions on the Alanis discs:
+
+| Evidence | Example | What it settled |
+|---|---|---|
+| Broadcaster bug | `N3` vs `Premiere`; `MUCH` vs `CBC`/`CHEX TV DURHAM` | Two different broadcasts = two different shows |
+| Credit roll | *"Recorded At THE BROOKLYN ACADEMY OF MUSIC, HARVEY THEATER"* | Exact venue, including the room |
+| Song title cards | *"uninvited"*, *"King of Pain"* | Confirmed the titleset grouping matches the setlist |
+| Landmarks and banners | Parliament Buildings + Peace Tower; a banner reading *"MASTERS OF MUSIC … 29th"* | Identified an unknown show's venue and event outright |
+
+A show with no title card is not necessarily unidentifiable — one titleset was catalogued as
+"unidentified" until wide shots revealed the Canadian Parliament Buildings and a presenter
+segment staged in front of a giant maple leaf, which together with the CBC bug make it Canada
+Day on Parliament Hill. **Identify the venue and event from what is provable, and still leave
+the date empty if the year cannot be sourced.** Partial identification beats both a guess and
+a blank.
+
 Encode parameters are a useful secondary tell: `VTS_01`–`05` all sat at 9.56 Mbps while
 `VTS_06` sat at 7.82 Mbps. A bitrate or geometry change mid-folder means a different
 authoring session, which usually means different source material.
@@ -798,7 +879,7 @@ Promotion then keys on those ShowIDs (§10b step 6), not on `FolderName`.
 | Stage | Naming |
 |---|---|
 | Candidates | `work/<key>/<key>_c###_tHH-MM-SS.jpg` |
-| Picks (staged) | `picks/<Folder Name>__<A|B|C|spare>.jpg` |
+| Picks (staged) | `picks/<Folder Name truncated>_<ShowID[:6]>__<A|B|C|spare>.jpg` |
 | Promotion (only on request) | `{ChecksumSHA1}_01.jpg` … `_04.jpg` |
 
 ### Promotion procedure (`promote.py`) — the only step that writes to the repo
@@ -1027,9 +1108,13 @@ eyeballing a list.
 - [ ] Full-collection dimension audit reports **0 wrong dimensions**
 - [ ] No show finished with 0 usable frames
 - [ ] Seek pass produced DISTINCT frames (not N copies of one) — check content hashes
-- [ ] Every show retains ≥24 candidates after filtering (flag any that don't)
+- [ ] Every show retains ≥24 candidates after filtering (flag any that don't); a relaxed
+      crowd threshold or a STARVED marker is reported, never silent
+- [ ] Candidate timestamps fall inside the 5%/95% trim window on BOTH capture paths (§5.2) —
+      no opening logos, no end credits in the shortlist
 - [ ] Contact sheets built for every show
 - [ ] Picks recorded by timestamp and **all resolve** to files
+- [ ] Pick FILE COUNT ON DISK equals the resolved count — no filename collisions (§11)
 - [ ] Picks page shows real images, not index numbers
 - [ ] Content traps identified and reported (compilations, split bills, awards shows)
 - [ ] `find_multishow.py` run for this artist; every hit resolved or explicitly cleared (§10b)
