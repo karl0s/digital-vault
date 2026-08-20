@@ -6375,7 +6375,7 @@
     "ChecksumSHA1": "6c6548821701593202f552ec935a81cfedf0a71a",
     "DuplicateOf": "",
     "Setlist": "Welcome To The Fold; Dose; It's Gonna Kill Me; I Will Lead You; Cancer; Jurassitol; Take A Picture",
-    "Notes": "---- Filter 2000.txt ----\nFilter\n2000-??-??\nMTV2 All Acces Week \nNew York, NY, USA\n\nVideo: Proshot\n\nVideo format: MPEG-2, 704x480 29,970 fps (4:3) NTSC, Color, ~9558 Mbps\nAudio format: Dolby Digital (AC3), 256Kbps, 2ch, 48khz\nAudio type: Stereo (2 Channel)\n\n\nSetlist\n01. Welcome To The Fold\n02. Dose\n03. It's Gonna Kill Me\n04. I Will Lead You\n05. Cancer\n06. Jurassitol\n07. Hey Man, Nice Shot\n08. Take A Picture \n\nTotal: 49:41 / 3,29 GB\n\nShowDate was the invalid placeholder 2000-00-00; only the year is known, so it is now 2000-01-01 per the year-only convention.",
+    "Notes": "---- Filter 2000.txt ----\nFilter\n2000-??-??\nMTV2 All Acces Week \nNew York, NY, USA\n\nVideo: Proshot\n\nVideo format: MPEG-2, 704x480 29,970 fps (4:3) NTSC, Color, ~9558 Mbps\nAudio format: Dolby Digital (AC3), 256Kbps, 2ch, 48khz\nAudio type: Stereo (2 Channel)\n\n\nSetlist\n01. Welcome To The Fold\n02. Dose\n03. It's Gonna Kill Me\n04. I Will Lead You\n05. Cancer\n06. Jurassitol\n07. Hey Man, Nice Shot\n08. Take A Picture \n\nTotal: 49:41 / 3,29 GB\n\nShowDate is a placeholder. The disc's own sidecar (Filter 2000.txt) records the date as \"2000-??-??\" - the month and day are genuinely unknown, not merely unresearched. Held at 2000-01-01 per the year-only convention until a real date surfaces. The field previously held the invalid value 2000-00-00.",
     "LastScannedAt": "2025-11-06 09:23:50",
     "ExtractionWarnings": "loc:comma",
     "SourceCatalog": "Seagate",
