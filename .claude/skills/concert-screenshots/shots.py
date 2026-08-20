@@ -121,17 +121,28 @@ def discover(artist: str):
     return out
 
 
-def pick_source(folder: Path):
-    if folder.is_file():                      # loose single-file show
-        return str(folder), "file", [folder]
+def pick_source(folder: Path, only_vts=None):
     """Return (ffmpeg_input, kind, files).
 
     DVD folders are read through the concat: protocol across all VTS parts, so
     candidate frames span the whole show rather than one 1 GB VOB chunk.
+
+    `only_vts` restricts to specific titlesets. A folder holding two concerts
+    must be captured as two units, one per titleset - otherwise the candidate
+    frames are drawn from both shows at once and each record ends up with
+    stills of the wrong concert. See SKILL.md section 10b.
     """
+    if folder.is_file():                      # loose single-file show
+        return str(folder), "file", [folder]
     vts = sorted([q for q in folder.rglob("*")
                   if q.is_file() and re.match(r"VTS_\d+_[1-9]\.VOB$", q.name, re.I)],
                  key=lambda q: q.name.upper())
+    if only_vts:
+        want = {str(v).zfill(2) for v in only_vts}
+        vts = [q for q in vts
+               if re.match(r"VTS_(\d+)_", q.name, re.I).group(1).zfill(2) in want]
+        if not vts:
+            return None, None, []
     if vts:
         return "concat:" + "|".join(str(q) for q in vts), "dvd", vts
     vids = sorted([q for q in folder.rglob("*")
@@ -302,14 +313,65 @@ def true_duration(src, files, reported):
 
 
 # ---------------------------------------------------------------- plan
+SPLITS = DATA / "splits.json"
+
+
+def apply_splits(items):
+    """Expand any folder listed in data/splits.json into one unit per show.
+
+    Keyed by the folder's basename on the drive:
+
+        {"Artist - Folder": [
+            {"vts": ["01"],           "showid": "3395c78f1ad2", "label": "Munich 1996-04-01"},
+            {"vts": ["02"],           "showid": "53ab1e48902a", "label": "Hyde Park 1996-06-29"}]}
+
+    Every unit carries the ShowID explicitly. Name matching cannot disambiguate
+    two shows that share a folder, so promotion must key on ShowID (SKILL.md 10b).
+    """
+    if not SPLITS.exists():
+        return items
+    try:
+        conf = json.loads(SPLITS.read_text(encoding="utf-8"))
+    except ValueError as e:
+        print("  %ssplits.json is not valid JSON: %s%s" % (RED, e, RESET))
+        return items
+    shows = {s["ShowID"]: s for s in json.loads(SHOWS_JSON.read_text(encoding="utf-8"))}
+    out = []
+    for it in items:
+        rule = conf.get(os.path.basename(it["rel"]))
+        if not rule:
+            out.append(it); continue
+        for part in rule:
+            sid = (part.get("showid") or "").strip()
+            rec = shows.get(sid)
+            if not rec:
+                print("  %sSPLIT SKIP%s %s: ShowID %r not in shows.json"
+                      % (RED, RESET, it["label"][:40], sid))
+                continue
+            sub = dict(it)
+            vts = [str(v).zfill(2) for v in part.get("vts", [])]
+            sub.update({
+                "rel":   "%s#VTS%s" % (it["rel"], "-".join(vts)),
+                "vts":   vts,
+                "label": "%s [%s]" % (it["label"], part.get("label") or ("VTS "+",".join(vts))),
+                "ShowID": sid,
+                "Checksum": rec.get("ChecksumSHA1", ""),
+                "ShowDate": rec.get("ShowDate", ""),
+                "json_aspect": rec.get("AspectRatio", ""),
+                "link": "split:VTS %s" % ",".join(vts),
+            })
+            out.append(sub)
+    return out
+
+
 def cmd_plan(a):
-    items = discover(a.artist)
+    items = apply_splits(discover(a.artist))
     print(BOLD + "\nPlan — %s (%d folders on the drive)" % (a.artist, len(items)) + RESET)
     print(DIM + "-"*104 + RESET)
     state = {"artist": a.artist, "shows": []}
     okc = badc = 0
     for it in items:
-        src, kind, files = pick_source(it["folder"])
+        src, kind, files = pick_source(it["folder"], it.get("vts"))
         if not src:
             print("  %sSKIP%s %-40s  no video files" % (RED,RESET,it["label"][:40])); badc+=1; continue
         info, err = ffprobe_stream(src)
@@ -352,6 +414,7 @@ def cmd_plan(a):
             key = "%s__%s" % (slug, hashlib.sha1(it["rel"].encode()).hexdigest()[:6])
             state["shows"].append({
                 "key": key, "ShowID": it["ShowID"], "Checksum": it["Checksum"],
+                "vts": it.get("vts") or [],
                 "FolderName": it["label"], "rel": it["rel"], "ShowDate": it["ShowDate"],
                 "link": it["link"], "src": src, "kind": kind, "duration": dur, "n": n, **t,
             })

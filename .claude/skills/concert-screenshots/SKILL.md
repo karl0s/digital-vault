@@ -743,6 +743,45 @@ ambiguous match as an error rather than a guess:
 
 For same-artist splits, `[FolderName, Artist]` is **not** enough to disambiguate. Use ShowIDs.
 
+### Step 7 — Capture each show from its OWN titleset
+
+A split folder must be captured as **one unit per show**. Capturing the folder as a whole
+draws candidate frames from both concerts at once, and each record then gets stills of the
+wrong show — with nothing downstream to catch it, because every frame is valid, correctly
+shaped and correctly deinterlaced.
+
+Declare the split in `data/splits.json`, keyed by the folder's basename on the drive:
+
+```json
+{
+  "Alanis Morissette - 1996-06-29": [
+    {"vts": ["01"], "showid": "3395c78f1ad2", "label": "Munich 1996-04-01"},
+    {"vts": ["02"], "showid": "53ab1e48902a", "label": "Hyde Park 1996-06-29"}
+  ],
+  "Alanis Morissette - MTV Unplugged 1999 (Pete)": [
+    {"vts": ["01","02","03","04","05"], "showid": "edf18a8aa29e", "label": "MTV Unplugged 1999"},
+    {"vts": ["06"], "showid": "1b855d937789", "label": "unidentified CBC broadcast"}
+  ]
+}
+```
+
+`plan` expands each listed folder into one capture unit per entry. Each unit gets:
+
+- a `concat:` source restricted to **that entry's titlesets only**;
+- its own probe, so two shows on one disc can differ in geometry, field order and runtime —
+  they often do;
+- a work-directory key derived from `<rel>#VTS01-02`, keeping units distinct (§2);
+- the **ShowID carried explicitly**, because name matching cannot separate two shows that
+  share a folder.
+
+A titleset group is captured as one unit when the shows were authored across several
+titlesets — `VTS_01`–`05` above are one continuous performance and belong together.
+
+**Every entry must name a ShowID that exists in `shows.json`.** A missing or mistyped ID is
+reported and that unit is skipped rather than silently captured against the wrong record.
+
+Promotion then keys on those ShowIDs (§10b step 6), not on `FolderName`.
+
 ### What NOT to do
 
 - Do not split on runtime, file count or titleset count alone.
