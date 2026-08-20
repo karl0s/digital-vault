@@ -372,6 +372,22 @@ def apply_splits(items):
     Every unit carries the ShowID explicitly. Name matching cannot disambiguate
     two shows that share a folder, so promotion must key on ShowID (SKILL.md 10b).
     """
+    # data/exclude.json: folder or file basenames to drop before planning. Needed
+    # for byte-identical duplicate copies of a folder already covered by a record,
+    # and for material that is not a performance at all. Capturing a duplicate
+    # wastes a full decode and produces a second set of stills nothing will use.
+    EXCLUDE = DATA / "exclude.json"
+    if EXCLUDE.exists():
+        try:
+            drop = {str(x).strip() for x in json.loads(EXCLUDE.read_text(encoding="utf-8"))}
+        except ValueError as e:
+            print("  %sexclude.json is not valid JSON: %s%s" % (RED, e, RESET)); drop = set()
+        if drop:
+            kept = [it for it in items if os.path.basename(it["rel"]) not in drop]
+            for it in items:
+                if os.path.basename(it["rel"]) in drop:
+                    print("  %sexcluded%s %s" % (DIM, RESET, it["label"][:60]))
+            items = kept
     if not SPLITS.exists():
         return items
     try:
@@ -691,6 +707,16 @@ def cmd_capture(a):
                       % (YELLOW,len(seen),min(ok,400),RESET))
                 for f in outdir.glob("*.jpg"): f.unlink()
                 ok, bad = 0, s["n"]
+
+        # A LOW yield needs the fallback just as much as a zero yield. The trigger
+        # used to be `ok == 0`, so a titleset where seeking failed for 275 of 298
+        # timestamps sailed through with 23 frames - not enough for a shortlist, and
+        # nothing said so. Judge the success RATE, not just the absence of success.
+        if 0 < ok < max(24, int(0.5 * s["n"])):
+            print("\n      %sseek path yielded only %d of %d - discarding and using a "
+                  "single decode pass%s" % (YELLOW, ok, s["n"], RESET))
+            for f in outdir.glob("*.jpg"): f.unlink()
+            ok, bad = 0, s["n"]
 
         if ok == 0 and bad > 0:
             print("\n      %sseek path failed entirely - retrying with a single decode pass%s"
