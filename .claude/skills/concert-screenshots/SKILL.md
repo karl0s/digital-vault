@@ -1357,6 +1357,26 @@ python3 shots.py archive
 **Step 9 is not optional.** Leftover `picks.json` / `scores.json` from the previous artist
 will silently skip or mis-resolve during the next promotion.
 
+`archive` also **moves that artist's report pages in with their images and repairs the links**.
+It previously emptied `picks/` and `contact/` while leaving the HTML in `reports/` pointing at
+`../picks/…`, so every review page for a finished artist quietly became a page of broken
+images — eight of them had accumulated before anyone looked. Inside the archive those
+directories sit alongside the html, so the `../` prefix is dropped.
+
+An archived artist should be **self-contained**: picks, contact sheets, evidence frames,
+report pages and the run's JSON, all under `archive/<artist>/`, with every page still
+rendering. Verify after archiving:
+
+```python
+for f in glob("archive/*/*.html"):
+    missing = [s for s in re.findall(r'src="([^"]+)"', open(f).read())
+               if not os.path.exists(os.path.join(os.path.dirname(f), s))]
+```
+
+**Do not keep a promote-backup directory as the rollback plan.** Every promotion is committed,
+so git history already holds the replaced images, and the directory is pure duplication — 11 MB
+of it in the reference collection. Roll back with `git checkout` instead.
+
 ### Scale expectations
 
 | Shows | Frames | Capture | Review |
