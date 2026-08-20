@@ -630,10 +630,36 @@ python3 find_multishow.py --artist alanis
 | Date in folder name ≠ record's `ShowDate` | 2 | Classic blended-metadata signature |
 | >1 year in the folder name | 2 | e.g. `… 1994 + 1999` |
 | NFO / txt / md5 / cue sidecar present | 1 | Often names the contents outright |
+| ≥2 titlesets estimated ≥20 min each | 2 | Two full sets, not a clip reel (see below) |
+| No long titleset and ≥4 of them | −2 | Demotes clip reels out of the way |
 
 **Multiple titlesets is NOT proof of multiple shows.** Plenty of DVDs author a single concert
 as several titles. In the Unplugged folder five titlesets were one show and the sixth was
 another. Structure *suggests*; only content decides.
+
+The commonest false positive is a **clip reel**: `VA Late Night #6 2005` has thirteen
+titlesets, but they are thirteen three-minute TV spots, not thirteen concerts. Those belong
+to the §10 content traps, not here. The detector separates the two by estimating each
+titleset's runtime from its size at a nominal 7.5 Mbps (measured 7.25–9.56 across this
+collection — ±25%, ample to tell a 3-minute clip from a 45-minute set, and no file contents
+are read):
+
+| Class | Rule | Meaning |
+|---|---|---|
+| `MULTI-SHOW LIKELY` | ≥2 titlesets estimated ≥20 min | Genuine candidates — verify these first |
+| `one main set + extras` | 1 long + short ones | Usually one show plus bonus footage |
+| `clip reel / compilation` | no long titlesets, ≥4 of them | §10 territory, not a split |
+| `unclear` | anything else | Needs eyes |
+
+On this collection: 95 folders flagged, of which **20 classify as `MULTI-SHOW LIKELY`**. Seven
+of those twenty announce it in the folder name itself — `… 2003-05-01 PRO #1 + 2002-09-12
+PRO #1`, `Greenday + Foo Fighters`, `Bizarre Festival + Phoenix Festival`, `… (x2)`. A folder
+name containing `+` between two dates, two festivals or two artists is worth treating as a
+strong signal in its own right.
+
+```bash
+python3 find_multishow.py --min-score 3 --kind "MULTI-SHOW LIKELY"
+```
 
 ### Step 2 — Verify, in order of authority
 

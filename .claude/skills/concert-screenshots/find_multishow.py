@@ -21,7 +21,8 @@ from pathlib import Path
 
 DRIVE = Path("/Volumes/Live Music")
 REPO  = Path.home()/"Desktop/Projects/the-vault"
-MIN_TITLESET = 100*1024*1024        # ignore menu/filler titlesets
+MIN_TITLESET = 100*1024*1024
+NOMINAL_BPS  = 7.5e6   # measured 7.25-9.56 Mbps across this collection        # ignore menu/filler titlesets
 DATE_RX = re.compile(r"(19|20)\d{2}[-_. ]?(0[1-9]|1[0-2])[-_. ]?(0[1-9]|[12]\d|3[01])")
 YEAR_RX = re.compile(r"(19|20)\d{2}")
 NFO_EXT = (".nfo", ".txt", ".cue", ".md5", ".sfv", ".log")
@@ -51,6 +52,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--artist", help="limit to folders whose name matches")
     ap.add_argument("--min-score", type=int, default=1)
+    ap.add_argument("--kind", help="only this class, e.g. 'MULTI-SHOW LIKELY'")
     a = ap.parse_args()
 
     shows = json.loads((REPO/"public/shows.json").read_text())
@@ -70,10 +72,27 @@ def main():
 
         vts = folder/"VIDEO_TS"
         sets = titlesets(vts) if vts.is_dir() else {}
+        kind = None
         if len(sets) > 1:
             score += 3
-            sig.append("%d titlesets (%s)" % (len(sets),
-                       ", ".join("%s:%.0fMB" % (k, v/1048576) for k, v in sorted(sets.items()))))
+            # Estimate each titleset's runtime from its size. DVD video sits around
+            # 7.5 Mbps in this collection (measured 7.25-9.56), so this is +/-25% -
+            # plenty to tell a 3-minute clip from a 45-minute set, which is the only
+            # distinction being made here. No file contents are read.
+            mins = {k: v*8/NOMINAL_BPS/60 for k, v in sets.items()}
+            longs  = [k for k, m in mins.items() if m >= 20]
+            shorts = [k for k, m in mins.items() if m < 8]
+            if len(longs) >= 2:
+                kind = "MULTI-SHOW LIKELY"; score += 2
+            elif len(longs) == 1 and shorts:
+                kind = "one main set + extras"
+            elif not longs and len(sets) >= 4:
+                kind = "clip reel / compilation"; score -= 2
+            else:
+                kind = "unclear"
+            sig.append("%d titlesets, est %s  [%s]"
+                       % (len(sets),
+                          " ".join("%s:%.0fm" % (k, mins[k]) for k in sorted(sets)), kind))
 
         sidecars = []
         for root, dirs, files in os.walk(folder):
@@ -116,13 +135,18 @@ def main():
             sig.append("folder name contains >1 year")
 
         if score >= a.min_score and sig:
-            hits.append((score, entry.name, rec, sig))
+            hits.append((score, entry.name, rec, sig, kind))
 
+    if a.kind: hits = [h for h in hits if (h[4] or "") == a.kind]
     hits.sort(key=lambda h: (-h[0], h[1]))
     print("\n  MULTI-SHOW FOLDER SUSPECTS  (%d flagged)\n" % len(hits))
     print("  Nothing here is a conclusion. Verify each against frames + an outside")
     print("  source before creating any record. See SKILL.md section 10b.\n")
-    for score, name, rec, sig in hits:
+    bykind = collections.Counter(h[4] for h in hits)
+    for k, v in bykind.most_common():
+        print("    %-26s %d" % (k or "no titleset signal", v))
+    print()
+    for score, name, rec, sig, kind in hits:
         print("  [%d] %s" % (score, name))
         if rec: print("      record: %s  %s" % (rec.get("ShowDate") or "(undated)", rec["ShowID"]))
         for s in sig: print("      - %s" % s)
