@@ -583,6 +583,151 @@ outright. Always check the credits, lower-thirds and title cards before trusting
 
 ---
 
+## 10b. One folder, several shows — detection, verification, splitting
+
+Expected to affect **10–20 folders collection-wide**. Both Alanis Morissette folders turned
+out to hold two shows each, and in one of them the existing record described the *wrong* one.
+
+### Why it is invisible
+
+The scan records **one row per folder**, and `ChecksumSHA1` is computed from "representative
+media" — the DVD's `VTS_*_[1-9].VOB` in order, otherwise the single largest video file. When
+a folder holds two concerts:
+
+- only one of them is described by the row;
+- the other has no ShowID, no checksum, no images, and **cannot appear on the site at all**;
+- the row's metadata can be a *blend* of both, with no field flagged as uncertain.
+
+Worked example — `Alanis Morissette - 1996-06-29`, one record:
+
+| Field | Value | Where it actually came from |
+|---|---|---|
+| `ShowDate` | 1996-04-01 | the **Munich** show |
+| `FolderName` | 1996-06-29 | the **Hyde Park** show |
+| `City, Country` | Friesland, Germany | **the uploader's home town**, from the NFO header |
+| `ChecksumSHA1` | ca5b604f… | `VTS_01` only — the Munich show |
+
+Three fields, three different sources, one of them not a venue at all. Nothing in the record
+suggested a problem.
+
+Second folder, `MTV Unplugged 1999 (Pete)`: six titlesets. `VTS_01`–`05` are one 44-minute
+acoustic theatre show; `VTS_06` is a **different Canadian TV broadcast** (13 min, different
+bitrate, different outfit, `CBC`/`CHEX TV DURHAM` bug instead of `MUCH`). The pipeline picked
+the largest file — `VTS_06` — so **the record titled "MTV Unplugged 1999" is keyed to the
+footage that is not MTV Unplugged.**
+
+### Step 1 — Detect (cheap, no file contents read)
+
+```bash
+python3 find_multishow.py                 # whole drive
+python3 find_multishow.py --artist alanis
+```
+
+| Signal | Weight | Why it matters |
+|---|---:|---|
+| >1 substantial DVD titleset | 3 | Strongest structural hint. Not proof — see below |
+| Record's `RepVideoFiles` covers only some titlesets | 3 | The uncovered ones are uncatalogued footage |
+| Date in folder name ≠ record's `ShowDate` | 2 | Classic blended-metadata signature |
+| >1 year in the folder name | 2 | e.g. `… 1994 + 1999` |
+| NFO / txt / md5 / cue sidecar present | 1 | Often names the contents outright |
+
+**Multiple titlesets is NOT proof of multiple shows.** Plenty of DVDs author a single concert
+as several titles. In the Unplugged folder five titlesets were one show and the sixth was
+another. Structure *suggests*; only content decides.
+
+### Step 2 — Verify, in order of authority
+
+1. **Read the sidecar first.** `EXTRAS_TS/*.txt`, `*.nfo`, `.md5`, the `.torrent` filename.
+   Fan-made DVDs routinely document every show, with per-show setlists and exact lengths.
+   This is the cheapest and most authoritative evidence available — read it before running
+   anything.
+2. **Measure each titleset separately** (`titlesets.py`) and check the arithmetic against the
+   sidecar. Munich claimed 46:04 and measured 46:00; Hyde Park claimed 32:55 and measured
+   32:52; the total matched 78:59 to within six seconds. Ratios that line up like that
+   settle which titleset is which.
+3. **Grab frames from every titleset** — start, middle and end (`identify_titlesets.py`).
+   Compare venue, staging, lighting, clothing and **broadcaster bug**. The bug is often the
+   single most decisive pixel on screen: `N3` vs `Premiere` proved two different broadcasts
+   of two different concerts; `MUCH` vs `CBC/CHEX TV DURHAM` did the same in the other folder.
+4. **Continuity test across the boundary.** Compare the END of `VTS_N` with the START of
+   `VTS_N+1`. Same song, same staging, same shot grammar → one show split across titles.
+   Different venue or bug → separate shows.
+5. **Corroborate externally** — 2+ independent sources for date, venue and event, exactly as
+   for any metadata (setlist.fm, Last.fm, Concert Archives, published reviews).
+
+Encode parameters are a useful secondary tell: `VTS_01`–`05` all sat at 9.56 Mbps while
+`VTS_06` sat at 7.82 Mbps. A bitrate or geometry change mid-folder means a different
+authoring session, which usually means different source material.
+
+### Step 3 — Decide which record keeps the original checksum
+
+**The record that keeps the original `ChecksumSHA1` must be the show whose files were
+actually hashed.** Read `RepVideoFiles` — it lists them explicitly. Confirm by recomputing:
+
+```bash
+python3 titleset_checksums.py "<folder name>"
+```
+
+`VTS_01`'s hash came back byte-equal to the existing record's checksum, proving that record
+*is* the Munich show whatever its other fields claimed. **Never move a checksum to a
+different show to make the metadata look tidier** — the checksum is the key that images are
+filed under, and it is the one field that is verifiable from the drive.
+
+### Step 4 — Key the new record
+
+**Prefer a real content hash.** When the shows are separable at file level — distinct
+titlesets, distinct files — compute the new record's `ChecksumSHA1` from *its own* files
+using the pipeline's algorithm. It is a genuine content hash and behaves like every other key
+in the collection.
+
+Only when two shows share one inseparable file (a single continuous VOB) fall back to a
+derived key, and say so plainly in `Notes`:
+
+```python
+ChecksumSHA1 = sha1((primary_ck + "|" + discriminator).encode()).hexdigest()   # NOT content
+ShowID       = sha1((folder_path + "|" + discriminator).encode()).hexdigest()[:12]
+```
+
+The discriminator is whatever separates the shows — the date, the venue, or the artist for a
+split bill. Use the same value in both derivations.
+
+### Step 5 — Write the records
+
+- Both records keep the **same `FolderPath`**. That is the truth: the files really do live in
+  one folder.
+- Give each a **distinct `FolderName`** where possible, so the two are tellable apart in any
+  list, and record the titleset in `Notes`: *"VTS_02 of a two-show disc; VTS_01 is
+  <other show> (ShowID …)."* Cross-reference both ways.
+- Populate `Width`/`Height`/`AspectRatio`/`TVStandard`/`DurationSec` from **that titleset's**
+  ffprobe output, not the folder's. Two shows on one disc can differ in every one of them.
+- Each record gets **its own stills, captured from its own titleset**. Never share images
+  between the two — they are different concerts.
+
+### Step 6 — Promotion must not resolve by FolderName
+
+`promote.py` used to key records by `FolderName` in a dict comprehension. Two records sharing
+a folder meant one **silently overwrote** the other and the wrong show got the images. It now
+accepts a **ShowID** (12 hex) or checksum (40 hex) in `promote_map.json`, and treats any
+ambiguous match as an error rather than a guess:
+
+```json
+{ "1996_06_29_VTS01": "3395c78f1ad2",
+  "1996_06_29_VTS02": "a1b2c3d4e5f6" }
+```
+
+For same-artist splits, `[FolderName, Artist]` is **not** enough to disambiguate. Use ShowIDs.
+
+### What NOT to do
+
+- Do not split on runtime, file count or titleset count alone.
+- Do not invent a date for footage you cannot identify. Leave `ShowDate` empty and say so —
+  `VTS_06` above is a confirmed separate show whose date and programme are still unknown.
+- Do not delete or re-key the existing record to "clean up". Fix its metadata in place and
+  add the missing show alongside it.
+- Do not let the two records share images.
+
+---
+
 ## 11. Output naming and promotion
 
 | Stage | Naming |
@@ -822,6 +967,10 @@ eyeballing a list.
 - [ ] Picks recorded by timestamp and **all resolve** to files
 - [ ] Picks page shows real images, not index numbers
 - [ ] Content traps identified and reported (compilations, split bills, awards shows)
+- [ ] `find_multishow.py` run for this artist; every hit resolved or explicitly cleared (§10b)
+- [ ] For any folder with >1 titleset: each titleset probed, frames compared, broadcaster bug
+      checked, and the record's `RepVideoFiles` confirmed to describe the show it claims to be
+- [ ] Any new record from a split keyed by a REAL content hash where the files allow it
 - [ ] Collection drive unmodified; repo clean
 - [ ] Pruning only after picks verified
 - [ ] `picks/` regenerated after any `picks.json` edit; every pick resolved to a file
@@ -844,6 +993,11 @@ follow it in order.
 ```bash
 cd ~/VaultShots
 A="Stone Temple Pilots"
+
+# 0. MULTI-SHOW CHECK - does any folder hold more than one concert? (§10b)
+python3 find_multishow.py --artist "$A"
+#    Resolve every hit BEFORE capturing: capturing a two-show folder as one show
+#    produces stills of the wrong concert and there is no later step that catches it.
 
 # 1. SCOPE (seconds) - how many images are actually wrong?
 python3 ~/Desktop/Projects/the-vault/scripts/audit-image-geometry.py --artist "$A"

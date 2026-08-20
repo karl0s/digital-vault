@@ -99,7 +99,38 @@ def main():
     shows=json.loads(SHOWS.read_text(encoding="utf-8"))
     shows_before=hashlib.sha256(SHOWS.read_bytes()).hexdigest()
     mani=json.loads(MANI.read_text(encoding="utf-8"))
-    by_folder={(s.get("FolderName") or "").strip():s for s in shows}
+    by_showid={(s.get("ShowID") or "").strip():s for s in shows}
+    by_ck    ={(s.get("ChecksumSHA1") or "").strip():s for s in shows}
+
+    def resolve(v):
+        """A promote_map value -> exactly one shows.json record, or an error.
+
+        Accepts a ShowID (12 hex), a ChecksumSHA1 (40 hex), a FolderName, or
+        [FolderName, Artist]. FolderName alone is NOT unique: one folder can
+        hold two shows (a split bill, or two concerts on one disc), and the
+        previous dict-comprehension silently kept whichever came last in the
+        file. For same-artist splits even [folder, artist] is ambiguous - use
+        the ShowID. Ambiguity is always an error, never a guess.
+        """
+        if isinstance(v, (list, tuple)):
+            folder = str(v[0]).strip(); artist = str(v[1]).strip() if len(v) > 1 else None
+            c = [s for s in shows if (s.get("FolderName") or "").strip() == folder
+                 and (artist is None or (s.get("Artist") or "").strip() == artist)]
+        else:
+            v = str(v).strip()
+            if re.fullmatch(r"[0-9a-f]{12}", v, re.I):
+                return (by_showid.get(v.lower()), None) if v.lower() in by_showid \
+                       else (None, "ShowID %s not in shows.json" % v)
+            if re.fullmatch(r"[0-9a-f]{40}", v, re.I):
+                return (by_ck.get(v.lower()), None) if v.lower() in by_ck \
+                       else (None, "checksum %s not in shows.json" % v)
+            c = [s for s in shows if (s.get("FolderName") or "").strip() == v]
+        if not c:
+            return None, "no shows.json record for %r" % (v,)
+        if len(c) > 1:
+            return None, ("%r matches %d records (%s) - use a ShowID in promote_map"
+                          % (v, len(c), ", ".join(x.get("ShowID","?") for x in c)))
+        return c[0], None
 
     miss,orph=audit(mani)
     print("PRE-FLIGHT")
@@ -117,9 +148,10 @@ def main():
         folder=MAP.get(frag)
         if not folder:
             skipped.append((frag,"no confirmed shows.json record")); continue
-        rec=by_folder.get(folder)
+        rec,err=resolve(folder)
         if not rec:
-            skipped.append((frag,"FolderName %r not in shows.json"%folder)); continue
+            skipped.append((frag,err)); continue
+        folder=(rec.get("FolderName") or "").strip()
         ck=(rec.get("ChecksumSHA1") or "").strip()
         if not ck:
             skipped.append((frag,"record has no checksum")); continue
