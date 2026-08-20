@@ -161,8 +161,25 @@ python3 scripts/audit-image-geometry.py --artist "Nirvana"  # detail for one art
 ```
 
 As of the last run: **7.3% of shows correct, 67.5% squashed, 9.6% undersized, 11.2%
-internally inconsistent.** The bad majority predates the capture pipeline. Aerosmith is fully
-corrected; 30 Seconds to Mars is mostly corrected; everything else is outstanding.
+internally inconsistent.** The bad majority predates the capture pipeline. Fully corrected so
+far: Aerosmith, Alanis Morissette, Alice in Chains; 30 Seconds to Mars is mostly corrected.
+Everything else is outstanding.
+
+### One folder can hold more than one show
+
+Several folders contain two or more concerts, and the scan records only one row per folder —
+so the other show has no record and cannot appear on the site at all. Sometimes the surviving
+row describes the *wrong* one. Detect before capturing:
+
+```bash
+python3 ~/VaultShots/find_multishow.py --artist "Nirvana"
+```
+
+**Read every sidecar it reports** (`info.txt`, `*.nfo`, `*.md5`). They are written by whoever
+made the disc and have so far revealed a two-show disc, a three-programme disc, a wrong date,
+a source lineage and two full setlists — before decoding a single frame. Roughly **20 folders
+collection-wide** are genuine candidates. Full procedure in the `concert-screenshots` skill,
+§10b.
 
 Capture and replacement is handled by the `concert-screenshots` skill
 (`.claude/skills/concert-screenshots/SKILL.md`), which owns the full procedure, the fixed

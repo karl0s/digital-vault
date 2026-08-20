@@ -96,6 +96,24 @@ def analyse(path):
     is_graphic = extreme_lum and flat > 0.68 and palette < 400
     is_crowd2  = palette > 520 and flat < 0.50
 
+    # BLANK / FILLER frames: a flat colour field with no picture in it. Discs carry
+    # more of this than expected - the Alice in Chains Unplugged disc runs a low-res
+    # copy out into minutes of solid green, and black frames sit between segments on
+    # almost every DVD. None of the tests above catch a mid-luma monochrome field:
+    # `graphic` requires an extreme luma tail, `crowd2` requires a large palette.
+    # A blank frame is defined by having almost no distinct colours AND almost no
+    # texture anywhere - which no real photograph of a stage ever satisfies.
+    # Calibrated on real frames, not guessed. Across a mixed set (bright studio, dark
+    # club, daylight festival, news graphics) the LOWEST palette on a genuine frame was
+    # 109; blank frames measured 49 (a grainy green field), 21 (near-black) and 1
+    # (pure black). 90 sits in that gap with margin on both sides.
+    #
+    # Palette has to carry this on its own: the green filler is VHS-sourced and grainy,
+    # so `flat` reads 0.54 and `contrast` 19.6 - a monochrome field with noise looks
+    # textured to every other measure. What it cannot fake is having only a handful of
+    # distinct colours.
+    is_blank = palette < 90 or contrast < 4.0 or flat > 0.97
+
     small = np.asarray(Image.open(path).convert("L").resize((9,8)), dtype=np.int16)
     dhash = int("".join("1" if b else "0" for b in (small[:,1:] > small[:,:-1]).flatten()), 2)
 
@@ -117,7 +135,7 @@ def analyse(path):
         score +=  8 * min(1.0, conc/20.0)
         score +=  5 * min(1.0, contrast/70.0)
     return {"subject":subject, "spread":spread, "conc":conc, "crowd":bool(crowd),
-            "graphic":bool(is_graphic), "crowd2":bool(is_crowd2),
+            "graphic":bool(is_graphic), "crowd2":bool(is_crowd2), "blank":bool(is_blank),
             "lit":lit_frac, "flat":flat, "palette":palette,
             "subjectness":subjectness, "quiet":quiet, "cv":cv, "edge":edge_density,
             "mean":mean, "contrast":contrast, "colour":colour, "exposure":exposure,

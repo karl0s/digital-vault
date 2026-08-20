@@ -121,7 +121,7 @@ def discover(artist: str):
     return out
 
 
-def pick_source(folder: Path, only_vts=None):
+def pick_source(folder: Path, only_vts=None, only_vobs=None):
     """Return (ffmpeg_input, kind, files).
 
     DVD folders are read through the concat: protocol across all VTS parts, so
@@ -141,6 +141,16 @@ def pick_source(folder: Path, only_vts=None):
         want = {str(v).zfill(2) for v in only_vts}
         vts = [q for q in vts
                if re.match(r"VTS_(\d+)_", q.name, re.I).group(1).zfill(2) in want]
+        if not vts:
+            return None, None, []
+    if only_vobs:
+        # File-level selection. Needed when ONE titleset mixes geometries: the
+        # Alice in Chains Unplugged disc holds a 352x240 copy plus green filler in
+        # VTS_01_1 and the real 720x480 show in VTS_01_2..4. ffprobe reports the
+        # FIRST stream, so without this the whole disc is planned at 352x240 - which
+        # is exactly what the original scan recorded.
+        want = {str(v).upper().replace(".VOB", "") for v in only_vobs}
+        vts = [q for q in vts if q.stem.upper() in want]
         if not vts:
             return None, None, []
     if vts:
@@ -316,6 +326,19 @@ def true_duration(src, files, reported):
 SPLITS = DATA / "splits.json"
 
 
+def _secs(v):
+    """Accept 90, "90", "1:30" or "00:01:30" -> seconds. None stays None."""
+    if v is None or v == "":
+        return None
+    if isinstance(v, (int, float)):
+        return float(v)
+    parts = [float(x) for x in str(v).replace("-", ":").split(":")]
+    out = 0.0
+    for x in parts:
+        out = out * 60 + x
+    return out
+
+
 def apply_splits(items):
     """Expand any folder listed in data/splits.json into one unit per show.
 
@@ -324,6 +347,15 @@ def apply_splits(items):
         {"Artist - Folder": [
             {"vts": ["01"],           "showid": "3395c78f1ad2", "label": "Munich 1996-04-01"},
             {"vts": ["02"],           "showid": "53ab1e48902a", "label": "Hyde Park 1996-06-29"}]}
+
+    When the shows are NOT separable by titleset - one continuous stream holding a
+    set, then bonus footage, then a news segment - use a time window instead:
+
+        {"Artist - Folder": [
+            {"from": "00:00", "to": "12:30", "showid": "...", "label": "MTV Studios"},
+            {"from": "12:30", "to": "17:10", "showid": "...", "label": "Frankfurt"}]}
+
+    `vts` and `from`/`to` compose: a window may be applied within a titleset.
 
     Every unit carries the ShowID explicitly. Name matching cannot disambiguate
     two shows that share a folder, so promotion must key on ShowID (SKILL.md 10b).
@@ -350,9 +382,17 @@ def apply_splits(items):
                 continue
             sub = dict(it)
             vts = [str(v).zfill(2) for v in part.get("vts", [])]
+            vobs = list(part.get("vobs", []))
+            t0 = _secs(part.get("from")); t1 = _secs(part.get("to"))
+            tag = "VTS%s" % "-".join(vts) if vts else ""
+            if vobs: tag = (tag + "_" if tag else "") + "F" + "-".join(
+                x.split("_")[-1] for x in vobs)
+            if t0 is not None or t1 is not None:
+                tag = (tag + "_" if tag else "") + "T%s-%s" % (int(t0 or 0), int(t1 or 0))
             sub.update({
-                "rel":   "%s#VTS%s" % (it["rel"], "-".join(vts)),
-                "vts":   vts,
+                "rel":   "%s#%s" % (it["rel"], tag or "ALL"),
+                "vts":   vts, "vobs": vobs,
+                "t0":    t0, "t1": t1,
                 "label": "%s [%s]" % (it["label"], part.get("label") or ("VTS "+",".join(vts))),
                 "ShowID": sid,
                 "Checksum": rec.get("ChecksumSHA1", ""),
@@ -371,7 +411,7 @@ def cmd_plan(a):
     state = {"artist": a.artist, "shows": []}
     okc = badc = 0
     for it in items:
-        src, kind, files = pick_source(it["folder"], it.get("vts"))
+        src, kind, files = pick_source(it["folder"], it.get("vts"), it.get("vobs"))
         if not src:
             print("  %sSKIP%s %-40s  no video files" % (RED,RESET,it["label"][:40])); badc+=1; continue
         info, err = ffprobe_stream(src)
@@ -392,6 +432,15 @@ def cmd_plan(a):
             try: dur = float(info["format"].get("duration") or 0)
             except Exception: dur = 0.0
         dur, how = true_duration(src, files, dur)
+        # A time window narrows the show BEFORE the frame budget and the display
+        # line are computed, so both describe the segment actually being captured.
+        t0w, t1w = it.get("t0"), it.get("t1")
+        if t0w is not None or t1w is not None:
+            lo = t0w or 0.0
+            hi = t1w if t1w else dur
+            dur = max(1.0, min(hi, dur) - lo)
+            how += " window %d:%02d-%d:%02d" % (int(lo)//60, int(lo)%60,
+                                                int(min(hi, lo+dur))//60, int(min(hi, lo+dur))%60)
         passed, glist = gates(t, it["json_aspect"])
         n = max(120, min(500, int(dur // 5))) if dur > 0 else 120
         flag = (GREEN+"OK  "+RESET) if passed else (RED+"FAIL"+RESET)
@@ -414,7 +463,8 @@ def cmd_plan(a):
             key = "%s__%s" % (slug, hashlib.sha1(it["rel"].encode()).hexdigest()[:6])
             state["shows"].append({
                 "key": key, "ShowID": it["ShowID"], "Checksum": it["Checksum"],
-                "vts": it.get("vts") or [],
+                "vts": it.get("vts") or [], "vobs": it.get("vobs") or [],
+                "t0": it.get("t0") or 0.0,
                 "FolderName": it["label"], "rel": it["rel"], "ShowDate": it["ShowDate"],
                 "link": it["link"], "src": src, "kind": kind, "duration": dur, "n": n, **t,
             })
@@ -518,8 +568,9 @@ def capture_singlepass(s, vf_tail, outdir: Path, n: int, deint=DEFAULT_DEINT):
     # credit roll become candidates - and credits score superbly, because crisp
     # white text is about the sharpest thing on a DVD. On the Alanis MTV Unplugged
     # shortlist nine of twenty-two frames were end credits before this was fixed.
-    start = int(total * 0.05)
-    end   = int(total * 0.95)
+    f0    = int((s.get("t0") or 0.0) * fps)
+    start = f0 + int(total * 0.05)
+    end   = f0 + int(total * 0.95)
     span  = max(1, end - start)
     k = max(1, span // max(1, n))
     tmp = outdir / "_pass"
@@ -575,7 +626,8 @@ def cmd_capture(a):
         outdir.mkdir(parents=True, exist_ok=True)
         vf = build_vf_seek(s, a.deint)
         dur, n = s["duration"], s["n"]
-        lo, hi = dur*0.05, dur*0.95
+        t0 = s.get("t0") or 0.0
+        lo, hi = t0 + dur*0.05, t0 + dur*0.95
         step = (hi-lo)/max(1,n-1)
         stamps = [lo + i*step for i in range(n)]
         t0=time.time(); ok=bad=0
@@ -684,6 +736,10 @@ def cmd_score(a):
         # Derive the floor from NON-crowd frames only. Crowd frames are the busiest
         # texture in any show, so including them inflates the 95th percentile and
         # tightens the floor for everything else - the opposite of the intent.
+        # Blank/filler frames are dropped outright and are never eligible for the
+        # crowd relaxation below - a green field is not a shot of anything.
+        nblank = sum(1 for r in rows if r.get("blank"))
+        rows = [r for r in rows if not r.get("blank")]
         base = [r for r in rows if not r.get("crowd")] or rows
         sharp = rows
         if base:
@@ -724,6 +780,8 @@ def cmd_score(a):
             if len(keep) >= a.top: break
         out[s["key"]] = {"all":len(rows), "keep":keep, "relaxed":relaxed}
         note = ""
+        if nblank:
+            note += "  %d blank/filler dropped" % nblank
         if relaxed is not None:
             note = "  %sCROWD TEST RELAXED to subjectness>=%.2f%s" % (YELLOW, relaxed, RESET)
         if len(keep) < a.top:
@@ -794,6 +852,14 @@ def cmd_picks(a):
         k=ks[0]; sh=BY[k]
         name="%s_%s" % (sh["FolderName"].replace("/","_")[:44].rstrip(),
                         (sh.get("ShowID") or k)[:6])
+        # The brief tag is the label's FIRST token, so two entries whose labels both
+        # begin "B" both write __B.jpg and one silently destroys the other. That is
+        # easy to do when swapping which pick is the hero. Catch it per show.
+        tags=[lb.split()[0] for lb,_ in sel]
+        dup=[t for t in set(tags) if tags.count(t)>1]
+        if dup:
+            print("  %sDUPLICATE BRIEF TAG %s in %s - each pick needs a distinct "
+                  "A/B/C/spare label%s" % (RED, ",".join(sorted(dup)), frag, RESET))
         doc.append('<h2>%s<span>%dx%d</span></h2><div class=g>'
                    %(_h.escape(sh["FolderName"]), sh["target_w"], sh["target_h"]))
         for label,ts in sel:
@@ -823,8 +889,9 @@ def cmd_picks(a):
           %(attempted,GREEN,ok,RESET,(RED if miss else DIM),miss,RESET,
             (GREEN if on_disk==ok else RED),on_disk,RESET))
     if on_disk != ok:
-        print("  %sFILENAME COLLISION: %d picks resolved but only %d files exist - "
-              "two records are producing the same filename%s" % (RED, ok, on_disk, RESET))
+        print("  %sLOST PICKS: %d resolved but only %d files on disk. Either two records "
+              "produce the same filename, or two picks in one show share a brief tag "
+              "(see DUPLICATE BRIEF TAG above)%s" % (RED, ok, on_disk, RESET))
         return 1
     for frag,label,ts in missing:
         print("     %sUNRESOLVED%s %-26s %-24s %s  (re-capture from source)"%(RED,RESET,frag,label,ts))
