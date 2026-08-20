@@ -175,8 +175,8 @@ evidence in `Notes`.
 
 As of the last run: **7.3% of shows correct, 67.5% squashed, 9.6% undersized, 11.2%
 internally inconsistent.** The bad majority predates the capture pipeline. Fully corrected so
-far: Aerosmith, Alanis Morissette, Alice in Chains; 30 Seconds to Mars is mostly corrected.
-Everything else is outstanding.
+far: Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Bush and
+Chris Cornell; 30 Seconds to Mars is mostly corrected. Everything else is outstanding.
 
 ### One folder can hold more than one show
 
@@ -672,9 +672,9 @@ print(len(d), 'shows /', len(a), 'artists'); print(a.most_common(9)); print(f.mo
 "
 ```
 
-- **829 shows** across **165 artists**
+- **850 shows** across **166 artists**
 - Top artists by volume: Stone Temple Pilots (81), Smashing Pumpkins (58),
   Kings Of Leon (44), Soundgarden (32), Foo Fighters (31), Various Artists (27),
-  Red Hot Chili Peppers (25), Incubus (24), Faith No More (20)
-- Top festivals: Rock am Ring (40), Glastonbury Festival (28), Reading Festival (25),
-  MTV Unplugged (20), Bizarre Festival (20), Pinkpop (18), VH1 Storytellers (16)
+  Red Hot Chili Peppers (25), Incubus (24), 30 Seconds to Mars (21)
+- Top festivals: Rock am Ring (41), Glastonbury Festival (28), Reading Festival (25),
+  MTV Unplugged (21), Bizarre Festival (20), Pinkpop (19), VH1 Storytellers (16)
