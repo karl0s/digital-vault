@@ -342,6 +342,25 @@ in `Notes`:
 The two-part form matters: the FIRST ratio is the stored frame, the SECOND is the real picture.
 Audits need both — image checks compare against the picture, source checks against the frame.
 
+**This is now enforced, not merely documented.** `check_overrides.py` resolves every override
+to its record and fails if the correction is missing; `promote.py` runs it in pre-flight and
+refuses to write to the repo when it fails. Run it standalone any time:
+
+```bash
+python3 ~/VaultShots/check_overrides.py
+```
+
+Two things it taught us when first run against the existing overrides:
+
+- **Match on tokens, and let an override name its record.** A raw substring test is too strict
+  (`2013 Rock In Rio DVD` never appears verbatim in a FolderName written
+  `2013-09-14, Rock In Rio, …`) and too loose (`BBC Radio 1` also lands inside Ladyhawke's
+  `BBC Radio 1's Big Weekend`). Where a fragment is ambiguous, add `"showid"` to the override.
+- **A crop is in STORED pixels; compare after SAR.** `712:432` looks like 1.648 and reads as a
+  mismatch against a correct `4:3 (letterboxed 16:9)` record — until PAL's 16:15 turns it into
+  1.758. Derive SAR from the record's own frame ratio (`SAR = frame_dar × H / W`) so the check
+  needs no drive access.
+
 ### The feature is not always titleset 01 — never probe VTS_01 blind
 
 **Failure this prevents:** the first collection sweep reported KoRn, Papa Roach and
