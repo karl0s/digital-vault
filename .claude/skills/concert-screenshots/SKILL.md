@@ -842,8 +842,14 @@ python3 find_multishow.py --min-score 3 --kind "MULTI-SHOW LIKELY"
 
 1. **Read the sidecar first.** `EXTRAS_TS/*.txt`, `*.nfo`, `.md5`, the `.torrent` filename.
    Fan-made DVDs routinely document every show, with per-show setlists and exact lengths.
-   This is the cheapest and most authoritative evidence available — read it before running
+   This is the cheapest and most informative evidence available — read it before running
    anything.
+
+   **But a sidecar is a CLAIM, not a verdict.** One disc's sidecar advertised "Extras: MTV's
+   2004 Movie Awards Performance"; the titleset is actually a 24-minute music-video block with
+   a one-minute live insert. A record was created on the strength of that line and had to be
+   deleted. **Never create a record from a sidecar alone — sample the frames for that titleset
+   first.** The sidecar tells you where to look; the frames decide what is there.
 2. **Measure each titleset separately** (`titlesets.py`) and check the arithmetic against the
    sidecar. Munich claimed 46:04 and measured 46:00; Hyde Park claimed 32:55 and measured
    32:52; the total matched 78:59 to within six seconds. Ratios that line up like that
@@ -955,6 +961,27 @@ ambiguous match as an error rather than a guess:
 ```
 
 For same-artist splits, `[FolderName, Artist]` is **not** enough to disambiguate. Use ShowIDs.
+
+### Excluding folders: `data/exclude.json`
+
+Some folders should never be planned at all. List their basenames:
+
+```json
+["Beastie Boys 2004-06-09",
+ "Beastie Boys 1999-05-03 - SECC, Glasgow, Scotland [PRO]",
+ "Beastie Boys - Fight for Your Right Revisited …ts"]
+```
+
+Two cases justify it:
+
+- **A byte-identical duplicate copy** of a folder already covered by a record. Capturing it
+  decodes gigabytes twice and produces a second set of stills nothing will ever use. Confirm
+  the duplication first — sample-hashing size plus the first and last 32 MiB of every VOB is
+  decisive without reading the whole file.
+- **Material that is not a performance** — a narrative short film, a documentary — where the
+  user has decided it gets no record.
+
+Excluded folders are printed at plan time so the omission is visible, never silent.
 
 ### Step 7 — Capture each show from its OWN titleset
 
@@ -1152,6 +1179,22 @@ steps verify dimensions via `shots.verify()` and reject anything mis-shaped.
 sharpness and comb ratio per frame — and look at it before promoting. Numbers alone have
 already been wrong twice on this pipeline.
 
+### VERIFY EVERY REPORT'S LINKS BEFORE OPENING IT
+
+Report pages are written into `reports/` but reference scratch directories that are
+**siblings** of `reports/` — so every path needs a `../` prefix. Omitting it produces a page
+where every image is broken. The author never notices, because the author does not open the
+page; the reviewer opens it and finds nothing there.
+
+```bash
+python3 check_report_links.py            # all reports
+python3 check_report_links.py reports/x.html
+```
+
+Run it before every `open`. It exits non-zero if anything is missing. This has failed twice:
+once when archiving moved `picks/` out from under eight pages, and once by writing
+`ident/…` where `../ident/…` was needed.
+
 ---
 
 ## 13. Shows the original scan never catalogued
@@ -1272,6 +1315,9 @@ eyeballing a list.
 - [ ] Picks page shows real images, not index numbers
 - [ ] Content traps identified and reported (compilations, split bills, awards shows)
 - [ ] `find_multishow.py` run for this artist; every hit resolved or explicitly cleared (§10b)
+- [ ] EVERY new record's titleset sampled visually BEFORE the record is written — a sidecar
+      description is never sufficient on its own (§10b)
+- [ ] Report links verified with `check_report_links.py` before any page is opened
 - [ ] For any folder with >1 titleset: each titleset probed, frames compared, broadcaster bug
       checked, and the record's `RepVideoFiles` confirmed to describe the show it claims to be
 - [ ] Any new record from a split keyed by a REAL content hash where the files allow it
