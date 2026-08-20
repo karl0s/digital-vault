@@ -310,6 +310,68 @@ one makes people narrow and tall (or short and wide).
 Store overrides in a JSON file keyed by path fragment, with a `why` field recording the
 evidence. Never bury an override in code.
 
+### WRITE THE CORRECTION BACK TO `shows.json` — the override is not the record
+
+**Failure this prevents:** two aspect corrections lived in `overrides.json` for **six artists**
+while `shows.json` kept the wrong values. The capture tool rendered correctly the whole time, so
+nothing looked broken — but the master data, which is what the site and every audit read, stayed
+wrong. One was a 2013 Rock in Rio DVD still recorded as 4:3; the other had no `AspectRatio` at
+all.
+
+An override fixes the CAPTURE. The record is what the collection actually knows. **Every
+override must be mirrored into the record in the same session it is created**, with the evidence
+in `Notes`:
+
+| Override | Record change |
+|---|---|
+| `dar` forced | `AspectRatio` → the true ratio, e.g. `16:9 (native)` |
+| `crop` for letterbox | `AspectRatio` → `4:3 (letterboxed 16:9)` — frame ratio first, picture ratio second |
+| `crop` for pillarbox | `AspectRatio` → `16:9 (pillarboxed 3:2)` — same convention |
+
+The two-part form matters: the FIRST ratio is the stored frame, the SECOND is the real picture.
+Audits need both — image checks compare against the picture, source checks against the frame.
+
+### The feature is not always titleset 01 — never probe VTS_01 blind
+
+**Failure this prevents:** the first collection sweep reported KoRn, Papa Roach and
+Soundgarden as aspect disagreements. All three records were correct. `rep_media` took
+`VTS_01_1.VOB` unconditionally, and on those discs titleset 01 is the **menu** — 2.9 MB,
+3.5 MB and 39 MB stubs, authored 4:3 while the concert sits in VTS_02 at 16:9. The audit
+was comparing the record against a menu screen.
+
+Pick the titleset with the most **total** bytes, then its first segment:
+
+```python
+by_ts = {}
+for x in vobs:
+    by_ts.setdefault(x.name.split("_")[1], []).append(x)   # group by titleset number
+best = max(by_ts.values(), key=lambda g: sum(q.stat().st_size for q in g))
+return sorted(best)[0]
+```
+
+Grouping matters — a single 1 GB segment of a three-segment feature must not lose to a
+different titleset that happens to have one larger file. And this is why §4.1d exists:
+one disc legitimately carries more than one geometry, so "the disc's aspect" is not a
+single value. Probe the titleset you are actually capturing.
+
+### Auditing records against the SOURCE, not just the images
+
+`scripts/audit-image-geometry.py` compares the IMAGES to the RECORD. If the record itself is
+wrong, both agree and it passes while the stills are squashed — that is precisely how the Rock in
+Rio DVD went unnoticed.
+
+`scripts/audit-aspect-vs-source.py` closes that hole. It probes each show's representative media
+and reports where the source disagrees with the record:
+
+```bash
+python3 scripts/audit-aspect-vs-source.py --artist "Chris Cornell"
+python3 scripts/audit-aspect-vs-source.py          # whole collection, slow
+```
+
+A disagreement means the record, the source flag, or both are wrong — it does not say which.
+An internally consistent SAR/DAR pair can still be wrong (§4.4), so verify by rendering one frame
+at each candidate shape before changing anything.
+
 ### 4.5 Filter chain and ORDER
 
 ```
@@ -935,6 +997,7 @@ which resolved real questions on the Alanis discs:
 | Evidence | Example | What it settled |
 |---|---|---|
 | Broadcaster bug | `N3` vs `Premiere`; `MUCH` vs `CBC`/`CHEX TV DURHAM` | Two different broadcasts = two different shows |
+| — but see below | an `MTV` bug over the Letterman marquee | The bug names the CAPTURE SOURCE, not the programme |
 | Credit roll | *"Recorded At THE BROOKLYN ACADEMY OF MUSIC, HARVEY THEATER"* | Exact venue, including the room |
 | Song title cards | *"uninvited"*, *"King of Pain"* | Confirmed the titleset grouping matches the setlist |
 | Landmarks and banners | Parliament Buildings + Peace Tower; a banner reading *"MASTERS OF MUSIC … 29th"* | Identified an unknown show's venue and event outright |
@@ -945,6 +1008,16 @@ segment staged in front of a giant maple leaf, which together with the CBC bug m
 Day on Parliament Hill. **Identify the venue and event from what is provable, and still leave
 the date empty if the year cannot be sourced.** Partial identification beats both a guess and
 a blank.
+
+**A broadcaster bug identifies the capture, not necessarily the programme.** A bug is decisive
+when comparing two titlesets *within one folder*: different bugs there mean different broadcasts.
+It is NOT proof of what the programme is. A compilation assembled off-air carries whatever
+channel each clip was taped from — an Audioslave performance on the Ed Sullivan Theater marquee
+for *Late Show with David Letterman* carried an **MTV** bug throughout, because that copy came
+from MTV. The marquee in shot settled it; the bug would have misled.
+
+Use bugs to tell segments apart. Use what is IN the frame — a venue sign, a stage backdrop, a
+caption — to say what the segment is.
 
 Encode parameters are a useful secondary tell: `VTS_01`–`05` all sat at 9.56 Mbps while
 `VTS_06` sat at 7.82 Mbps. A bitrate or geometry change mid-folder means a different
@@ -1412,6 +1485,9 @@ eyeballing a list.
 - [ ] Deinterlacer demonstrably ran — output NOT byte-identical to the undeinterlaced frame,
       comb ratio below ~1.6 on a normal shot (§4.7)
 - [ ] Suspicious aspect flags (SD 4:3 dated ≥2008, non-standard ratios) visually verified
+- [ ] EVERY override created this session mirrored into its `shows.json` record, with the
+      evidence in Notes — the override fixes capture, the record is what the collection knows
+- [ ] `scripts/audit-aspect-vs-source.py --artist "<name>"` run; disagreements resolved
 - [ ] Letterbox checked at ≥2 timestamps
 - [ ] Full-collection dimension audit reports **0 wrong dimensions**
 - [ ] No show finished with 0 usable frames

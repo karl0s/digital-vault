@@ -108,7 +108,9 @@ def main():
         # match a record by folder-name suffix ("Artist - <FolderName>")
         rec = None
         for fn, rs in by_folder.items():
-            if entry.name.endswith(fn) or entry.name == fn:
+            # case-insensitive: "Rock am Ring" in shows.json vs "Rock Am Ring" on disk
+            # reported a catalogued folder as having NO record.
+            if entry.name.lower().endswith(fn.lower()) or entry.name.lower() == fn.lower():
                 rec = rs[0]; break
         if rec:
             fdate = norm_date(entry.name)

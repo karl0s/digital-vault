@@ -156,9 +156,22 @@ broadcast standard; what must be exact is the aspect ratio.
 Audit the whole collection at any time — read-only, changes nothing:
 
 ```bash
-python3 scripts/audit-image-geometry.py                     # summary + per-artist worklist
+python3 scripts/audit-image-geometry.py                     # images vs record
 python3 scripts/audit-image-geometry.py --artist "Nirvana"  # detail for one artist
+python3 scripts/audit-aspect-vs-source.py --artist "Nirvana"   # record vs SOURCE
 ```
+
+The two audits answer different questions. The first compares the **images** to the
+**record** — it catches squashed stills. The second compares the **record** to the
+**source on the drive** — it catches records that are themselves wrong, which the first
+cannot, because when the record is wrong the images agree with it and the check passes.
+
+**A show's recorded `AspectRatio` is frequently wrong.** Discs declare 4:3 when the
+broadcast was 16:9, and letterboxed or pillarboxed material is recorded as though the
+black bars were part of the picture. Where a correction is discovered during capture,
+write it back to the record in the same session — use the two-part form
+`4:3 (letterboxed 16:9)`, frame ratio first and true picture ratio second — and put the
+evidence in `Notes`.
 
 As of the last run: **7.3% of shows correct, 67.5% squashed, 9.6% undersized, 11.2%
 internally inconsistent.** The bad majority predates the capture pipeline. Fully corrected so
