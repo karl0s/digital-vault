@@ -53,11 +53,23 @@ except Exception as e:
 
 section('ShowDate format')
 import re
+from datetime import date as _date
 bad_dates = []
 for s in shows:
     d = s.get('ShowDate', '')
-    if d and d != '' and not re.match(r'^\d{4}-\d{2}-\d{2}$', d):
+    if not d:
+        continue
+    m = re.match(r'^(\d{4})-(\d{2})-(\d{2})$', d)
+    if not m:
         bad_dates.append((s['ShowID'], s.get('Artist',''), d))
+        continue
+    # Shape is not enough. "2000-00-00" matches the pattern and sat in the data
+    # for months: it is not a real date, it breaks sorting, and CLAUDE.md forbids
+    # exactly this placeholder. Only the calendar can reject it.
+    try:
+        _date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+    except ValueError as e:
+        bad_dates.append((s['ShowID'], s.get('Artist',''), '%s (%s)' % (d, e)))
 
 if bad_dates:
     for sid, artist, d in bad_dates:
