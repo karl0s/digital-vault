@@ -64,7 +64,7 @@ NOT_A_SONG = re.compile(
 # Non-musical segments appear inside numbered track lists too, and not always at
 # the start of the line - Loreley's disc numbers "Beastie Boys in interview with
 # Alan Bangs" as a track. It belongs in Notes, never in Setlist.
-SEGMENT = re.compile(r"\b(interview with|in interview|introduced by|talking|speech"
+SEGMENT = re.compile(r"\b(interview with|in interview|introduced by|talking|talks|speech"
                      r"|documentary|behind the scenes|soundcheck)\b", re.I)
 
 # Sidecars usually embed a MediaInfo/GSpot dump, and its lines are numbered too.

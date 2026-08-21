@@ -1,6 +1,5 @@
 {
   "_README": "Deliberate Setlist removals, acknowledged so the health-check guard passes. One entry per ShowID. 'entries' are the exact strings removed; 'why' must say why they were not songs. Anything removed WITHOUT an entry here blocks the push.",
-
   "38936833f4cd": {
     "artist": "Chris Cornell",
     "show": "Argentina 12-08-2007",
@@ -11,5 +10,90 @@
       "Thanx to PREACHER from BTARG"
     ],
     "why": "Provenance lines from the header of the folder's info.txt, imported into Setlist as if they were songs. The real setlist is the disc's 18 numbered tracks, which the field now holds; two of those tracks were missing while this junk was present."
+  },
+  "f05548617099": {
+    "artist": "Foo Fighters",
+    "show": "Channel V Studios 1999",
+    "entries": [
+      "Foo Fighters",
+      "Interview",
+      "Bonus",
+      "Dave & Nate Inteview - The Monday Dump 2002"
+    ],
+    "why": "Header line, two menu/section labels and a bonus-feature title imported into Setlist as songs. The disc's bonus material and its second programme ('The Monday Dump') are described in Notes instead."
+  },
+  "39543a8a44a5": {
+    "artist": "Foo Fighters",
+    "show": "Reading Festival 2012",
+    "entries": [
+      "Foo Fighters",
+      "Reading Festival",
+      "Little John's Farm",
+      "Dave Talks",
+      "Runnin Time - 2hrs 20m"
+    ],
+    "why": "Three header lines and a running time from the sidecar, plus 'Dave Talks' which the sidecar numbers as a track but is a spoken segment, not a song. Recorded in Notes. The rebuild ADDS 'Hey, Johnny Park!', which the record was missing."
+  },
+  "8349e6f453e8": {
+    "artist": "Foo Fighters",
+    "show": "Big Day Out 2000",
+    "entries": [
+      "FOO FIGHTERS",
+      "January 16th 2000",
+      "Sydney RAS Showgrounds (Big Day Out)"
+    ],
+    "why": "The band name, date and venue lines from the head of info.txt, imported as songs. The date and venue were moved into their own fields. The rebuild ADDS 'Hey, Johnny Park!', 'Alone + Easy Target' and a second 'Jam'."
+  },
+  "2cc4ba6da8d1": {
+    "artist": "Foo Fighters",
+    "show": "VH1 Storytellers 2009",
+    "entries": [
+      "Didn't",
+      "figure",
+      "out"
+    ],
+    "why": "Not a setlist. The three words are an English sentence fragment split on spaces - almost certainly a note such as \"Didn't figure out\" written into the field and later delimited. No setlist is known for this show."
+  },
+  "27726121cfae": {
+    "artist": "Foo Fighters",
+    "show": "Rock en Seine 2005",
+    "entries": [
+      "FOO FIGHTERS",
+      "Domaine National de Saint Cloud (Paris)",
+      "France",
+      "GENERATION",
+      "TRANSFER",
+      "NOTES",
+      "broadcast by Europe2 TV french cable/satellite channel",
+      "the DVD is chaptered",
+      "removed the TV logo with VirtualDub Mod using LogoAway filter",
+      "DVD inlay artwork by Pierre L",
+      "Pierre L"
+    ],
+    "why": "Three header lines and eight lines of transfer/authoring notes from the sidecar, imported as songs. The venue and country were moved into their own fields; the broadcast source is recorded in Notes. All thirteen real songs are kept."
+  },
+  "8ddd13481eb7": {
+    "artist": "Foo Fighters",
+    "show": "Vancouver 1998 (split bill)",
+    "entries": [
+      "Green Day",
+      "Thunderbird Stadium",
+      "INTERVIEW",
+      "Foo Fighters",
+      "VHS(1) Pro Shot",
+      "Nice Guys Finish Last",
+      "Hitchin' A Ride",
+      "Geek Stink Breath",
+      "Welcome to Paradise",
+      "Longview",
+      "Brain Stew",
+      "Jaded",
+      "Knowledge",
+      "Basket Case",
+      "King For A Day",
+      "When I Come Around",
+      "Good Riddance (Time of Your Life)"
+    ],
+    "why": "SPLIT BILL. Thirteen of these are GREEN DAY songs sitting in a Foo Fighters record, along with four header lines. Green Day play the first ~47 minutes; Foo Fighters' seven songs are kept. Green Day's set is not catalogued anywhere - this folder should be split into two records, and until it is, their songs are deliberately not listed under Foo Fighters."
   }
 }
