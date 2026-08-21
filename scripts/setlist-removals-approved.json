@@ -1,0 +1,15 @@
+{
+  "_README": "Deliberate Setlist removals, acknowledged so the health-check guard passes. One entry per ShowID. 'entries' are the exact strings removed; 'why' must say why they were not songs. Anything removed WITHOUT an entry here blocks the push.",
+
+  "38936833f4cd": {
+    "artist": "Chris Cornell",
+    "show": "Argentina 12-08-2007",
+    "entries": [
+      "Full Concert",
+      "Internal ProShot DVD (never aired)",
+      "Cover Included",
+      "Thanx to PREACHER from BTARG"
+    ],
+    "why": "Provenance lines from the header of the folder's info.txt, imported into Setlist as if they were songs. The real setlist is the disc's 18 numbered tracks, which the field now holds; two of those tracks were missing while this junk was present."
+  }
+}

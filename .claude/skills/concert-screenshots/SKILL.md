@@ -69,6 +69,57 @@ Rules:
   Weak name matching mapped 14 different folders onto 7 records. Record the link as metadata;
   never let it define identity.
 
+### Setlists cannot be lost silently — the guard blocks the push
+
+`health-check.py` compares `Setlist` against the last commit and **fails** when songs would
+disappear. It runs as the pre-push hook, so a loss cannot reach the remote.
+
+- **Splits pass automatically.** Songs that move to a record which *gained* them are re-homed,
+  not lost. Matching against any record in the file is far too loose — an artist plays the same
+  songs every night, so dropping two real tracks from one show gets silently excused by another
+  show that also plays them. The guard failed exactly this test before being tightened.
+- **Deliberate removals need a reason on record**, in `scripts/setlist-removals-approved.json`,
+  with the exact strings and a `why`. Anything removed without an entry blocks the push.
+
+### Read the sidecar for SETLIST too — not just for identity
+
+**Failure this prevents:** sidecars were being opened to answer "is this one show or
+two?" and then closed. Their setlists were never looked at. Seven artists went through
+capture that way. The Jimmy Kimmel record created during the Chris Cornell run shipped
+with an empty `Setlist` while a `Track List` sat in the same folder naming both songs.
+
+At capture time, for every folder, extract from the sidecar in this order:
+
+1. **Setlist** — a numbered track list. Write it, formatted to house style.
+2. **Date, venue, city** — often more precise than the record.
+3. **Lineage** — evidence for aspect and quality decisions.
+4. **Segments that are not songs** — interviews, soundchecks. These go in `Notes`,
+   never in `Setlist`.
+
+Verify afterwards, per artist:
+
+```bash
+python3 scripts/audit-sidecar-setlists.py --artist "Bush"
+```
+
+**A record's existing setlist can be worse than empty.** Chris Cornell's Argentina 2007
+`Setlist` opened with `Full Concert; Internal ProShot DVD (never aired); Cover Included;
+Thanx to PREACHER from BTARG` — four provenance lines from the sidecar header, imported
+as songs — and was missing two real tracks. A populated field is not a checked field.
+
+**Comparing sidecar to record is harder than it looks.** Four rules the audit had to
+learn, each from a false positive that would have trained the reader to ignore it:
+
+| Trap | Example | Rule |
+|---|---|---|
+| Running times | `Spoonman (6:13)` | strip a trailing `(m:ss)` |
+| MediaInfo dumps are numbered too | `000000 seconds of audio timestamp gaps.` | reject technical lines |
+| Loose substring folder matching | a **Blink-182** folder pooled with a **30 Seconds to Mars** record | exact or suffix match only |
+| Medleys are written differently everywhere | `Bela lugosi is dead - 4th of July` vs `Bela Lugosi's Dead / 4th of July` | word-overlap match for entries of 5+ words |
+
+And one folder can hold several shows, so after a split the songs live across sibling
+records — **pool every record derived from a folder** before calling anything missing.
+
 ### Sidecars are authoritative for their own show
 
 A sidecar inside the show's folder does not need corroboration. It was written from the

@@ -271,6 +271,9 @@ GitHub occasionally returns `HTTP 408` on push. The commit is always created suc
 A pre-push hook runs `scripts/health-check.py` before every push.
 - **Warnings** (temp checksums, orphaned images, empty checksums) — printed but don't block
 - **Errors** (bad dates, missing images listed in manifest, duplicate ShowIDs) — block the push
+- **Setlist loss** — any song that disappears from a `Setlist` blocks the push. Songs that move
+  to a record which gained them (a split) pass automatically; a deliberate removal needs an
+  entry in `scripts/setlist-removals-approved.json` giving the exact strings and the reason
 
 Run it manually anytime:
 ```bash
@@ -390,6 +393,12 @@ Rules:
 - If a setlist is partial/incomplete, append ` (incomplete)` at the end of the string
 
 ### Setlist sourcing
+
+Verify a whole artist at once — read-only:
+
+```bash
+python3 scripts/audit-sidecar-setlists.py --artist "Bush"
+```
 
 **Exception, and check it first: a sidecar inside the show's own folder is truth on its
 own.** `*.nfo`, `*.txt`, `info.txt`, `*.md5` — these were written by whoever made the disc,

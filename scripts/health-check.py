@@ -321,6 +321,77 @@ if doc_issues:
 else:
     print('  README and CLAUDE.md appear current — OK')
 
+# ── 13. Setlist loss guard ───────────────────────────────────────────────────
+
+section('Setlist loss guard')
+
+# A setlist is expensive to recover and easy to destroy: a rewrite of shows.json
+# that drops the field looks identical to one that never had it. This compares
+# the working file against the last commit and BLOCKS a push when songs would
+# disappear. Legitimate cases pass automatically - when a folder is split, the
+# parent's songs move to the children, so any song still present on another
+# record is not a loss.
+import subprocess as _sp
+
+def _songs(t):
+    return [x.strip() for x in (t or '').split(';') if x.strip()]
+
+def _norm_song(t):
+    return re.sub(r'[^a-z0-9]+', '', (t or '').lower())
+
+_head = _sp.run(['git', 'show', 'HEAD:public/shows.json'],
+                capture_output=True, text=True, cwd=str(ROOT))
+if _head.returncode != 0:
+    print('  no committed shows.json to compare against — skipped')
+else:
+    try:
+        _before = {x['ShowID']: x for x in json.loads(_head.stdout)}
+    except Exception:
+        _before = {}
+    _by_id = {x['ShowID']: x for x in shows}
+    _appf = os.path.join(ROOT, 'scripts', 'setlist-removals-approved.json')
+    try:
+        _approved = {k: v for k, v in json.load(open(_appf)).items() if not k.startswith('_')}
+    except Exception:
+        _approved = {}
+    # Re-homing means the songs moved to a record that GAINED them in this change -
+    # a split child, typically. Accepting a match against any record in the file is
+    # far too loose: an artist plays the same songs every night, so dropping two real
+    # tracks from one show is silently excused by another show that also plays them.
+    _now_songs = set()
+    for _s in shows:
+        _sid2 = _s['ShowID']
+        _old2 = _before.get(_sid2)
+        _oldset = {_norm_song(x) for x in _songs((_old2 or {}).get('Setlist'))}
+        for _x in _songs(_s.get('Setlist')):
+            if _norm_song(_x) not in _oldset:      # new to THIS record
+                _now_songs.add(_norm_song(_x))
+    _losses = []
+    for _sid, _old in _before.items():
+        _o = _songs(_old.get('Setlist'))
+        if not _o:
+            continue
+        _cur = _by_id.get(_sid)
+        _n = _songs(_cur.get('Setlist')) if _cur else []
+        _gone = [x for x in _o if _norm_song(x) not in {_norm_song(y) for y in _n}]
+        # Anywhere else in the file counts as re-homed, not lost.
+        _gone = [x for x in _gone if _norm_song(x) not in _now_songs]
+        # Deliberate removals are acknowledged in scripts/setlist-removals-approved.json,
+        # which forces the reason to be written down rather than silently bypassed.
+        _ok = {_norm_song(x) for x in _approved.get(_sid, {}).get('entries', [])}
+        _gone = [x for x in _gone if _norm_song(x) not in _ok]
+        if _gone:
+            _losses.append((_sid, _old.get('Artist', ''), len(_o), len(_n), _gone))
+    if _losses:
+        for _sid, _artist, _no, _nn, _gone in _losses:
+            error(f'  Setlist songs would be LOST: {_sid} {_artist} '
+                  f'({_no} -> {_nn} songs) — {"; ".join(_gone[:6])}'
+                  + (f' … +{len(_gone) - 6} more' if len(_gone) > 6 else ''))
+        print('  If a song is genuinely not in this recording, remove it in a commit whose')
+        print('  message says so. If a folder was split, put the songs on the child records.')
+    else:
+        print('  No setlist songs lost against HEAD — OK')
+
 # ── Summary ───────────────────────────────────────────────────────────────────
 
 print('\n' + '═' * 60)
