@@ -337,7 +337,12 @@ def _songs(t):
     return [x.strip() for x in (t or '').split(';') if x.strip()]
 
 def _norm_song(t):
-    return re.sub(r'[^a-z0-9]+', '', (t or '').lower())
+    # Drop a trailing parenthetical before comparing: "(incomplete)", "(Acoustic)",
+    # "(Prince cover)". Completing a setlist removes the "(incomplete)" marker from
+    # the last song, and without this the guard reports that song as lost every
+    # time a setlist is FIXED - punishing exactly the change it exists to protect.
+    t = re.sub(r'\s*\([^()]*\)\s*$', '', (t or '').strip())
+    return re.sub(r'[^a-z0-9]+', '', t.lower())
 
 _head = _sp.run(['git', 'show', 'HEAD:public/shows.json'],
                 capture_output=True, text=True, cwd=str(ROOT))
