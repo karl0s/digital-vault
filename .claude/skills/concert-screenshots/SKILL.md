@@ -81,6 +81,81 @@ disappear. It runs as the pre-push hook, so a loss cannot reach the remote.
 - **Deliberate removals need a reason on record**, in `scripts/setlist-removals-approved.json`,
   with the exact strings and a `why`. Anything removed without an entry blocks the push.
 
+### A populated Setlist is not a checked Setlist
+
+**Failure this prevents:** eleven records across two artists had `Setlist` fields full of things
+that were never songs, and every one of them looked healthy because the field was non-empty and
+the count was plausible.
+
+| Record | What was in Setlist |
+|---|---|
+| Foo Fighters — Vancouver 1998 | **Green Day's thirteen songs**, under a Foo Fighters record |
+| Foo Fighters — VH1 Storytellers | `Didn't; figure; out` — an English sentence split on spaces |
+| Foo Fighters — Rock en Seine | three header lines + eight lines of DVD transfer notes |
+| Foo Fighters — Reading 2012 | band, festival and venue lines + `Runnin Time - 2hrs 20m` |
+| Chris Cornell — Argentina 2007 | `Full Concert`, `Cover Included`, `Thanx to PREACHER from BTARG` |
+
+The cause is always the same: somebody pasted a sidecar wholesale into the field. The header
+block and the trailer notes came along with the songs.
+
+**Check the ends, not the middle.** The junk clusters at the top (band, venue, date, city) and
+at the bottom (running time, lineage, credits, "thanx to"). A quick scan of the first and last
+three entries of any long setlist finds nearly all of it.
+
+Two entries that look like junk but are not: a segment the disc genuinely numbers as a track
+(`Interview (cuts in)`, `Dave Talks`, `jam`) belongs in `Notes`, not deleted silently; and real
+songs do collide with junk patterns — Kings of Leon's *Taper Jean Girl*, Clapton's *Running on
+Faith*, Foo Fighters' *February Stars*. A detector that matches on a prefix will delete them.
+
+### One recording, two bands — check WHOSE songs are in the record
+
+**Failure this prevents:** the Vancouver 1998 record was filed under Foo Fighters and its
+setlist was Green Day's. The scored shortlist was almost entirely Green Day too, so picking
+from it would have shipped Green Day images under a Foo Fighters name.
+
+On any folder whose name contains `+`, `&`, `with`, `VA -` or two artist names:
+
+1. **Sweep the whole runtime** with an evenly-spaced sheet before looking at the shortlist. The
+   shortlist answers "which frames look good", never "who is on stage".
+2. **Find the boundary** and write it into `Notes` as a timestamp.
+3. **Pick only inside the segment.**
+4. **Check the setlist belongs to the artist on the record** — the fastest tell that a folder is
+   a split bill at all.
+
+Worked examples: Green Day hold Vancouver until ~00:47 with Foo Fighters from 00:57:30; Filter
+occupy 03:38–06:07 of a 73-minute Experience Music Project broadcast otherwise full of Kid Rock,
+Red Hot Chili Peppers, Eminem and Snoop Dogg.
+
+### Splitting when the shows are NOT separable at file level
+
+A titleset or VOB split gives each show its own real checksum. A **time-window** split cannot —
+both sets live in one continuous stream. Derive the second record's identifiers instead, so they
+are unique and reproducible:
+
+```python
+DISC       = "greenday"                       # short, stable discriminator
+gd_showid  = sha1(folder_path      + "|" + DISC).hexdigest()[:12]
+gd_checksum= sha1(primary_checksum + "|" + DISC).hexdigest()
+```
+
+The **primary** record keeps the folder's real `FolderPath`-derived ShowID and real
+`ChecksumSHA1`. Record in both `Notes`: the sibling's ShowID, the segment boundary, and the fact
+that the identifiers are derived. Images key on `ChecksumSHA1`, so a derived checksum is what
+gives the second show its own image slots.
+
+### Generated pages: percent-encode filenames
+
+**Failure this prevents:** a folder named `PRO #1 + 2002-09-12 PRO #1` produced four dead images
+on the picks page. A browser reads `#` as the start of a URL fragment, so the path truncated —
+while the files were correct on disk and `check_report_links.py` passed, because it resolved the
+raw string against a filesystem where `#` is an ordinary character.
+
+- Build `src`/`href` with `urllib.parse.quote(name, safe="/")`, not HTML-escaping alone.
+- Make the checker **cut at the first `#` before unquoting**, exactly as a browser does.
+
+`&` needs URL-encoding for the same reason and has bitten this project before. HTML-escaping it
+to `&amp;` is not the same fix.
+
 ### Read the sidecar for SETLIST too — not just for identity
 
 **Failure this prevents:** sidecars were being opened to answer "is this one show or
