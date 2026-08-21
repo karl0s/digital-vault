@@ -175,8 +175,13 @@ evidence in `Notes`.
 
 As of the last run: **7.3% of shows correct, 67.5% squashed, 9.6% undersized, 11.2%
 internally inconsistent.** The bad majority predates the capture pipeline. Fully corrected so
-far: Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Bush and
-Chris Cornell; 30 Seconds to Mars is mostly corrected. Everything else is outstanding.
+far: Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Bush, Chris
+Cornell, Filter, Foo Fighters, Green Day and Guns N' Roses; 30 Seconds to Mars is mostly
+corrected. Everything else is outstanding.
+
+The capture pass is also the most reliable way this collection finds its own gaps: it has
+turned up shows with **no record at all**, records holding **another band's setlist**, records
+whose **dimensions disagree with the disc**, and several folders holding **two shows**.
 
 ### One folder can hold more than one show
 
@@ -718,9 +723,9 @@ print(len(d), 'shows /', len(a), 'artists'); print(a.most_common(9)); print(f.mo
 "
 ```
 
-- **850 shows** across **166 artists**
+- **852 shows** across **166 artists**
 - Top artists by volume: Stone Temple Pilots (81), Smashing Pumpkins (58),
   Kings Of Leon (44), Soundgarden (32), Foo Fighters (31), Various Artists (27),
   Red Hot Chili Peppers (25), Incubus (24), 30 Seconds to Mars (21)
-- Top festivals: Rock am Ring (41), Glastonbury Festival (28), Reading Festival (25),
-  MTV Unplugged (21), Bizarre Festival (20), Pinkpop (19), VH1 Storytellers (16)
+- Top festivals: Rock am Ring (42), Glastonbury Festival (28), Reading Festival (25),
+  MTV Unplugged (21), Bizarre Festival (20), Pinkpop (19), VH1 Storytellers (17)
