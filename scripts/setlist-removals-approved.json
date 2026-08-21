@@ -95,5 +95,17 @@
       "Good Riddance (Time of Your Life)"
     ],
     "why": "SPLIT BILL. Thirteen of these are GREEN DAY songs sitting in a Foo Fighters record, along with four header lines. Green Day play the first ~47 minutes; Foo Fighters' seven songs are kept. Green Day's set is not catalogued anywhere - this folder should be split into two records, and until it is, their songs are deliberately not listed under Foo Fighters."
+  },
+  "78ace4edbb43": {
+    "artist": "Green Day",
+    "show": "Kesselhaus, Berlin 2009",
+    "entries": [
+      "I. Jesus of Suburbia",
+      "II. City of the Damned",
+      "III.I Don't Care",
+      "VI. Dearly Beloved",
+      "V. Tales of Another Broken Home"
+    ],
+    "why": "Not removed - RETAINED inline. These are the five movements of the single 9:29 track 'Jesus of Suburbia', which the record had listed as five separate songs, making a nine-song set look like five. They now appear inside that one entry. The sidecar's 'VI. Dearly Beloved' is a typo for IV and is corrected."
   }
 }
