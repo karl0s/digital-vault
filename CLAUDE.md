@@ -421,6 +421,25 @@ Never infer or reconstruct a setlist from tour averages or nearby-show patterns 
 
 ---
 
+### Setlists that are populated but wrong
+
+A non-empty `Setlist` is not a checked one. Eleven records were found holding things that were
+never songs, always from a sidecar pasted in wholesale — header lines at the top (band, venue,
+date, city) and trailer notes at the bottom (running time, lineage, credits, "thanx to"). One
+held **another band's entire setlist**; another held `Didn't; figure; out`, an English sentence
+split on spaces.
+
+Check the **first and last three entries** of any long setlist — that is where the junk sits.
+
+```bash
+python3 scripts/audit-sidecar-setlists.py --artist "Foo Fighters"
+```
+
+Two things that look like junk but are not: a segment the disc numbers as a track
+(`Interview (cuts in)`, `jam`) belongs in `Notes` rather than being deleted silently, and real
+songs collide with junk patterns — Kings of Leon's *Taper Jean Girl*, Clapton's *Running on
+Faith*.
+
 ### Common corrections to watch for
 - `EventOrFestival` containing a date string → replace with the festival name only
 - `VenueName` containing date prefixes → strip the date
