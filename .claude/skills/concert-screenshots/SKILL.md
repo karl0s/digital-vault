@@ -195,6 +195,27 @@ learn, each from a false positive that would have trained the reader to ignore i
 And one folder can hold several shows, so after a split the songs live across sibling
 records — **pool every record derived from a folder** before calling anything missing.
 
+### The recording outranks every external source
+
+Captions, banners, backdrops, title cards and tickers are **primary evidence about this
+recording**. A published setlist is crowd-sourced and routinely partial. When they disagree,
+write what the video shows, mark a partial setlist `(incomplete)`, and put the conflict in
+`Notes` so it stays visible.
+
+Worked example: Rock in Rio 1991 captions `MY MICHELLE` on screen at 01:05:57, while setlist.fm
+and the a-4-d fan archive both omit it from *both* possible nights. A full-runtime sweep
+confirmed one continuous concert, so the sources are incomplete — not the disc.
+
+**Do not stall on a date.** Use external sources to choose between candidates the recording
+narrows down, commit to the best-evidenced one, and state the evidence. Rio was narrowed to two
+nights by the band's own itinerary and settled by the pro-shot TV broadcast being the first
+night, 20 January.
+
+The recording also frequently identifies the show outright, and this has repeatedly beaten the
+record: a "GUNS N' ROSES — WELCOME BACK TO THE RITZ" banner proved two records were one concert;
+a Live Earth lower-third dated a Foo Fighters record to the day; an MTV caption bar supplied a
+whole Tokyo Dome setlist.
+
 ### Sidecars are authoritative for their own show
 
 A sidecar inside the show's folder does not need corroboration. It was written from the

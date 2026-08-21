@@ -394,6 +394,16 @@ Rules:
 
 ### Setlist sourcing
 
+**The recording outranks everything.** What is captioned, printed or visible on screen is
+primary evidence about *this* recording. Where a published setlist disagrees with the video,
+the video wins — write it, mark a partial list `(incomplete)`, and record the conflict in
+`Notes`. Rock in Rio 1991 captions `MY MICHELLE` on screen while four published sources omit
+it from either possible night; the sources are simply incomplete.
+
+The same applies to dates: use external sources to choose between candidates the recording
+narrows down, then **commit to the best-evidenced one** and say why in `Notes`. A stated
+judgement beats an empty field.
+
 Verify a whole artist at once — read-only:
 
 ```bash
