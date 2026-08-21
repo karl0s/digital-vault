@@ -252,6 +252,34 @@ the bug.
 The collection contains **Train, Filter, Live, Garbage, Cake, Tool and Bush** — every one a
 common word that will collide with venue names, song titles or other bands' folders.
 
+### Artist matching: two ways a show goes invisible
+
+Both of these were found on Green Day, and each had silently dropped a show from the run.
+
+**1. The squashed name.** A folder may write the artist as one word — `Greenday 1998-03-15 -
+NHK Hall`. A `>=2 of {green, day}` token rule never matches it, and the show is simply never
+seen. That folder had no record at all, so nothing else would have caught it either. Always
+add the separator-stripped name as an alias:
+
+```python
+squashed = re.sub(r"[^a-z0-9]+", "", artist.casefold())
+if len(squashed) > 4:
+    ALIASES.add(squashed)
+```
+
+**2. Stopwords deciding ownership.** The cross-artist rejection rule (§2) compares how strongly
+a folder matches OTHER artists. Counting every token let **Presidents of the USA** score 3 on
+`{of, the, usa}` against `Green Day - 1998-04-17 - Bottom Of The Hill, San Francisco, CA, USA`
+— beating Green Day's 2 on `{green, day}` — and the folder was skipped as theirs.
+
+Score on **distinctive tokens only**. Strip articles and prepositions, and strip the geography
+and format words that appear across half the collection: `usa us uk ca ny la live band pro shot
+dvd tv hd hdtv ntsc pal ws concert show set master disc`. After stripping, Green Day scores 2
+and Presidents of the USA scores 0.
+
+The rejection rule is still right in principle — it exists because "Bush" pulled in
+`Smashing Pumpkins - Shepherd's Bush Empire`. It just has to compare on words that identify.
+
 ### Work-directory keys MUST be unique per drive folder
 
 **Failure this prevents:** keying work directories by `ShowID` caused 14 folders to share 7
