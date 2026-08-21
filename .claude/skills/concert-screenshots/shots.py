@@ -77,6 +77,11 @@ def discover(artist: str):
         return set(t for t in re.sub(r"[^a-z0-9]+", " ", x).split() if len(t) > 1)
     artist_toks = toks(artist)
     ALIASES = {"30stm"} if "mars" in artist_toks else set()
+    # A folder may squash the name into one word - "Greenday 1998-03-15 - NHK Hall"
+    # never satisfies a ">=2 of {green, day}" rule and the show stays invisible.
+    squashed = re.sub(r"[^a-z0-9]+", "", artist.casefold())
+    if len(squashed) > 4:
+        ALIASES.add(squashed)
 
     con = sqlite3.connect("file:%s?mode=ro" % DEDUPE_DB, uri=True)
     con.row_factory = sqlite3.Row
@@ -109,16 +114,24 @@ def discover(artist: str):
         # matches some OTHER artist's record more strongly than this one's - if so it is
         # their folder, not ours.
         base_toks = toks(base)
+        # Score on DISTINCTIVE tokens only. Counting stopwords and geography let
+        # "Presidents of the USA" score 3 on {of, the, usa} against the folder
+        # "Green Day - 1998-04-17 - Bottom Of The Hill, San Francisco, CA, USA"
+        # and steal it from Green Day, whose {green, day} scored 2. The show was
+        # silently skipped.
+        def distinctive(t):
+            return t - STOPWORDS
+        base_d = distinctive(base_toks)
+        mine_d = distinctive(artist_toks)
         best_other, best_other_sc = None, 0
         for sh in shows:
             oa = (sh.get("Artist") or "").strip()
             if not oa or oa == artist:
                 continue
-            oat = toks(oa)
-            sc = len(oat & base_toks)
+            sc = len(distinctive(toks(oa)) & base_d)
             if sc > best_other_sc:
                 best_other, best_other_sc = oa, sc
-        mine_sc = len(artist_toks & base_toks)
+        mine_sc = len(mine_d & base_d)
         # A folder that BEGINS with another artist's name is theirs, even on a tie:
         # "TRAIN Live At O2 Empire, Shepherd's Bush" matches "Bush" and "Train" equally
         # on token count, but only one of them opens the name.
@@ -461,6 +474,17 @@ def apply_splits(items):
             })
             out.append(sub)
     return out
+
+
+# Words that carry no identifying power in a folder name: articles and
+# prepositions, plus the geography and format tokens that appear in half the
+# collection. Used only when deciding WHICH ARTIST a folder belongs to.
+STOPWORDS = {
+    "the", "of", "and", "an", "in", "on", "at", "for", "to", "with", "from",
+    "usa", "us", "uk", "gb", "eu", "ca", "ny", "la",
+    "live", "band", "pro", "shot", "proshot", "dvd", "cd", "tv", "hd", "hdtv",
+    "ntsc", "pal", "ws", "full", "concert", "show", "set", "master", "disc",
+}
 
 
 def cmd_plan(a):
@@ -953,6 +977,18 @@ def cmd_contact(a):
 PICKS_JSON = DATA/"picks.json"
 
 
+def _url(name: str) -> str:
+    """Percent-encode a filename for use in an href/src.
+
+    HTML-escaping alone is not enough. A folder called "PRO #1" produces a path
+    containing '#', which a browser reads as the start of a URL FRAGMENT - the
+    path silently truncates and every image on that show 404s. '?' and '%' break
+    the same way. quote() leaves '/' alone so relative paths still work.
+    """
+    from urllib.parse import quote
+    return quote(name, safe="/")
+
+
 def cmd_picks(a):
     """Materialise picks/ from picks.json and build the picks page.
 
@@ -1003,7 +1039,7 @@ def cmd_picks(a):
                 continue
             doc.append('<div class="c"><img loading="lazy" src="../picks/%s">'
                        '<div class="l"><b>%s</b><span>%s</span></div></div>'
-                       %(_h.escape(dest.name),_h.escape(label),ts.replace("-",":")))
+                       %(_url(dest.name),_h.escape(label),ts.replace("-",":")))
         doc.append('</div>')
     doc.append("</div>")
     page=REPORTS/("%s_picks.html"%re.sub(r"[^a-z0-9]+","_",state.get("artist","artist").lower()).strip("_"))
