@@ -1069,6 +1069,16 @@ things. Treat it as a **review** obligation rather than a filter:
 The related content traps in §10 (music-video compilations, awards shows, split bills) apply
 to whole folders; this one applies **inside** a single show's runtime.
 
+### Verify picks AFTER materialising, not from the picking montage
+
+**Failure this prevents:** a hero was chosen off a candidate montage and turned out to be the
+frame in the **next cell** — a wide shot where a close-up had been intended. Reading a dense
+grid is exactly where off-by-one happens, and the label under a thumbnail is easy to associate
+with its neighbour.
+
+Choose from the montage, then render the **materialised picks** and look again. It costs one
+small image and catches both this and the "same frame on two records" case (§duplicate sources).
+
 ### 6.2d-1 Sweep the STRUCTURE before concluding what a programme contains
 
 **Failure this prevents:** a Musique Plus record's 24 scored candidates were *all* talking
@@ -1617,6 +1627,50 @@ print([c for c in mani if c not in cks])"
 merge, delete or re-key — not just after a capture. Back the files up outside the repo before
 deleting them.
 
+### Prefer a TITLESET split — it yields REAL checksums, not derived ones
+
+A time-window split has to derive identifiers (§"Splitting when the shows are NOT separable").
+A **titleset** split does not: each show is its own file set, so each gets a genuine content
+hash that behaves like every other key in the collection. Always check whether the shows fall
+on titleset boundaries before reaching for derived ids.
+
+```bash
+python3 titleset_checksums.py "<folder name>"
+```
+
+**Hash the new record the same way its sibling was hashed.** On one disc the surviving record's
+`ChecksumSHA1` was **not** the hash of the whole titleset — it was `sha1(VTS_01_1.VOB)`, the
+titleset's *first VOB part*, matching its `RepVideoFiles`. The new record therefore used
+`sha1(VTS_02_1.VOB)`. Two records of one disc keyed by two different conventions is a trap for
+whoever reads them next.
+
+**Prove which show the existing checksum describes; never assign it by reasoning.** Recomputing
+gave a byte-exact match to `VTS_01_1.VOB`, which settled that the record was source 1a — a
+question no amount of looking at metadata could have answered. `RepVideoFiles` tells you what to
+hash.
+
+### A record can COVER one segment while its NAME describes another
+
+Two failures, same disc family, and both survive a montage review because the frames are all
+genuine footage of the right band:
+
+- A 7-titleset disc's record was named `MTV Studios` and carried `VenueName: MTV Studios`, but
+  covered **only VTS_07** — a different, earlier concert. The MTV studio performance the name
+  describes sat in VTS_04-06, uncovered.
+- A folder holding **both** of a band's TV appearances had its record dated for the later one
+  and covering VTS_01, while **every pick resolved inside VTS_02** — the earlier show. The
+  record would have shipped images of the wrong performance.
+
+**QA gate for any multi-show folder: check that each pick's timestamp falls inside the titleset
+the record actually covers.** Sum the titleset runtimes to get each boundary in concat time, and
+compare. The frames look right in isolation; only the arithmetic catches it.
+
+```python
+bounds = list(itertools.accumulate(titleset_seconds))   # concat-time end of each titleset
+lo, hi = (bounds[i-1] if i else 0), bounds[i]           # i = titleset the record covers
+assert all(lo <= secs(ts) < hi for _, ts in picks[key]), "picks are from the wrong titleset"
+```
+
 ### Step 3 — Decide which record keeps the original checksum
 
 **The record that keeps the original `ChecksumSHA1` must be the show whose files were
@@ -1792,6 +1846,12 @@ moves `picks/`, `contact/`, the report pages and the data files into `archive/<s
 deletes `picks.json` and `scores.json`. Skipping it means the next artist's `autopick --merge`
 keeps the previous artist's picks and `promote.py` resolves against a stale state. Delete
 `data/promote_map.json` too — see below.
+
+**Hardcoded `VIDEO_TS/` is a silent no-op on discs that keep VOBs at the folder root.**
+`titleset_checksums.py` printed the folder name and nothing else — which reads as "this disc has
+no titlesets", not "I looked in the wrong place". Fall back to the folder root, and **exit with
+an error when nothing is found** rather than returning quietly. Any tool that globs `VIDEO_TS`
+has the same bug latent in it.
 
 **An UNLINKED folder is now a hard stop — `promote.py` refuses rather than skipping.**
 
