@@ -1793,6 +1793,32 @@ deletes `picks.json` and `scores.json`. Skipping it means the next artist's `aut
 keeps the previous artist's picks and `promote.py` resolves against a stale state. Delete
 `data/promote_map.json` too — see below.
 
+**An UNLINKED folder is now a hard stop — `promote.py` refuses rather than skipping.**
+
+**Failure this prevents:** discovery finds a folder, `shows.json` holds its record, but the two
+were never linked, so the state entry's `ShowID` is blank. Promotion then skips that show with a
+one-line note, the run reports cleanly, and the show never reaches the repo. It happened on two
+consecutive artists — Jane's Addiction (`Madrid 2008`, `TV Compilation 1` on the next one) — and
+was caught both times only because someone asked "is anything missing?".
+
+Pre-flight now separates the two meanings of a blank `ShowID`:
+
+| Case | Meaning | Action |
+|---|---|---|
+| A record with that exact `FolderName` **exists** | linking bug | **refuse**, printing the ShowID to set |
+| `FolderName` matches **>1** record | ambiguous | **refuse**, link by ShowID by hand |
+| **No** record at all | a genuinely new show | note it and continue |
+
+The third case must stay allowed — an unrecorded folder is how new shows are found (§10b).
+
+It also reports coverage every run — `records for <artist>: N, of which M have picks` — and lists
+records that will not be touched. Exclusions are legitimate (wrong-artist discs, music videos),
+so that reports rather than blocks; but it must be **said**, never left to be noticed.
+
+**Prove a guard fires before trusting it.** Blank one `ShowID` in `state.json`, confirm
+`promote.py` exits non-zero on BOTH the dry run and `--apply`, then restore. A guard that has
+only ever been seen passing is not a guard yet.
+
 **`data/promote_map.json` PERSISTS BETWEEN ARTISTS — rebuild it every run.**
 
 **Failure this prevents:** starting an artist's promotion with the previous artist's map still
