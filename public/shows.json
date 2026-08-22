@@ -9231,7 +9231,7 @@
     "ChecksumSHA1": "fa43f8accec440edd8d55a1a083a8fb53d9b7f16",
     "DuplicateOf": "",
     "Setlist": "",
-    "Notes": "NEEDS RE-IDENTIFICATION - this record does not describe its own contents. The folder holds no Incubus footage at all: it is HGTV home programming plus MTV Cribs episodes of other celebrities. Two byte-identical folders exist on the drive (\"Incubus - MTV Cribs 2002 + Others\" and \"MTV Cribs 2002 - Incubus + Others\"), only one of which has a record. Excluded from the 2026-08-22 Incubus screenshot run; artist and title need reassigning before it can carry images.",
+    "Notes": "Compilation disc: 16 separate DVD titlesets, ~120 min total, of which ONE is Incubus. VTS_15 (~6.7 min) is the band's MTV Cribs episode - drum kit set up in the sun room, a gold record on the wall, four members together on the staircase. Screenshots captured 2026-08-22 from VTS_15 only. The other 15 programmes are other people's Cribs episodes (joe mcintyre, ice-t, rob zombie, Dave Navarro, 'slackers', 'fields') plus two HGTV 'Dwelling' home programmes; VTS_16 is 3 min of blank blue. A byte-identical second folder exists on the drive ('MTV Cribs 2002 - Incubus + Others') with no record of its own. Note: ffprobe reports nonsense durations for these VOBs (5 s for a 213 MB file) because the MPEG-PS headers carry no reliable duration, and seeking returns nothing - the disc must be sampled by sequential decode, which is how the Incubus segment was found after an earlier pass wrongly concluded the folder held no Incubus at all.",
     "LastScannedAt": "2025-11-06 09:24:22",
     "ExtractionWarnings": "loc:folder",
     "SourceCatalog": "Seagate",
