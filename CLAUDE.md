@@ -232,6 +232,12 @@ a source lineage and two full setlists — before decoding a single frame. Rough
 collection-wide** are genuine candidates. Full procedure in the `concert-screenshots` skill,
 §10b.
 
+**Image A is always a close-up of the lead singer.** The scorer picks the sharpest close-up
+but has no idea who is in it, and lead guitarists get more close-ups on many broadcasts. Check
+the heroes as one montage across all of an artist's shows before handing over. Where a source
+genuinely has no close-up (distant audience recordings), use the best wide with the singer
+centre stage and say so.
+
 **Reviewing costs more than capturing.** One full-size contact sheet is ~6,000 vision tokens;
 a whole 16-programme disc can be identified for less by starting at 132px thumbnails and
 zooming only the ambiguous rows. Details in the skill, §0a-1.

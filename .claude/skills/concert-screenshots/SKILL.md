@@ -1049,6 +1049,38 @@ things. Treat it as a **review** obligation rather than a filter:
 The related content traps in §10 (music-video compilations, awards shows, split bills) apply
 to whole folders; this one applies **inside** a single show's runtime.
 
+### 6.2d-2 The hero shot is the LEAD SINGER — the scorer cannot know who anyone is
+
+**House rule, and it overrides the scorer:** slot **A** is a close-up of the **lead vocalist**,
+preferably tight on the face. B/C/spare carry the rest. Applied to every artist, not just the
+one that prompted it.
+
+**Failure this prevents:** a 19-show artist was handed over with the *guitarist* as hero in most
+shows. Nothing scored wrong — `conc` correctly found the tightest, sharpest close-up in each
+show. It simply has no concept of *who*. Lead guitarists get more close-ups than singers on many
+broadcasts, and on this artist the guitarist was shirtless and heavily tattooed, which reads as
+high-contrast subject matter and scores well.
+
+Identification is a model job and it is cheap. Work out the band's tells first, then apply them
+across every show at once:
+
+- The **singer holds a microphone and no instrument**; the guitarist almost always has a guitar.
+- Costume and hair are stable within a tour but change wildly across decades — check per era,
+  not once for the artist.
+- Beware the two lookalike traps this run hit: the **drummer** behind a kit at a
+  distance, and the **TV host** (a talk-show frame captioned with the host's name is the host,
+  not the band).
+
+**Verify the heroes as one image, not per show.** Build a single montage of the chosen A frame
+from every show at ~300px and read it in one pass — ~2k tokens for 19 shows. Judging heroes
+inside the 4-up review montage does not work; at 300px-per-row scale a guitarist close-up and a
+singer close-up look identical.
+
+**When no close-up of the singer exists, say so rather than substituting.** One audience-shot
+2xDVD had 967 frames and not a single close-up of anybody — the camera never left the back of
+the room. The honest hero is the widest-acceptable frame with the singer centre stage; a tight
+shot of someone else is not a substitute.
+
 ### 6.2e DARK shows need shot-scale diversity, not just score
 
 **Failure this prevents:** two shows were handed over with **no close-up and no instrument shot
