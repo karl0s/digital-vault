@@ -63,6 +63,31 @@ human for several shows.
 For a split bill or an unidentified disc, build a **timeline sweep** (evenly spaced, 300px) — one
 image, not a shortlist per show.
 
+### 0a-1. The montage ladder — spend resolution only where the question is
+
+Identifying an unknown disc is a *search*, and search should start cheap and narrow. Measured
+on a 16-programme compilation (~120 min):
+
+| Step | What it answers | Cost |
+|---|---|---|
+| Whole disc, one row per titleset, 132px thumbs | where are the segment boundaries | ~4-5k |
+| Six frames per titleset, 220px | what is each programme | ~5k |
+| Two suspect rows, 220px | is that dark frame bad or just dark | ~1.5k |
+| One titleset, full res 704px | reading an on-screen name caption | ~2.5k |
+
+The whole disc was identified for well under the **~6,000 tokens a single full-size contact
+sheet costs**. Never open a per-show contact sheet during identification — it answers a
+question you have not asked yet.
+
+**Escalate, do not broadcast.** Go up a rung only for the rows that are still ambiguous, and
+only by as much as the question needs. "Is this a house tour or a stage?" is legible at 132px.
+"Whose name is in the lower third?" needs full resolution — but only for that one titleset.
+
+**Downscale the montage rather than dropping frames.** A 2679x5376 sheet is ~19k tokens; the
+same sheet at 0.52 scale is ~5k and still answers the structural question. Losing frames loses
+coverage; losing pixels usually does not.
+
+
 ## 0. Non-negotiable safety rules
 
 1. **The collection drive is INPUT ONLY.** Every path on it is opened read-only or passed to
@@ -330,6 +355,35 @@ and Presidents of the USA scores 0.
 
 The rejection rule is still right in principle — it exists because "Bush" pulled in
 `Smashing Pumpkins - Shepherd's Bush Empire`. It just has to compare on words that identify.
+
+**3. The combined-artist record.** A split bill may be filed under a joined name —
+`Artist` is literally `Incubus / Deftones`. An exact-match filter (`s["Artist"] == artist`)
+sees neither band, so the shows are invisible to BOTH artists' runs, and the folders are
+invisible to discovery because nothing links them. Two such shows sat unscreenshotted through a
+complete 27-show run and only surfaced because the collector knew they existed.
+
+Match the artist as a **token of a separator-joined field**, not as the whole field:
+
+```python
+parts = [x.strip() for x in re.split(r"[/+&]|\bwith\b|\band\b", s.get("Artist") or "")]
+mine  = artist in parts or s.get("Artist") == artist
+```
+
+Then sweep for them directly before declaring a run complete:
+
+```bash
+python3 -c "
+import json
+a='Incubus'
+for s in json.load(open('public/shows.json')):
+    art=s.get('Artist') or ''
+    if a.lower() in art.lower() and art != a: print(s['ShowID'], repr(art), s.get('FolderName'))
+"
+```
+
+**A combined-artist record still surfaces under neither name on the site.** Capturing its
+images does not fix that — filing is a separate decision for the collection owner. Say so
+rather than silently re-filing it.
 
 ### Work-directory keys MUST be unique per drive folder
 
@@ -753,6 +807,23 @@ else:
 
 The 13.87s VOB set measured **10:05**. A disc claiming 2 minutes was really **62**.
 
+**The demux fallback ITSELF fails on some discs.** On an MTV compilation,
+`ffmpeg -i VOB -c copy -f null -` returned in 0.5 s on a 29 MB file having emitted only
+`non monotonically increasing dts`, and ffprobe insisted on 16.8 s — for a file whose real
+runtime was ~5 min. When timestamps are not merely wrong but *non-monotonic*, nothing that
+reads timestamps can measure the file.
+
+The method that always works is to **decode and count**:
+
+```
+ffmpeg -i SRC -vf "fps=1/20,scale=..." -vsync 0 out_%04d.jpg
+duration ≈ (number of files) × 20
+```
+
+It costs a full decode pass, but it is the only measurement that cannot be lied to, and the
+frames it produces are the sweep you were going to need anyway. Sixteen titlesets that ffprobe
+called 3-30 **seconds** each measured 3-18 **minutes** each this way.
+
 ### 5.2 Single-pass fallback when seeking fails
 
 **Failure this prevents:** even with the true runtime known, `-ss` seeks against the
@@ -818,6 +889,37 @@ select, computing `n = round(timestamp × fps)` for just the frames you need:
 
 Output arrives in **decode order**, not the order you listed - sort your targets by timestamp
 before zipping them back to their labels.
+
+### 5.2b When timestamps are broken, INDEX is the only coordinate — not time
+
+**Failure this prevents:** a sweep was built with `fps=1/20` and its thumbnails labelled
+`i × 20 s`. Picks were chosen off that montage, converted with `n = round(t × fps)`, and
+captured by frame number as §5.2 prescribes. **Every frame came back wrong** — the "close-up of
+the singer" was the programme's presenter. Nothing errored; all eight frames were valid,
+correctly sized and verified.
+
+The reason: on a disc whose timestamps are broken, the `fps` filter's *own* output timing is
+derived from those same broken timestamps. So thumbnail `i` is **not** at `i × 20` seconds, and
+`t × fps` addresses a frame nobody ever looked at. The label was an assumption, not a
+measurement.
+
+**The rule: whatever filter chain produced the frames you reviewed must also produce the frames
+you keep.** Address them by their index in that chain, never by converting the label back into
+time.
+
+```
+# sweep (review)   : -vf "fps=1/20,scale=220:165"          -> thumb i
+# capture (keep)   : -vf "<deint>,fps=1/20,scale=W:H"      -> frame i, same instant
+```
+
+Run the capture over the whole titleset and keep every frame — it is one decode either way, it
+gives a full-resolution contact set for free, and it makes re-picking cost nothing. Name the
+files by index-derived time so picks stay readable, but understand that name as a *label for
+index i*, not as a seek target.
+
+**Sanity check:** the capture must emit the SAME frame count as the sweep. 225 and 204 frames
+against 225 and 204 thumbs is the proof the correspondence holds. A mismatch means the chains
+diverged and every pick is now pointing at the wrong moment.
 
 ---
 
@@ -1279,6 +1381,41 @@ Encode parameters are a useful secondary tell: `VTS_01`–`05` all sat at 9.56 M
 `VTS_06` sat at 7.82 Mbps. A bitrate or geometry change mid-folder means a different
 authoring session, which usually means different source material.
 
+### A compilation disc hides ONE wanted segment among many unwanted ones
+
+**Failure this prevents:** a folder named `<artist> - MTV Cribs 2002 + Others` was recorded as
+containing no footage of the artist at all, and excluded from the run on that basis. It in fact
+held **16 separate titlesets**, ~120 min, of which exactly one (VTS_15, 6.7 min) was the band's
+own episode. The wrong conclusion had been reached by sampling the whole folder as ONE
+concatenated stream — which, on a disc with broken timestamps (§5.1, §5.2b), samples almost
+nothing while appearing to sample 500 frames.
+
+This is the opposite problem to §10b. There, one folder holds several shows you want; here it
+holds one show you want and fifteen you do not. Both are invisible for the same reason: the
+scan records one row per folder.
+
+**Procedure:**
+
+1. **Enumerate titlesets, never concatenate them for identification.** `VTS_01 … VTS_NN` are
+   separate programmes. `VTS_01_1..4` are PARTS of one programme and MUST be concatenated —
+   treating parts as programmes reports the same show four times, and a per-titleset loop that
+   clears its output directory will have each part erase the last.
+2. **Sweep each titleset by sequential decode** (`fps=1/20`), which also measures it (§5.1).
+3. **Build one montage, one row per titleset** and read it top to bottom (§0a-1).
+4. **Look for the on-screen name caption.** Broadcast programmes caption their subject in the
+   lower third, usually in the first seconds but sometimes minutes in. At 220px these are
+   visible-but-unreadable; go to full resolution for that one titleset.
+5. **Capture from the wanted titleset ALONE** — set the record's source to that VOB, not the
+   concat of all of them.
+
+**A titleset can be blank filler.** One was 3.2 min of solid blue: 192 frames, every one
+uniform, ~91 MB of real MPEG-2 encoding nothing. Confirm with a stddev check rather than
+assuming a decode failure — `stddev < 6` across every frame means there is genuinely nothing
+there.
+
+**Write what the other programmes are into `Notes`.** The next person to look at this record
+will otherwise repeat the entire identification. Name them.
+
 ### A TITLESET BOUNDARY IS NOT A SHOW BOUNDARY
 
 **Failure this prevents:** one MuchMusic *Intimate & Interactive* broadcast was split into
@@ -1494,6 +1631,37 @@ Promotion then keys on those ShowIDs (§10b step 6), not on `FolderName`.
 | Promotion (only on request) | `{ChecksumSHA1}_01.jpg` … `_04.jpg` |
 
 ### Promotion procedure (`promote.py`) — the only step that writes to the repo
+
+**`data/promote_map.json` PERSISTS BETWEEN ARTISTS — rebuild it every run.**
+
+**Failure this prevents:** starting an artist's promotion with the previous artist's map still
+on disk. `promote.py` looks up each pick fragment in the map, finds nothing, and skips the show
+with `no confirmed shows.json record`. Every show is skipped, the run reports cleanly, and
+nothing is written. It is a silent no-op, not an error. The map found in place at the start of
+an Incubus promotion still held Guns N' Roses and Green Day entries.
+
+Regenerate from `--propose-map` for the artist at hand, confirm each line, and **store ShowIDs
+rather than FolderNames**. A FolderName is matched by exact string: one character adrift
+(`(Upgrade Version)` vs `(Upgrade)`, a stray trailing space) skips the show without complaint,
+and the same string can match two records after a split. Validate as you write it:
+
+```python
+for frag, folder in confirmed.items():
+    recs = [s for s in shows if (s.get("FolderName") or "").strip() == folder]
+    assert len(recs) == 1, (frag, "matches %d records" % len(recs))
+    assert (recs[0].get("ChecksumSHA1") or "").strip(), (frag, "no checksum")
+    out[frag] = recs[0]["ShowID"]
+```
+
+**QA gate:** the dry-run plan must list as many shows as `picks.json` has entries, minus the
+ones you deliberately excluded. Read that count before `--apply`; a short plan means the map is
+stale, not that the shows are missing.
+
+**The drive folder name and the record's FolderName can legitimately differ**, and the record
+can be the correct one. A folder read `Bizarre Festival 2001` while its record read
+`Bizarre Festival 2002`; the record was right — the setlist held six songs from an album
+released after the 2001 festival. Resolve which is wrong from evidence before promoting, and
+write the reasoning into `Notes` so it is not re-derived.
 
 **Preconditions — refuse to run unless ALL hold:**
 1. Baseline audit clean: 0 manifest entries without files AND 0 files without manifest entries

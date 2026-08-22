@@ -181,7 +181,40 @@ corrected. Everything else is outstanding.
 
 The capture pass is also the most reliable way this collection finds its own gaps: it has
 turned up shows with **no record at all**, records holding **another band's setlist**, records
-whose **dimensions disagree with the disc**, and several folders holding **two shows**.
+whose **dimensions disagree with the disc**, and several folders holding **two shows**. It has
+also turned up a record stating the folder held **none of the artist's footage** when the disc
+in fact carried their own episode in 1 of 16 titlesets.
+
+**A "no footage here" conclusion needs the same evidence as a positive one.** On discs whose
+containers report bad timestamps, sampling can appear to cover two hours while actually
+covering seconds — so absence looks identical to a failed scan. Re-check before excluding.
+
+### Compilation discs: one wanted segment among many
+
+The mirror of the problem below. `<artist> - MTV Cribs 2002 + Others` holds 16 titlesets,
+~120 min, of which one 6.7-min segment is the band. Sweep **each titleset separately** —
+concatenating them for identification is what caused this disc to be written off as containing
+no Incubus at all. `Notes` on such a record should name the other programmes so the
+identification is never repeated.
+
+### Split bills are filed under a joined artist name
+
+Two shows carry `Artist` = `Incubus / Deftones`. An exact-match filter on either band returns
+nothing, so they are invisible to both artists' runs *and* to search on the live site. Before
+calling an artist finished:
+
+```bash
+python3 -c "
+import json
+a='Incubus'
+for s in json.load(open('public/shows.json')):
+    art=s.get('Artist') or ''
+    if a.lower() in art.lower() and art != a: print(s['ShowID'], repr(art))
+"
+```
+
+Capturing their images does not make them findable — how split bills should be filed is an
+open question for the collection, not something to change silently.
 
 ### One folder can hold more than one show
 
@@ -198,6 +231,10 @@ made the disc and have so far revealed a two-show disc, a three-programme disc, 
 a source lineage and two full setlists — before decoding a single frame. Roughly **20 folders
 collection-wide** are genuine candidates. Full procedure in the `concert-screenshots` skill,
 §10b.
+
+**Reviewing costs more than capturing.** One full-size contact sheet is ~6,000 vision tokens;
+a whole 16-programme disc can be identified for less by starting at 132px thumbnails and
+zooming only the ambiguous rows. Details in the skill, §0a-1.
 
 Capture and replacement is handled by the `concert-screenshots` skill
 (`.claude/skills/concert-screenshots/SKILL.md`), which owns the full procedure, the fixed
