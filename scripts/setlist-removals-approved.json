@@ -107,5 +107,35 @@
       "V. Tales of Another Broken Home"
     ],
     "why": "Not removed - RETAINED inline. These are the five movements of the single 9:29 track 'Jesus of Suburbia', which the record had listed as five separate songs, making a nine-song set look like five. They now appear inside that one entry. The sidecar's 'VI. Dearly Beloved' is a typo for IV and is corrected."
+  },
+  "0a9a2978c904": {
+    "artist": "Incubus",
+    "show": "VH1 Rock Honors 2008",
+    "entries": [
+      "Incubus",
+      "VH1 Rock Honors",
+      "Screens Below In Comments"
+    ],
+    "why": "Two header lines from the sidecar plus an instruction line telling the reader where the screenshots are, all imported into Setlist as songs. The two real songs are Who covers, which is what VH1 Rock Honors 2008 was: a Who tribute."
+  },
+  "6f96566d4bb9": {
+    "artist": "Incubus",
+    "show": "Rock am Ring 2008",
+    "entries": [
+      "Incubus"
+    ],
+    "why": "The band name, sitting as the first entry of its own setlist - a header line from the sidecar. Nothing else was removed; 'Are You In?' was ADDED from the same sidecar."
+  },
+  "ff25a03fa586": {
+    "artist": "Incubus",
+    "show": "Hurricane Festival, Scheessel 2011",
+    "entries": [
+      "Interview Pt.1",
+      "Interview Pt.2",
+      "Interview Pt.3",
+      "Interview Pt.4",
+      "Interview Pt.5"
+    ],
+    "why": "Five interview segments, not songs. The zdf.kultur broadcast interleaves them with the music and the sidecar numbers all seventeen items together; Setlist is songs only, and the interleaving is described in Notes. 'Are You In?' was ADDED from the same sidecar."
   }
 }
