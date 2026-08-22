@@ -328,7 +328,7 @@ the bug.
 The collection contains **Train, Filter, Live, Garbage, Cake, Tool and Bush** — every one a
 common word that will collide with venue names, song titles or other bands' folders.
 
-### Artist matching: two ways a show goes invisible
+### Artist matching: four ways a show goes invisible
 
 Both of these were found on Green Day, and each had silently dropped a show from the run.
 
@@ -384,6 +384,26 @@ for s in json.load(open('public/shows.json')):
 **A combined-artist record still surfaces under neither name on the site.** Capturing its
 images does not fix that — filing is a separate decision for the collection owner. Say so
 rather than silently re-filing it.
+
+**4. The possessive apostrophe.** `Jane's Addiction` tokenises to `{jane, addiction}`, because
+the apostrophe is a separator. Folders overwhelmingly spell it `Janes Addiction` → `{janes,
+addiction}`. Overlap falls to 1, under the `>=2` rule, and **15 of 19 shows were dropped in
+silence** — the run reported `ready: 4  skipped: 0` and looked like a clean success. Only the
+four folders that happened to use an apostrophe survived.
+
+Strip apostrophes **before** splitting, so the possessive collapses rather than fragments:
+
+```python
+x = x.replace("'", "").replace("\u2019", "")     # "Jane's" -> "janes"
+```
+
+Both spellings now yield `janes`. No regression for `Guns N' Roses`: its `N'` was a
+single character and was always dropped.
+
+**QA gate, and the general lesson:** compare the number of folders discovered against the number
+of `shows.json` records for that artist, and *stop* if discovery found fewer. `skipped: 0` only
+means nothing was rejected after matching — it says nothing about what never matched at all. A
+silent shortfall is the default failure mode of every rule in this section.
 
 ### Work-directory keys MUST be unique per drive folder
 
@@ -1049,6 +1069,30 @@ things. Treat it as a **review** obligation rather than a filter:
 The related content traps in §10 (music-video compilations, awards shows, split bills) apply
 to whole folders; this one applies **inside** a single show's runtime.
 
+### 6.2d-1 Sweep the STRUCTURE before concluding what a programme contains
+
+**Failure this prevents:** a Musique Plus record's 24 scored candidates were *all* talking
+heads, so the programme was about to be written off as an interview special with the best
+interview frames chosen. A structure sweep — every ~10th captured frame, 152px, ~1.2k tokens —
+showed it was roughly **half live performance**. The scorer had simply never surfaced it: a
+sharp, evenly-lit face in a studio beats a moving performer under stage lighting every time.
+
+The shortlist tells you what scored well. It does not tell you what is **in** the show. Before
+picking from a shortlist that looks uniform — all interviews, all crowd, all one camera angle —
+sweep the whole captured set once:
+
+```python
+fs = sorted((WORK/key).glob("*.jpg"))
+sel = fs[::max(1, len(fs)//48)][:48]          # ~48 thumbs, whole runtime, one image
+```
+
+The same sweep answers "is this two programmes?" (§10b) and "does this show contain any
+close-ups at all?" — one 967-frame audience recording contained none, which is worth knowing
+*before* hunting for one.
+
+**`scores.json` stores `file` as a bare filename, not a path.** Join it with `work/<key>/`
+or every thumbnail in your montage renders as "missing".
+
 ### 6.2d-2 The hero shot is the LEAD SINGER — the scorer cannot know who anyone is
 
 **House rule, and it overrides the scorer:** slot **A** is a close-up of the **lead vocalist**,
@@ -1221,6 +1265,20 @@ if on_disk != ok:
 ```
 
 This is §15 in miniature: the tally being checked was the one the bug could not affect.
+
+### picks.json KEYS must be unique per record too — not just the filenames
+
+**Failure this prevents:** `autopick` derived its `picks.json` key as
+`key.rsplit("__",1)[0][:40]` — stripping the unique hash and truncating. A two-DVD show stored
+as `<parent>/DVD 1` and `<parent>/DVD 2` produced the **same** key for both. The second silently
+overwrote the first, leaving 18 entries for 19 shows, and the survivor's timestamps then
+resolved against the *other* disc's work directory, so one pick could not be found at all.
+
+Use the **whole** work-directory key as the picks key. It is already unique by construction
+(§"Work-directory keys"), and truncation is what destroys that guarantee.
+
+**QA gate:** `len(picks) == len(shows_with_scores)`, and every picks key must match exactly one
+state key. A fragment that matches two keys is an error, never a first-match win.
 
 ### Each pick in a show needs a DISTINCT brief tag
 
@@ -1494,6 +1552,71 @@ DVD 1                                →  DVD 1 (VTS_01-02 - Much Music Intimate
 Bush - Woodstock 99                  →  Bush - Woodstock 99 (Bush set)
 ```
 
+### The record whose METADATA already fits one segment should keep that identity
+
+When splitting, do not assume the original record represents the biggest part of the disc. The
+`London 2003 + Jools Holland 2003` disc was ~53 min of concert and ~7 min of TV — but the
+existing record's `EventOrFestival`, `VenueName` and its **three-song** `Setlist` all described
+the *TV slot*. Keeping the original as the Jools Holland record meant no field had to be
+rewritten into something it was not, and the setlist never moved. The bigger segment became the
+derived record instead.
+
+**Read the setlist length as evidence of which segment a record describes.** Three songs is a TV
+appearance; twenty is a concert.
+
+### A time-window split needs its OWN state entry and work directory
+
+The derived record is not just a `shows.json` row. `shots.py picks` names output files from the
+**state entry** (`FolderName` + `ShowID`), and resolves timestamps by globbing
+`work/<key>/`. Two picks entries pointing at one state entry therefore collide on filename and
+silently overwrite each other — the same class of bug as the picks-key collision above.
+
+So for the second show: add a state entry with its own key and its own `ShowID`, create
+`work/<newkey>/`, and copy in the frames it needs. Only then does each record get its own picks
+entry and its own files.
+
+### Merging two records that are ONE show
+
+The mirror of splitting, and it happens whenever a concert spans two discs. Two records named
+only `DVD 1` and `DVD 2` described the *media*, not the show.
+
+1. **Name the show from the PARENT folder**, which is where the real identity lives —
+   `Janes Addiction Columbus OH 2009-5-28 (aH 2xDVD Master)` gave artist, city, state and date.
+   Read it before inventing anything; and expect typos (`1009-5-28` for 2009) — note them,
+   never "fix" the drive.
+2. **Keep the surviving record's real checksum.** Record the retired sibling's `ShowID` and
+   `ChecksumSHA1` in `Notes` so the merge is reversible and traceable.
+3. **Sum `DurationSec` and `TotalSizeHuman`** — they now describe the whole show.
+4. **Put the images on ONE continuous timeline.** Frames from disc 2 must be offset by disc 1's
+   runtime, or the set reads `00-25-39, 00-20-54, …` and looks like it jumps backwards. Offset,
+   then name by the merged time:
+
+   ```python
+   merged_t = disc2_offset_seconds + disc1_duration_seconds     # 1254 + 2338 -> 00-59-52
+   ```
+
+5. **Then hunt the orphan.** See below — this is the step that is easy to miss.
+
+### A merge or a re-key ORPHANS images that `promote.py` cannot see
+
+**Failure this prevents:** after retiring the DVD 2 record, its four images and its
+`image-manifest.json` entry were still in the repo, now belonging to **no record at all**.
+`promote.py`'s pre/post-flight passed cleanly — it compares manifest entries against files on
+disk in both directions, and those four agreed with each other perfectly. What it never checks
+is the manifest against `shows.json`.
+
+```bash
+python3 -c "
+import json
+mani=json.load(open('public/image-manifest.json'))
+cks={(s.get('ChecksumSHA1') or '').strip() for s in json.load(open('public/shows.json'))}
+print([c for c in mani if c not in cks])"
+```
+
+`audit-image-geometry.py` reports the same thing as **`no show record`**, so run it after any
+merge, delete or re-key — not just after a capture. Back the files up outside the repo before
+deleting them.
+
 ### Step 3 — Decide which record keeps the original checksum
 
 **The record that keeps the original `ChecksumSHA1` must be the show whose files were
@@ -1663,6 +1786,12 @@ Promotion then keys on those ShowIDs (§10b step 6), not on `FolderName`.
 | Promotion (only on request) | `{ChecksumSHA1}_01.jpg` … `_04.jpg` |
 
 ### Promotion procedure (`promote.py`) — the only step that writes to the repo
+
+**Archive the finished artist before starting the next one.** `shots.py archive --name "<artist>"`
+moves `picks/`, `contact/`, the report pages and the data files into `archive/<slug>/` and
+deletes `picks.json` and `scores.json`. Skipping it means the next artist's `autopick --merge`
+keeps the previous artist's picks and `promote.py` resolves against a stale state. Delete
+`data/promote_map.json` too — see below.
 
 **`data/promote_map.json` PERSISTS BETWEEN ARTISTS — rebuild it every run.**
 

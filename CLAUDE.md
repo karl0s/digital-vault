@@ -232,6 +232,11 @@ a source lineage and two full setlists — before decoding a single frame. Rough
 collection-wide** are genuine candidates. Full procedure in the `concert-screenshots` skill,
 §10b.
 
+**After merging, deleting or re-keying any record, check for images that now belong to no
+record.** `promote.py` compares the manifest against files on disk in both directions and passes
+happily when an orphaned pair agrees with itself; it never checks the manifest against
+`shows.json`. `python3 scripts/audit-image-geometry.py` reports these as `no show record`.
+
 **Image A is always a close-up of the lead singer.** The scorer picks the sharpest close-up
 but has no idea who is in it, and lead guitarists get more close-ups on many broadcasts. Check
 the heroes as one montage across all of an artist's shows before handing over. Where a source
