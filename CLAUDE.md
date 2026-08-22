@@ -189,6 +189,14 @@ in fact carried their own episode in 1 of 16 titlesets.
 containers report bad timestamps, sampling can appear to cover two hours while actually
 covering seconds — so absence looks identical to a failed scan. Re-check before excluding.
 
+### A record can cover one titleset while its name describes another
+
+Check both, and check where the images come from. One record named `MTV Studios` covered only
+its 7th titleset — a different concert. Another, dated for a 1993 TV appearance, drew every
+screenshot from the 1992 appearance sitting alongside it on the same disc. Both look correct in
+a review montage, because every frame is real footage of the right band. Sum the titleset
+runtimes and confirm each pick's timestamp falls inside the titleset the record covers.
+
 ### Compilation discs: one wanted segment among many
 
 The mirror of the problem below. `<artist> - MTV Cribs 2002 + Others` holds 16 titlesets,
