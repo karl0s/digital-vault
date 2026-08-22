@@ -12,6 +12,57 @@ you can recognise it rather than rediscover it.
 
 ---
 
+## 0a. RUN IT OFFLINE — the cost of this task is attention, not compute
+
+**Failure this prevents:** a 27-show artist burned a daily credit limit in about an hour. Almost
+none of it was the capture. It was an assistant *babysitting* the capture — a tool call every
+minute to check progress — and then reading one full-size contact sheet per show.
+
+The arithmetic that matters:
+
+| What | Cost |
+|---|---|
+| One contact sheet at 2400×1900 | **~6,000 vision tokens** |
+| 27 of them | **~160,000 tokens, before a single decision** |
+| One review montage of the 4 chosen picks × 27 shows, 300px thumbs | **~7,000 tokens total** |
+| Each progress-check turn | a full context re-read, for one line of output |
+
+**The default workflow is therefore:**
+
+```bash
+~/VaultShots/run_artist.sh "Incubus"      # plan → capture → score → contact → autopick
+                                          # → materialise → review montage, then exits
+```
+
+Start it with `run_in_background: true`, **wait for the completion notification, and do not
+poll.** Then read **one** image: `reports/review.jpg`.
+
+- `autopick.py` chooses A/B/C/spare from `scores.json` with no model at all. The scorer already
+  measures what the briefs ask for — `conc` for a close-up, `spread` for a wide, dHash distance
+  so the four are not the same two seconds.
+- `reviewsheet.py` builds the montage. 300px is enough to judge *is this a close-up, is this the
+  right band, is this a title card*. It is not enough to judge fine focus — which is what the
+  scorer is for.
+- **Only pull a full contact sheet for a show the montage shows something wrong with.** One or
+  two per artist, not twenty-seven.
+
+**Hand-picking is a correction pass, not the first pass.** Auto-pick, look at the montage, and
+override the handful that are wrong — `picks.json` is plain JSON and `shots.py picks`
+re-materialises in seconds. On Incubus the auto-picker independently chose the same frame as a
+human for several shows.
+
+**What still needs eyes, and what does not:**
+
+| Needs a model | Does not |
+|---|---|
+| Split bills — whose segment is this? | Which frame is sharpest |
+| Title cards, adverts, wrong programme | Whether four picks are distinct |
+| Is the record's identity right? | Geometry, dedup, blank detection |
+| Final judgement on the montage | Anything already in `scores.json` |
+
+For a split bill or an unidentified disc, build a **timeline sweep** (evenly spaced, 300px) — one
+image, not a shortlist per show.
+
 ## 0. Non-negotiable safety rules
 
 1. **The collection drive is INPUT ONLY.** Every path on it is opened read-only or passed to
