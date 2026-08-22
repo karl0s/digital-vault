@@ -1853,6 +1853,26 @@ no titlesets", not "I looked in the wrong place". Fall back to the folder root, 
 an error when nothing is found** rather than returning quietly. Any tool that globs `VIDEO_TS`
 has the same bug latent in it.
 
+**An EXACT FolderName match is not the only way a record exists.** The first version of the
+unlinked-folder gate only refused when a record's `FolderName` matched the drive folder exactly.
+A drive folder `Offspring - Live Wembley 2001` had a record named after the disc label,
+`DVD-Offspring-LiveWembley2001` — no exact match, so the gate classified it "a new show" and
+waved the silent skip straight through. It now falls back to distinctive-token overlap against
+the artist's **unclaimed** records and refuses on 2+ shared tokens, printing the candidate ShowID.
+
+**And that fallback needs the squashed-name rule too (§2).** `LiveWembley2001` is a single token,
+so token overlap against `{wembley, 2001}` scored **zero** and the improved gate still missed it.
+Count folder tokens that appear as substrings of the record's separator-stripped name:
+
+```python
+squashed = re.sub(r"[^a-z0-9]+", "", record_folder.casefold())
+n = max(len(want & rtoks), sum(1 for w in want if len(w) >= 4 and w in squashed))
+```
+
+The general lesson: **every name-matching rule in this pipeline needs the squashed-name case.**
+It has now caused three separate silent failures — artist discovery, promote-map linking, and the
+gate written to catch the second one.
+
 **An UNLINKED folder is now a hard stop — `promote.py` refuses rather than skipping.**
 
 **Failure this prevents:** discovery finds a folder, `shows.json` holds its record, but the two
