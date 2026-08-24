@@ -1296,6 +1296,48 @@ bass, sitting behind a kit, or at the side of the stage is not the hero.
 Verify the whole artist's heroes as ONE montage of just the A frames (§6.2d-2) — the owner
 spotted the guitarist as hero in fourteen shows that way in a single glance.
 
+### 6.2d-0 THE HERO RULE IS ENFORCED, NOT ADVISED — `hero_gate.py`
+
+The three rules below are the collection owner's, stated 2026-08-25:
+
+1. **Slot A is a close-up of the LEAD SINGER.** Always. Never another member,
+   however much better the frame.
+2. **Where the singer is barely filmed, use the tightest available shot OF THE
+   SINGER** — not a better close-up of somebody else.
+3. **Where no usable close-up of the singer exists at all, FLAG IT** for the owner
+   to decide. Do not silently fall back to a wide.
+
+This was already written down, in this file and in CLAUDE.md and in the assistant's
+memory, and it was broken anyway across several artists — a guitarist as hero in
+fourteen shows, then a TV presenter, a news reporter, a phone-in caller, the
+bassist and a touring keyboardist. Every one cost the owner a review round and a
+re-capture. **Prose does not hold. A gate does**, which is why the setlist-loss
+guard has never once let a song disappear.
+
+So `autopick` no longer confirms slot A: it emits it labelled `A?` as a suggestion
+only. `promote.py` runs `hero_gate.py` in pre-flight and REFUSES unless, for every
+show, either
+
+- the A label no longer starts with `A?` **and** the ShowID appears in
+  `data/hero_verified.json` with `checked_px >= 340` — because identity errors
+  survive a thumbnail and did, twice, at 230px; or
+- the ShowID appears in `data/no_closeup.json` with a reason, which is rule 3.
+
+```bash
+python3 hero_gate.py     # exit 1 and a REFUSE line per unconfirmed hero
+```
+
+Record a verification as you make it:
+
+```json
+{"3cbf2c1669ea": {"ts": "00-17-35", "checked_px": 360, "who": "lead singer, at the mic"}}
+```
+
+**Prove the gate fires before trusting it** (SKILL.md's own rule): set one A label
+back to `A?` and confirm `promote.py` exits non-zero on both the dry run and
+`--apply`. All four paths — unconfirmed, unverified, verified-too-small, flagged —
+were exercised when it was built.
+
 ### 6.2d-2 The hero shot is the LEAD SINGER — the scorer cannot know who anyone is
 
 **House rule, and it overrides the scorer:** slot **A** is a close-up of the **lead vocalist**,
