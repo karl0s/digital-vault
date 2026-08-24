@@ -259,5 +259,49 @@
       "SMASHING PUMPKINS"
     ],
     "why": "The band name from the head of 'SP - 1996-05-04_DVD.txt', imported as a song. The rebuild ADDS 'Tonight, Tonight', which the sidecar lists as the fifth track and the record was missing."
+  },
+  "a48ff7a15905": {
+    "artist": "Radiohead",
+    "show": "Pinkpop 2001-06-04",
+    "entries": [
+      "Radiohead",
+      "Pinkpop Music Festival"
+    ],
+    "why": "The first two header lines of the folder's sidecar EXTRAS_TS/'2001-06-04 Landgraaf, NL (PAL).txt' - the artist name and the festival name - imported into Setlist as if they were songs. The 15 entries that remain match the sidecar's numbered 'Set:' block exactly."
+  },
+  "5740c44ce4e4": {
+    "artist": "Radiohead",
+    "show": "Reading Festival 2009-08-30 (DVD)",
+    "entries": [
+      "Radiohead",
+      "Reading Festival"
+    ],
+    "why": "Two header lines from the folder's info.txt imported as songs. The rebuild also ADDS '15 Step', the sidecar's track 3, which the record was missing, and marks the list incomplete on the sidecar's own statement that Radiohead played 23 tracks and the BBC broadcast 14."
+  },
+  "81f30a948836": {
+    "artist": "Radiohead",
+    "show": "Reading Festival 2009-08-30 (BBC HD)",
+    "entries": [
+      "General"
+    ],
+    "why": "'General' is the MediaInfo section header from the sidecar's technical dump, imported as a song. The rebuild ADDS '15 Step' and '2+2=5', the sidecar's tracks 3 and 4, which the record was missing."
+  },
+  "c7821268dcef": {
+    "artist": "Radiohead",
+    "show": "Later... presents Radiohead, 2001-06-09 (DVD)",
+    "entries": [
+      "National Anthem",
+      "Packed like Sardines in a Crushd Tin Box"
+    ],
+    "why": "Not removals - spelling corrections to 'The National Anthem' and 'Packt Like Sardines in a Crushd Tin Box', the correct song titles and the forms already used on 493b8c833d73. The guard compares normalised strings, so a retitle reads as a loss. The setlist grows from 6 to the sidecar's 13."
+  },
+  "87b69f8144b4": {
+    "artist": "Radiohead",
+    "show": "Later... presents Radiohead, 2001-06-09 (HD .mkv)",
+    "entries": [
+      "National Anthem",
+      "Packed like Sardines in a Crushd Tin Box"
+    ],
+    "why": "Same spelling corrections as its sibling c7821268dcef, for the same reason."
   }
 }

@@ -90,7 +90,12 @@ def main():
         sh = by_key.get(key)
         if not sh:
             continue
-        frag = key.rsplit("__", 1)[0][:40]
+        # The FULL key, not key.rsplit("__",1)[0][:40]. That stripped the unique
+        # hash and truncated, so two records under ONE parent folder ("DVD 1" and
+        # "DVD 2" of a 2xDVD show) produced the SAME fragment: the second silently
+        # overwrote the first in picks.json, leaving 18 entries for 19 shows, and
+        # its timestamps then resolved against the other disc's work directory.
+        frag = key
         if any(f in key for f in existing):
             kept += 1
             continue
@@ -102,7 +107,14 @@ def main():
         if len(chosen) < 4:
             print("  SKIP  %-46s could not fill 4 distinct slots" % sh["FolderName"][:46])
             continue
-        picks[frag] = [["%s %s" % (tag, BRIEF[tag]), ts_of(chosen[tag])]
+        # Slot A is NEVER auto-confirmed. The scorer finds the tightest close-up in
+        # the show; it has no idea WHO is in it, and on this collection that has put
+        # a TV presenter, a news reporter, a phone-in caller, the bassist and a
+        # touring keyboardist in the hero slot. It is also blind on dark sources,
+        # where the shortlist it ranks contains no close-up at all. So A is emitted
+        # as a SUGGESTION carrying the "A?" marker, and hero_gate.py refuses to let
+        # the run promote until a human or model has replaced or confirmed it.
+        picks[frag] = [["%s %s" % (tag if tag != "A" else "A?", BRIEF[tag]), ts_of(chosen[tag])]
                        for tag in ("A", "B", "C", "spare")]
         made += 1
         print("  auto  %-46s %s" % (sh["FolderName"][:46],
