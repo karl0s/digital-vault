@@ -103,6 +103,52 @@ only by as much as the question needs. "Is this a house tour or a stage?" is leg
 same sheet at 0.52 scale is ~5k and still answers the structural question. Losing frames loses
 coverage; losing pixels usually does not.
 
+### 0a-2. NEVER open a per-show contact sheet to choose a hero
+
+**Failure this prevents:** a 60-show artist where 23 heroes had to be replaced after the owner
+reviewed them, and ~20 contact sheets (~6,000 tokens each, ~120k in total) were read to fix
+them — while producing *worse* picks than the cheaper method.
+
+The contact sheet renders `scores.json`'s shortlist. That shortlist is ranked by a score that
+rewards a sharp subject against a quiet background, so **on a dark or wide-camera source it is
+systematically wide shots** — the close-up you need is not in it at any size. Measured on this
+artist: on the three Philipshalle sources, Astoria, Madrid and Shepherd's Bush the shortlist
+held **no close-up at all**, while a sweep of the same captures held a dozen each.
+
+**Sweep the full capture instead**, at 150px, ~40 frames per show, three shows per image:
+
+```python
+fs  = sorted((Path("work")/key).glob("*.jpg"))
+sel = fs[::max(1, len(fs)//40)][:40]        # whole runtime, evenly spaced
+```
+
+~4k tokens for three shows against ~6k for one contact sheet, and it contains everything the
+show has rather than what one metric liked. Open a contact sheet only when you have a specific
+question the sweep raised.
+
+**`conc` does not find close-ups on a dark source either.** It measures how much one region
+dominates the frame, which a bright wide shot satisfies as readily as a face. A conc-ranked
+candidate montage built on this artist returned 104 frames of which almost all were wide
+stages, and the sweep had to be run anyway. Skip it; go straight to the sweep.
+
+### 0a-3. The cheapest order that still gets it right
+
+Every expensive detour on the reference run came from doing these out of order.
+
+| Step | Cost | Why here |
+|---|---|---|
+| `preflight` + `find_multishow` + both audits, read every sidecar | ~15k | Structure and identity before any decode |
+| ONE page of everything ambiguous → ask the owner once | ~8k | They answer in a sentence what costs rounds to guess |
+| Build the artist's **who's-who** (§6.2d-3) | ~3k | Every later identification is then free |
+| `plan` → `capture` in background → **do not poll** | ~2k | Notification-driven; polling re-reads context for one line |
+| `score` → `autopick` → ONE hero montage, all shows, 210px | ~3k | Judges every hero in a single read |
+| Sweep ONLY the shows whose hero is wrong | ~4k per 3 shows | Never the whole artist |
+| Verify replacement heroes at ≥340px, one montage | ~2k | Identity errors happen at thumbnail size |
+| `promote` → hash-verify all slots → commit → **archive last** | ~2k | |
+
+A 60-show artist fits comfortably under ~60k tokens of review this way. The reference run spent
+roughly four times that by reading contact sheets and re-picking one show at a time.
+
 
 ## 0b. RUN `preflight.py` BEFORE CAPTURING — one pass, not twenty round trips
 
@@ -371,6 +417,38 @@ the bug.
 
 The collection contains **Train, Filter, Live, Garbage, Cake, Tool and Bush** — every one a
 common word that will collide with venue names, song titles or other bands' folders.
+
+### The dedupe index is a CACHE — the drive is ground truth
+
+**Failure this prevents:** `discover()` enumerated `units` from `MediaDeduper`'s sqlite index and
+dropped any row whose path no longer existed — silently, via an `is_dir()` test. A folder renamed
+on the drive since the index was built therefore vanished from the plan with no message at all,
+and the show simply was not captured. On this collection **61 cached paths are dead and 7 drive
+folders are not in the index at all**, spanning five artists.
+
+Union the cache with a live top-level scan, and make the dead-path drop loud:
+
+```python
+known = {u["rel_path"] for u in units}
+for q in sorted(HD_ROOT.iterdir()):        # the drive, right now
+    if q.name not in known and (q.is_dir() or q.suffix.lower() in VIDEO_EXT):
+        units.append({"rel_path": q.name, "kind": "dir" if q.is_dir() else "file"})
+...
+print("DEAD PATH %s in the index, not on the drive" % rel)      # never `continue` in silence
+```
+
+**Do not "fix" this by rescanning.** A full `dedupe.py scan` re-hashes ~46,000 files / 2.6 TB for
+no correctness gain — the union above is instant and the index still earns its keep, because it
+correctly models nested discs (`Artist/Disc 1`, `Compilation/rar`) that a naive one-level walk
+either misses or double-counts.
+
+### To find shows with NO record, match on SIZE not on name
+
+Name matching is useless for this: the collection has been reorganised, so a folder's current
+name often shares almost nothing with the record written from its old one. Comparing each drive
+unit's media bytes against every record's `TotalSizeBytes` (±2%, plus one shared distinctive
+token) cut 76 false candidates down to **20 genuinely undocumented units**. Tokenise the unit's
+PARENT as well as its basename, or every `Disc 1` scores zero against its own record.
 
 ### Artist matching: four ways a show goes invisible
 
@@ -665,6 +743,22 @@ one makes people narrow and tall (or short and wide).
 Store overrides in a JSON file keyed by path fragment, with a `why` field recording the
 evidence. Never bury an override in code.
 
+### An explicit DAR override must not then FAIL gate 1
+
+**Failure this prevents:** adding a `dar` override is the act of adjudicating a SAR/DAR
+disagreement — and gate 1 then failed on that same disagreement, so the show was **skipped
+entirely** and never captured. Every `dar` override was latently broken this way.
+
+Mark the adjudication and let the gate print both numbers rather than block:
+
+```python
+t["dar_overridden"] = True                       # in the dar branch
+g1 = d1 <= 0.01 or bool(t.get("dar_overridden")) # in gates()
+```
+
+The plausible-band gate must also judge the **overridden** shape, or a bogus implied ratio still
+fails it.
+
 ### WRITE THE CORRECTION BACK TO `shows.json` — the override is not the record
 
 **Failure this prevents:** two aspect corrections lived in `overrides.json` for **six artists**
@@ -943,6 +1037,26 @@ if distinct < max(2, len(frames[:400]) // 2):
 Validity is not the same as usefulness. A check that only asks "did I get a file of the right
 size?" will pass happily on 500 copies of one frame.
 
+**PARTIAL stuck seeking is the commoner case and the "fewer than half distinct" rule misses it.**
+A Pinkpop DVD's timestamps ran out at 20:04 while its content ran to 34:19, so every grab past
+that point returned the same last frame: 165 identical images out of 409, i.e. 61% distinct —
+comfortably above the threshold, so the fallback never fired and **40% of the show was one
+repeated picture**. Judge the worst repeat as well as the overall count:
+
+```python
+top = max(Counter(hashes).values())
+if len(seen) < max(2, len(hashes)//2) or top > max(4, 0.08*len(hashes)):
+    discard and use the single decode pass
+```
+
+Tightened this way it fired on **six** further shows in the same artist that the old rule had
+passed, three of them with 68, 163 and 195 repeats.
+
+**A container that under-reports its duration also under-samples the show.** The same disc's
+record said 1203 s and its container 1204 s; the IFO said 2059 s and a frame count confirmed it.
+Sampling the reported figure would have covered only the first 58% of the show. Cross-check
+`DurationSec` against the IFO playback time before capture, not after (§0b check 5).
+
 **This applies to targeted single-frame re-captures too.** Grabbing one replacement frame
 from an affected DVD with `-ss` will silently produce nothing. Use the same frame-number
 select, computing `n = round(timestamp × fps)` for just the frames you need:
@@ -1213,6 +1327,41 @@ singer close-up look identical.
 2xDVD had 967 frames and not a single close-up of anybody — the camera never left the back of
 the room. The honest hero is the widest-acceptable frame with the singer centre stage; a tight
 shot of someone else is not a substitute.
+
+**But prove it before saying it, and never re-use the claim.** On the reference run "this
+audience recording has no close-up of anyone" was said of a disc that has one at 00:17:35, and
+the claim was then repeated a second time from memory rather than re-checked. A sweep (§0a-2)
+costs ~1.5k tokens and settles it. "No close-up exists" needs the same evidence as a positive
+identification.
+
+### 6.2d-3 Build the artist's WHO'S-WHO once, before picking anything
+
+**Failure this prevents:** three separate misidentifications on one artist, each of which
+reached the owner and had to be corrected by them — the most expensive way to find a mistake.
+
+Identity is the single largest quality risk in this pipeline and the one thing no script can
+check. Spend ~3k tokens at the START of an artist building a reference, then apply it everywhere:
+
+1. Pull 6-8 frames spread across the artist's eras (a sweep row per era is enough).
+2. Write down, per era: who fronts the centre mic, hair and build of each member, who plays what.
+3. Note any **extra** people — touring keyboardists, horn players, guests, presenters.
+
+The traps that got through without it, all on one artist:
+
+| What it looked like | What it was |
+|---|---|
+| A bald head at 230px | **Blonde hair slicked straight back** under heavy dark eye makeup — the bassist. Called the singer twice. |
+| The bald man at the keyboard | The **touring keyboardist**. This band had TWO bald men on stage in 1998. |
+| A long-haired man singing, 1993 | Correct — but the same frame set also held the **German TV presenter** in close-up |
+| A face captioned in a news clip | An **MTV News reporter**, and separately a **phone-in caller** |
+
+**Hair colour and head shape are not reliable at thumbnail size.** Verify every hero at **≥340px**
+before it is written into `picks.json`. Two of the three errors above survived a 230px montage
+and were obvious at 360px.
+
+**A frame with two candidates in it is worth more than a tighter frame with one.** The
+Spielbudenplatz hero was settled by choosing a shot where the singer *and* the keyboardist are
+both visible — which makes the identification self-evidencing to whoever reads it next.
 
 ### 6.2e DARK shows need shot-scale diversity, not just score
 
@@ -2136,6 +2285,31 @@ nothing. (The guard caught it: 0 promoted, nothing damaged.)
 `work/` holds disposable candidates. `picks/` holds the locked, named selections. Promotion
 must read `picks/<Folder Name>__<A|B|C|spare>.jpg` and only fall back to `work/` if absent.
 
+**This was documented for a long time before it was true.** `promote.py` in fact resolved *only*
+from `work/`, and the rule above sat in this file unimplemented. The cost: ten hand-made
+corrections were applied by exchanging files in `picks/`, promotion silently resolved none of
+them, and the run reported `promoted 13 shows` as though that were the whole job. Fixed to try
+`picks/<...>_<ShowID[:6]>__<tag>.jpg` first and to refuse when a tag matches more than one
+staged file. **Verify a documented rule is implemented before relying on it.**
+
+**After any promotion, hash every slot against its staged pick.** It is one cheap loop and it is
+the only check that catches a silent partial write:
+
+```python
+for slot, tag in ((1,"A"),(2,"B"),(3,"C"),(4,"spare")):
+    assert md5(picks_file(sid, tag)) == md5(IMGS/("%s_%02d.jpg" % (ck, slot)))
+```
+
+### A hand-supplied still must be staged in `picks/` too
+
+**Failure this prevents:** an image the owner dropped into `temp-images/` was copied straight to
+`public/images/{checksum}_01.jpg`, and the next `promote.py --apply` overwrote it — because
+promotion rewrites all four slots from `picks/`, where that frame did not exist. The owner saw
+their pick revert.
+
+Copy a hand-supplied still into **both** `public/images/` and `picks/<...>__A.jpg`, or promote
+before staging it. Recover from `promote-backup/` if it has already been clobbered.
+
 ### `picks/` is not cleared between runs — remove stale files
 
 **Failure this prevents:** after a show was re-split and renamed, `picks/` held **68 files where
@@ -2419,6 +2593,17 @@ git add -f .claude/skills/concert-screenshots/         # if any bundled script c
 # 9. ARCHIVE - park the run so the next artist starts clean
 python3 shots.py archive
 ```
+
+**Step 9 comes AFTER the owner has signed off, not after promotion.** `archive` empties `work/`,
+and every later correction then costs a full re-capture of the affected shows. On the reference
+run the artist was archived as soon as it was promoted; the owner then asked for 23 hero changes,
+13 of which needed frames that had been deleted twenty minutes earlier — ~10 minutes of decode
+and a re-score to get back to where the run already was. Promote, hand over, wait, *then* archive.
+
+**`plan` rewrites `state.json` wholesale.** Any hand-linked `ShowID`, corrected duration or
+dropped stray unit is lost on the next `plan` and must be re-applied. On the reference run this
+silently reverted 18 hand-links and a duration fix twice. Keep the fix-ups in a small script you
+can re-run, not in one-off edits.
 
 **Step 9 is not optional.** Leftover `picks.json` / `scores.json` from the previous artist
 will silently skip or mis-resolve during the next promotion.

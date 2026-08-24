@@ -173,11 +173,14 @@ write it back to the record in the same session — use the two-part form
 `4:3 (letterboxed 16:9)`, frame ratio first and true picture ratio second — and put the
 evidence in `Notes`.
 
-As of the last run: **7.3% of shows correct, 67.5% squashed, 9.6% undersized, 11.2%
+As of the last run: **38.9% of shows correct, 45.6% squashed, 6.4% undersized, 5.7%
 internally inconsistent.** The bad majority predates the capture pipeline. Fully corrected so
 far: Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Bush, Chris
-Cornell, Filter, Foo Fighters, Green Day and Guns N' Roses; 30 Seconds to Mars is mostly
-corrected. Everything else is outstanding.
+Cornell, Filter, Foo Fighters, Green Day, Guns N' Roses, Kings of Leon and Smashing Pumpkins;
+30 Seconds to Mars is mostly corrected. Everything else is outstanding.
+
+Two Smashing Pumpkins records (`d9b007dd78f2`, `32fafc677477`) can never be corrected: they point
+at a nested folder that no longer exists on the drive, so their stills cannot be re-taken.
 
 The capture pass is also the most reliable way this collection finds its own gaps: it has
 turned up shows with **no record at all**, records holding **another band's setlist**, records
@@ -394,6 +397,28 @@ Always scan for duplicates when editing any of these fields.
 - Never use `"0000-00-00"`, `"Compilation"`, or any other placeholder string
 
 ---
+
+### Mojibake — U+FFFD in imported text
+
+Sidecars written in latin-1 or cp1252 and read as UTF-8 at scan time left a replacement
+character wherever an accented letter should be. All nine **user-visible** occurrences are fixed
+(Köln, Lüdinghausen, Nervión, Eurockéennes, Südwest, and a curly apostrophe in a lineage).
+
+**75 records still carry it inside `Notes`** and are deliberately untouched: `Notes` holds
+verbatim sidecar dumps, which are evidence, so each needs the original file re-read in its true
+encoding rather than a guess at the missing character. Find them with:
+
+```bash
+python3 -c "
+import json
+for s in json.load(open('public/shows.json')):
+    for k,v in s.items():
+        if isinstance(v,str) and chr(0xFFFD) in v: print(s['ShowID'], s['Artist'], k)
+"
+```
+
+This is not cosmetic: **the Artifact publisher refuses content containing U+FFFD**, so a review
+page cannot be built for any artist whose records still carry it in a displayed field.
 
 ### Country
 - Always the full English country name — never abbreviations or codes
@@ -788,8 +813,8 @@ print(len(d), 'shows /', len(a), 'artists'); print(a.most_common(9)); print(f.mo
 "
 ```
 
-- **871 shows** across **166 artists**
-- Top artists by volume: Stone Temple Pilots (81), Smashing Pumpkins (64),
+- **870 shows** across **166 artists**
+- Top artists by volume: Stone Temple Pilots (81), Smashing Pumpkins (63),
   Kings Of Leon (53), Soundgarden (32), Foo Fighters (31), Various Artists (28),
   Red Hot Chili Peppers (25), Incubus (24), 30 Seconds to Mars (21)
 - Top festivals: Rock am Ring (43), Glastonbury Festival (28), Reading Festival (24),
