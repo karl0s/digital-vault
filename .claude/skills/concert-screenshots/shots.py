@@ -74,6 +74,12 @@ def discover(artist: str):
 
     def toks(x):
         x = unicodedata.normalize("NFKD", x or "").encode("ascii","ignore").decode().casefold()
+        # Drop apostrophes BEFORE splitting, so a possessive collapses instead of
+        # fragmenting: "Jane's" -> "janes", matching the way folders spell it. Keeping
+        # the split gave {jane}, which scores 1 against a "Janes Addiction" folder's
+        # {janes, addiction} and fell under the >=2 rule - silently dropping 15 of 19
+        # shows. Same reason "Guns N' Roses" must not become {guns, roses}.
+        x = x.replace("'", "").replace("\u2019", "")
         return set(t for t in re.sub(r"[^a-z0-9]+", " ", x).split() if len(t) > 1)
     artist_toks = toks(artist)
     ALIASES = {"30stm"} if "mars" in artist_toks else set()
@@ -88,6 +94,30 @@ def discover(artist: str):
     units = [dict(r) for r in con.execute(
         "SELECT rel_path,kind,n_media,total_size FROM units ORDER BY rel_path")]
     con.close()
+
+    # The dedupe DB is a CACHE; the drive is ground truth (SKILL.md 2). The
+    # collection gets reorganised and folders get renamed, and a cached row whose
+    # path no longer exists was previously dropped by the is_dir() test further
+    # down WITHOUT a word - so the show simply vanished from the plan. That is the
+    # silent-shortfall failure mode the whole of SKILL.md 2 is about.
+    #
+    # Union the cache with a live top-level scan, and say what the cache got wrong.
+    known = {u["rel_path"] for u in units}
+    added = 0
+    for q in sorted(HD_ROOT.iterdir()):
+        if q.name.startswith(".") or q.name in known:
+            continue
+        if not (q.is_dir() or (q.is_file() and q.suffix.lower() in VIDEO_EXT)):
+            continue
+        units.append({"rel_path": q.name,
+                      "kind": "dir" if q.is_dir() else "file",
+                      "n_media": 0, "total_size": 0})
+        added += 1
+    stale = sum(1 for u in units if not (HD_ROOT / u["rel_path"]).exists())
+    if added or stale:
+        print("  %sdedupe index is out of date%s: %d folder(s) on the drive were not in it, "
+              "%d cached path(s) no longer exist" % (YELLOW, RESET, added, stale))
+    units.sort(key=lambda u: u["rel_path"])
 
     out = []
     for u in units:
@@ -106,6 +136,10 @@ def discover(artist: str):
             continue
         folder = HD_ROOT / rel
         if not (folder.is_dir() or folder.is_file()):   # loose single-file shows count
+            # Never drop a matched folder in silence - it reads as "not this artist's"
+            # when it actually means "the cache is stale and this show is now invisible".
+            print("  %sDEAD PATH%s %-52s in the index, not on the drive"
+                  % (YELLOW, RESET, rel[:52]))
             continue
         base = os.path.basename(rel)
         # A short, common-word artist name matches folders belonging to OTHER artists:
@@ -304,10 +338,24 @@ def apply_override(it, t):
     for frag, rule in ov.items():
         if frag not in it["rel"] and frag not in it["label"]:
             continue
+        # A split folder is several units sharing one `rel`, and they routinely
+        # differ in geometry - on the 2003 Radiohead disc VTS_01 is native 16:9
+        # and VTS_02 is a letterboxed 4:3. A folder-keyed override therefore hit
+        # BOTH units and cropped 168 rows off a show that has no black bars.
+        # `showid` scopes a rule to one unit; without it the rule stays
+        # folder-wide, which is what every existing entry expects.
+        want = (rule.get("showid") or "").strip()
+        if want and want != (it.get("ShowID") or ""):
+            continue
         if "dar" in rule:
             dn, dd = ratio(rule["dar"], (16, 9))
             t["dar"] = dn / dd
             t["target_w"], t["target_h"] = fit_no_downsample(t["w"], t["h"], dn / dd)
+            # A deliberate DAR override IS the adjudication of a SAR/DAR
+            # disagreement, so gate 1 must not then fail on that same
+            # disagreement - which skipped the show entirely. Record that a human
+            # settled it; the gate still PRINTS both numbers so nothing is hidden.
+            t["dar_overridden"] = True
             t["override"] = "DAR forced to %s (%s)" % (rule["dar"], rule.get("why", ""))
         if "crop" in rule:                      # w:h:x:y, applied before scaling
             t["crop"] = rule["crop"]
@@ -328,13 +376,18 @@ def gates(t, json_aspect):
     g = []
     ok = True
     d1 = abs(t["computed_ar"] - t["dar"]) / max(t["dar"], 1e-9)
-    g.append(("SAR/DAR agree", d1 <= 0.01, "computed %.4f vs declared %.4f" % (t["computed_ar"], t["dar"])))
-    ok &= d1 <= 0.01
+    g1 = d1 <= 0.01 or bool(t.get("dar_overridden"))
+    d1txt = "computed %.4f vs declared %.4f" % (t["computed_ar"], t["dar"])
+    if t.get("dar_overridden") and d1 > 0.01:
+        d1txt += " - reconciled by an explicit override"
+    g.append(("SAR/DAR agree", g1, d1txt))
+    ok &= g1
     good_dims = t["target_w"] >= 320 and t["target_h"] >= 240
     g.append(("target dimensions sane", good_dims, "%dx%d" % (t["target_w"], t["target_h"])))
     ok &= good_dims
-    in_band = 1.15 <= t["computed_ar"] <= 2.60
-    g.append(("aspect in plausible band", in_band, "%.3f:1" % t["computed_ar"]))
+    band_ar = t["dar"] if t.get("dar_overridden") else t["computed_ar"]
+    in_band = 1.15 <= band_ar <= 2.60
+    g.append(("aspect in plausible band", in_band, "%.3f:1" % band_ar))
     ok &= in_band
     if json_aspect:
         m = re.search(r"(\d+):(\d+)", json_aspect)
@@ -759,14 +812,26 @@ def cmd_capture(a):
         # fallback never fires, and dimension checks pass. Detect it by content.
         if ok > 4:
             import hashlib as _hl
-            seen=set()
+            seen=set(); hashes=[]
             for f in list(outdir.glob("*.jpg"))[:400]:
-                try: seen.add(_hl.md5(f.read_bytes()).hexdigest())
+                try:
+                    hh=_hl.md5(f.read_bytes()).hexdigest(); seen.add(hh); hashes.append(hh)
                 except OSError: pass
-            if len(seen) < max(2, min(ok,400)//2):
-                print("\n      %sseeking returned %d distinct frames from %d grabs - "
-                      "the container cannot be seeked; discarding and using a single pass%s"
-                      % (YELLOW,len(seen),min(ok,400),RESET))
+            # PARTIAL seek failure is the commoner case and this test used to miss it.
+            # On a Pinkpop DVD the container's timestamps ran out at 20:04 while the
+            # real content ran to 34:19, so every grab past that point returned the
+            # SAME last frame: 165 identical images out of 409. Overall distinctness
+            # was 61%, comfortably above a "fewer than half" rule, so the fallback
+            # never fired and 40% of the show was one repeated picture. Judge the
+            # WORST repeat as well as the overall count.
+            top = max(dupes.values()) if (dupes := __import__("collections").Counter(hashes)) else 0
+            if len(seen) < max(2, min(ok,400)//2) or top > max(4, 0.08*len(hashes)):
+                why = ("only %d distinct frames from %d grabs" % (len(seen), len(hashes))
+                       if len(seen) < max(2, min(ok,400)//2)
+                       else "one frame returned %d times out of %d grabs" % (top, len(hashes)))
+                print("\n      %sseeking gave %s - the container cannot be seeked "
+                      "past its reported end; discarding and using a single pass%s"
+                      % (YELLOW, why, RESET))
                 for f in outdir.glob("*.jpg"): f.unlink()
                 ok, bad = 0, s["n"]
 
