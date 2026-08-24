@@ -137,5 +137,127 @@
       "Interview Pt.5"
     ],
     "why": "Five interview segments, not songs. The zdf.kultur broadcast interleaves them with the music and the sidecar numbers all seventeen items together; Setlist is songs only, and the interleaving is described in Notes. 'Are You In?' was ADDED from the same sidecar."
+  },
+  "cc0a258b1e62": {
+    "artist": "Smashing Pumpkins",
+    "show": "Cabaret Metro and Bonus (compilation)",
+    "entries": [
+      "THE METRO AND MORE DVD",
+      "seeded august 2005"
+    ],
+    "why": "A disc title and a seeding note from METRO.txt, imported as if they were songs. Neither was ever a song. The disc is a compilation of four unrelated programmes, now described in Notes; no setlist is known for any of them."
+  },
+  "2343bb4e36cb": {
+    "artist": "Smashing Pumpkins",
+    "show": "Siamese Dream compilation — Barcelona",
+    "entries": [
+      "[Barcelona, Spain - Sala Apolo, Sep 1993]",
+      "[London, England - Astoria Theater, Feb 24 1994]",
+      "[Rock am Ring, Germany, May 22 1994]",
+      "[MTV Video Music Awards, New York, Sep 8 1994]"
+    ],
+    "why": "Bracketed section headers, not songs. They separated the four shows this disc holds. The disc was split into four records on 2026-08-24, so each header is now a record's own date and venue fields, and the songs beneath each header moved to the record for that show: 3a96a7ccf97a (Astoria), bc823312e8f8 (Rock am Ring), 8aa0469c0797 (MTV VMAs). This record keeps the Barcelona songs."
+  },
+  "afc33e08e173": {
+    "artist": "Smashing Pumpkins",
+    "show": "Alabamahalle, Munich 1993",
+    "entries": [
+      "The Smashing Pumpkins",
+      "Alabamahalle",
+      "Geek U.S.A"
+    ],
+    "why": "The band name and the venue name from the head of info.txt, imported as songs. 'Geek U.S.A' is not a loss: it is respelled 'Geek U.S.A.' with the trailing period the sidecar actually uses. The rebuild also ADDS '(unknown instrumental)', which the sidecar lists between Siva and Silverfuck and the record was missing."
+  },
+  "3cbf2c1669ea": {
+    "artist": "Smashing Pumpkins",
+    "show": "Astoria, London 1994-02-24 (was dated 1993-09-23)",
+    "entries": [
+      "Smashing Pumpkins",
+      "Geek U.S.A",
+      "Quiet",
+      "Hummer",
+      "Rocket",
+      "Mayonaise",
+      "Siva",
+      "Crush",
+      "Tristessa"
+    ],
+    "why": "The band name is a header line. The songs are real, but they belong to the 1993-09-23 Guildhall, Southampton show, which is NOT on this disc: the disc declares that titleset at 1:23:07 but it has no video files at all, only IFO and BUP. The only footage present is the Astoria 1994-02-24 segment, whose five songs the field now holds. The Southampton setlist is preserved in full in this record's Notes so nothing is lost if the footage is ever found."
+  },
+  "67729ca10fe1": {
+    "artist": "Smashing Pumpkins",
+    "show": "Zwan / Corgan / SP compilation",
+    "entries": [
+      "The Smashing Pumpkins",
+      "Zwan",
+      "Billy Corgan",
+      "Various TV appearances",
+      "RumoredToTheStraight&Narrow"
+    ],
+    "why": "Three artist names, a description line and the uploader's handle, taken from the head and foot of sp_zwan_corgan_DVD1.txt. None was a song. The disc is eleven separate TV appearances kept as one record; each is named in Notes with its date where known."
+  },
+  "ed0287648e21": {
+    "artist": "Smashing Pumpkins",
+    "show": "Tibetan Freedom Concert 1996-06-15",
+    "entries": [
+      "Tibetan Freedom Concert (MTV Week In Rock)"
+    ],
+    "why": "The event name from the head of the sidecar, imported as a song. It now lives in EventOrFestival. The rebuild ADDS 'Tonight, Tonight', which the sidecar lists between Zero and Fuck You and the record was missing."
+  },
+  "49a9bdb96d61": {
+    "artist": "Smashing Pumpkins",
+    "show": "Eurockeennes 1997-07-04 (folder 'tsp_90-03_comp')",
+    "entries": [
+      "Smashing Pumpkins",
+      "shot for a school project by a friend of the band",
+      "contains B&W footage from an unknown show at Metro in late 1989 or early 1990",
+      "Chicago local news report (March 1995)",
+      "different footage from the MTV News Report on the Double Door shows",
+      "Ava Adore",
+      "songs not available on other versions of this show",
+      "clips from 2003/01/27",
+      "thanks to Josh Provost and Matt Krueger for sending me their tapes to transfer",
+      "rhinowing"
+    ],
+    "why": "Descriptive prose and credits from tsp_90-03_comp.txt, imported as songs. The sidecar describes a 1990-2003 compilation of eight segments, but only ONE was ever downloaded - the folder holds a single titleset plus a uTorrent part file. That titleset is the sidecar's segment 04, Eurockeennes 1997-07-04, whose three songs the field now holds and whose 13:19 runtime matches the record exactly. 'Ava Adore' is a real song but belongs to segment 05 (TFI Friday 1998), which is not on the drive."
+  },
+  "866724a0da11": {
+    "artist": "Smashing Pumpkins",
+    "show": "Shepherd's Bush Empire 1998-05-23",
+    "entries": [
+      "Intro",
+      "Tear",
+      "Once Upon A Time",
+      "Crestfallen",
+      "Shame",
+      "Bullet With Butterfly Wings",
+      "Stumbleine"
+    ],
+    "why": "This record was carrying the setlist of a DIFFERENT night. The list came from the sidecar of the 1998-04-23 disc (record 5795828263c1) and does not match this recording. This disc's own sidecar, tsp19980523.txt, gives a different eleven-item list and a running time of 1:23:40, which the field now holds. 'Once Upon A Time' and 'Bullet With Butterfly Wings' appear in both nights but are respelled here as this sidecar spells them. Nothing is lost: the April setlist remains on the April record."
+  },
+  "31b63a1524eb": {
+    "artist": "Smashing Pumpkins",
+    "show": "Pinkpop 1994-05-23",
+    "entries": [
+      "The Smashing Pumpkins - Holland 1994-1995",
+      "Loladamusica special xx-12-95",
+      "DVD decrypted using DVD Decrypter",
+      "DO NOT ENCODE TO VCD OR SVCD (OR ANY LOSSY FORMAT) AND DO NOT SELL",
+      "Today is cut because the broadcast of the pinkpop festival was interrupted for other programs. At the end of today you can see the end credits of the broadcast",
+      "The very first notes of Disarm are cut. This is the way it was broadcasted",
+      "The transition from drown into hummer is missing a part. Drown was not broadcasted until a few years after the festival and to make the show more complete I have included it in the place where it belonged in the setlist. The pumpkins went straight into hummer and a little part of that transition is missing due to 2 different broadcasts",
+      "xx-12-95 Loladamusica special",
+      "This is a special about the pumpkins from 1995 and was recorded around the time of the show they did at the Melkweg december 12th 1995",
+      "The special consists of interview parts with live songs inbetween"
+    ],
+    "why": "The whole of 'The Smashing Pumpkins - Holland 1994-1995.txt' had been pasted into Setlist: two header lines, an authoring note, a distribution warning and five paragraphs of the uploader's notes, none of them songs. The notes themselves are preserved in this record's Notes. The disc's second programme, the Loladamusica special, was split out to record cc936661297a on 2026-08-24 and its five songs moved there verbatim."
+  },
+  "eef227d6df44": {
+    "artist": "Smashing Pumpkins",
+    "show": "Parque del Soto, Madrid 1996-05-04",
+    "entries": [
+      "SMASHING PUMPKINS"
+    ],
+    "why": "The band name from the head of 'SP - 1996-05-04_DVD.txt', imported as a song. The rebuild ADDS 'Tonight, Tonight', which the sidecar lists as the fifth track and the record was missing."
   }
 }
