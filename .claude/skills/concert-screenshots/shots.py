@@ -1190,7 +1190,7 @@ def cmd_archive(a):
     # finished artist silently became a page of broken images. Inside the archive
     # those directories sit alongside the html, so the relative prefix is dropped.
     slug_rx = re.sub(r"[^a-z0-9]+", "[_-]?", name.lower()).strip("_")
-    moved = 0
+    moved = assets = 0
     for f in sorted(REPORTS.glob("*.html")):
         stem = f.stem.lower()
         if not (re.search(slug_rx, stem) or stem.startswith(slug)):
@@ -1200,12 +1200,23 @@ def cmd_archive(a):
                        ("../ident/","ident/"), ("../work/","work/")):
             html = html.replace(a_, b_)
         (dest/f.name).write_text(html, encoding="utf-8")
+        # A page may also keep its evidence frames in a SIBLING directory under
+        # reports/ - a scout or identification page written by hand does. Those
+        # are referenced by a plain relative path, so moving only the html left
+        # them behind and the page rendered as broken images - the same failure
+        # this block exists to prevent, just via a directory archive did not know
+        # about. Carry across any reports/ subdirectory the page actually cites.
+        for ref in set(re.findall(r'(?:src|href)="([^"/:]+)/', html)):
+            side = REPORTS/ref
+            if side.is_dir() and not (dest/ref).exists():
+                shutil.copytree(side, dest/ref); shutil.rmtree(side, ignore_errors=True)
+                assets += 1
         f.unlink(); moved += 1
 
     for sub in ("picks","contact","work"):
         shutil.rmtree(HOME/sub, ignore_errors=True); (HOME/sub).mkdir(parents=True, exist_ok=True)
-    print("  archived %s -> %s   (picks/contact/work reset, %d report(s) moved)"
-          %(name,dest,moved)); return 0
+    print("  archived %s -> %s   (picks/contact/work reset, %d report(s) + %d asset dir(s) moved)"
+          %(name,dest,moved,assets)); return 0
 
 
 HTML_HEAD = """<!doctype html><meta charset=utf-8><title>%s</title>
