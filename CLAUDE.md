@@ -299,7 +299,7 @@ When a show is created before files are physically scanned, a random 40-char hex
 as a placeholder checksum. These stubs are identified by:
 - `Notes` field contains `"TEMP CHECKSUM - update when files are scanned"`
 
-Shows with temp checksums — **9 remain**. Regenerate this table rather than
+Shows with temp checksums — **6 remain**. Regenerate this table rather than
 hand-editing it; earlier versions have twice drifted out of date:
 
 ```bash
@@ -311,17 +311,23 @@ for s in sorted(json.load(open('public/shows.json')), key=lambda x: (x['Artist']
 "
 ```
 
-| ShowID | Show | Date |
-|---|---|---|
-| `87b69f8144b4` | Radiohead — Jools Holland | 2001-09-06 |
-| `7df1b178e2a2` | Red Hot Chili Peppers — Woodstock 1999 | 1999-01-01 |
-| `884da8e9cd6f` | Soundgarden — Saturday Night Live | 1996-05-18 |
-| `9591d1560110` | Stone Temple Pilots — MTV Unplugged | 1993-11-17 |
-| `88b30e27e380` | Stone Temple Pilots — WAAF | 2000-01-01 |
-| `97a38840a60a` | Stone Temple Pilots — Bizarre Festival | 2001-08-18 |
-| `f0516c90fab9` | Stone Temple Pilots — New York | 2010-01-01 |
-| `864ba0fb6931` | Stone Temple Pilots — 2010 Tour | 2010-08-20 |
-| `9da270a1217f` | Stone Temple Pilots — TV Compilation 6 | (undated) |
+| ShowID | Show | Date | Why it is still a stub |
+|---|---|---|---|
+| `7df1b178e2a2` | Red Hot Chili Peppers — Woodstock 1999 | 1999-01-01 | only candidate is `Woodstock 1994 + 1999`, a two-show folder already held by `b77e1fdad0f6` — needs a titleset split |
+| `9591d1560110` | Stone Temple Pilots — MTV Unplugged | 1993-11-17 | four candidate folders on the drive, every one already has its own record |
+| `88b30e27e380` | Stone Temple Pilots — WAAF | 2000-01-01 | only candidate is `VH1 + WAAF 2000`, two programmes in one folder already recorded — needs a split |
+| `f0516c90fab9` | Stone Temple Pilots — New York | 2010-01-01 | candidates exist but none is evidenced as this show |
+| `864ba0fb6931` | Stone Temple Pilots — 2010 Tour | 2010-08-20 | `Live From Chicago 2010`'s own file timestamp predates this date by three months |
+| `9da270a1217f` | Stone Temple Pilots — TV Compilation 6 | (undated) | the drive has TV Compilation 1–4 and no 5 or 6 |
+
+Resolved on 2026-08-24: Radiohead Jools Holland, Soundgarden SNL 1996-05-18 and
+STP Bizarre 2001-08-18, each confirmed by the sidecar in its own folder.
+
+**Match a stub by CONTENT, never by name.** Two folders that a name-and-size audit
+called undocumented were already recorded under names sharing nothing with them —
+`Bon Jovi - Nokia Theatre` is filed as `STREAM` and the Kings of Leon EMAs as
+`kingsema2010`. Hash the representative media and compare against every existing
+`ChecksumSHA1` before writing anything.
 
 When the real SHA1 is available: update `ChecksumSHA1` in shows.json, rename the image files,
 and update the manifest key. Clear the Note.
@@ -813,7 +819,7 @@ print(len(d), 'shows /', len(a), 'artists'); print(a.most_common(9)); print(f.mo
 "
 ```
 
-- **870 shows** across **166 artists**
+- **879 shows** across **168 artists**
 - Top artists by volume: Stone Temple Pilots (81), Smashing Pumpkins (63),
   Kings Of Leon (53), Soundgarden (32), Foo Fighters (31), Various Artists (28),
   Red Hot Chili Peppers (25), Incubus (24), 30 Seconds to Mars (21)
