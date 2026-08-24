@@ -245,6 +245,15 @@ record.** `promote.py` compares the manifest against files on disk in both direc
 happily when an orphaned pair agrees with itself; it never checks the manifest against
 `shows.json`. `python3 scripts/audit-image-geometry.py` reports these as `no show record`.
 
+**Run `python3 ~/VaultShots/preflight.py --artist "<name>"` before capturing.** One read-only
+pass reports records with no checksum, duplicate groups whose metadata disagrees, loose media at
+the drive root, folders holding more than one titleset, and durations that imply an impossible
+bitrate. On Kings of Leon it found twelve multi-titleset folders and three loose root files.
+
+**Assume a multi-titleset folder is several shows.** In one artist, twelve folders held more than
+one programme — including a disc named for one festival that held three, and a "Big Day Out"
+master whose titlesets were Jet, then Kings of Leon, then Muse.
+
 **Image A is always a close-up of the lead singer.** The scorer picks the sharpest close-up
 but has no idea who is in it, and lead guitarists get more close-ups on many broadcasts. Check
 the heroes as one montage across all of an artist's shows before handing over. Where a source

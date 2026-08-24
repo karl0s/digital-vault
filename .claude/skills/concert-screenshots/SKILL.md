@@ -63,6 +63,22 @@ human for several shows.
 For a split bill or an unidentified disc, build a **timeline sweep** (evenly spaced, 300px) — one
 image, not a shortlist per show.
 
+### 0a-0. Ask the owner BEFORE sweeping — they know the collection
+
+The single largest waste in a long session is the model identifying discs the owner could name in
+one line. Two examples from one artist: a titleset swept, montaged and still unidentified was
+answered with "VTS_01 is a full Jet set"; another with "VTS_02 is T in the Park 2009". Each answer
+cost the owner a sentence and had cost several decode-and-montage rounds to *not* establish.
+
+So the order is: **`preflight.py` → one identification page → ask → then capture.** Build ONE html
+page of every ambiguous titleset (§0a-1 sizing) and ask about all of them together, rather than
+sweeping, guessing, being corrected, and re-picking one show at a time.
+
+State plainly which ones you *can* identify from on-screen evidence and which you cannot; the
+owner then only has to answer the gaps. Captions, channel bugs and credits settle many of them for
+free — a CBS eye, an NBC peacock, "LIVE FROM NEW ZEALAND", "Dauerfernsehsendung", a
+"Last Call with Carson Daly" credit roll.
+
 ### 0a-1. The montage ladder — spend resolution only where the question is
 
 Identifying an unknown disc is a *search*, and search should start cheap and narrow. Measured
@@ -87,6 +103,34 @@ only by as much as the question needs. "Is this a house tour or a stage?" is leg
 same sheet at 0.52 scale is ~5k and still answers the structural question. Losing frames loses
 coverage; losing pixels usually does not.
 
+
+## 0b. RUN `preflight.py` BEFORE CAPTURING — one pass, not twenty round trips
+
+```bash
+python3 ~/VaultShots/preflight.py --artist "Kings Of Leon"
+```
+
+**Failure this prevents:** a 50-record artist where every structural fault was found *one at a
+time, through conversation* — a disc that was three festivals, a record with no checksum, two
+loose files at the drive root, nine wrong durations, a record whose metadata was entirely empty.
+Each discovery cost a round trip. They are all detectable in one cheap read-only pass.
+
+It reports five things, none of them a conclusion — each is a folder or record to LOOK at:
+
+| Check | Why it matters |
+|---|---|
+| Records with no `ChecksumSHA1` | Cannot carry images at all — the checksum is the key |
+| Duplicate groups that disagree | Sources of one show scatter on the site instead of sorting together |
+| Loose media at the **drive root** | Folder discovery never reaches them |
+| Folders with >1 titleset | A record usually covers only one of them |
+| `DurationSec` vs `TotalSizeHuman` | An implied bitrate outside 0.3–40 Mb/s means the scan timed one VOB part |
+
+Its matching is deliberately loose — artist tokens, the separator-stripped name, **and the
+initials** — because `KOL` and `Janes` each hid shows behind a name that shares no token with the
+artist.
+
+**Known limitation:** the duration check false-positives on split records, which inherit the
+whole disc's `TotalSizeHuman` while carrying one segment's duration.
 
 ## 0. Non-negotiable safety rules
 
@@ -1103,6 +1147,41 @@ close-ups at all?" — one 967-frame audience recording contained none, which is
 **`scores.json` stores `file` as a bare filename, not a path.** Join it with `work/<key>/`
 or every thumbnail in your montage renders as "missing".
 
+### NEVER pick a frame from the montage alone — render it, then decide
+
+**Failure this prevents:** reading a dense grid and choosing the cell *next to* the one intended.
+It happened at least five times in one session — a hero that turned out to be the drummer, the
+bassist, a wide, a stage light, and on one occasion the programme's host. Every time, the montage
+label sat under a neighbouring thumbnail and the eye bridged the gap.
+
+The fix costs one small image:
+
+1. Choose candidates from the montage.
+2. **Render those exact frames at full size, side by side, with their timestamps.**
+3. Only then write them into `picks.json`.
+
+A sharpness number printed under each candidate makes the choice objective where several are
+similar — variance of the Laplacian, higher is crisper:
+
+```python
+a = np.asarray(Image.open(f).convert("L"), dtype=float)
+lap = a[:-2,1:-1] + a[2:,1:-1] + a[1:-1,:-2] + a[1:-1,2:] - 4*a[1:-1,1:-1]
+sharpness = lap.var()
+```
+
+It settled several picks this session: 102 against 29-93 for a Woodstock hero, 99 against 65-80
+for a Muse close-up. It cannot tell you *who* is in the frame — only how crisp it is.
+
+### The band may be four people who look alike
+
+Kings of Leon are three brothers and a cousin; the Followills are hard to tell apart at 200px,
+and picking "the one with the beard" fails. **The reliable tell is behavioural, not facial: the
+singer is the one at the CENTRE MIC with no instrument, or singing into it.** Anyone holding a
+bass, sitting behind a kit, or at the side of the stage is not the hero.
+
+Verify the whole artist's heroes as ONE montage of just the A frames (§6.2d-2) — the owner
+spotted the guitarist as hero in fourteen shows that way in a single glance.
+
 ### 6.2d-2 The hero shot is the LEAD SINGER — the scorer cannot know who anyone is
 
 **House rule, and it overrides the scorer:** slot **A** is a close-up of the **lead vocalist**,
@@ -1481,6 +1560,23 @@ Encode parameters are a useful secondary tell: `VTS_01`–`05` all sat at 9.56 M
 `VTS_06` sat at 7.82 Mbps. A bitrate or geometry change mid-folder means a different
 authoring session, which usually means different source material.
 
+### ASSUME a multi-titleset folder is several shows until proven otherwise
+
+One artist, one session, and the count of folders holding more than one programme was **twelve**.
+What they turned out to be:
+
+- a disc named for one festival that held **three** (Reading 2009 + T in the Park + V Festival)
+- a disc named `Glastonbury + Tpark + Vfest` that held exactly those three
+- a "Big Day Out 2004" master whose first titleset was a **Jet** set and whose fourth held
+  **Kings of Leon then Muse**, back to back
+- a `Live & Videos` disc of **ten** titlesets: one concert, three TV slots, six promo videos
+- a `KOL 1080` folder holding two `.ts` files — two different festivals, one record
+- a show that simply **spanned two titlesets**, where the record covered only the first, losing
+  half the performance
+
+The naming tells you almost nothing. `+` in a folder name is a strong hint, but most of these had
+no hint at all. **Sweep every multi-titleset folder before picking anything** (§0b finds them).
+
 ### A compilation disc hides ONE wanted segment among many unwanted ones
 
 **Failure this prevents:** a folder named `<artist> - MTV Cribs 2002 + Others` was recorded as
@@ -1606,6 +1702,29 @@ only `DVD 1` and `DVD 2` described the *media*, not the show.
    ```
 
 5. **Then hunt the orphan.** See below — this is the step that is easy to miss.
+
+### A folder linked to the WRONG record is invisible to every existing gate
+
+**Failure this prevents:** the folder `Kings of Leon - TSB Arena Wellington NZ 2009` was linked in
+the capture state to the ShowID of an **Australia Music Awards** record. Its frames were promoted
+onto that record, overwriting a Various Artists show with Kings of Leon footage, while the
+Wellington record — whose `FolderName` is an exact match for the folder — sat unclaimed with old
+squashed images.
+
+Neither guard fired. The unlinked-folder gate passed because the entry **had** a ShowID. The
+promote-map uniqueness assert passed because only **one** picks entry claimed that record. A
+wrong link is not a missing link and not a duplicate link.
+
+Audit the links themselves — compare distinctive tokens of the folder name against the record's:
+
+```python
+if not (toks(state_folder) & toks(record_folder)):
+    print("SUSPECT", state_folder, "->", record_folder, sid)
+```
+
+Zero overlap is not automatically wrong — a record legitimately named `kingsema2010` matched a
+folder `Kings of Leon EMA Awards 2010`, confirmed by file size (212.04 MB record, 215 MB folder).
+But every zero-overlap link must be **looked at**, and confirmed by something other than the name.
 
 ### A merge or a re-key ORPHANS images that `promote.py` cannot see
 
@@ -1852,6 +1971,12 @@ keeps the previous artist's picks and `promote.py` resolves against a stale stat
 no titlesets", not "I looked in the wrong place". Fall back to the folder root, and **exit with
 an error when nothing is found** rather than returning quietly. Any tool that globs `VIDEO_TS`
 has the same bug latent in it.
+
+**CAPTURED is not RECORDED.** A documentary sat in staging with 500 frames and four picks and
+**no `shows.json` record at all**, so it could never be promoted and did not exist on the site.
+Nothing flagged it: it had no ShowID, so the gate filed it under "a new show, not a linking bug"
+and moved on. When a state entry has picks but no ShowID, that is a show one step from being
+lost — either create its record or say plainly that it has none.
 
 **An EXACT FolderName match is not the only way a record exists.** The first version of the
 unlinked-folder gate only refused when a record's `FolderName` matched the drive folder exactly.
