@@ -1296,6 +1296,36 @@ bass, sitting behind a kit, or at the side of the stage is not the hero.
 Verify the whole artist's heroes as ONE montage of just the A frames (§6.2d-2) — the owner
 spotted the guitarist as hero in fourteen shows that way in a single glance.
 
+### 6.2d-00 THE GATE GUARDS SLOT A ONLY — B/C/spare are where the junk lands
+
+**Failure this prevents:** on Radiohead, 16 of 18 sources scored `DARK SOURCE`, and
+autopick handed over **four television commercials as all four picks** for one show,
+and the programme's **title card** in two slots of one record and three of another.
+Every one of those would have passed `hero_gate.py`, because the gate only ever looks
+at slot A.
+
+The mechanism is the same one §6.2e describes, applied to the other three slots. On a
+dark source the score rewards a bright, high-contrast, quiet-background frame — which
+is exactly what a title card, a caption card and a television advert are. They are the
+*best-scoring frames in the show*. So they do not merely survive into the shortlist,
+they lead it.
+
+**So on any artist where most shows report `DARK SOURCE`, hand-pick all four slots.**
+The order that costs least:
+
+1. `autopick` → `shots.py picks` → `reviewsheet.py`.
+2. Read **`reports/review.jpg` once** — ~6k vision tokens for the whole artist, all
+   four slots per show. This is what catches commercials, title cards and four
+   near-identical close-ups. It is not good enough to judge *identity*.
+3. Sweep the full capture (§0a-2) and hand-write `picks.json` for every show.
+4. Judge the hero separately at ≥340px (§6.2d-0).
+
+**Two tells worth knowing.** An off-air recording whose sidecar says anything like
+"original commercials included" will have adverts in roughly one frame in six — check
+every slot, not just the hero. And a programme with a title card will usually have it
+score in the top few, because a clean graphic on black is the highest-contrast,
+quietest-background frame the show contains.
+
 ### 6.2d-0 THE HERO RULE IS ENFORCED, NOT ADVISED — `hero_gate.py`
 
 The three rules below are the collection owner's, stated 2026-08-25:
