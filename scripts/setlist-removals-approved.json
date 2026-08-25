@@ -340,5 +340,15 @@
       "IF YOU DOWNLOAD IT....SEED IT"
     ],
     "why": "Not one of these was ever a song. The whole field was the folder's BDO.txt pasted in wholesale - band name, festival name, the taper's warning that the disc menu is mis-dated, and his notes on the recording. The sidecar carries no setlist at all, so the replacement is setlist.fm's Big Day Out Sydney 2008 entry (78 attendee confirmations), 16 entries including the encore break. The same paste is why ShowDate was 2010-01-09, the torrent's upload timestamp."
+  },
+  "f421a2ba84cf": {
+    "artist": "R.E.M.",
+    "show": "Orpheum, Vienna 1998-11-06",
+    "entries": [
+      "TV broadcast (proshot) from the Up promotional tour. I got this from murmurs tracker in June 2006 where it was seeded by Crazy",
+      "R.E.M",
+      "Running time 91 min 31 s"
+    ],
+    "why": "The Setlist field held no songs at all - it was the sidecar's opening sentence, the band name and its trailer line, split on semicolons. The same sidecar lists 18 numbered tracks, which the field now holds. Nothing was a song, so nothing is lost."
   }
 }
