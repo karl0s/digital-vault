@@ -173,11 +173,11 @@ write it back to the record in the same session — use the two-part form
 `4:3 (letterboxed 16:9)`, frame ratio first and true picture ratio second — and put the
 evidence in `Notes`.
 
-As of the last run: **38.9% of shows correct, 45.6% squashed, 6.4% undersized, 5.7%
+As of the last run: **47.7% of shows correct, 38.1% squashed, 5.6% undersized, 4.8%
 internally inconsistent.** The bad majority predates the capture pipeline. Fully corrected so
 far: Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Bush, Chris
-Cornell, Filter, Foo Fighters, Green Day, Guns N' Roses, Kings of Leon, Queens of the Stone Age,
-R.E.M. and Smashing Pumpkins; 30 Seconds to Mars is mostly corrected. Everything else is
+Cornell, Filter, Foo Fighters, Green Day, Guns N' Roses, Kings of Leon, Pearl Jam, Queens of the
+Stone Age, R.E.M. and Smashing Pumpkins; 30 Seconds to Mars is mostly corrected. Everything else is
 outstanding.
 
 Two Smashing Pumpkins records (`d9b007dd78f2`, `32fafc677477`) can never be corrected: they point
@@ -281,6 +281,23 @@ for s in json.load(open('public/shows.json')):
 
 Read the whole sidecar before trusting any field derived from it, and check the **first and last
 three** setlist entries (already the rule) — a line-up block sits at the top or the bottom.
+
+### A circle test can lie — check the aspect against a known-good source instead
+
+Austin City Limits 2009 declares 4:3 (720x480, SAR 8:9) and is internally consistent, so no gate
+catches it. It is really 16:9: the sidecar's lineage is `HD Broadcast>SD Standalone DVD XP`, a
+widescreen broadcast squeezed into a 4:3 frame by a recorder that writes a 4:3 flag whatever it is
+fed. There are no letterbox bars, so nothing looks wrong until you look at a face.
+
+**The drum-head circle test got this backwards.** A kit shot from the side is foreshortened
+horizontally, so its head reads as *too wide* at any aspect and the frame "passes" as 4:3. Only use
+a circle that is square-on to the camera, and prefer a defocused point light, which is always round.
+
+**The reliable test is a person's head against a source whose geometry is beyond doubt** — a
+square-pixel HD capture of the same performer, ideally from the same era. Render the disputed frame
+at both shapes and compare. At 4:3 this one's face was visibly narrow and elongated; at 16:9 it
+matched the 1920x1080 Storytellers capture exactly. Found only because the collection owner said a
+show "looks squished" — after an automated check had cleared it.
 
 ### A letterbox is not necessarily 16:9 — measure it
 
@@ -897,9 +914,9 @@ print(len(d), 'shows /', len(a), 'artists'); print(a.most_common(9)); print(f.mo
 "
 ```
 
-- **879 shows** across **168 artists**
-- Top artists by volume: Stone Temple Pilots (81), Smashing Pumpkins (63),
-  Kings Of Leon (53), Soundgarden (32), Foo Fighters (31), Various Artists (28),
-  Red Hot Chili Peppers (25), Incubus (24), 30 Seconds to Mars (21)
+- **892 shows** across **168 artists**
+- Top artists by volume: Stone Temple Pilots (85), Smashing Pumpkins (63),
+  Kings Of Leon (53), Soundgarden (32), Foo Fighters (31), Various Artists (29),
+  Red Hot Chili Peppers (27), Incubus (24), 30 Seconds to Mars (21)
 - Top festivals: Rock am Ring (43), Glastonbury Festival (28), Reading Festival (24),
   MTV Unplugged (21), Pinkpop (20), Bizarre Festival (20), Big Day Out (19)
