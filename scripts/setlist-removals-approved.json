@@ -488,5 +488,57 @@
       "We Care a Lot"
     ],
     "why": "Not a removal. 'We Care a Lot' is the final entry and now reads 'We Care a Lot (incomplete)' - the house marker appended because the disc is 19 minutes and cannot hold the fourteen-song list it carries. What the disc actually contains has not been transcribed."
+  },
+  "2ef05cefd49b": {
+    "artist": "Pearl Jam",
+    "show": "Saturday Night Live (1992 / 1994 / 2006)",
+    "entries": [
+      "Pearl Jam",
+      "NBC Studios",
+      "Saturday Night Live (3 nights)",
+      "SNL 94",
+      "Dolby Digital 5.1 448Kb/s"
+    ],
+    "why": "Three header lines from the head of the folder's Info.txt, a source label ('SNL 94') and an audio spec, imported into Setlist as if they were songs. All seven real songs across the three appearances are kept; the dates, the per-titleset mapping and the two lineages are recorded in Notes instead."
+  },
+  "386ef26dbe15": {
+    "artist": "Pearl Jam",
+    "show": "Rock im Park 2000-06-11 (was 'Germany 2000')",
+    "entries": [
+      "roryglzep(a.k.a. Jeff)",
+      "Claretkid(a.k.a. Andrew)",
+      "Prudence(a.k.a. Stevie)",
+      "TheSeizure(a.k.a. Stefan)",
+      "Jorcarelo(a.k.a. Joca)",
+      "Estimatedrudi(a.k.a. Rudi)",
+      "I apologize if I missed to include some Rory mafia member",
+      "BluesOxator(a.k.a. Christian)",
+      "raimax a.k.a. rainerneu(a.k.a. Rainer)",
+      "chico1610 (a.k.a HO)",
+      "RoryGallagher(a.k.a. Axel)",
+      "No artwork",
+      "I Do... ...as well",
+      "P&L",
+      "Interview with Mike and Jeff",
+      "Whishlist"
+    ],
+    "why": "The folder held three programmes and its sidecar was pasted into Setlist wholesale, so the field was mostly the uploader's thank-you list of torrent-tracker handles plus two sign-off lines. None was ever a song. 'Interview with Mike and Jeff' is a real segment the sidecar numbers as a track, but it is spoken, not a song, so it moves to Notes. 'Whishlist' is the sidecar's misspelling and is re-homed as 'Wishlist' on 8703aa37f28b, the Rock am Ring record split out of the same disc; the other five Rock am Ring songs move there unchanged."
+  },
+  "ebc3526354a8": {
+    "artist": "Pearl Jam",
+    "show": "VH1 Storytellers 2006-05-31",
+    "entries": [
+      "Pearl Jam",
+      "Intro"
+    ],
+    "why": "A header line from info.txt, and the disc's opening spoken segment. Storytellers is built around the band talking between songs, so 'Intro' is a programme section rather than a performance; it is described in Notes."
+  },
+  "fa2699316abb": {
+    "artist": "Pearl Jam",
+    "show": "Austin City Limits 2009-10-03",
+    "entries": [
+      "Interview"
+    ],
+    "why": "The sidecar numbers the closing interview as track 13, but it is a spoken segment, not a song. Recorded in Notes, along with Ben Harper's guest appearance on 'Red Mosquito'."
   }
 }
