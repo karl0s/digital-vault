@@ -83,6 +83,15 @@ def discover(artist: str):
         return set(t for t in re.sub(r"[^a-z0-9]+", " ", x).split() if len(t) > 1)
     artist_toks = toks(artist)
     ALIASES = {"30stm"} if "mars" in artist_toks else set()
+    # Rage Against the Machine is filed three ways on this drive: the full name,
+    # the initialism ("RATM Chile 2010") and the bare first word
+    # ("Rage_Auckland_12_min_pro-shot.wmv"). A >=2-token rule matches NEITHER of
+    # the last two, so both shows were dropped in silence and `plan` still
+    # reported "skipped: 0" - the shortfall failure mode of SKILL.md section 2.
+    # Neither token collides with any other artist in this collection, and the
+    # cross-artist rejection rule below still guards them.
+    if {"rage", "against", "machine"} <= artist_toks:
+        ALIASES |= {"ratm", "rage"}
     # A folder may squash the name into one word - "Greenday 1998-03-15 - NHK Hall"
     # never satisfies a ">=2 of {green, day}" rule and the show stays invisible.
     squashed = re.sub(r"[^a-z0-9]+", "", artist.casefold())
