@@ -371,5 +371,122 @@
       "The Lost Part of Keeping a Secret"
     ],
     "why": "Not a removal but a spelling fix: the sidecar typed the song as 'The Lost Part of Keeping a Secret' and the record copied it. The real title is 'The Lost Art of Keeping a Secret', which the field now holds, so the song count is unchanged at 12."
+  },
+  "76b0ad66da71": {
+    "artist": "Faith No More",
+    "show": "Reading Festival 2009 (Epic - Extra)",
+    "entries": [
+      "Faith No More - Epic",
+      "NME/Radio 1 Stage",
+      "Broadcast on BBC3"
+    ],
+    "why": "Three header lines from info.txt imported into Setlist as songs. The disc is a single 4:57 song, Epic, off the BBC3 broadcast; Setlist now holds exactly that."
+  },
+  "9d843204a59e": {
+    "artist": "Faith No More",
+    "show": "Reading Festival 2009 (Partial Show)",
+    "entries": [
+      "Contrast Clause",
+      "Cheers to him for his excellent BBC3 uploads from the festival",
+      "Faith No More",
+      "Reading Festival",
+      "England",
+      "Broadcast on BBC Red Button BBCi Channel",
+      "Womble warns this is a non-standard DVD. This is I think because the frame size broadcast by BBCi is not one of",
+      "the DVD standard ones. It plays fine in my standalone DVD player (a Sony) and should do in most others",
+      "The BBC track transitions aren't very smooth",
+      "There's a version of this on Zomb combining the two broadcasts but it appears to be bloated from a DVD recorder recording",
+      "Land Of Sunshine"
+    ],
+    "why": "The sidecar was pasted in wholesale: the release name, a credit to another uploader, the header block and the Womble non-standard-DVD warning all sat in Setlist as songs. Rebuilt from the sidecar's numbered eight-track list. 'Land Of Sunshine' is not removed - it is the last track and now reads 'Land Of Sunshine (incomplete)', the house marker for a partial list."
+  },
+  "56a0d564ba6c": {
+    "artist": "Faith No More",
+    "show": "TV Appearances 1",
+    "entries": [
+      "FAITH NO MORE - TV Appearances Comp 1",
+      "Intro",
+      "MTV Music Awards Epic (1990)",
+      "Hard and Heavy interview with Mike Patton and Roddy (Brazil 1991)",
+      "MTV The Making Of A Small Victory (1992)",
+      "MTV Headbangers Ball Interview with Mike Patton and Roddy (Czech Republic 1992)",
+      "BRT & VTM Journal FNM in Rock Werchter (July 1993)",
+      "MTV Headbangers Ball interview with Jim (1995)",
+      "MTV interview In Bed With FNM (1995)",
+      "BBC Top Of The Pops Digging The Grave (March 1995)",
+      "MTV The End interview FNM (1995)",
+      "Most of the material is seemingly from master or 1st gen vhs - pretty good quality"
+    ],
+    "why": "A VHS compilation of TV segments. Setlist held the disc's chapter list - interviews, making-of features, Top of the Pops slots - plus the sidecar's header line and its quality trailer. None of it is a song, so per house rule the segment list lives in Notes only, where the verbatim sidecar dump already holds it in full."
+  },
+  "fe1e14ec3cfc": {
+    "artist": "Faith No More",
+    "show": "TV Appearances 2",
+    "entries": [
+      "FAITH NO MORE - TV Appearances Comp 2",
+      "Intro",
+      "MTV Safer sex with Mike Patton and Roddy (1995)",
+      "MTV The Making of Evidence with Mike Patton and Billy (1995)",
+      "MTV Headbangers Ball interview with Roddy and Puffy (1996)",
+      "BBC Top Of The Pops Ashes To Ashes (1997)",
+      "Interview with Mr. Bungle (Bizarre 2000)",
+      "Ozzy Osbourne - I Don't Wanna Stop - Live (Mike Bordin on Drums)",
+      "Pretty good quality"
+    ],
+    "why": "Same as TV Appearances 1: a chapter list of TV segments, not songs, plus header and quality trailer. Moved to Notes. Two of the entries are not Faith No More at all - the disc ends with a block the sidecar marks *FILLER MATERIAL* holding Mr. Bungle, Peeping Tom, Fantomas and Ozzy Osbourne."
+  },
+  "ee1a7fb1b7d3": {
+    "artist": "Faith No More",
+    "show": "Optimus Alive Festival 2010",
+    "entries": [
+      "Faith No More",
+      "Review (in Portuguese) and Photos"
+    ],
+    "why": "Header line and a trailing link caption from info.txt, imported as songs. The rebuild ADDS 'Surprise! You're Dead!', which the sidecar lists at 19 and the record was missing, and writes 'Encore:' / 'Encore 2:' as house-style Encore break."
+  },
+  "53fcb6dcb6ae": {
+    "artist": "Faith No More",
+    "show": "Hurricane Festival 2009",
+    "entries": [
+      "The Real Thing",
+      "Land of Sunshine",
+      "Evidence (Spanish Version)",
+      "Cuckoo for Caca",
+      "Easy (Commodores cover)",
+      "Ashes to Ashes",
+      "Midlife Crisis",
+      "Introduce Yourself",
+      "The Gentle Art of Making Enemies",
+      "Just a Man",
+      "Encore break",
+      "Stripsearch",
+      "This Guy's in Love with You (Burt Bacharach cover)",
+      "We Care a Lot"
+    ],
+    "why": "These songs were played at Hurricane but are NOT on this disc. The sidecar prints two lists - the disc's own eight-chapter tracklist, and separately 'The complete setlist looked like this' - and the record had taken the second. This is a 29-minute ZDFtheaterkanal broadcast of seven songs plus a 0:14 intro. The recording outranks the event, so Setlist now holds the disc's tracklist marked (incomplete); the full event setlist stays in Notes in the verbatim sidecar dump. 'We Care a Lot' is in fact retained as the final track, reading 'We Care a Lot (incomplete)'."
+  },
+  "08be4133b02b": {
+    "artist": "Faith No More",
+    "show": "Download Festival 2009 (AUD)",
+    "entries": [
+      "Encore"
+    ],
+    "why": "The sidecar's bare 'Encore' separator rewritten as the house-style 'Encore break'. No song changed."
+  },
+  "8818dc0501ba": {
+    "artist": "Faith No More",
+    "show": "Download Festival 2009 (Webstream)",
+    "entries": [
+      "Encore"
+    ],
+    "why": "The sidecar's bare 'Encore' separator rewritten as the house-style 'Encore break'. No song changed."
+  },
+  "cb8d078a8b2c": {
+    "artist": "Faith No More",
+    "show": "Lowlands 2009",
+    "entries": [
+      "We Care a Lot"
+    ],
+    "why": "Not a removal. 'We Care a Lot' is the final entry and now reads 'We Care a Lot (incomplete)' - the house marker appended because the disc is 19 minutes and cannot hold the fourteen-song list it carries. What the disc actually contains has not been transcribed."
   }
 }
