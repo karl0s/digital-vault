@@ -176,8 +176,8 @@ evidence in `Notes`.
 As of the last run: **38.9% of shows correct, 45.6% squashed, 6.4% undersized, 5.7%
 internally inconsistent.** The bad majority predates the capture pipeline. Fully corrected so
 far: Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Bush, Chris
-Cornell, Filter, Foo Fighters, Green Day, Guns N' Roses, Kings of Leon and Smashing Pumpkins;
-30 Seconds to Mars is mostly corrected. Everything else is outstanding.
+Cornell, Filter, Foo Fighters, Green Day, Guns N' Roses, Kings of Leon, R.E.M. and Smashing
+Pumpkins; 30 Seconds to Mars is mostly corrected. Everything else is outstanding.
 
 Two Smashing Pumpkins records (`d9b007dd78f2`, `32fafc677477`) can never be corrected: they point
 at a nested folder that no longer exists on the drive, so their stills cannot be re-taken.
@@ -226,6 +226,44 @@ for s in json.load(open('public/shows.json')):
 
 Capturing their images does not make them findable — how split bills should be filed is an
 open question for the collection, not something to change silently.
+
+### A nested folder can hold a SECOND COMPLETE DISC, not just another titleset
+
+`R.E.M. - T in the Park, 2008-07-13 + Oxegen 2008` held two full `VIDEO_TS` trees: the show
+in the root, and an entirely different concert in a subfolder. The scan writes one row per
+folder, so the Oxegen disc had **no record at all** — and the surviving row had T in the Park's
+date with Oxegen's event, venue, city and lineage, because whoever wrote it read the nested
+disc's sidecar.
+
+This is not the §10b titleset case and the usual tools do not catch it:
+
+- `find_multishow.py` scores titlesets inside ONE `VIDEO_TS`; two sibling trees look like one disc.
+- `pick_source` in `shots.py` deliberately never recurses, so the parent unit captures only the
+  root disc and the nested one is invisible to the whole pipeline.
+- Both discs here are `VTS_01`, so a `vts` split cannot separate them either.
+
+The discriminator is the **directory**. `data/splits.json` now takes a `subdir` key for this.
+Keep the subdir readable in the unit's `rel` — squashing it to alphanumerics broke
+`data/overrides.json`, which is keyed by path fragment, and the nested disc captured with its
+letterbox bars still in frame.
+
+**`promote.py --propose-map` mapped BOTH split units to the SAME record.** It matches on name,
+and the two units share a folder name. Always build `data/promote_map.json` from each state
+entry's `ShowID`, and assert the values are unique before applying — a name-derived map would
+have put one concert's stills on the other's record.
+
+### An artist name of single letters matched EVERY folder on the drive
+
+`toks("R.E.M.")` splits to `{r, e, m}`, all discarded by the `len > 1` filter, leaving the
+artist's token set **empty**. `need` is `min(2, len(artist_toks))`, so it fell to 0 and the
+`>= need` test passed for everything: `plan` reported **144 shows ready** for a nine-show artist
+and flagged nothing. Fixed in `shots.py` by collapsing dotted initialisms to one token
+(`r.e.m.` → `rem`, `n.e.r.d` → `nerd`) so artist and folder names meet, plus a guard that
+refuses to match anything when a name yields no usable token.
+
+The general lesson: **a matcher that silently widens is more dangerous than one that fails.**
+The file already documented the opposite failure (too-strict matching dropping shows in
+silence); this is the same bug with the sign flipped, and only R.E.M. exposed it.
 
 ### One folder can hold more than one show
 

@@ -80,6 +80,16 @@ def discover(artist: str):
         # {janes, addiction} and fell under the >=2 rule - silently dropping 15 of 19
         # shows. Same reason "Guns N' Roses" must not become {guns, roses}.
         x = x.replace("'", "").replace("\u2019", "")
+        # Collapse a dotted initialism into ONE token: "r.e.m." -> "rem",
+        # "n.e.r.d" -> "nerd". Without this every letter is its own 1-character
+        # token and the len>1 filter below discards all of them, leaving
+        # artist_toks EMPTY for "R.E.M.". `need` is min(2, len(artist_toks)),
+        # so it fell to 0 and the ">= need" test then matched EVERY folder on
+        # the drive: `plan` reported 144 shows ready for an artist with 9, and
+        # said nothing was wrong. Folder names spell it the same way
+        # ("R.E.M. - 1998-11-02 Rockpalast"), so collapsing both sides makes
+        # them meet on {rem}.
+        x = re.sub(r"(?:[a-z]\.){2,}", lambda m: m.group(0).replace(".", ""), x)
         return set(t for t in re.sub(r"[^a-z0-9]+", " ", x).split() if len(t) > 1)
     artist_toks = toks(artist)
     ALIASES = {"30stm"} if "mars" in artist_toks else set()
@@ -97,6 +107,12 @@ def discover(artist: str):
     squashed = re.sub(r"[^a-z0-9]+", "", artist.casefold())
     if len(squashed) > 4:
         ALIASES.add(squashed)
+    # Belt and braces for the failure above: if an artist name yields no usable
+    # token at all, matching must FAIL LOUDLY rather than accept the whole drive.
+    if not artist_toks and not ALIASES:
+        print("  %sno usable token for artist %r%s - refusing to match every folder"
+              % (RED, artist, RESET))
+        return []
 
     con = sqlite3.connect("file:%s?mode=ro" % DEDUPE_DB, uri=True)
     con.row_factory = sqlite3.Row
@@ -475,6 +491,19 @@ def apply_splits(items):
 
     `vts` and `from`/`to` compose: a window may be applied within a titleset.
 
+    When the second show is not another titleset but a WHOLE SEPARATE DISC nested
+    inside the folder, name it with `subdir`:
+
+        {"R.E.M. - T in the Park, 2008-07-13 + Oxegen 2008": [
+            {"showid": "7af6be6f7f6a", "label": "T in the Park 2008-07-13"},
+            {"subdir": "REM - Oxegen Festival 12 July 2008",
+             "showid": "ff6b0c88d556", "label": "Oxegen 2008-07-12"}]}
+
+    pick_source deliberately never recurses (see its docstring), so a nested
+    VIDEO_TS is otherwise unreachable: the parent unit captures only the root
+    disc and the nested one has no unit at all. Both discs here are VTS_01, so
+    `vts` cannot separate them either - the discriminator is the directory.
+
     Every unit carries the ShowID explicitly. Name matching cannot disambiguate
     two shows that share a folder, so promotion must key on ShowID (SKILL.md 10b).
     """
@@ -515,10 +544,26 @@ def apply_splits(items):
                       % (RED, RESET, it["label"][:40], sid))
                 continue
             sub = dict(it)
+            subdir = (part.get("subdir") or "").strip()
+            if subdir:
+                nested = it["folder"] / subdir
+                if not nested.is_dir():
+                    print("  %sSPLIT SKIP%s %s: subdir %r not on the drive"
+                          % (RED, RESET, it["label"][:40], subdir))
+                    continue
+                sub["folder"] = nested
             vts = [str(v).zfill(2) for v in part.get("vts", [])]
             vobs = list(part.get("vobs", []))
             t0 = _secs(part.get("from")); t1 = _secs(part.get("to"))
             tag = "VTS%s" % "-".join(vts) if vts else ""
+            if subdir:
+                # Keep the subdir READABLE in `rel`. Squashing it to alphanumerics
+                # ("REM - Oxegen Festival 12 July 2008" -> "REMOxegenFestival12J")
+                # silently broke data/overrides.json, which is keyed by PATH
+                # FRAGMENT and matches against `rel` and `label` - so a crop
+                # written for the nested disc never applied and it captured with
+                # its letterbox bars still in frame.
+                tag = subdir + ("_" + tag if tag else "")
             if vobs: tag = (tag + "_" if tag else "") + "F" + "-".join(
                 x.split("_")[-1] for x in vobs)
             if t0 is not None or t1 is not None:
