@@ -1781,6 +1781,77 @@ Encode parameters are a useful secondary tell: `VTS_01`–`05` all sat at 9.56 M
 `VTS_06` sat at 7.82 Mbps. A bitrate or geometry change mid-folder means a different
 authoring session, which usually means different source material.
 
+### A SECOND COMPLETE DISC can sit in a subfolder — and nothing in this pipeline sees it
+
+**Failure this prevents:** `R.E.M. - T in the Park, 2008-07-13 + Oxegen 2008` held two full
+`VIDEO_TS` trees — T in the Park in the root, and a whole different concert (Oxegen, 12 July,
+off MTV2) in a subfolder. The scan writes one row per folder, so the Oxegen disc had no record,
+no checksum and no images. Worse, the surviving row carried T in the Park's date with **Oxegen's**
+event, venue, city and lineage, because whoever wrote it read the nested disc's sidecar.
+
+Why the existing guards all miss it:
+
+| Guard | Why it passes |
+|---|---|
+| `find_multishow.py` | scores titlesets inside ONE `VIDEO_TS`; two sibling trees read as one disc |
+| `pick_source` | deliberately never recurses (§ its own docstring), so the nested tree is unreachable |
+| a `vts` split | both discs are `VTS_01` — the titleset number cannot separate them |
+| `preflight` "folders with >1 titleset" | each tree has one titleset, so neither is flagged |
+
+The discriminator is the **directory**, so `data/splits.json` takes a `subdir` key:
+
+```json
+{"R.E.M. - T in the Park, 2008-07-13 + Oxegen 2008": [
+   {"showid": "7af6be6f7f6a", "label": "T in the Park 2008-07-13"},
+   {"subdir": "REM - Oxegen Festival 12 July 2008",
+    "showid": "ff6b0c88d556", "label": "Oxegen 2008-07-12"}]}
+```
+
+**Detect it cheaply — count `VIDEO_TS` directories, not titlesets:**
+
+```bash
+find "$FOLDER" -type d -iname VIDEO_TS | wc -l     # >1 means more than one disc
+```
+
+Two follow-on traps, both of which bit on this folder:
+
+1. **Keep the subdir readable in the unit's `rel`.** Squashing it to alphanumerics
+   (`REM - Oxegen Festival 12 July 2008` → `REMOxegenFestival12J`) silently broke
+   `data/overrides.json`, which is keyed by PATH FRAGMENT and matched against `rel` and
+   `label`. The crop written for the nested disc never applied and it captured with its
+   letterbox bars still in frame — and nothing said so.
+2. **`promote.py --propose-map` mapped BOTH units to the SAME record.** It matches on name,
+   and the two units share a folder name. Build `data/promote_map.json` from each state
+   entry's `ShowID` and assert the values are unique before applying, or one concert's stills
+   land on the other's record.
+
+Changing a split's shape also **changes the state key**, which is what `capture --only` filters
+on. Re-read the key from `state.json` after any re-plan; an `--only` that matches nothing prints
+one red line and exits 0.
+
+### Bars can carry burned-in graphics — measure rows, don't trust one cropdetect
+
+On the Oxegen DVD, cropdetect returned `702:438:10:64` on 183 of 201 samples and
+`702:490:10:42` on 17. The disagreement was the broadcaster's **MTV TWO logo and caption
+overlaid in the upper black bar**, bright enough to read as picture.
+
+A row-luminance profile settles it in one pass and costs one decode:
+
+```python
+# 64-wide x full-height greys, N frames -> where does the picture actually start?
+rowmax = d.max(axis=(0, 2))     # brightest this row EVER gets across the disc
+rowmean = d.mean(axis=(0, 2))
+```
+
+Rows 0-41 and 534-575 never exceeded luminance 5 — true bars. Rows 44-63 and 502-533 averaged
+~2 but spiked to 250 — bars with graphics on them. The picture was 64-501. Re-measuring on
+columns clear of the logo gave the same top edge, proving the bars set it, not the overlay.
+
+**Trim the bars, not the side blanking.** The same source had ~10 dark columns at each edge.
+Cropping them keeps full height and drags the picture ratio from 1.753 (1.4% off 16:9) to 1.71,
+which `check_overrides.py` rejects at its 3% tolerance — and is further from the truth. Side
+blanking is a DVB artefact; the bars are the letterbox.
+
 ### ASSUME a multi-titleset folder is several shows until proven otherwise
 
 One artist, one session, and the count of folders holding more than one programme was **twelve**.
