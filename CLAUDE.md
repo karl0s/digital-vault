@@ -176,8 +176,9 @@ evidence in `Notes`.
 As of the last run: **38.9% of shows correct, 45.6% squashed, 6.4% undersized, 5.7%
 internally inconsistent.** The bad majority predates the capture pipeline. Fully corrected so
 far: Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Bush, Chris
-Cornell, Filter, Foo Fighters, Green Day, Guns N' Roses, Kings of Leon, R.E.M. and Smashing
-Pumpkins; 30 Seconds to Mars is mostly corrected. Everything else is outstanding.
+Cornell, Filter, Foo Fighters, Green Day, Guns N' Roses, Kings of Leon, Queens of the Stone Age,
+R.E.M. and Smashing Pumpkins; 30 Seconds to Mars is mostly corrected. Everything else is
+outstanding.
 
 Two Smashing Pumpkins records (`d9b007dd78f2`, `32fafc677477`) can never be corrected: they point
 at a nested folder that no longer exists on the drive, so their stills cannot be re-taken.
@@ -251,6 +252,45 @@ letterbox bars still in frame.
 and the two units share a folder name. Always build `data/promote_map.json` from each state
 entry's `ShowID`, and assert the values are unique before applying — a name-derived map would
 have put one concert's stills on the other's record.
+
+### A sidecar's LINE-UP block gets imported as data — into three different fields
+
+Queens of the Stone Age had the same sidecar section land in two records, two different ways:
+
+| Record | Field | Value it was given | Where it came from |
+|---|---|---|---|
+| `8e8d56e0a5f7` | `EventOrFestival` | `Nick Oliveri` | the 2nd name in `Lineup:` |
+| `8e8d56e0a5f7` | `VenueName` | `bass, lead vocals` | that name's instrument credit |
+| `cdd7abcd3d24` | `Setlist` | `Complete show; Josh Homme; Joey Castillo; …` | the whole `Line up :` block as tracks |
+
+This is the same class as the Alanis "Friesland" case (an uploader's home town read as the city) —
+**the importer took whatever line sat where it expected a value.** The tell is a field holding a
+person's name, an instrument, or a role.
+
+```bash
+# Fields holding something that looks like an instrument credit rather than a place
+python3 -c "
+import json, re
+for s in json.load(open('public/shows.json')):
+    for k in ('VenueName','EventOrFestival','City'):
+        v = (s.get(k) or '')
+        if re.search(r'(?i)\b(vocals|guitar|bass|drums|keyboards|backing)\b', v):
+            print(s['ShowID'], s['Artist'], k, repr(v))
+"
+```
+
+Read the whole sidecar before trusting any field derived from it, and check the **first and last
+three** setlist entries (already the rule) — a line-up block sits at the top or the bottom.
+
+### A letterbox is not necessarily 16:9 — measure it
+
+Two Eurockéennes discs, same taper, same DVD recorder, same channel, both 4:3 PAL with the
+Europe 2 TV logo burned into the upper bar. The 2005 disc's picture is rows 72-503 = 432 rows,
+which is exactly 16:9. **The 2007 disc's is rows 56-519 = 464 rows, which is 1.66 — nearer 5:3.**
+The letterbox is symmetric about the frame centre on both, so neither is a mis-crop.
+
+Assuming 16:9 would have thrown away 32 rows of real picture. Record what it measures, using the
+two-part form (`4:3 (letterboxed 5:3)`), and put the row numbers in `Notes`.
 
 ### An artist name of single letters matched EVERY folder on the drive
 

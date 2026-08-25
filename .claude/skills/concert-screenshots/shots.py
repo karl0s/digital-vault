@@ -102,14 +102,30 @@ def discover(artist: str):
     # cross-artist rejection rule below still guards them.
     if {"rage", "against", "machine"} <= artist_toks:
         ALIASES |= {"ratm", "rage"}
+    # Queens of the Stone Age: FIVE of its eight folders are named "QOTSA - ...",
+    # whose tokens share NOTHING with {queens, of, the, stone, age}. The squashed
+    # alias ("queensofthestoneage") does not appear either, so a >=2-token rule
+    # dropped five of eight shows in silence - the same shortfall as RATM above.
+    # "qotsa" collides with no other artist here, and "Queensryche - Unplugged +
+    # STP Unplugged" tokenises to {queensryche}, so it is not pulled in.
+    if {"queens", "stone", "age"} <= artist_toks:
+        ALIASES.add("qotsa")
     # A folder may squash the name into one word - "Greenday 1998-03-15 - NHK Hall"
     # never satisfies a ">=2 of {green, day}" rule and the show stays invisible.
     squashed = re.sub(r"[^a-z0-9]+", "", artist.casefold())
     if len(squashed) > 4:
         ALIASES.add(squashed)
-    # Belt and braces for the failure above: if an artist name yields no usable
-    # token at all, matching must FAIL LOUDLY rather than accept the whole drive.
-    if not artist_toks and not ALIASES:
+    # The >=need test below must run on DISTINCTIVE tokens. "Queens of the Stone
+    # Age" contributes BOTH "of" and "the", which half the collection also has, so
+    # a raw ">=2 shared tokens" rule matched "Flight of the Concordes HBO Master",
+    # "Rolling Stone Magazine - 25 - The MTV Special" and five more folders
+    # belonging to other artists: 16 folders planned for an 8-show artist. Only
+    # names carrying two or more stopwords are affected, which is why this survived
+    # until an artist had both.
+    artist_d = artist_toks - STOPWORDS
+    # Belt and braces: if an artist name yields no usable token at all, matching
+    # must FAIL LOUDLY rather than accept the whole drive.
+    if not artist_d and not ALIASES:
         print("  %sno usable token for artist %r%s - refusing to match every folder"
               % (RED, artist, RESET))
         return []
@@ -156,8 +172,8 @@ def discover(artist: str):
         rt = toks(rel)
         # A single-word artist ("Aerosmith", "Muse") can never satisfy a fixed
         # ">=2 tokens" rule, so scale the requirement to the artist's own length.
-        need = min(2, len(artist_toks))
-        if not (len(artist_toks & rt) >= need or (ALIASES & rt)):
+        need = min(2, len(artist_d))
+        if not (len(artist_d & rt) >= need or (ALIASES & rt)):
             continue
         folder = HD_ROOT / rel
         if not (folder.is_dir() or folder.is_file()):   # loose single-file shows count
@@ -415,9 +431,19 @@ def gates(t, json_aspect):
     g.append(("aspect in plausible band", in_band, "%.3f:1" % band_ar))
     ok &= in_band
     if json_aspect:
-        m = re.search(r"(\d+):(\d+)", json_aspect)
-        if m:
-            ja = int(m.group(1))/int(m.group(2))
+        # For the two-part form "4:3 (letterboxed 16:9)" the FRAME ratio comes
+        # first and the real PICTURE ratio second, and it is the picture that this
+        # gate is comparing against - t["dar"] is recomputed from the cropped
+        # pixels. Taking the first match made every correctly-recorded letterboxed
+        # show print "gate failed" next to a crop that was right, which is how a
+        # gate gets trained out of being read. audit-image-geometry.py's parse_dar
+        # already picks the last ratio for exactly this reason.
+        nums = re.findall(r"(\d+):(\d+)", json_aspect)
+        if nums:
+            boxed = ("letterbox" in json_aspect.lower()
+                     or "pillarbox" in json_aspect.lower())
+            a, b = nums[-1] if boxed else nums[0]
+            ja = int(a)/int(b)
             agree = abs(ja - t["dar"])/max(t["dar"],1e-9) <= 0.02
             g.append(("agrees with shows.json", agree, "%s" % json_aspect))
     return ok, g
