@@ -303,5 +303,42 @@
       "Packed like Sardines in a Crushd Tin Box"
     ],
     "why": "Same spelling corrections as its sibling c7821268dcef, for the same reason."
+  },
+  "3b82b5656ac2": {
+    "artist": "Rage Against the Machine",
+    "show": "Cabaret Metro, Chicago 1993-04-03",
+    "entries": [
+      "Rage Against the Machine",
+      "Cabaret Metro"
+    ],
+    "why": "The band name and the venue, taken from the first two lines of the folder's info.txt and imported into Setlist as if they were the opening two songs. The nine entries after them are the sidecar's own list and are unchanged; VenueName now holds 'Cabaret Metro' where it belongs."
+  },
+  "4e10917e766c": {
+    "artist": "Rage Against the Machine",
+    "show": "Coachella 1999-10-10",
+    "entries": [
+      "Rage Against The Machine",
+      "Length 59 minutes",
+      "File created late at night on 4/26/2007 (T minus 3 days till Rage's return)",
+      "A PILLAR OF JUSTICE IS A KILLER OF PROGRESS",
+      "Vale and health to you all"
+    ],
+    "why": "Three lines from the head of the sidecar and two from its sign-off, imported as songs. The eleven real songs are the sidecar's own numbered list 01-11 and are unchanged. 'Length 59 minutes' also turned out to be true and correct the stored runtime, which was 1743s against a demuxed 3564s."
+  },
+  "cb1798848f6d": {
+    "artist": "Rage Against the Machine",
+    "show": "Big Day Out, Sydney 2008-01-25",
+    "entries": [
+      "Rage Against The Machine",
+      "Big Day Out",
+      "THIS IS WRONG",
+      "ITS 25 JAN 08",
+      "I recorded this from the stands",
+      "sound is average",
+      "but its the only recording of this show that i have come across",
+      "i have traded it a couple of times but its reasonably circulated",
+      "IF YOU DOWNLOAD IT....SEED IT"
+    ],
+    "why": "Not one of these was ever a song. The whole field was the folder's BDO.txt pasted in wholesale - band name, festival name, the taper's warning that the disc menu is mis-dated, and his notes on the recording. The sidecar carries no setlist at all, so the replacement is setlist.fm's Big Day Out Sydney 2008 entry (78 attendee confirmations), 16 entries including the encore break. The same paste is why ShowDate was 2010-01-09, the torrent's upload timestamp."
   }
 }
