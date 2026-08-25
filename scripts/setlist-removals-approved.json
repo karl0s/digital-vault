@@ -350,5 +350,26 @@
       "Running time 91 min 31 s"
     ],
     "why": "The Setlist field held no songs at all - it was the sidecar's opening sentence, the band name and its trailer line, split on semicolons. The same sidecar lists 18 numbered tracks, which the field now holds. Nothing was a song, so nothing is lost."
+  },
+  "cdd7abcd3d24": {
+    "artist": "Queens of the Stone Age",
+    "show": "Eurockéennes Festival, Belfort 2007-06-30",
+    "entries": [
+      "Complete show",
+      "Josh Homme",
+      "Joey Castillo",
+      "Troy Van Leeuwen",
+      "Michael Shuman",
+      "Dean Fertita"
+    ],
+    "why": "The sidecar's 'Complete show.' line and its entire 'Line up :' block - five band members - were pasted into Setlist as if they were tracks. None is a song. The field now holds the sidecar's 16 real songs, and the rebuild also ADDS \"3's & 7's\", which the record was missing."
+  },
+  "a096956b26e1": {
+    "artist": "Queens of the Stone Age",
+    "show": "Eurockéennes Festival, Belfort 2005-07-01",
+    "entries": [
+      "The Lost Part of Keeping a Secret"
+    ],
+    "why": "Not a removal but a spelling fix: the sidecar typed the song as 'The Lost Part of Keeping a Secret' and the record copied it. The real title is 'The Lost Art of Keeping a Secret', which the field now holds, so the song count is unchanged at 12."
   }
 }
