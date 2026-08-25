@@ -1829,6 +1829,44 @@ Changing a split's shape also **changes the state key**, which is what `capture 
 on. Re-read the key from `state.json` after any re-plan; an `--only` that matches nothing prints
 one red line and exits 0.
 
+### The artist-matcher can widen as silently as it narrows — check the folder COUNT
+
+Two separate discovery failures on one artist, both silent:
+
+1. **Five of eight folders were named `QOTSA - …`**, which shares no token with
+   `{queens, of, the, stone, age}`, and the squashed alias (`queensofthestoneage`) does not appear
+   either. They would have been dropped without a word — the RATM case again. Fixed with a `qotsa`
+   alias.
+2. Then `plan` reported **16 folders for an 8-record artist**. `of` and `the` are both in the
+   artist's token set and counted toward the `>=2 shared tokens` rule, so *"Flight of the
+   Concordes HBO Master"* and *"Rolling Stone Magazine - 25 - The MTV Special"* matched. Matching
+   now runs on **distinctive** tokens (`artist_toks - STOPWORDS`), which the cross-artist
+   rejection rule already used. Only names carrying two or more stopwords were affected.
+
+**The cheap check, every run: does the folder count roughly match the record count?**
+Nine folders for eight records is a split. Sixteen for eight is a bug, and so is three.
+
+### A folder can be DOUBLED — the same name nested inside itself
+
+`Queens of the Stone Age - Landgraaf … (DVD) [PAL]/Queens of the Stone Age - Landgraaf … (DVD)
+[PAL]/VIDEO_TS/`. `pick_source` looks at `folder/VIDEO_TS` then `folder`, never deeper, so the
+outer shell yields "no video files" and the show looks skipped.
+
+Here the dedupe index happened to hold the INNER directory as its own unit, so the show was
+captured and correctly linked, and only the outer shell appeared as a `SKIP`. **Do not read that
+skip as a miss, and do not read it as safe either — confirm the inner unit is present and has a
+ShowID before capturing.** If the index had not held it, the show would have been lost in silence.
+`data/splits.json`'s `subdir` key handles it if not.
+
+### An informational gate that cries wolf gets ignored
+
+The "agrees with shows.json" gate used `re.search` for the first `N:M` in the aspect string. For
+the two-part form `4:3 (letterboxed 16:9)` that is the FRAME ratio, while `t["dar"]` is recomputed
+from the CROPPED pixels — so every correctly-recorded letterboxed show printed
+`gate failed` next to a crop that was right. It never fed `ok`, so nothing broke; the cost is that
+a gate which is wrong on the cases it exists for stops being read. It now takes the last ratio
+when the string says letterboxed or pillarboxed, matching `audit-image-geometry.py`'s `parse_dar`.
+
 ### Bars can carry burned-in graphics — measure rows, don't trust one cropdetect
 
 On the Oxegen DVD, cropdetect returned `702:438:10:64` on 183 of 201 samples and
