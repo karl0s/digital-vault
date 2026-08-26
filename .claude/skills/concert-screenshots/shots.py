@@ -23,7 +23,7 @@ Commands:
 """
 from __future__ import annotations
 
-import argparse, glob, json, math, os, re, shutil, sqlite3, subprocess, sys, time
+import argparse, glob, json, math, os, re, shutil, sqlite3, subprocess, sys, time, urllib.parse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
@@ -1328,16 +1328,29 @@ def cmd_archive(a):
         # them behind and the page rendered as broken images - the same failure
         # this block exists to prevent, just via a directory archive did not know
         # about. Carry across any reports/ subdirectory the page actually cites.
-        for ref in set(re.findall(r'(?:src|href)="([^"/:]+)/', html)):
-            side = REPORTS/ref
-            if side.is_dir() and not (dest/ref).exists():
-                shutil.copytree(side, dest/ref); shutil.rmtree(side, ignore_errors=True)
-                assets += 1
+        # Resolve each referenced file against BOTH reports/ and the staging root,
+        # and copy the FILE, keeping its relative path. Matching only directories
+        # directly under reports/ missed "ident/<artist>/_evidence/..." entirely -
+        # the rewrite above turns "../ident/" into "ident/", the loop captured the
+        # bare token "ident", looked for REPORTS/ident, found nothing and moved on
+        # in silence. A Silverchair scout page landed in the archive with 21 broken
+        # images that way, which is the exact failure this block exists to prevent.
+        # Copy per file, never per tree: HOME/ident holds every artist's evidence.
+        for ref in set(re.findall(r'(?:src|href)="([^"#:]+)"', html)):
+            ref = urllib.parse.unquote(ref.split("#")[0])
+            if ref.startswith(("/", "http")) or (dest/ref).exists():
+                continue
+            for root in (REPORTS, HOME):
+                srcf = root/ref
+                if srcf.is_file():
+                    (dest/ref).parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(srcf, dest/ref); assets += 1
+                    break
         f.unlink(); moved += 1
 
     for sub in ("picks","contact","work"):
         shutil.rmtree(HOME/sub, ignore_errors=True); (HOME/sub).mkdir(parents=True, exist_ok=True)
-    print("  archived %s -> %s   (picks/contact/work reset, %d report(s) + %d asset dir(s) moved)"
+    print("  archived %s -> %s   (picks/contact/work reset, %d report(s) + %d asset file(s) carried)"
           %(name,dest,moved,assets)); return 0
 
 

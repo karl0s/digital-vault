@@ -2963,6 +2963,36 @@ for f in glob("archive/*/*.html"):
                if not os.path.exists(os.path.join(os.path.dirname(f), s))]
 ```
 
+### `archive` must carry the pages' EVIDENCE, not just `picks/` and `contact/`
+
+**Failure this prevents:** archiving Silverchair moved three report pages into `archive/silverchair/`
+and rewrote `../picks/` to `picks/` correctly — and the scout page landed there with **21 broken
+images**, because its evidence frames live in `ident/<artist>/_evidence/`. The carry-across logic
+matched only directories sitting directly under `reports/`: it captured the bare token `ident` from
+the rewritten path, looked for `reports/ident`, found nothing, and moved on in silence. The run
+printed `0 asset dir(s) moved` and read as success.
+
+This is the third time the same shape of bug has hit `archive` — the first emptied `picks/` from
+under eight pages. Resolve **every** referenced path against both `reports/` and the staging root,
+and copy per FILE keeping its relative path:
+
+```python
+for ref in set(re.findall(r'(?:src|href)="([^"#:]+)"', html)):
+    ref = urllib.parse.unquote(ref.split("#")[0])
+    if ref.startswith(("/", "http")) or (dest/ref).exists(): continue
+    for root in (REPORTS, HOME):
+        if (root/ref).is_file():
+            (dest/ref).parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(root/ref, dest/ref); break
+```
+
+Per file, never per tree: `ident/` holds **every** artist's evidence, so `copytree` + `rmtree` on it
+would take the whole collection's identification work with one artist's archive.
+
+**Verify by rendering, not by the counter.** Walk every `src`/`href` in every archived page and
+assert the target exists on disk. Silverchair now reports 21 assets carried and 0 missing across
+three pages; before the fix the same counter said 0 and 0 was wrong.
+
 **Do not keep a promote-backup directory as the rollback plan.** Every promotion is committed,
 so git history already holds the replaced images, and the directory is pure duplication — 11 MB
 of it in the reference collection. Roll back with `git checkout` instead.
