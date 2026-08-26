@@ -173,12 +173,12 @@ write it back to the record in the same session — use the two-part form
 `4:3 (letterboxed 16:9)`, frame ratio first and true picture ratio second — and put the
 evidence in `Notes`.
 
-As of the last run: **47.7% of shows correct, 38.1% squashed, 5.6% undersized, 4.8%
+As of the last run: **48.6% of shows correct, 37.2% squashed, 5.6% undersized, 4.8%
 internally inconsistent.** The bad majority predates the capture pipeline. Fully corrected so
 far: Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Bush, Chris
 Cornell, Filter, Foo Fighters, Green Day, Guns N' Roses, Kings of Leon, Pearl Jam, Queens of the
-Stone Age, R.E.M. and Smashing Pumpkins; 30 Seconds to Mars is mostly corrected. Everything else is
-outstanding.
+Stone Age, R.E.M., Silverchair and Smashing Pumpkins; 30 Seconds to Mars is mostly corrected.
+Everything else is outstanding.
 
 Two Smashing Pumpkins records (`d9b007dd78f2`, `32fafc677477`) can never be corrected: they point
 at a nested folder that no longer exists on the drive, so their stills cannot be re-taken.
@@ -298,6 +298,25 @@ square-pixel HD capture of the same performer, ideally from the same era. Render
 at both shapes and compare. At 4:3 this one's face was visibly narrow and elongated; at 16:9 it
 matched the 1920x1080 Storytellers capture exactly. Found only because the collection owner said a
 show "looks squished" — after an automated check had cleared it.
+
+### Measure a disputed aspect off defocused point lights
+
+A bokeh blob is circular on screen, so its dimensions in **stored** pixels are the sample aspect
+ratio directly: `SAR = blob_h / blob_w`, and `DAR = (W × SAR) / H`. Sample tens of them across the
+runtime and take the median.
+
+Silverchair's Melbourne Park 1999 was set to 16:9 on the strength of rendering one frame at both
+shapes and looking at it. It shipped squashed and the collection owner caught it. Measured
+afterwards: 73 isolated blobs across 90 native 720×576 frames gave a median height/width of
+**0.92** (IQR 0.82–1.13) against 1.067 for 4:3 and 1.422 for 16:9 — decisive, and one decode pass.
+
+The unaided A/B is the thing to avoid, not the frame comparison itself. **Measure a reference, or
+compare against a source whose geometry is beyond doubt** — the same performer in the same era at
+an undisputed aspect. Both are cheap; neither was done. A channel logo can also be misread: the
+square Channel [V] box was called "square at 16:9" when it is square at 4:3.
+
+Where a disc's own VOBs declare **different** aspects, pin the answer in `overrides.json` even when
+the default happens to be right — VOB sort order is not evidence.
 
 ### A letterbox is not necessarily 16:9 — measure it
 
@@ -548,6 +567,7 @@ These are canonical — do not introduce variants.
 |---|---|---|---|---|---|
 | Pinkpop | `Pinkpop` | `Megaland` | `Landgraaf` | `Netherlands` | |
 | Roskilde Festival | `Roskilde Festival` | `Dyrskuepladsen` | `Roskilde` | `Denmark` | |
+| Rock im Park | `Rock im Park` | `Frankenstadion` | `Nuremberg` | `Germany` | Not `Nürnberg` — matches the two existing records |
 | Eurockéennes (Belfort) | `Eurockéennes Festival` | `Presqu'île de Malsaucy` | `Belfort` | `France` | Not `Les Eurockéennes` |
 | Lowlands | `Lowlands Festival` | `Evenemententerrein Walibi Holland` | `Biddinghuizen` | `Netherlands` | Not just `Lowlands` |
 | SWU (Brazil) | `SWU Music & Arts Festival` | _(blank)_ | `Itu - Sao Paulo` | `Brazil` | Not `SWU Festival` |
@@ -914,9 +934,9 @@ print(len(d), 'shows /', len(a), 'artists'); print(a.most_common(9)); print(f.mo
 "
 ```
 
-- **892 shows** across **168 artists**
+- **893 shows** across **168 artists**
 - Top artists by volume: Stone Temple Pilots (85), Smashing Pumpkins (63),
   Kings Of Leon (53), Soundgarden (32), Foo Fighters (31), Various Artists (29),
   Red Hot Chili Peppers (27), Incubus (24), 30 Seconds to Mars (21)
-- Top festivals: Rock am Ring (43), Glastonbury Festival (28), Reading Festival (24),
-  MTV Unplugged (21), Pinkpop (20), Bizarre Festival (20), Big Day Out (19)
+- Top festivals: Rock am Ring (44), Glastonbury Festival (29), Reading Festival (26),
+  MTV Unplugged (22), Pinkpop (21), Bizarre Festival (21), Big Day Out (19)
