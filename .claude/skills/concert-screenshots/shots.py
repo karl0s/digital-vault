@@ -228,6 +228,31 @@ def discover(artist: str):
             sc = len(cand & (toks(sh.get("FolderName") or "") - artist_toks))
             if sc > bestsc: best, bestsc = sh, sc
         strong = bestsc >= 3            # weak overlaps map many folders onto one record
+        how = "%d tok" % bestsc
+        # A >=3 rule cannot be satisfied by a SHORT folder name, however exact the
+        # match. "Silverchair - 1999 Australia" leaves {1999, australia} once the
+        # artist tokens are removed and "Silverchair - Music Videos" leaves
+        # {music, videos} - two tokens each, so the ceiling is 2 and both went
+        # unlinked in silence next to records whose FolderName is the identical
+        # string. That is the silent-shortfall failure mode of SKILL.md 2, and
+        # SKILL.md 11 names the fix: an exact FolderName match is decisive on its
+        # own. Ambiguity is refused rather than guessed.
+        if not strong:
+            exact = [sh for sh in mine
+                     if (sh.get("FolderName") or "").strip().casefold() == base.strip().casefold()]
+            if len(exact) == 1:
+                best, strong, how = exact[0], True, "exact name"
+            elif len(exact) > 1:
+                print("  %sAMBIGUOUS%s %-46s %d records share this FolderName - link by hand"
+                      % (RED, RESET, base[:46], len(exact)))
+        # Failing that, accept a folder whose distinctive tokens are FULLY contained
+        # in exactly one record's - "1999 Australia" against "1999 Australia" scores
+        # 2 of a possible 2. One record only; a tie is left unlinked, not guessed.
+        if not strong and cand:
+            full = [sh for sh in mine
+                    if cand <= (toks(sh.get("FolderName") or "") - artist_toks)]
+            if len(full) == 1:
+                best, strong, how = full[0], True, "full %d/%d tok" % (len(cand), len(cand))
         out.append({
             "rel": rel, "folder": folder, "kind": u["kind"],
             "label": base,
@@ -235,7 +260,7 @@ def discover(artist: str):
             "Checksum": (best or {}).get("ChecksumSHA1", "") if strong else "",
             "ShowDate": (best or {}).get("ShowDate", "") if strong else "",
             "json_aspect": (best or {}).get("AspectRatio", "") if strong else "",
-            "link": ("%d tok" % bestsc) if strong else ("weak %d" % bestsc if bestsc else "unlinked"),
+            "link": how if strong else ("weak %d" % bestsc if bestsc else "unlinked"),
         })
     return out
 
@@ -533,10 +558,17 @@ def apply_splits(items):
     Every unit carries the ShowID explicitly. Name matching cannot disambiguate
     two shows that share a folder, so promotion must key on ShowID (SKILL.md 10b).
     """
-    # data/exclude.json: folder or file basenames to drop before planning. Needed
+    # data/exclude.json: folder or file names to drop before planning. Needed
     # for byte-identical duplicate copies of a folder already covered by a record,
     # and for material that is not a performance at all. Capturing a duplicate
     # wastes a full decode and produces a second set of stills nothing will use.
+    #
+    # A key matches EITHER the unit's basename or its full rel path. Basename
+    # alone is not enough: the dedupe cache holds NESTED units, whose basenames
+    # are generic - "Disc1", "Disc 2 VIDEO_TS". Pearl Jam has four of these, each
+    # a duplicate of a subdir split that captures the same disc properly, and
+    # dropping them by basename would have dropped every other artist's "Disc1"
+    # too, in one dim line. Key those on the full rel instead.
     EXCLUDE = DATA / "exclude.json"
     if EXCLUDE.exists():
         try:
@@ -544,11 +576,12 @@ def apply_splits(items):
         except ValueError as e:
             print("  %sexclude.json is not valid JSON: %s%s" % (RED, e, RESET)); drop = set()
         if drop:
-            kept = [it for it in items if os.path.basename(it["rel"]) not in drop]
+            def _dropped(it):
+                return it["rel"] in drop or os.path.basename(it["rel"]) in drop
             for it in items:
-                if os.path.basename(it["rel"]) in drop:
+                if _dropped(it):
                     print("  %sexcluded%s %s" % (DIM, RESET, it["label"][:60]))
-            items = kept
+            items = [it for it in items if not _dropped(it)]
     if not SPLITS.exists():
         return items
     try:
@@ -853,7 +886,13 @@ def cmd_capture(a):
         lo, hi = t0 + dur*0.05, t0 + dur*0.95
         step = (hi-lo)/max(1,n-1)
         stamps = [lo + i*step for i in range(n)]
-        t0=time.time(); ok=bad=0
+        # Count CACHED separately from written. Re-capturing this show after a
+        # geometry correction printed "ok=500 bad=0  768x576 verified" while
+        # writing nothing at all - every frame was a cached 1024x576 file and the
+        # verified line came from the probe, not from a written frame. A no-op that
+        # reads as success is exactly SKILL.md 15; --fresh was needed and nothing
+        # said so.
+        t0=time.time(); ok=bad=cached=0
         def one(i_ts):
             i, ts = i_ts
             hh=int(ts//3600); mm=int(ts%3600//60); ss=int(ts%60)
@@ -879,13 +918,16 @@ def cmd_capture(a):
             futs=[ex.submit(one,(i,ts)) for i,ts in enumerate(stamps)]
             for k,f in enumerate(as_completed(futs),1):
                 good,why,out,ts = f.result()
-                if good: ok+=1
+                if good:
+                    ok+=1
+                    if why == "cached": cached+=1
                 else:
                     bad+=1
                     if bad<=3: print("\n      %sreject%s %s" % (YELLOW,RESET,why))
                 if k%10==0 or k==len(futs):
-                    print("\r  [%2d/%2d] %-30s %3d/%3d  ok=%d bad=%d  %.0fs" %
-                          (si,len(shows),s["FolderName"][:30],k,len(futs),ok,bad,time.time()-t0),
+                    print("\r  [%2d/%2d] %-30s %3d/%3d  ok=%d bad=%d%s  %.0fs" %
+                          (si,len(shows),s["FolderName"][:30],k,len(futs),ok,bad,
+                           (" cached=%d" % cached) if cached else "",time.time()-t0),
                           end="", flush=True)
         # A broken container can make every -ss seek return the SAME frame: 500
         # valid, correctly-sized, byte-identical images. ok>0 so the zero-frame

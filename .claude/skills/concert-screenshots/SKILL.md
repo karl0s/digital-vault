@@ -178,6 +178,46 @@ artist.
 **Known limitation:** the duration check false-positives on split records, which inherit the
 whole disc's `TotalSizeHuman` while carrying one segment's duration.
 
+### FOUR ways preflight and discovery reported "none" for things that were there
+
+**Failure this prevents:** a single artist exposed four separate silent-shortfall bugs in one
+session, three of them in the pass that exists specifically to prevent silent shortfalls. Every
+one printed a clean, confident, wrong answer.
+
+| Bug | What it printed | Why |
+|---|---|---|
+| `preflight` matched the artist with `==` | `PRE-FLIGHT silverchair 0 records` | the run was invoked lowercase; `shows.json` holds `Silverchair`. Checks 1, 2 and 5 then reported "none" for an artist with seven records |
+| its initials alias was one letter | all 44 loose root files listed as candidates | `"".join(w[0] for w in artist.split())` is `"s"` for a single-word name, and `"s" in name` is true of everything. The R.E.M. empty-token bug with the sign flipped |
+| its multi-titleset check looked one level deep | `4. FOLDERS WITH MORE THAN ONE TITLESET: none` | the folder held two whole nested discs with VOBs at each disc's root and no `VIDEO_TS` at all — eight titlesets, invisible |
+| `discover()` required >=3 shared tokens to link | two folders `unlinked`, no message | `Silverchair - 1999 Australia` leaves `{1999, australia}` once the artist tokens are removed. The ceiling is 2, so an EXACT `FolderName` match could never link |
+
+The fixes, all small:
+
+```python
+mine = [s for s in shows if (s.get("Artist") or "").casefold() == artist.casefold()]
+if len(initials) < 2: initials = ""          # no alias for a single-word artist
+for base in [d] + sorted(q for q in d.iterdir() if q.is_dir() and q.name != "VIDEO_TS"):
+    for cand in (base/"VIDEO_TS", base):     # each nested disc is its own tree
+        ...
+if not strong:                               # exact FolderName is decisive on its own
+    exact = [sh for sh in mine if (sh.get("FolderName") or "").strip().casefold()
+                                  == base.strip().casefold()]
+    if len(exact) == 1: best, strong = exact[0], True
+    elif len(exact) > 1: print("AMBIGUOUS ... link by hand")   # never guess
+```
+
+Three things worth carrying forward:
+
+- **Case-fold every artist comparison.** The artist name arrives from a shell argument and will not
+  match the record's capitalisation.
+- **Any derived alias needs a minimum length.** Initials, squashed names and token sets all degrade
+  to "matches everything" when the source name is short, and the degradation is silent.
+- **A link threshold must have an exact-match escape hatch.** A rule tuned to reject weak overlaps
+  will reject perfect ones too when the name is short. Refuse ambiguity loudly; never first-match.
+
+The nested-disc fix immediately surfaced a Kings of Leon folder
+(`T in the Park 2007-08-24/Kings…`, five titlesets) that had been invisible to every previous run.
+
 ## 0. Non-negotiable safety rules
 
 1. **The collection drive is INPUT ONLY.** Every path on it is opened read-only or passed to
@@ -742,6 +782,57 @@ one makes people narrow and tall (or short and wide).
 
 Store overrides in a JSON file keyed by path fragment, with a `why` field recording the
 evidence. Never bury an override in code.
+
+### MEASURE the aspect off defocused point lights — do not judge it by eye
+
+**Failure this prevents:** Silverchair's Melbourne Park 1999 was set to 16:9, captured, picked and
+handed over, and the collection owner said the stills were squashed. He was right. The 16:9 call
+came from rendering one frame at both shapes and looking at it — the exact unaided comparison
+§4.4 above warns against, made in the same session by someone who had just read that warning.
+
+The disc invites the mistake: `VTS_01_1` declares SAR 16:15 (4:3) while `VTS_01_2..5` declare
+64:45 (16:9), on one continuous concert. ffprobe reports the concat's FIRST stream, so the shape
+has to be adjudicated rather than read off — and adjudicating it by eye got it backwards.
+
+**A defocused point light is circular in DISPLAY geometry**, so its dimensions in STORED pixels
+give the sample aspect ratio directly:
+
+```
+blob_w x SAR = blob_h   ->   SAR = blob_h / blob_w   ->   DAR = (W x SAR) / H
+```
+
+Sample tens of them across the runtime and take the median. On this disc, 73 isolated blobs across
+90 native 720x576 frames gave a **median h/w of 0.92** (IQR 0.82-1.13; only 7 of 73 above 1.30).
+4:3 predicts 1.067, 16:9 predicts 1.422 — nothing in that population is near 16:9, and the answer
+cost one decode pass.
+
+Filter hard, or the measurement is noise; specular highlights on cymbals and clipped whites are
+not bokeh:
+
+```python
+# solid (>= 0.74 of its bbox filled), small (20-600 px), not touching the frame edge,
+# and ISOLATED: a 4px ring around the bbox must be well darker than the core
+if ring.mean() > 0.72 * core.mean(): reject
+if not (0.6 < w/h < 1.9):            reject     # a streak is motion, not a point
+```
+
+Loose thresholds gave a median of 1.00 with an IQR of 0.80-1.29 — still decisive against 16:9, but
+the tightened pass is what makes the number quotable.
+
+**Then corroborate against a source whose geometry is beyond doubt** (§4.4): same performer, same
+era, undisputed aspect. Philipshalle Düsseldorf (720x576 PAL 4:3) sits four months from Melbourne
+Park; the head matches at 768x576 and is broad and flattened at 1024x576.
+
+Three smaller lessons from the same show:
+
+- **A channel logo is a known-proportion reference and it can still be misread.** The Channel [V]
+  bug is a square box. It was called "square at 16:9" when it is square at 4:3. Measure the box;
+  do not look at it.
+- **Where the disc's own flags disagree, pin the answer in `overrides.json` even when the default
+  happens to be right.** Without a pin this show captures at 4:3 only because `VTS_01_1` sorts
+  first. That is luck, not evidence, and it inverts silently if the VOB order ever changes.
+- **An era prior is cheap and was ignored.** Australian television was 4:3 in 1999; widescreen came
+  later. One line of context would have outweighed the whole eyeball comparison.
 
 ### An explicit DAR override must not then FAIL gate 1
 
@@ -1781,6 +1872,27 @@ Encode parameters are a useful secondary tell: `VTS_01`–`05` all sat at 9.56 M
 `VTS_06` sat at 7.82 Mbps. A bitrate or geometry change mid-folder means a different
 authoring session, which usually means different source material.
 
+### The taper's OWN title card marks the join, and the broadcaster's REGION names the show
+
+A disc named `Rock Am Ring 6th June 2003 + Rock Im Park 2003` held exactly that, in one continuous
+`VTS_01` stream with no titleset boundary to split on. Two signals located and identified the join
+between them, and both are cheap:
+
+- **The card that opens the disc appears again at the join.** The taper's `CROSSCUT` card sits at
+  `00:00` and again at `70:40`. Searching a sweep for a repeat of frame 0 finds the seam directly,
+  where scanning for "the picture changes" finds every camera cut.
+- **The broadcaster bug names the region, and the region names the festival.** `WDR` before the
+  join (the Nürburgring is in WDR's area), `BR` after it (Rock im Park is in Nuremberg, Bavaria).
+  Outfits changed with the bug while the painted drum kit and the sticker-covered PRS did not —
+  same band, same tour, different night.
+
+The record's own sidecar documented only the first show, and the folder name was the only hint the
+second existed. **A `+` in a folder name is evidence even when the sidecar contradicts it**: the
+sidecar describes what its author transcribed, not necessarily what they burned.
+
+Both shows share one stream, so the second record needs a derived checksum (§10b step 4) — a
+titleset split is not available however much tidier it would be.
+
 ### A SECOND COMPLETE DISC can sit in a subfolder — and nothing in this pipeline sees it
 
 **Failure this prevents:** `R.E.M. - T in the Park, 2008-07-13 + Oxegen 2008` held two full
@@ -1828,6 +1940,22 @@ Two follow-on traps, both of which bit on this folder:
 Changing a split's shape also **changes the state key**, which is what `capture --only` filters
 on. Re-read the key from `state.json` after any re-plan; an `--only` that matches nothing prints
 one red line and exits 0.
+
+### One `subdir` per split entry — a record spanning two nested discs cannot draw from both
+
+`apply_splits` takes a single `subdir` per entry and `pick_source` takes a single folder, so a
+capture unit lives inside exactly one disc tree. When a MERGED record covers material that spans
+two nested discs — Silverchair's MuchMusic *Intimate & Interactive* runs across `Disc 1` VTS_01-03
+and `Disc 2` VTS_01-02 — there is no way to express it as one unit. Two units would need two
+ShowIDs, and promotion asserts those are unique.
+
+Until the tool grows a list-valued `subdir`, **capture from the richer half and say so in `Notes`**.
+Here Disc 2's 33 minutes are near-continuous performance while Disc 1's half is mostly VJ links,
+audience Q&A and a *Speakers Corner* insert, so Disc 2 is the better candidate pool anyway. Trim
+before the credit roll (`"to": "33:30"`) or it floods the shortlist (§5.2).
+
+Nothing about the record is wrong — the stills simply come from one half of the show. That is a
+fact worth recording, not a fault worth hiding.
 
 ### The artist-matcher can widen as silently as it narrows — check the folder COUNT
 
@@ -2640,6 +2768,28 @@ eyeballing a list.
 
 ---
 
+### A RESUMED capture reports cached frames as successes
+
+**Failure this prevents:** after correcting a show's aspect, `capture --only <key>` printed
+`ok=500 bad=0` and `768x576 verified` and **wrote nothing at all**. Every frame was a cached
+1024x576 file from the previous run, and the `verified` line came from the probe rather than from
+a written frame. Picks were then re-materialised at the OLD geometry, so the whole correction was
+a no-op that read as a clean success.
+
+`capture` skips any output that already exists unless `--fresh` is given — correct for resuming an
+interrupted run, wrong when the *settings* changed. The tally hid it by counting a cache hit as an
+`ok`.
+
+- **After any geometry, crop or deinterlacer change, re-capture with `--fresh`.** It is scoped to
+  the shows `--only` selected, so it is safe on a single unit.
+- The tally now prints `cached=N` beside `ok`, so a no-op is visible. Prove it fires before
+  trusting it: re-run without `--fresh` and confirm `cached` equals the frame count.
+- **Verify the FILES, not the tally.** One `Image.open().size` over the work directory catches it
+  instantly, and is what did.
+
+§15 again, in the place it is easiest to forget: a counter that is right about what it measures and
+wrong about what you think it measures.
+
 ## 16. End-to-end QA checklist
 
 - [ ] Staging directory is outside the repo and outside the drive; assertion in place
@@ -2656,6 +2806,14 @@ eyeballing a list.
 - [ ] Deinterlacer demonstrably ran — output NOT byte-identical to the undeinterlaced frame,
       comb ratio below ~1.6 on a normal shot (§4.7)
 - [ ] Suspicious aspect flags (SD 4:3 dated ≥2008, non-standard ratios) visually verified
+- [ ] Any DISPUTED aspect MEASURED off defocused point lights (median stored h/w = SAR) and
+      corroborated against a known-good source — never settled by an unaided A/B look (§4.4)
+- [ ] A disc whose VOBs declare DIFFERENT aspects has the answer PINNED in overrides.json,
+      even where the default happens to be right — VOB sort order is not evidence
+- [ ] After ANY geometry/crop/deinterlacer change, re-captured with `--fresh`, and the WORK
+      DIRECTORY's actual pixel sizes re-read — `ok=N` counts cached frames, not written ones
+- [ ] `preflight` reported a NON-ZERO record count for this artist; a 0 is a matcher bug,
+      not an empty artist (artist match is case-insensitive)
 - [ ] EVERY override created this session mirrored into its `shows.json` record, with the
       evidence in Notes — the override fixes capture, the record is what the collection knows
 - [ ] `scripts/audit-aspect-vs-source.py --artist "<name>"` run; disagreements resolved

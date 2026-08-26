@@ -30,10 +30,19 @@ def main():
     ap.add_argument("--artist", required=True)
     a = ap.parse_args()
     shows = json.loads(SHOWS.read_text(encoding="utf-8"))
-    mine = [s for s in shows if (s.get("Artist") or "") == a.artist]
+    # Artist match is CASE-INSENSITIVE. An exact == silently returned 0 records for
+    # "silverchair" while shows.json holds "Silverchair", so checks 1, 2 and 5 all
+    # reported "none" for an artist that has seven records. A matcher that finds
+    # nothing must never look like a clean pass (SKILL.md 2, 15).
+    mine = [s for s in shows if (s.get("Artist") or "").casefold() == a.artist.casefold()]
     atk = toks(a.artist)
     squashed = re.sub(r"[^a-z0-9]+","", a.artist.casefold())
+    # A ONE-LETTER initials string matches every filename on the drive. "Silverchair"
+    # gave initials "s", so check 3 listed all 44 loose root files as candidates. Same
+    # class as the R.E.M. empty-token-set bug: a matcher that widens is worse than one
+    # that fails (SKILL.md 2). Single-word artists get no initials alias.
     initials = "".join(w[0] for w in a.artist.split() if w[:1].isalpha()).lower()
+    if len(initials) < 2: initials = ""
     print("PRE-FLIGHT  %s   %d records\n" % (a.artist, len(mine)))
 
     print("1. RECORDS WITH NO CHECKSUM  (cannot carry images at all)")
@@ -78,15 +87,30 @@ def main():
             dt = toks(d.name)
             if not (atk & dt or squashed in d.name.casefold() or (initials and initials in d.name.casefold())):
                 continue
-            sub = d/"VIDEO_TS" if any((d/"VIDEO_TS").glob("VTS_*_[1-9].VOB")) else d
-            sets = collections.defaultdict(list)
-            for f in sub.glob("VTS_*_[1-9].VOB"):
-                m = re.match(r"VTS_(\d+)_(\d+)\.VOB$", f.name)
-                if m: sets[m.group(1)].append(f)
-            if len(sets) > 1:
-                sizes = {k: sum(x.stat().st_size for x in v)/1048576 for k,v in sets.items()}
-                print("     %-46s %d titlesets: %s" % (d.name[:46], len(sets),
-                      "  ".join("%s=%.0fMB"%(k,sizes[k]) for k in sorted(sizes))))
+            # Look at the folder, its VIDEO_TS, AND one level of subdirectories. A folder
+            # can hold whole nested DISCS ("Disc 1/", "Disc 2/") whose VOBs sit at their
+            # own root with no VIDEO_TS at all - Silverchair's Intimate & Interactive is
+            # eight titlesets across two nested discs and this check reported "none",
+            # the hardcoded-VIDEO_TS no-op from SKILL.md 11 and the nested-disc case
+            # from SKILL.md 10b, in one folder.
+            discs = []
+            for base in [d] + sorted(q for q in d.iterdir() if q.is_dir() and q.name != "VIDEO_TS"):
+                for cand in (base/"VIDEO_TS", base):
+                    if cand.is_dir() and any(cand.glob("VTS_*_[1-9].VOB")):
+                        discs.append(cand); break
+            for sub in discs:
+                sets = collections.defaultdict(list)
+                for f in sub.glob("VTS_*_[1-9].VOB"):
+                    m = re.match(r"VTS_(\d+)_(\d+)\.VOB$", f.name)
+                    if m: sets[m.group(1)].append(f)
+                if len(sets) > 1:
+                    sizes = {k: sum(x.stat().st_size for x in v)/1048576 for k,v in sets.items()}
+                    rel = str(sub.relative_to(DRIVE)).replace("/VIDEO_TS","")
+                    print("     %-46s %d titlesets: %s" % (rel[:46], len(sets),
+                          "  ".join("%s=%.0fMB"%(k,sizes[k]) for k in sorted(sizes))))
+                    n+=1
+            if len(discs) > 1:
+                print("     %-46s %d SEPARATE DISC TREES in one folder" % (d.name[:46], len(discs)))
                 n+=1
     print("     none\n" if not n else "")
 
