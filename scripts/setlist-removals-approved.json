@@ -540,5 +540,15 @@
       "Interview"
     ],
     "why": "The sidecar numbers the closing interview as track 13, but it is a spoken segment, not a song. Recorded in Notes, along with Ben Harper's guest appearance on 'Red Mosquito'."
+  },
+  "08889466af37": {
+    "artist": "Silverchair",
+    "show": "Melbourne Park 1999-08-12",
+    "entries": [
+      "Silverchair",
+      "Melbourne Park",
+      "PRO Shot"
+    ],
+    "why": "The first three lines of the folder's Silverchair_08-12-1999.txt - band name, venue and source type - imported into Setlist as if they were songs. The eighteen real songs that follow are unchanged and are confirmed on screen: the Channel [V] end card at 62:00 lists all eighteen in the same order under 'SONGS PERFORMED IN ORDER'."
   }
 }
