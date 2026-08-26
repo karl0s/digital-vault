@@ -173,11 +173,12 @@ write it back to the record in the same session — use the two-part form
 `4:3 (letterboxed 16:9)`, frame ratio first and true picture ratio second — and put the
 evidence in `Notes`.
 
-As of the last run: **48.6% of shows correct, 37.2% squashed, 5.6% undersized, 4.8%
-internally inconsistent.** The bad majority predates the capture pipeline. Fully corrected so
+As of the last run: **50.5% of shows correct, 35.6% squashed, 5.4% undersized, 4.6%
+internally inconsistent, 2.5% letterboxed and needing a crop decision.** The bad majority predates the capture pipeline. Fully corrected so
 far: Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Bush, Chris
 Cornell, Filter, Foo Fighters, Green Day, Guns N' Roses, Kings of Leon, Pearl Jam, Queens of the
-Stone Age, R.E.M., Silverchair and Smashing Pumpkins; 30 Seconds to Mars is mostly corrected.
+Stone Age, R.E.M., Silverchair, Smashing Pumpkins and Supergrass; 30 Seconds to Mars is mostly
+corrected.
 Everything else is outstanding.
 
 Two Smashing Pumpkins records (`d9b007dd78f2`, `32fafc677477`) can never be corrected: they point
@@ -318,6 +319,34 @@ square Channel [V] box was called "square at 16:9" when it is square at 4:3.
 Where a disc's own VOBs declare **different** aspects, pin the answer in `overrides.json` even when
 the default happens to be right — VOB sort order is not evidence.
 
+### cropdetect cannot see a VHS letterbox — measure rows instead
+
+`cropdetect` reported **FULL FRAME** on Supergrass's MTV Five Night Stand across 1,026 unanimous
+samples, and on the Köln VIVA disc across 3,486. Both are letterboxed. The bars come off a VHS or
+off-air master and sit at luminance **8–20, never 0**, which no cropdetect threshold separates from
+a dark picture.
+
+A per-row luminance profile settles it in one decode — but take it from the **brightest** frames
+only. An auto threshold over all frames reads a dark stage as bar and invents letterboxes: on the
+same run it "found" 2.0:1 on three sources that are full-frame.
+
+```python
+frames.sort(key=lambda r: -mean(r))          # brightest third only
+m = [mean(c) for c in zip(*frames[:len(frames)//3])]
+```
+
+**One disc can mix both.** MTV Five Night Stand letterboxes its concert and fills the frame for its
+interview segments, which is why cropdetect, a row profile and a rendered frame all disagreed with
+each other until the frames were looked at. A per-source crop is wrong for such a disc.
+
+### The two-part `AspectRatio` form means the IMAGES ARE CROPPED
+
+`parse_dar` returns the **second** ratio for a string containing "letterboxed", so
+`audit-image-geometry.py` then expects the stills to *be* that shape. Writing `4:3 (letterboxed 16:9)`
+while capturing the whole frame makes the audit report every one of that show's images as wrong.
+When the owner asks to keep the bars, leave `AspectRatio` as the frame ratio and put the measured
+letterbox rows in `Notes`.
+
 ### A letterbox is not necessarily 16:9 — measure it
 
 Two Eurockéennes discs, same taper, same DVD recorder, same channel, both 4:3 PAL with the
@@ -340,6 +369,19 @@ refuses to match anything when a name yields no usable token.
 The general lesson: **a matcher that silently widens is more dangerous than one that fails.**
 The file already documented the opposite failure (too-strict matching dropping shows in
 silence); this is the same bug with the sign flipped, and only R.E.M. exposed it.
+
+### A prior session's "appears around X" is a GUESS unless it names its evidence
+
+The Eurockéennes 1997 record's `Notes` said "Supergrass appear around 45-62 min". That window holds
+two entirely different bands. The same note's Radiohead claim was exact — `'Radiohead (UK)' is first
+visible at frame 16,950` — because it cited the disc's burned-in title card.
+
+Read the evidence, not the conclusion. The Supergrass card turned out to be at frames 63,304-63,400
+(35:12-35:15), and their segment is 34:51-42:28 — 7m38s, two songs, nowhere near the stated window.
+
+**A twelve-song setlist cannot describe a seven-minute segment.** That record also carried a
+twelve-song list described as "the SUPERGRASS segment's setlist"; it is the festival set from
+somewhere else. Check a setlist's length against the runtime before trusting what it is attached to.
 
 ### One folder can hold more than one show
 
@@ -376,6 +418,13 @@ but has no idea who is in it, and lead guitarists get more close-ups on many bro
 the heroes as one montage across all of an artist's shows before handing over. Where a source
 genuinely has no close-up (distant audience recordings), use the best wide with the singer
 centre stage and say so.
+
+**The bassist singing backing vocals is the hero trap that actually bites.** A mouth-open close-up
+of a *backing* singer at his own mic is indistinguishable from a hero frame by composition — it
+passed a 420px identity check on Supergrass's Glastonbury 2004 and the collection owner caught it.
+Before writing slot A, name one physical feature that separates the frontman from every other
+member and check for it specifically (for Gaz Coombes: sideburns down the jaw). Hair colour is not
+that feature — under stage light two members read the same shade.
 
 **Reviewing costs more than capturing.** One full-size contact sheet is ~6,000 vision tokens;
 a whole 16-programme disc can be identified for less by starting at 132px thumbnails and
@@ -934,7 +983,7 @@ print(len(d), 'shows /', len(a), 'artists'); print(a.most_common(9)); print(f.mo
 "
 ```
 
-- **893 shows** across **168 artists**
+- **896 shows** across **168 artists**
 - Top artists by volume: Stone Temple Pilots (85), Smashing Pumpkins (63),
   Kings Of Leon (53), Soundgarden (32), Foo Fighters (31), Various Artists (29),
   Red Hot Chili Peppers (27), Incubus (24), 30 Seconds to Mars (21)

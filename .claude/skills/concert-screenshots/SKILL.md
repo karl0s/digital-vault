@@ -765,6 +765,36 @@ sample at 30% exposed it.
   full frame's DAR, which included the bars and is meaningless once they're gone.
   Getting this wrong produced `606×404` instead of the correct `720×404`.
 
+### 4.3b cropdetect is BLIND to a VHS letterbox — profile rows from bright frames
+
+`cropdetect` returned FULL FRAME on two letterboxed Supergrass discs, unanimously, over 1,026 and
+3,486 samples. Their bars come off VHS and off-air masters and sit at luminance **8-20, never 0**.
+No threshold separates that from dark picture.
+
+Profile per-row luminance instead — but only over the **brightest** frames. An auto threshold across
+all frames reads a dark stage as a bar and invents letterboxes; on this artist it reported ~2.0:1 on
+three sources that are full-frame, and 3.05:1 on one, before the sampling was fixed.
+
+```python
+frames.sort(key=lambda r: -mean(r))
+m = [mean(c) for c in zip(*frames[:max(10, len(frames)//3)])]   # then read the plateaus
+```
+
+Read the printed profile rather than trusting a computed edge. A real letterbox shows three flat
+plateaus; a dark picture shows a gradient.
+
+**A single disc can mix shapes.** MTV Five Night Stand letterboxes its concert and fills the frame
+for its interviews, which is why cropdetect, a row profile and a rendered frame each gave a different
+answer until frames were rendered at native size and looked at. A per-source crop is wrong there.
+
+### The two-part AspectRatio string tells the audit the images ARE cropped
+
+`parse_dar` returns the SECOND ratio when the string contains "letterboxed", so
+`audit-image-geometry.py` expects the stills to be that shape. Writing `4:3 (letterboxed 16:9)` while
+deliberately capturing the whole frame — which the owner may ask for, to avoid losing picture — makes
+the audit flag every image of that show. Keep `AspectRatio` as the frame ratio and put the measured
+rows in `Notes`.
+
 ### 4.4 Aspect-flag overrides — the flag itself can be wrong
 
 **Failure this prevents:** a 2013 festival DVD declared `SAR 8:9 / DAR 4:3`. That is
@@ -1497,6 +1527,25 @@ the claim was then repeated a second time from memory rather than re-checked. A 
 costs ~1.5k tokens and settles it. "No close-up exists" needs the same evidence as a positive
 identification.
 
+### The BACKING singer at his own mic defeats a 420px identity check
+
+**Failure this prevents:** Supergrass's Glastonbury 2004 hero was Mick Quinn, the bassist, singing
+backing vocals in tight close-up. It was verified at 420px and written to `hero_verified.json`; the
+collection owner caught it on the review page. The who's-who for that artist had named Rob Coombes
+(keyboards, the frontman's brother) as the lookalike risk and never considered the bassist.
+
+A backing-vocal close-up is identical to a hero frame in composition — mouth open, at a mic, in
+focus — so "is this a close-up of someone singing?" is not the question. Nor is the instrument
+enough: the bassist has one too.
+
+**Name the discriminator before picking, then check for it explicitly.** One physical feature that
+separates the frontman from every other member, and one that survives a thumbnail: for Gaz Coombes
+it is sideburns running down the jaw, and Mick Quinn is clean-shaven. Write it into the who's-who
+next to the hero rule, not just the list of members.
+
+Do NOT use hair colour or length. Under stage light both men read the same shade, and that is what
+made the two frames look like the same person at 420px.
+
 ### 6.2d-3 Build the artist's WHO'S-WHO once, before picking anything
 
 **Failure this prevents:** three separate misidentifications on one artist, each of which
@@ -1892,6 +1941,21 @@ sidecar describes what its author transcribed, not necessarily what they burned.
 
 Both shows share one stream, so the second record needs a derived checksum (§10b step 4) — a
 titleset split is not available however much tidier it would be.
+
+### A prior session's prose conclusion is not evidence — re-derive it
+
+A compilation record's `Notes` said "Supergrass appear around 45-62 min". That window holds two
+other bands. The same note's Radiohead claim was exact because it cited the disc's burned-in card
+by frame number; the Supergrass sentence cited nothing. Supergrass are at 34:51-42:28, found by
+sweeping for the card, which reads `Supergrass (UK)` at frames 63,304-63,400.
+
+Trust a prior note in proportion to the evidence it names. A frame number, a caption or a runtime
+is evidence; "around" is a guess someone will later promote to fact.
+
+**Cross-check a setlist's length against the segment runtime.** That record also carried a
+twelve-song list labelled "the SUPERGRASS segment's setlist" for a segment of 7m38s. Twelve songs
+is a festival set, not a two-song broadcast excerpt — the mismatch is visible without decoding
+anything.
 
 ### A SECOND COMPLETE DISC can sit in a subfolder — and nothing in this pipeline sees it
 

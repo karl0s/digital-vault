@@ -550,5 +550,43 @@
       "PRO Shot"
     ],
     "why": "The first three lines of the folder's Silverchair_08-12-1999.txt - band name, venue and source type - imported into Setlist as if they were songs. The eighteen real songs that follow are unchanged and are confirmed on screen: the Channel [V] end card at 62:00 lists all eighteen in the same order under 'SONGS PERFORMED IN ORDER'."
+  },
+  "0a7a56c578c7": {
+    "artist": "Supergrass",
+    "show": "Élysée Montmartre, Paris 2002-11-21",
+    "entries": [
+      "Mary 13. La Song"
+    ],
+    "why": "Not a song. The folder's setlist.txt runs '12. Mary 13. La Song' across one line and the importer read the whole line as a single title, swallowing the track number. Split back into the two real songs, 'Mary' and 'La Song', both of which the record now holds; setlist.fm's entry for this show lists them as separate tracks 10 and 11. The same pass restored the sidecar's track 2 'Za', which had been dropped entirely, so the record gains songs overall (20 -> 23)."
+  },
+  "80e923f19bb8": {
+    "artist": "Supergrass",
+    "show": "Bizarre Festival 1999-08-20 (was the whole three-show disc)",
+    "entries": [
+      "Cheapskate"
+    ],
+    "why": "Not a song performed at any of these shows. The folder's Setlist.txt numbers it track 28 and labels it 'Cheapskate Video (omited from official release)' - it is the promo video that occupies 103:10-106:12 of the disc, after the three concerts. Recorded in Notes on all three sibling records. The other seventeen entries moved onto the two new records created by the split (13b0d83afbf1 Rockpalast, 9ca88ac50b2b Reading 1998)."
+  },
+  "3f6a4b4e6166": {
+    "artist": "Supergrass",
+    "show": "Glastonbury Festival 2004-06-27 (Palladia HD excerpt)",
+    "entries": [
+      "Lenny",
+      "Rush Hour Soul",
+      "Time",
+      "Grace"
+    ],
+    "why": "These songs are not in this recording. The file is a 7:02 Palladia HD rebroadcast excerpt, not the full set, and the eleven-song Glastonbury setlist had been copied onto it from the sibling records c3524f56bb47 and 3864ee5754b1 - the folder's own source.txt says 'I dont know the setlist'. The excerpt contains exactly two songs, both named by the broadcast's on-screen captions: 'PUMPING ON YOUR STEREO' at 00:05 and 'Alright' at 04:20. The full eleven-song setlist remains on both sibling records, which do hold the whole performance."
+  },
+  "19e3ce93b3d2": {
+    "artist": "Supergrass",
+    "show": "MTV Five Night Stand, Shepherd's Bush Empire 1999-05-13",
+    "entries": [
+      "Supergrass",
+      "MTV Five Night Stand 1999",
+      "Interview",
+      "Fan Interviews"
+    ],
+    "why": "Two header lines and two non-song segments. The sidecar opens 'Supergrass / MTV Five Night Stand 1999 / 13/05/99' and the importer read the first two lines as titles. 'Interview' and 'Fan Interviews' are numbered by the disc as tracks 01 and 06 but are spoken segments, not songs; both are described in Notes instead of being dropped silently."
   }
 }
