@@ -1178,6 +1178,14 @@ record said 1203 s and its container 1204 s; the IFO said 2059 s and a frame cou
 Sampling the reported figure would have covered only the first 58% of the show. Cross-check
 `DurationSec` against the IFO playback time before capture, not after (§0b check 5).
 
+**On a WINDOWED unit, verify the rescue LANDED in the window.** A time-window split of the
+Eurockéennes disc failed every one of its 120 seeks and the fallback recovered all 120. The
+filenames read `t00-35-13` … `t00-41-58`, exactly the requested window — but those names are
+computed from the request, not from the picture, so they say nothing about where the decode
+actually started. Confirm from the pixels: the first recovered frame carried the disc's
+`Supergrass (UK)` title card, which is what proved it. A fallback that silently swept from frame
+0 would produce identically plausible filenames over the wrong act entirely.
+
 **This applies to targeted single-frame re-captures too.** Grabbing one replacement frame
 from an affected DVD with `-ss` will silently produce nothing. Use the same frame-number
 select, computing `n = round(timestamp × fps)` for just the frames you need:
@@ -1431,8 +1439,22 @@ is exactly what a title card, a caption card and a television advert are. They a
 *best-scoring frames in the show*. So they do not merely survive into the shortlist,
 they lead it.
 
-**So on any artist where most shows report `DARK SOURCE`, hand-pick all four slots.**
-The order that costs least:
+**Hand-pick all four slots on EVERY artist. `DARK SOURCE` makes it worse; it is not the
+trigger.** Supergrass flagged **zero** of its 18 shows dark, and still needed **14 of 18 heroes**
+and **16 of 54 other slots** replaced. What autopick had put in those slots:
+
+| Show | What was in a B/C/spare slot |
+|---|---|
+| VH2 Live Special | a **Manic Street Preachers** title card, and a second frame from the same non-Supergrass filler |
+| Vol 3 TV Appearances | Jimmy Kimmel's *"To buy the CD, go to abc.com"* caption card |
+| Köln VIVA | two `OVERDRIVE / SUPERGRASS / LOSE IT` caption cards |
+| MTV Five Night Stand | a credit roll |
+| Pinkpop | two dark silhouettes of a cameraman |
+| Glange Fever | an abstract green light streak — no subject at all |
+
+None of those shows was dark. A caption card, a credit roll and an advert are the
+highest-contrast, quietest-background frames a programme contains, so they lead the shortlist
+on *any* source; darkness only removes the competition. The order that costs least:
 
 1. `autopick` → `shots.py picks` → `reviewsheet.py`.
 2. Read **`reports/review.jpg` once** — ~6k vision tokens for the whole artist, all
@@ -1446,6 +1468,23 @@ The order that costs least:
 every slot, not just the hero. And a programme with a title card will usually have it
 score in the top few, because a clean graphic on black is the highest-contrast,
 quietest-background frame the show contains.
+
+### A non-artist segment inside ONE titleset must scope every slot
+
+**Failure this prevents:** the VH2 Live Special disc is Supergrass for roughly 26 minutes and
+then VH2 channel filler — another artist's video behind a "The Next Song Will Be Great" ident.
+Two of its four auto-picked slots came from **after** that boundary. The record is one titleset,
+one show, one unit, so nothing structural flagged it: `find_multishow` scores titlesets, and a
+`vts` split has nothing to split on.
+
+CLAUDE.md already says to confirm each pick's timestamp falls inside the titleset the record
+covers. That is not enough when the foreign material shares the titleset. **Where a sweep shows
+the artist's segment ending before the file does, write the boundary into `Notes` and check every
+slot's timestamp against it — not just slot A.**
+
+The tell in the sweep is a change of programme grammar rather than of venue: an ident, a
+different band's caption, a channel promo. It will not look like a different show, because it is
+not — it is the same broadcast continuing past the performance.
 
 ### 6.2d-0 THE HERO RULE IS ENFORCED, NOT ADVISED — `hero_gate.py`
 
@@ -1545,6 +1584,12 @@ next to the hero rule, not just the list of members.
 
 Do NOT use hair colour or length. Under stage light both men read the same shade, and that is what
 made the two frames look like the same person at 420px.
+
+**When one hero is caught wrong, re-check every other source of the SAME performance.** Three
+Supergrass records hold Glastonbury 2004 — a 4:3 master, a 16:9 master and a Palladia HD excerpt.
+The misidentification was on the HD one, so the other two were re-checked in the same pass before
+answering; both were right, and saying so is part of the answer. The same faces, lighting and
+camera crew produce the same confusion twice as readily as once.
 
 ### 6.2d-3 Build the artist's WHO'S-WHO once, before picking anything
 
@@ -1689,7 +1734,12 @@ Default briefs (adjust per user):
 - **Watermarks stay.** Broadcaster bugs (MTV, palladia, WDR), tickers and TV-PG marks are
   part of the authentic recording. Never crop or clone them out.
 - Build **one contact sheet per show** (5-wide grid, 24 frames, each labelled with index,
-  timestamp, score and subject sharpness). Review the sheet, not 300 individual frames.
+  timestamp, score and subject sharpness). It is a record of what scored, and useful for a
+  specific question — **it is NOT how slots get chosen.** The sheet renders `scores.json`'s
+  shortlist, which is systematically wide shots on a dark or wide-camera source, so the
+  close-up you need is frequently not in it at any size. Pick from a full-capture sweep
+  instead (§0a-2), and read `reports/review.jpg` once for all four slots of every show
+  (§6.2d-00).
 - Publish a **self-contained HTML index** of all sheets, and a **picks page** showing the
   chosen frames as actual images. Never report picks as bare index numbers — they're
   meaningless to anyone not looking at the same sheet.
@@ -2554,8 +2604,10 @@ with `no confirmed shows.json record`. Every show is skipped, the run reports cl
 nothing is written. It is a silent no-op, not an error. The map found in place at the start of
 an Incubus promotion still held Guns N' Roses and Green Day entries.
 
-Regenerate from `--propose-map` for the artist at hand, confirm each line, and **store ShowIDs
-rather than FolderNames**. A FolderName is matched by exact string: one character adrift
+Rebuild the map for the artist at hand from each state entry's **ShowID**, and assert the
+values are unique. `--propose-map` is a drafting aid only and must not be trusted: it matches on
+name, so two units that share a folder — every split — are proposed against the *same* record,
+which would put one concert's stills on the other's. Store ShowIDs rather than FolderNames. A FolderName is matched by exact string: one character adrift
 (`(Upgrade Version)` vs `(Upgrade)`, a stray trailing space) skips the show without complaint,
 and the same string can match two records after a split. Validate as you write it:
 
@@ -2904,7 +2956,15 @@ wrong about what you think it measures.
 - [ ] Shortlists reviewed for COMMERCIALS on any off-air source (§6.2d)
 - [ ] Every shortlist contains at least one CLOSE-UP and one instrument/detail frame — on dark
       sources score alone will not produce them (§6.2e)
+- [ ] ALL FOUR slots of EVERY show read on `reports/review.jpg` — not only the shows marked
+      DARK SOURCE. An artist with zero dark shows still needed 16 of 54 non-hero slots replaced
 - [ ] Any show marked DARK SOURCE reviewed against the briefs, not accepted on rank
+- [ ] The who's-who names ONE physical discriminator for the frontman that survives a thumbnail
+      (not hair colour), and every hero was checked for it specifically at ≥340px
+- [ ] Where a disc continues past the artist's segment (channel filler, another band, an ident),
+      EVERY slot's timestamp checked against that boundary, not just slot A
+- [ ] Any unit rescued by the single-pass fallback confirmed FROM THE PIXELS to have landed in
+      its window — the filenames are computed from the request, not from the picture
 - [ ] Picks page shows real images, not index numbers
 - [ ] Content traps identified and reported (compilations, split bills, awards shows)
 - [ ] `find_multishow.py` run for this artist; every hit resolved or explicitly cleared (§10b)
@@ -2942,89 +3002,70 @@ follow it in order.
 cd ~/VaultShots
 A="Stone Temple Pilots"
 
-# 0. MULTI-SHOW CHECK - does any folder hold more than one concert? (§10b)
-python3 find_multishow.py --artist "$A"
-#    Then READ EVERY SIDECAR it reports. info.txt / Info.txt / *.nfo are written by the
-#    person who made the disc and are the single most informative artefact available:
-#    across two artists they revealed a two-show disc, a three-programme disc, a wrong
-#    date, a source lineage and two full setlists - all before decoding a single frame.
-#    Resolve every hit BEFORE capturing: capturing a two-show folder as one show
-#    produces stills of the wrong concert and there is no later step that catches it.
+# 0. SCOUT - one read-only pass, before any decode.
+./scout.sh "$A"
+#    Bundles preflight, multi-show detection, image-vs-record AND record-vs-source geometry,
+#    sidecar setlists, split bills, and the list of sidecars to read.
+#    READ EVERY SIDECAR IT LISTS. info.txt / *.nfo / *.md5 are written by whoever made the
+#    disc and are the single most informative artefact available: across several artists they
+#    have revealed a three-show disc, a wrong date, another band's setlist, a source lineage
+#    and full setlists - all before decoding a frame.
+#    Resolve every ambiguity BEFORE capturing. Stills of the wrong concert are not detectable
+#    afterwards. Build ONE html page of what is still open, open it, ask the owner once.
 
-# 1. SCOPE (seconds) - how many images are actually wrong?
-python3 ~/Desktop/Projects/the-vault/scripts/audit-image-geometry.py --artist "$A"
-#    Gives the exact worklist: SQUASHED / SMALL / MIXED / LETTERBOX per show (§4.1c).
-#    If it already reports 100% correct and the stills look fine, stop here. See also §14.
+# 1. WHO'S-WHO - before picking anything, not after (§6.2d-3)
+#    data/whoswho_<artist>.md: who fronts the centre mic, who plays what, extra people, and
+#    ONE physical discriminator for the frontman that survives a thumbnail. Not hair colour.
 
-# 2. PLAN - probe every folder, compute targets, run gates 1-4
-python3 shots.py --artist "$A" plan          # --artist is GLOBAL: before the subcommand
-#    Read the output. Check: no 0-minute runtimes, no absurd runtimes, targets sane,
-#    overrides needed for any suspicious aspect flags (§4.4).
+# 2. CAPTURE - plan, capture, score, contact, autopick, materialise, review sheet
+./run_artist.sh "$A"        # run in the BACKGROUND, wait for the notification, do not poll
+#    Use ./run_artist_noplan.sh when state.json has been deliberately pruned - re-running
+#    plan rebuilds it and undoes the pruning.
+#    Check the summary: 0 rejected, no show starved, picks attempted == resolved.
 
-# 3. CAPTURE - extract and verify every frame
-python3 shots.py capture --workers 3 --fresh        # bwdif is the default
-#    Check: 0 rejected, and no show fell back to single-pass unexpectedly.
+# 3. REVIEW ALL FOUR SLOTS - reports/review.jpg, ONE read for the whole artist (§6.2d-00)
+#    ~6k vision tokens. This is what catches commercials, title cards, credit rolls, channel
+#    idents and other bands. Do this on EVERY artist, not only ones marked DARK SOURCE.
 
-# 4. SCORE + SHEETS + INDEX
-python3 shots.py score --top 24 --mindist 12 --workers 6
-python3 shots.py contact
-python3 shots.py index                       # -> reports/<artist>_contact.html
-#    Check: every show kept >=24. Flag any that are starved.
+# 4. HEROES - sweep, never a contact sheet (§0a-2)
+#    Sweep the full capture at 150px, ~40 frames per show, three shows per image, for every
+#    show whose hero is wrong. autopick marks slot A "A?" because the scorer cannot know who
+#    anyone is; on the last artist 14 of 18 were wrong.
+#    Verify each hero at >=340px BEFORE writing it, checking for the who's-who discriminator.
+#    Record it: data/hero_verified.json -> {"<ShowID>": {"ts": "...", "checked_px": 420}}
+#    No usable close-up of the singer at all -> data/no_closeup.json with a reason, and say so.
+python3 hero_gate.py                         # must pass before promote will run
 
-# 5. REVIEW - open the index, read ONE contact sheet per show, pick by TIMESTAMP.
-#    Budget one large image read per show; this is the expensive step.
-#    Write data/picks.json as {fragment: [[label, "HH-MM-SS"], ...]}
+# 5. MATERIALISE - after EVERY edit to picks.json, no exceptions
+python3 shots.py --artist "$A" picks
+#    Asserts attempted == resolved + unresolved. Anything UNRESOLVED must be re-captured
+#    from source before going further (§5.2 for broken containers).
 
-# 6. MATERIALISE - after EVERY edit to picks.json, no exceptions
-python3 shots.py picks                       # copies to picks/, builds the picks page
-#    It asserts attempted == resolved + unresolved. Anything UNRESOLVED must be
-#    re-captured from source before going further (§5.2 for broken containers).
+# 6. SHOW THE OWNER - a local page in his browser, never a Claude Artifact
+./showpicks.sh "$A"
+#    Refuses if the staged artist is not the one asked for, and refuses to open a page whose
+#    images do not resolve. STOP HERE until he signs off.
 
-# 7. PROMOTE
-python3 promote.py --propose-map             # draft mapping; CONFIRM each line
-#    save the confirmed version to data/promote_map.json
+# 7. PROMOTE - only after sign-off
+#    Build data/promote_map.json from each state entry's ShowID, and assert the values are
+#    UNIQUE. Do NOT use --propose-map: it matches on name, and two units that share a folder
+#    (any split) both map to the same record - one concert's stills onto the other's record.
 python3 promote.py                           # dry run - read the OLD->NEW column
 python3 promote.py --apply
 
 # 8. VERIFY + COMMIT
 python3 scripts/health-check.py                        # in the repo
 python3 scripts/audit-image-geometry.py --artist "$A"  # must be 100% correct now
-git add -f public/images/ public/image-manifest.json
+#    A deliberate Setlist removal needs an entry in scripts/setlist-removals-approved.json
+#    or the push is blocked.
+git add -f public/images/ public/image-manifest.json public/shows.json
 git add -f .claude/skills/concert-screenshots/         # if any bundled script changed
 #    assert every manifest entry is tracked or staged (§11), then commit
 
-# 9. ARCHIVE - park the run so the next artist starts clean
-python3 shots.py archive
-```
-
-**Step 9 comes AFTER the owner has signed off, not after promotion.** `archive` empties `work/`,
-and every later correction then costs a full re-capture of the affected shows. On the reference
-run the artist was archived as soon as it was promoted; the owner then asked for 23 hero changes,
-13 of which needed frames that had been deleted twenty minutes earlier — ~10 minutes of decode
-and a re-score to get back to where the run already was. Promote, hand over, wait, *then* archive.
-
-**`plan` rewrites `state.json` wholesale.** Any hand-linked `ShowID`, corrected duration or
-dropped stray unit is lost on the next `plan` and must be re-applied. On the reference run this
-silently reverted 18 hand-links and a duration fix twice. Keep the fix-ups in a small script you
-can re-run, not in one-off edits.
-
-**Step 9 is not optional.** Leftover `picks.json` / `scores.json` from the previous artist
-will silently skip or mis-resolve during the next promotion.
-
-`archive` also **moves that artist's report pages in with their images and repairs the links**.
-It previously emptied `picks/` and `contact/` while leaving the HTML in `reports/` pointing at
-`../picks/…`, so every review page for a finished artist quietly became a page of broken
-images — eight of them had accumulated before anyone looked. Inside the archive those
-directories sit alongside the html, so the `../` prefix is dropped.
-
-An archived artist should be **self-contained**: picks, contact sheets, evidence frames,
-report pages and the run's JSON, all under `archive/<artist>/`, with every page still
-rendering. Verify after archiving:
-
-```python
-for f in glob("archive/*/*.html"):
-    missing = [s for s in re.findall(r'src="([^"]+)"', open(f).read())
-               if not os.path.exists(os.path.join(os.path.dirname(f), s))]
+# 9. ARCHIVE - LAST, and only after the commit
+python3 shots.py --artist "$A" archive
+#    It clears work/ and moves picks/, which breaks the review page and forces a re-capture
+#    for any later correction. Never run it before sign-off.
 ```
 
 ### `archive` must carry the pages' EVIDENCE, not just `picks/` and `contact/`
@@ -3096,9 +3137,19 @@ python3 shots.py picks                        # materialise picks/ + picks page
 python3 shots.py archive                      # park a finished artist
 python3 shots.py ab                           # deinterlace A/B comparison
 
-python3 promote.py --propose-map              # draft the show mapping
 python3 promote.py                            # dry run
 python3 promote.py --apply                    # write images + manifest
+#   promote.py --propose-map exists but matches on NAME: two units sharing a folder (any
+#   split) both map to the same record. Build data/promote_map.json from ShowIDs instead.
+
+./scout.sh "<Artist>"                         # one read-only pass before any decode (§17.0)
+./run_artist.sh "<Artist>"                    # plan -> capture -> score -> autopick -> picks
+./run_artist_noplan.sh "<Artist>"             # same, without PLAN, for a pruned state.json
+./showpicks.sh "<Artist>"                     # materialise, verify links, open for the owner
+python3 hero_gate.py                          # refuse promotion until every hero is verified
+python3 reconcile.py                          # records vs the drive
+python3 find_undocumented.py                  # folders with no record, matched on SIZE not name
+python3 fix_paths.py                          # repair FolderPath after a drive remount
 ```
 
 Paths at the top of `shots.py` (`HD_ROOT`, `REPO`, `HOME`) are the only things to change per

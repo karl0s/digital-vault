@@ -419,6 +419,13 @@ the heroes as one montage across all of an artist's shows before handing over. W
 genuinely has no close-up (distant audience recordings), use the best wide with the singer
 centre stage and say so.
 
+**Hand-pick all four slots, on every artist.** The hero gate guards slot A only, and the other
+three are where commercials, title cards, credit rolls, channel idents and other bands land — they
+are the highest-contrast, quietest-background frames a programme contains, so they lead the
+shortlist on any source. Supergrass flagged **zero** of its 18 shows as dark and still needed 14 of
+18 heroes and 16 of 54 other slots replaced; one slot held a **Manic Street Preachers** title card.
+Read `reports/review.jpg` once for the whole artist — ~6k vision tokens — before handing anything over.
+
 **The bassist singing backing vocals is the hero trap that actually bites.** A mouth-open close-up
 of a *backing* singer at his own mic is indistinguishable from a hero frame by composition — it
 passed a 420px identity check on Supergrass's Glastonbury 2004 and the collection owner caught it.
