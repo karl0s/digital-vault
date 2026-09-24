@@ -588,5 +588,14 @@
       "Fan Interviews"
     ],
     "why": "Two header lines and two non-song segments. The sidecar opens 'Supergrass / MTV Five Night Stand 1999 / 13/05/99' and the importer read the first two lines as titles. 'Interview' and 'Fan Interviews' are numbered by the disc as tracks 01 and 06 but are spoken segments, not songs; both are described in Notes instead of being dropped silently."
+  },
+  "e318a33e1d14": {
+    "artist": "Strokes",
+    "show": "Reading Festival 2011-08-27",
+    "entries": [
+      "The Strokes",
+      "This DVD was made thanks to the TS recording posted by Ural on alt.binaries.boneless"
+    ],
+    "why": "A header line and a trailer line from the folder's EXTRAS_TS/info.txt, imported into Setlist as if they were songs. The sidecar opens 'The Strokes / 2011-08-27 / Reading Festival, Reading, England' and closes with the provenance note about Ural's .ts recording. The rebuild uses the sidecar's 18 numbered tracks and ADDS two real songs the record was missing, 'What Ever Happened?' and 'Alone, Together'."
   }
 }
