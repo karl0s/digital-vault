@@ -202,7 +202,7 @@ def discover(artist: str):
         glued = any(t[len(a):].isdigit() for a in ALIASES if len(a) > 4
                     for t in rt if t.startswith(a) and len(t) > len(a))
         if not (len(artist_d & rt) >= need or (ALIASES & rt) or glued
-                or os.path.basename(rel) in split_claimed):
+                or rel in split_claimed or os.path.basename(rel) in split_claimed):
             continue
         folder = HD_ROOT / rel
         if not (folder.is_dir() or folder.is_file()):   # loose single-file shows count
@@ -258,7 +258,7 @@ def discover(artist: str):
         try:
             _conf = json.loads(SPLITS.read_text(encoding="utf-8")) if SPLITS.exists() else {}
             _byid = {sh.get("ShowID"): sh for sh in shows}
-            for _part in _conf.get(base, []):
+            for _part in _conf.get(rel) or _conf.get(base, []):
                 _rec = _byid.get((_part.get("showid") or "").strip())
                 if _rec and (_rec.get("Artist") or "").strip() == artist:
                     claimed = True; break
@@ -651,7 +651,11 @@ def apply_splits(items, artist=None):
     shows = {s["ShowID"]: s for s in json.loads(SHOWS_JSON.read_text(encoding="utf-8"))}
     out = []
     for it in items:
-        rule = conf.get(os.path.basename(it["rel"]))
+        # A key may be the full rel path as well as the basename. Nested units have
+        # generic basenames ("Disc 2" in "VA - Rolling Rock Town Fair 2000 (Dave 2 DVD
+        # Version)/Disc 2"), and a basename key would apply the split to every other
+        # "Disc 2" on the drive. The full rel wins; exclude.json already works this way.
+        rule = conf.get(it["rel"]) or conf.get(os.path.basename(it["rel"]))
         if not rule:
             out.append(it); continue
         for part in rule:
