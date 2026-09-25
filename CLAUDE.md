@@ -173,11 +173,11 @@ write it back to the record in the same session — use the two-part form
 `4:3 (letterboxed 16:9)`, frame ratio first and true picture ratio second — and put the
 evidence in `Notes`.
 
-As of the last run: **54.9% of shows correct, 33.0% squashed, 4.3% undersized, 4.0%
-internally inconsistent, 2.5% letterboxed and needing a crop decision.** The bad majority predates the capture pipeline. Fully corrected so
+As of the last run: **60.2% of shows correct, 28.3% squashed, 4.2% undersized, 4.0%
+internally inconsistent, 2.2% letterboxed and needing a crop decision.** The bad majority predates the capture pipeline. Fully corrected so
 far: Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Bush, Chris
 Cornell, Filter, Foo Fighters, Green Day, Guns N' Roses, Kings of Leon, Pearl Jam, Queens of the
-Stone Age, R.E.M., Silverchair, Smashing Pumpkins, Soundgarden, Stereophonics, Supergrass and The Strokes; 30 Seconds to Mars
+Stone Age, R.E.M., Red Hot Chili Peppers, Silverchair, Smashing Pumpkins, Soundgarden, Stereophonics, Supergrass and The Strokes; 30 Seconds to Mars
 is mostly corrected.
 Everything else is outstanding.
 
@@ -370,6 +370,21 @@ The letterbox is symmetric about the frame centre on both, so neither is a mis-c
 Assuming 16:9 would have thrown away 32 rows of real picture. Record what it measures, using the
 two-part form (`4:3 (letterboxed 5:3)`), and put the row numbers in `Notes`.
 
+### A seek can land in the OTHER show — `Woodstock 1994 + 1999`
+
+One continuous stream holds two broadcasts, and its container timestamps are not monotonic across
+the join. The '94 window's seek path "succeeded" on 430 of 500 grabs — valid, distinct, correctly
+sized — and ~200 of them were the '99 festival. Every yield and distinctness gate passed; the
+broadcaster bug in the corner (circle-V vs RTL 5) is what showed it. The single decode pass
+counts frames and was correct at the same indices. A split entry can now pin
+`"decode": "single"` to skip seeking. **On any time-window split of a two-show stream, check the
+bug or the staging across the whole unit, not just its first and last frames.**
+
+Same artist, three smaller traps: ten folders are named `RHCP …`, which shares no token with the
+name (an `rhcp` alias now catches them — the QOTSA case again); a record can be claimed for an
+artist only through `splits.json` (Rolling Stone 25's one RHCP chapter), which discovery now
+honours; and a folder shared by two artists now plans only the current artist's split part.
+
 ### A folder can glue the artist's name to the date — `stereophonics2003-06-07dvd`
 
 That tokenises to `{stereophonics2003, 06, 07dvd}`: no token equals `stereophonics`, so `plan`
@@ -498,7 +513,7 @@ When a show is created before files are physically scanned, a random 40-char hex
 as a placeholder checksum. These stubs are identified by:
 - `Notes` field contains `"TEMP CHECKSUM - update when files are scanned"`
 
-Shows with temp checksums — **6 remain**. Regenerate this table rather than
+Shows with temp checksums — **5 remain**. Regenerate this table rather than
 hand-editing it; earlier versions have twice drifted out of date:
 
 ```bash
@@ -512,7 +527,6 @@ for s in sorted(json.load(open('public/shows.json')), key=lambda x: (x['Artist']
 
 | ShowID | Show | Date | Why it is still a stub |
 |---|---|---|---|
-| `7df1b178e2a2` | Red Hot Chili Peppers — Woodstock 1999 | 1999-01-01 | only candidate is `Woodstock 1994 + 1999`, a two-show folder already held by `b77e1fdad0f6` — needs a titleset split |
 | `9591d1560110` | Stone Temple Pilots — MTV Unplugged | 1993-11-17 | four candidate folders on the drive, every one already has its own record |
 | `88b30e27e380` | Stone Temple Pilots — WAAF | 2000-01-01 | only candidate is `VH1 + WAAF 2000`, two programmes in one folder already recorded — needs a split |
 | `f0516c90fab9` | Stone Temple Pilots — New York | 2010-01-01 | candidates exist but none is evidenced as this show |
@@ -520,7 +534,9 @@ for s in sorted(json.load(open('public/shows.json')), key=lambda x: (x['Artist']
 | `9da270a1217f` | Stone Temple Pilots — TV Compilation 6 | (undated) | the drive has TV Compilation 1–4 and no 5 or 6 |
 
 Resolved on 2026-08-24: Radiohead Jools Holland, Soundgarden SNL 1996-05-18 and
-STP Bizarre 2001-08-18, each confirmed by the sidecar in its own folder.
+STP Bizarre 2001-08-18, each confirmed by the sidecar in its own folder. Resolved on
+2026-09-25: RHCP Woodstock 1999, by a time-window split of `Woodstock 1994 + 1999` (it carries a
+derived checksum, explained in its `Notes`).
 
 **Match a stub by CONTENT, never by name.** Two folders that a name-and-size audit
 called undocumented were already recorded under names sharing nothing with them —
@@ -1019,9 +1035,9 @@ print(len(d), 'shows /', len(a), 'artists'); print(a.most_common(9)); print(f.mo
 "
 ```
 
-- **915 shows** across **168 artists**
+- **918 shows** across **168 artists**
 - Top artists by volume: Stone Temple Pilots (85), Smashing Pumpkins (63),
-  Kings Of Leon (53), Soundgarden (36), Foo Fighters (31), Various Artists (29),
-  Stereophonics (29), Red Hot Chili Peppers (27), Incubus (24)
+  Kings Of Leon (53), Soundgarden (36), Foo Fighters (31), Red Hot Chili Peppers (31),
+  Stereophonics (29), Various Artists (28), Incubus (24)
 - Top festivals: Rock am Ring (46), Glastonbury Festival (29), Reading Festival (27),
   Pinkpop (22), MTV Unplugged (22), Bizarre Festival (21), Big Day Out (19)

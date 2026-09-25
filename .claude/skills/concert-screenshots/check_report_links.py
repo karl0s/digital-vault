@@ -34,7 +34,11 @@ R = Path(__file__).resolve().parent / "reports"
 targets = [Path(a) for a in sys.argv[1:]] or sorted(R.glob("*.html"))
 bad = 0
 for f in targets:
-    srcs = re.findall(r'src="([^"]+)"', f.read_text(encoding="utf-8", errors="replace"))
+    # Both quote styles. aspect_ab.py writes src='...', which a double-quote-only pattern
+    # matched zero times - so its page "passed" with "0 images resolve" and would have
+    # passed the same way with every image missing.
+    srcs = [a or b for a, b in re.findall(r"""src=(?:"([^"]+)"|'([^']+)')""",
+                                           f.read_text(encoding="utf-8", errors="replace"))]
     miss = [s for s in srcs
             if not os.path.exists(_resolve(f, s))]
     if miss:

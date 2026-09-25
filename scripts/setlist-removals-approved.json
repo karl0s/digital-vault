@@ -870,5 +870,93 @@
       "Couldn't Believe Your Radio"
     ],
     "why": "The first entry was the sidecar's title line. The other two are the sidecar's spellings of Just Looking and I Wouldn't Believe Your Radio, which the field still holds."
+  },
+  "225d1dee1f4c": {
+    "artist": "Red Hot Chili Peppers",
+    "show": "Reading 1994-08-28",
+    "entries": [
+      "Red Hot Chili Peppers",
+      "Reading Festival - Main Stage",
+      "Chad Smith - Drums",
+      "he was playing on the right side of the stage. And vice versa for Flea's bass. Anthony and Chad were",
+      "already mixed evenly to a centered stereo position"
+    ],
+    "why": "Header lines, a line-up credit and a sentence of the sidecar's audio-lineage note imported as songs. Replaced by the 12 songs of the folder's own rhcp1994-08-28.pal.dvdf.txt; 'If You Have To Ask', which had been missing, is restored."
+  },
+  "730be7647294": {
+    "artist": "Red Hot Chili Peppers",
+    "show": "MSG NYC 1996-02-09",
+    "entries": [
+      "Intro",
+      "Anthony/Roadie Cam",
+      "Meet & Greet",
+      "Dave Navarro Cam",
+      "Spy Cam"
+    ],
+    "why": "MTV Bootleg programme segments that the info.txt lists between the songs. Not songs; recorded in Notes instead."
+  },
+  "2e66dfef9224": {
+    "artist": "Red Hot Chili Peppers",
+    "show": "Bizarre Festival 1999-08-20 (VHS master)",
+    "entries": [
+      "Red Hot Chili Peppers",
+      "One Set Show - Single Layer DVD"
+    ],
+    "why": "Header line and a disc-format line from the sidecar. The setlist now holds the sidecar's full 16 numbered tracks, three of which (My Lovely Man, Yertle The Turtle, Freaky Styley Medley) had been missing."
+  },
+  "eaafc1eda45f": {
+    "artist": "Red Hot Chili Peppers",
+    "show": "Bizarre Festival 1999-08-20 (2012 rebroadcast)",
+    "entries": [
+      "Red Hot Chili Peppers",
+      "NB 7. If You Have to Ask",
+      "NB 8. Organic Anti-Beat Box Band",
+      "NB 12. Me & My Friends",
+      "Cosmic Slop (Funkadelic cover)"
+    ],
+    "why": "Header line; three songs the sidecar marks 'NB = NOT BROADCASTED 2012', which are therefore not on this disc (explained in Notes; they remain on the VHS-master record 2e66dfef9224); and Cosmic Slop, which is still present but now carries the '(incomplete)' marker."
+  },
+  "a6ea253f5667": {
+    "artist": "Red Hot Chili Peppers",
+    "show": "Live In Milan 2006-04-24 (DVD)",
+    "entries": [
+      "Red Hot Chili Peppers",
+      "Live In Milan",
+      "Captured from HD digital cable and converted to DVD using AviSynth and CCE"
+    ],
+    "why": "Header, programme title and a lineage sentence from info.txt. The missing 'For Emily, Wherever I May Find Her' is restored from the same file."
+  },
+  "97936efb27af": {
+    "artist": "Red Hot Chili Peppers",
+    "show": "Tuborg Green Festival 2007-06-26",
+    "entries": [
+      "RED HOT CHILI PEPPERS",
+      "Tuborg Green Festival",
+      "Flea singing"
+    ],
+    "why": "Two header lines, and 'Flea singing', a moment between songs rather than a song (recorded in Notes)."
+  },
+  "5f274a7dfda6": {
+    "artist": "Red Hot Chili Peppers",
+    "show": "Chorzow 2007-07-03 (full DVD)",
+    "entries": [
+      "Red Hot Chili Peppers",
+      "Complete concert",
+      "NOT FOR SALE. TRADE FREELY"
+    ],
+    "why": "Header line and two trailer lines from 00_Info.txt. Encore break and 'Drum solo + Flea trumpet' restored from the same file."
+  },
+  "1756e7661fe3": {
+    "artist": "Red Hot Chili Peppers",
+    "show": "Rock in Rio 2011-09-24",
+    "entries": [
+      "Red Hot Chili Peppers",
+      "Rock in Rio 4 - World Stage",
+      "Set (incomplete)",
+      "Blood Sugar Sex Magic",
+      "Flea Talking",
+      "General"
+    ],
+    "why": "Header lines, a MediaInfo section label ('General') and 'Flea Talking' (not a song). 'Blood Sugar Sex Magic' is still present, spelled 'Blood Sugar Sex Magik'. 'Can't Stop', which the importer had dropped, is restored."
   }
 }

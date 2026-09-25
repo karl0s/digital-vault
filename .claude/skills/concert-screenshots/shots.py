@@ -110,6 +110,13 @@ def discover(artist: str):
     # STP Unplugged" tokenises to {queensryche}, so it is not pulled in.
     if {"queens", "stone", "age"} <= artist_toks:
         ALIASES.add("qotsa")
+    # Red Hot Chili Peppers: TEN folders are named "RHCP ..." (both Lettermans, both
+    # SNLs, Milan 1992, MSG, Egos & Icons, Rock in Rio, and the EMP 2000 disc filed
+    # under Filter). {rhcp} shares nothing with {red, hot, chili, peppers}, so all ten
+    # would have been dropped in silence - the QOTSA case again. No other artist here
+    # uses the initialism.
+    if {"red", "hot", "chili", "peppers"} <= artist_toks:
+        ALIASES.add("rhcp")
     # A folder may squash the name into one word - "Greenday 1998-03-15 - NHK Hall"
     # never satisfies a ">=2 of {green, day}" rule and the show stays invisible.
     squashed = re.sub(r"[^a-z0-9]+", "", artist.casefold())
@@ -160,6 +167,20 @@ def discover(artist: str):
               "%d cached path(s) no longer exist" % (YELLOW, RESET, added, stale))
     units.sort(key=lambda u: u["rel_path"])
 
+    # A folder that data/splits.json assigns to one of THIS artist's records is the
+    # artist's by human statement, whatever its name says. "Rolling Stone Magazine -
+    # 25 - The MTV Special" is filed under Red Hot Chili Peppers for its one RHCP
+    # chapter and shares no token with the name, so the token test below dropped it
+    # before the split-claim rule further down ever ran.
+    split_claimed = set()
+    try:
+        _conf0 = json.loads(SPLITS.read_text(encoding="utf-8")) if SPLITS.exists() else {}
+        _ids0 = {sh.get("ShowID") for sh in mine}
+        split_claimed = {b for b, parts in _conf0.items()
+                         if any((pt.get("showid") or "").strip() in _ids0 for pt in parts)}
+    except ValueError:
+        pass
+
     out = []
     for u in units:
         rel = u["rel_path"]
@@ -180,7 +201,8 @@ def discover(artist: str):
         # alias followed ONLY by digits; anything looser widens silently.
         glued = any(t[len(a):].isdigit() for a in ALIASES if len(a) > 4
                     for t in rt if t.startswith(a) and len(t) > len(a))
-        if not (len(artist_d & rt) >= need or (ALIASES & rt) or glued):
+        if not (len(artist_d & rt) >= need or (ALIASES & rt) or glued
+                or os.path.basename(rel) in split_claimed):
             continue
         folder = HD_ROOT / rel
         if not (folder.is_dir() or folder.is_file()):   # loose single-file shows count
@@ -226,7 +248,25 @@ def discover(artist: str):
             basen = re.sub(r"[^a-z0-9]+", " ", base.lower()).strip()
             if oan and basen.startswith(oan + " "):
                 lead = oa; break
-        if lead or (best_other_sc >= 2 and best_other_sc > mine_sc):
+        # An explicit split entry OUTRANKS both heuristics. data/splits.json naming a
+        # ShowID whose record belongs to THIS artist is a human statement that the artist
+        # has material in this folder; a name heuristic must not overrule it.
+        # "Incubus - Rock am Ring 2005 + Strokes + Foo Fighters 2D Bill" opens with another
+        # artist's name, so the lead rule claimed it for Incubus and the Strokes segment -
+        # which has its own record and its own split - was skipped in silence.
+        claimed = False
+        try:
+            _conf = json.loads(SPLITS.read_text(encoding="utf-8")) if SPLITS.exists() else {}
+            _byid = {sh.get("ShowID"): sh for sh in shows}
+            for _part in _conf.get(base, []):
+                _rec = _byid.get((_part.get("showid") or "").strip())
+                if _rec and (_rec.get("Artist") or "").strip() == artist:
+                    claimed = True; break
+        except ValueError:
+            pass
+        if claimed and (lead or best_other_sc > mine_sc):
+            print("  %sclaimed%s %-52s split names a %s record" % (DIM, RESET, base[:52], artist))
+        elif lead or (best_other_sc >= 2 and best_other_sc > mine_sc):
             print("  %sskip%s %-52s belongs to %s" % (DIM, RESET, base[:52], lead or best_other))
             continue
         cand = toks(base) - artist_toks
@@ -272,7 +312,7 @@ def discover(artist: str):
     return out
 
 
-def pick_source(folder: Path, only_vts=None, only_vobs=None):
+def pick_source(folder: Path, only_vts=None, only_vobs=None, only_files=None):
     """Return (ffmpeg_input, kind, files).
 
     DVD folders are read through the concat: protocol across all VTS parts, so
@@ -285,6 +325,18 @@ def pick_source(folder: Path, only_vts=None, only_vobs=None):
     """
     if folder.is_file():                      # loose single-file show
         return str(folder), "file", [folder]
+    if only_files:
+        # A show split across several LOOSE files, one per song - "Soundgarden -
+        # Lollapalooza 2010-08-08 1080i AMT Partial" is seven .m2ts files. The
+        # loose-video fallback below takes only the LARGEST file, so the whole
+        # capture came from one song. Concatenate the named files instead, in the
+        # order the split lists them. MPEG-TS/M2TS byte-concatenate cleanly.
+        fs = [folder / n for n in only_files]
+        missing = [f.name for f in fs if not f.is_file()]
+        if missing:
+            print("  %sfiles split: not on the drive: %s%s" % (RED, ", ".join(missing), RESET))
+            return None, None, []
+        return "concat:" + "|".join(str(f) for f in fs), "file", fs
     # Look ONLY at this disc's own VOBs - folder/VIDEO_TS/ or the folder itself -
     # never recursively. A folder can CONTAIN other complete discs: the Audioslave
     # compilation has rar/, pp/ and hul/ subfolders, each a DVD in its own right and
@@ -531,7 +583,7 @@ def _secs(v):
     return out
 
 
-def apply_splits(items):
+def apply_splits(items, artist=None):
     """Expand any folder listed in data/splits.json into one unit per show.
 
     Keyed by the folder's basename on the drive:
@@ -609,6 +661,14 @@ def apply_splits(items):
                 print("  %sSPLIT SKIP%s %s: ShowID %r not in shows.json"
                       % (RED, RESET, it["label"][:40], sid))
                 continue
+            # A folder shared by two artists lists a part for each ("VA - Eurock 1997",
+            # "Experience Music Proj 2000 Filter RHCP etc"). Planning every part would
+            # capture the OTHER band's segment in this artist's run, and stage it next to
+            # this artist's picks. Plan only this artist's parts, and say so.
+            if artist and (rec.get("Artist") or "").strip().casefold() != artist.strip().casefold():
+                print("  %ssplit part%s %s [%s] belongs to %s - not planned in this run"
+                      % (DIM, RESET, it["label"][:40], part.get("label") or sid, rec.get("Artist")))
+                continue
             sub = dict(it)
             subdir = (part.get("subdir") or "").strip()
             if subdir:
@@ -620,6 +680,7 @@ def apply_splits(items):
                 sub["folder"] = nested
             vts = [str(v).zfill(2) for v in part.get("vts", [])]
             vobs = list(part.get("vobs", []))
+            lfiles = list(part.get("files", []))
             t0 = _secs(part.get("from")); t1 = _secs(part.get("to"))
             tag = "VTS%s" % "-".join(vts) if vts else ""
             if subdir:
@@ -632,12 +693,20 @@ def apply_splits(items):
                 tag = subdir + ("_" + tag if tag else "")
             if vobs: tag = (tag + "_" if tag else "") + "F" + "-".join(
                 x.split("_")[-1] for x in vobs)
+            # The file COUNT alone is not a key: two one-file parts of the same
+            # folder (Jools Holland's Extended and Live shows) both tagged "L1",
+            # got one `rel`, and so one work dir. Digest the names as well.
+            if lfiles:
+                import hashlib
+                tag = (tag + "_" if tag else "") + "L%d-%s" % (
+                    len(lfiles), hashlib.sha1("|".join(lfiles).encode()).hexdigest()[:6])
             if t0 is not None or t1 is not None:
                 tag = (tag + "_" if tag else "") + "T%s-%s" % (int(t0 or 0), int(t1 or 0))
             sub.update({
                 "rel":   "%s#%s" % (it["rel"], tag or "ALL"),
-                "vts":   vts, "vobs": vobs,
+                "vts":   vts, "vobs": vobs, "files": lfiles,
                 "t0":    t0, "t1": t1,
+                "decode": (part.get("decode") or "").strip(),
                 "label": "%s [%s]" % (it["label"], part.get("label") or ("VTS "+",".join(vts))),
                 "ShowID": sid,
                 "Checksum": rec.get("ChecksumSHA1", ""),
@@ -661,13 +730,13 @@ STOPWORDS = {
 
 
 def cmd_plan(a):
-    items = apply_splits(discover(a.artist))
+    items = apply_splits(discover(a.artist), a.artist)
     print(BOLD + "\nPlan — %s (%d folders on the drive)" % (a.artist, len(items)) + RESET)
     print(DIM + "-"*104 + RESET)
     state = {"artist": a.artist, "shows": []}
     okc = badc = 0
     for it in items:
-        src, kind, files = pick_source(it["folder"], it.get("vts"), it.get("vobs"))
+        src, kind, files = pick_source(it["folder"], it.get("vts"), it.get("vobs"), it.get("files"))
         if not src:
             print("  %sSKIP%s %-40s  no video files" % (RED,RESET,it["label"][:40])); badc+=1; continue
         info, err = ffprobe_stream(src)
@@ -687,7 +756,16 @@ def cmd_plan(a):
         else:
             try: dur = float(info["format"].get("duration") or 0)
             except Exception: dur = 0.0
-        dur, how = true_duration(src, files, dur)
+        # A SPLIT unit must be DEMUXED, never trusted. On a multi-titleset DVD the
+        # per-titleset container duration is routinely wrong, and a ~2x error passes
+        # the bitrate plausibility check because both readings look sane: the Top of
+        # the Pops titleset reports 202s against a true 388s, which is 9.5 Mb/s
+        # against 4.9 - both inside the window. Trusting it swept half the programme.
+        if it.get("vts") or it.get("vobs") or it.get("files") or it.get("t0") is not None or it.get("t1") is not None:
+            _d = demux_duration(src)
+            dur, how = (_d, "demuxed") if _d > 1 else true_duration(src, files, dur)
+        else:
+            dur, how = true_duration(src, files, dur)
         # A time window narrows the show BEFORE the frame budget and the display
         # line are computed, so both describe the segment actually being captured.
         t0w, t1w = it.get("t0"), it.get("t1")
@@ -719,8 +797,8 @@ def cmd_plan(a):
             key = "%s__%s" % (slug, hashlib.sha1(it["rel"].encode()).hexdigest()[:6])
             state["shows"].append({
                 "key": key, "ShowID": it["ShowID"], "Checksum": it["Checksum"],
-                "vts": it.get("vts") or [], "vobs": it.get("vobs") or [],
-                "t0": it.get("t0") or 0.0,
+                "vts": it.get("vts") or [], "vobs": it.get("vobs") or [], "files": it.get("files") or [],
+                "t0": it.get("t0") or 0.0, "decode": it.get("decode") or "",
                 "FolderName": it["label"], "rel": it["rel"], "ShowDate": it["ShowDate"],
                 "link": it["link"], "src": src, "kind": kind, "duration": dur, "n": n, **t,
             })
@@ -900,6 +978,18 @@ def cmd_capture(a):
         # reads as success is exactly SKILL.md 15; --fresh was needed and nothing
         # said so.
         t0=time.time(); ok=bad=cached=0
+        # A split entry can pin `"decode": "single"`: skip -ss seeking and go straight to
+        # the single decode pass. "Red Hot Chili Peppers - Woodstock 1994 + 1999" is two
+        # broadcasts authored into one stream whose container timestamps are not monotonic
+        # across the join, so a seek to 28:40 inside the 1994 window landed in the 1999
+        # broadcast. 430 of 500 seeks "succeeded" with valid, distinct, correctly sized
+        # frames - above every yield and distinctness threshold - and ~200 of them were the
+        # wrong festival. Only the pixels showed it. The single pass counts frames and is
+        # immune; it was verified correct on this disc across the same indices.
+        if s.get("decode") == "single":
+            print("\n      %sdecode=single pinned in splits.json - skipping the seek path%s"
+                  % (YELLOW, RESET))
+            stamps = []; bad = n
         def one(i_ts):
             i, ts = i_ts
             hh=int(ts//3600); mm=int(ts%3600//60); ss=int(ts%60)

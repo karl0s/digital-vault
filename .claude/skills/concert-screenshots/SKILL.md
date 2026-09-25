@@ -1238,6 +1238,20 @@ if len(seen) < max(2, len(hashes)//2) or top > max(4, 0.08*len(hashes)):
 Tightened this way it fired on **six** further shows in the same artist that the old rule had
 passed, three of them with 68, 163 and 195 repeats.
 
+**A seek can succeed and land in a DIFFERENT SHOW.** `Red Hot Chili Peppers - Woodstock 1994 +
+1999` is two broadcasts in one continuous stream whose timestamps are not monotonic across the join.
+The '94 window's seek path returned 430 of 500 frames - distinct, valid, correctly sized, above every
+yield and repeat threshold - and about 200 of them were the '99 festival. The single decode pass,
+which counts frames, was correct at the same indices. Pin it for such a unit in `splits.json`:
+
+```json
+{"from": "0", "to": "64:10", "showid": "b77e1fdad0f6", "decode": "single", "label": "Woodstock '94"}
+```
+
+Verify every time-window unit of a two-show stream across its WHOLE run, not its first and last
+frames: strip the broadcaster-bug corner from every 10th frame into one image (~1k tokens). Both
+Woodstock units now read circle-V 50/50 and RTL 5 50/50.
+
 **A container that under-reports its duration also under-samples the show.** The same disc's
 record said 1203 s and its container 1204 s; the IFO said 2059 s and a frame count confirmed it.
 Sampling the reported figure would have covered only the first 58% of the show. Cross-check
