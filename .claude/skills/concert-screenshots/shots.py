@@ -173,7 +173,14 @@ def discover(artist: str):
         # A single-word artist ("Aerosmith", "Muse") can never satisfy a fixed
         # ">=2 tokens" rule, so scale the requirement to the artist's own length.
         need = min(2, len(artist_d))
-        if not (len(artist_d & rt) >= need or (ALIASES & rt)):
+        # A folder can run the squashed name straight into a date -
+        # "stereophonics2003-06-07dvd" tokenises to {stereophonics2003, 06, 07dvd},
+        # so neither the token rule nor the whole-token alias sees it, and `plan`
+        # reported "skipped: 0" with the Rock am Ring 2003 disc missing. Accept an
+        # alias followed ONLY by digits; anything looser widens silently.
+        glued = any(t[len(a):].isdigit() for a in ALIASES if len(a) > 4
+                    for t in rt if t.startswith(a) and len(t) > len(a))
+        if not (len(artist_d & rt) >= need or (ALIASES & rt) or glued):
             continue
         folder = HD_ROOT / rel
         if not (folder.is_dir() or folder.is_file()):   # loose single-file shows count

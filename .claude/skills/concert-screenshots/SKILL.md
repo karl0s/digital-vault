@@ -821,7 +821,9 @@ rows in `Notes`.
 squashed. A 2013 broadcast is 16:9; the flag was simply wrong.
 
 Detection heuristic — flag for human review when:
-- an SD source (704/720 × 480/576) declares **4:3** but the show is dated **2008 or later**; or
+- an SD source (704/720 × 480/576) declares **4:3**, has **no letterbox bars**, and the show is
+  dated **2000 or later** (or undated) — see "A 4:3 flag with NO bars" below. The cutoff was
+  2008 until six 2002–2004 UK broadcasts shipped squashed under it; or
 - the computed aspect is **non-standard** (not within 2% of 4:3 or 16:9).
 
 **Verification method (do this, don't guess):** render the *same frame* at both candidate
@@ -882,6 +884,50 @@ Three smaller lessons from the same show:
   first. That is luck, not evidence, and it inverts silently if the VOB order ever changes.
 - **An era prior is cheap and was ignored.** Australian television was 4:3 in 1999; widescreen came
   later. One line of context would have outweighed the whole eyeball comparison.
+
+### A 4:3 flag with NO bars on a post-2000 broadcast is a SUSPECT — the owner judges it at both shapes
+
+**Failure this prevents:** Stereophonics shipped six sources squashed — Headliners (Channel 4,
+two copies), Re:covered (BBC Three), Later… with Jools Holland 2003 (BBC Two), Glastonbury 2002
+(BBC) and Move 2004 (ITV). Every one is 720x576 SAR 16:15, a self-consistent 4:3 flag, with the
+picture filling the frame. They are **full-height anamorphic 16:9 broadcasts that an off-air
+recorder squeezed into a 4:3 frame.** The owner caught it on the picks page.
+
+Why nothing caught it:
+
+| Guard | Why it passed |
+|---|---|
+| gate 1 (SAR vs DAR) | the flags agree with each other — they are just wrong |
+| cropdetect / row profile | there are no bars; the squeeze is horizontal and invisible to both |
+| §4.4's "4:3 but dated 2008+" rule | these are 2002–2004 — UK terrestrial TV was widescreen years before |
+| point-light measurement | the implementation used failed its own 16:9 control (Glasgow 2007, true 16:9, measured h/w 1.11 → "4:3"); it was rightly discarded, but nothing replaced it |
+| a face compared across the hero montage | this is the unaided eyeball check §4.4 already warns against, and it cleared all six |
+
+**The profile is the trigger, not the verdict.** On the same artist, WDR, SF2 and SIC broadcasts
+of the same era with the same flag were genuinely 4:3, and so was a 2002 BBC Two *Later*. So a
+4:3-flagged, bar-free, post-2000 source is not *assumed* 16:9 — it is **put in front of the owner
+at both shapes before promotion**, which costs him one glance per source:
+
+```bash
+python3 ~/VaultShots/aspect_ab.py     # after capture; lists suspects, renders each hero at 4:3 AND 16:9
+open ~/VaultShots/reports/<artist>_aspect_ab.html
+```
+
+It decodes nothing: stretching a 768x576 capture to 1024x576 *is* the 16:9 capture of that frame.
+Add the page to the pre-promotion hand-off alongside the picks page, never after promotion. Record each source the owner
+judges in `data/aspect_confirmed.json` (`{ShowID: {"dar": "4:3", ...}}`); `aspect_ab.py` skips those, so
+an answered question is never asked twice. Nine Stereophonics sources were confirmed 4:3 this way.
+
+**What to judge in the A/B:** a circle that is **front-on** to the camera — a mic's grille ring
+seen head-on (present in nearly every hero frame), a kick-drum head square to the lens, a round
+spotlight lens. On Headliners the grille ring at the mic reads visibly taller than wide at 768 and
+round at 1024. Not a face (this run proves faces fool the eye) and not a drum shot from the side
+(the Austin City Limits trap, CLAUDE.md).
+
+**Confirmed → fix:** a `dar: "16:9"` override **scoped by `showid`** (split folders share a
+`rel`), move the unit's old `work/<key>/` aside, re-plan, recapture that unit, re-materialise.
+Timestamps are unchanged, so `picks.json` needs no edit. Write `AspectRatio: "16:9 (native)"` to
+the record and say in `Notes` that the disc flag says 4:3.
 
 ### An explicit DAR override must not then FAIL gate 1
 
@@ -3081,10 +3127,16 @@ python3 shots.py --artist "$A" picks
 #    Asserts attempted == resolved + unresolved. Anything UNRESOLVED must be re-captured
 #    from source before going further (§5.2 for broken containers).
 
+# 5b. ASPECT A/B - every 4:3-flagged, bar-free, post-2000 source at BOTH shapes (§4.4)
+python3 aspect_ab.py
+#    A self-consistent 4:3 flag on a squeezed 16:9 broadcast passes every gate; six
+#    Stereophonics sources shipped squashed that way. Open this page WITH the picks page.
+
 # 6. SHOW THE OWNER - a local page in his browser, never a Claude Artifact
-./showpicks.sh "$A"
+./showpicks.sh "$A"; open reports/<artist>_aspect_ab.html
 #    Refuses if the staged artist is not the one asked for, and refuses to open a page whose
-#    images do not resolve. STOP HERE until he signs off.
+#    images do not resolve. STOP HERE until he signs off - on the picks AND on every
+#    source's shape.
 
 # 7. PROMOTE - only after sign-off
 #    Build data/promote_map.json from each state entry's ShowID, and assert the values are

@@ -51,13 +51,31 @@ scorer cannot know who anyone is.
 
 `promote.py` refuses until every hero is verified or flagged.
 
+## 4b. Shape — every 4:3-flagged source that could be a squeezed 16:9 broadcast
+
+```bash
+python3 ~/VaultShots/aspect_ab.py
+```
+
+Lists every source flagged 4:3 with **no letterbox bars** and dated 2000 or later, and
+renders each hero at 4:3 and at 16:9 side by side. An off-air recorder that squeezes a
+widescreen broadcast into a 4:3 frame leaves flags that agree with each other and no bars,
+so every automated gate passes: six Stereophonics sources (UK TV, 2002–2004) shipped
+squashed that way and Karl caught them on the picks page. Most suspects are genuinely 4:3
+— the profile is a reason to look, not a verdict — so **do not decide these yourself by
+comparing faces**; that is exactly the check that cleared all six. Judge a front-on circle
+(a mic grille seen head-on) if you must, and put the page in front of Karl either way.
+Fix confirmed ones per skill §4.4 ("A 4:3 flag with NO bars").
+
 ## 5. Show Karl
 
 ```bash
 ~/VaultShots/showpicks.sh "$ARGUMENTS"
+open ~/VaultShots/reports/<artist>_aspect_ab.html
 ```
 
-The deliverable is that **local** page opened in his browser, not a Claude Artifact.
+The deliverable is those **local** pages opened in his browser, not a Claude Artifact.
+He signs off on the picks **and** on each suspect source's shape.
 
 ## 6. Stop
 

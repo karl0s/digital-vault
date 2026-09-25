@@ -177,7 +177,7 @@ As of the last run: **54.9% of shows correct, 33.0% squashed, 4.3% undersized, 4
 internally inconsistent, 2.5% letterboxed and needing a crop decision.** The bad majority predates the capture pipeline. Fully corrected so
 far: Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Bush, Chris
 Cornell, Filter, Foo Fighters, Green Day, Guns N' Roses, Kings of Leon, Pearl Jam, Queens of the
-Stone Age, R.E.M., Silverchair, Smashing Pumpkins, Soundgarden, Supergrass and The Strokes; 30 Seconds to Mars
+Stone Age, R.E.M., Silverchair, Smashing Pumpkins, Soundgarden, Stereophonics, Supergrass and The Strokes; 30 Seconds to Mars
 is mostly corrected.
 Everything else is outstanding.
 
@@ -300,6 +300,19 @@ at both shapes and compare. At 4:3 this one's face was visibly narrow and elonga
 matched the 1920x1080 Storytellers capture exactly. Found only because the collection owner said a
 show "looks squished" — after an automated check had cleared it.
 
+### A 4:3 flag with no bars on a post-2000 broadcast can be a squeezed 16:9
+
+Six Stereophonics sources (Headliners ×2, Re:covered, Later 2003, Glastonbury 2002, Move 2004 —
+UK TV, 2002–2004) were 720x576 SAR 16:15 with the picture filling the frame: a self-consistent
+4:3 flag on what was really anamorphic 16:9 squeezed by an off-air recorder. No gate can see it
+— the flags agree, and there are no bars — and a face compared across the hero montage cleared
+all six. The collection owner caught them.
+
+`python3 ~/VaultShots/aspect_ab.py` lists every 4:3-flagged, bar-free, post-2000 source and
+renders each hero at both shapes on one page. **Most of those are genuinely 4:3** (the same
+artist's WDR, SF2 and SIC broadcasts were), so the page goes to the owner with the picks page,
+before promotion. Details and the fix recipe: `concert-screenshots` skill §4.4.
+
 ### Measure a disputed aspect off defocused point lights
 
 A bokeh blob is circular on screen, so its dimensions in **stored** pixels are the sample aspect
@@ -356,6 +369,22 @@ The letterbox is symmetric about the frame centre on both, so neither is a mis-c
 
 Assuming 16:9 would have thrown away 32 rows of real picture. Record what it measures, using the
 two-part form (`4:3 (letterboxed 5:3)`), and put the row numbers in `Notes`.
+
+### A folder can glue the artist's name to the date — `stereophonics2003-06-07dvd`
+
+That tokenises to `{stereophonics2003, 06, 07dvd}`: no token equals `stereophonics`, so `plan`
+reported `ready: 28  skipped: 0` for 29 records and the Rock am Ring 2003 disc was never captured.
+`shots.py` now accepts the squashed artist name followed **only by digits**; checked across all
+168 artists, it changes exactly that one match. The count check (folders found vs records) is
+what caught it — run it every time.
+
+### Five "FOTTP" discs held eighteen programmes
+
+Stereophonics' fan compilations `FOTTP 1/2/4/7/10` were five records for **eighteen titlesets,
+each a separate programme** (festival sets, *Later*, *Headliners*, *Re:covered*, talk shows, two
+documentaries). Every existing record had the disc's whole sidecar pasted in as its Setlist, and
+one (`f4445e77f8e6`) described *Later* 2002 while its checksum is Rock am Ring 2003. Now one
+record per titleset, each keyed by a real content hash over that titleset's `VTS_NN_0..n.VOB`.
 
 ### An artist name of single letters matched EVERY folder on the drive
 
@@ -990,9 +1019,9 @@ print(len(d), 'shows /', len(a), 'artists'); print(a.most_common(9)); print(f.mo
 "
 ```
 
-- **902 shows** across **168 artists**
+- **915 shows** across **168 artists**
 - Top artists by volume: Stone Temple Pilots (85), Smashing Pumpkins (63),
   Kings Of Leon (53), Soundgarden (36), Foo Fighters (31), Various Artists (29),
-  Red Hot Chili Peppers (27), Incubus (24), 30 Seconds to Mars (21)
-- Top festivals: Rock am Ring (44), Glastonbury Festival (29), Reading Festival (27),
+  Stereophonics (29), Red Hot Chili Peppers (27), Incubus (24)
+- Top festivals: Rock am Ring (46), Glastonbury Festival (29), Reading Festival (27),
   Pinkpop (22), MTV Unplugged (22), Bizarre Festival (21), Big Day Out (19)

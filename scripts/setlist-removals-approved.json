@@ -766,5 +766,109 @@
       "Slaves & Bulldozers"
     ],
     "why": "The broadcast's own on-screen captions name seven songs; the other thirteen are the concert's full set from elsewhere, not on this recording. 'Jesus Christ Pose' is not removed but renamed 'Jesus Christ Pose (incomplete)', the house marker that the list is partial."
+  },
+  "19864ce04a03": {
+    "artist": "Stereophonics",
+    "show": "FOTTP 1 (Montreux 2003, VTS_05)",
+    "entries": [
+      "Headliners",
+      "interview",
+      "the bartender and the theif",
+      "BBC3 Re-covered",
+      "Sharon Osbourne",
+      "Later with Jools HOlland 2003",
+      "interview with kelly and stuart",
+      "Montreux Jazz Festival 2003",
+      "climbing up the wall"
+    ],
+    "why": "The disc's whole sidecar had been pasted into this one record's Setlist: every programme's header line (event, place, date), the interview segments, and the other titlesets' songs. The disc is now split one record per titleset on 2026-09-25; the other programmes' songs moved to their own records, the headers and interviews are not songs (interviews are described in Notes), and the remaining entries are the sidecar's misspellings of songs the field still holds under their proper titles. 'climbing up the wall' is Climbing the Wall."
+  },
+  "f4445e77f8e6": {
+    "artist": "Stereophonics",
+    "show": "FOTTP 10 (Rock am Ring 2003, VTS_02)",
+    "entries": [
+      "Jools Holland 2002 BBC2 London 19 April 2002",
+      "billy daveys dayghter",
+      "the bartender and the theif",
+      "Rock am Ring Nurnburg Germany 7 June 2003",
+      "kelly and stuart interview"
+    ],
+    "why": "The disc's whole sidecar had been pasted into this one record's Setlist: every programme's header line (event, place, date), the interview segments, and the other titlesets' songs. The disc is now split one record per titleset on 2026-09-25; the other programmes' songs moved to their own records, the headers and interviews are not songs (interviews are described in Notes), and the remaining entries are the sidecar's misspellings of songs the field still holds under their proper titles. Billy Davey's Daughter is on the new Later 2002 record 57334aedf949."
+  },
+  "b530090f54b9": {
+    "artist": "Stereophonics",
+    "show": "FOTTP 2 (Glastonbury 2002, VTS_01)",
+    "entries": [
+      "Glastonbury Worthy Farm Pilton Somerset England 29 June 2002",
+      "the bartender and the theif",
+      "i wouldn't believe in your radio",
+      "Open Air St Gallen Festival Switzerland 28 June 2003",
+      "kelly jones interview",
+      "Napster Live Channel 3 UK 1st may 2005",
+      "interview"
+    ],
+    "why": "The disc's whole sidecar had been pasted into this one record's Setlist: every programme's header line (event, place, date), the interview segments, and the other titlesets' songs. The disc is now split one record per titleset on 2026-09-25; the other programmes' songs moved to their own records, the headers and interviews are not songs (interviews are described in Notes), and the remaining entries are the sidecar's misspellings of songs the field still holds under their proper titles."
+  },
+  "ab8c251d90a5": {
+    "artist": "Stereophonics",
+    "show": "FOTTP 4 (Sudoeste 2003, VTS_01)",
+    "entries": [
+      "Sudoeste Festival 2003 - Lisbon Portugal 10 August 2003",
+      "interview",
+      "the bartender and the theif",
+      "i wouldnt beleive in your radio",
+      "maybe omorrow",
+      "Isle of Wight 2004"
+    ],
+    "why": "The disc's whole sidecar had been pasted into this one record's Setlist: every programme's header line (event, place, date), the interview segments, and the other titlesets' songs. The disc is now split one record per titleset on 2026-09-25; the other programmes' songs moved to their own records, the headers and interviews are not songs (interviews are described in Notes), and the remaining entries are the sidecar's misspellings of songs the field still holds under their proper titles."
+  },
+  "cf0be1320251": {
+    "artist": "Stereophonics",
+    "show": "FOTTP 7 (Montreux 2003, VTS_01)",
+    "entries": [
+      "Montreux Jazz Festival-Miles Davis Hall Montreux Switzerland 10 July 2003",
+      "Mademe helga",
+      "the bartender and the theif",
+      "mr write",
+      "Headliners Channel 4 UK 20 Nov 2003",
+      "The Bartended and the Theif",
+      "Move 2004 10 July 2004 Old Trafford Cricket Ground Manchester",
+      "Interview with Kelly and Richard",
+      "Biography Channel"
+    ],
+    "why": "The disc's whole sidecar had been pasted into this one record's Setlist: every programme's header line (event, place, date), the interview segments, and the other titlesets' songs. The disc is now split one record per titleset on 2026-09-25; the other programmes' songs moved to their own records, the headers and interviews are not songs (interviews are described in Notes), and the remaining entries are the sidecar's misspellings of songs the field still holds under their proper titles."
+  },
+  "d49898598a65": {
+    "artist": "Stereophonics",
+    "show": "Rock am Ring 2013-06-08",
+    "entries": [
+      "Stereophonics",
+      "Rock am Ring",
+      "Germany",
+      "Running Time 26m"
+    ],
+    "why": "Header lines (band, festival, country) and the trailer 'Running Time 26m' from the folder's sidecar, imported as songs. The six numbered tracks remain."
+  },
+  "ff2ebcf16cd1": {
+    "artist": "Stereophonics",
+    "show": "stereophonics2003-06-07dvd (Rock am Ring 2003)",
+    "entries": [
+      "what are you sharing with all of us",
+      "No artwork",
+      "Announcement by Thorsten Sellheim",
+      "The Local Boy In The Photograph",
+      "P&L"
+    ],
+    "why": "Sidecar prose imported as songs ('what are you sharing with all of us', 'No artwork', the uploader's sign-off 'P&L'); track 00 is the Rockpalast presenter's announcement, not a song; 'The Local Boy In The Photograph' is kept as Local Boy in the Photograph."
+  },
+  "665609ca66ae": {
+    "artist": "Stereophonics",
+    "show": "Glasgow Academy 2007",
+    "entries": [
+      "Stereophonics - Live in Glasgow",
+      "Just Lookin'",
+      "Couldn't Believe Your Radio"
+    ],
+    "why": "The first entry was the sidecar's title line. The other two are the sidecar's spellings of Just Looking and I Wouldn't Believe Your Radio, which the field still holds."
   }
 }
