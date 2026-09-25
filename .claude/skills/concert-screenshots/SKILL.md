@@ -422,6 +422,25 @@ record: a "GUNS N' ROSES — WELCOME BACK TO THE RITZ" banner proved two records
 a Live Earth lower-third dated a Foo Fighters record to the day; an MTV caption bar supplied a
 whole Tokyo Dome setlist.
 
+**Read song captions with a strip sweep, not the capture.** The capture samples every ~5 s and a
+title card is up for about that long, so it misses some. Decode only the caption region at 2 fps
+to raw greyscale — one pass, no files per frame — then score each frame for bright, sharp-edged,
+*static* strokes (text holds still while the picture moves) and montage one frame per run:
+
+```bash
+ffmpeg -i SRC -an -vf "fps=2,crop=iw*0.40:ih*0.14:0:ih*0.82,scale=480:-2,format=gray" -f rawvideo strip.gray
+```
+
+This is analysis, not capture, so hand-rolling ffmpeg is fine here. MPEG-2 has no VideoToolbox
+decoder; drop `-hwaccel` or it floods the log and decodes nothing.
+
+Worked example, Soundgarden Lollapalooza 2010 "Palladia Full": fifteen caption runs across 48:47,
+and the second half **repeated the first** — the Searching, Spoonman, Rusty Cage and Blow Up
+captions recurred exactly 30:45 later, and the frames at the seam showed the TV-PG card and the
+programme title coming round again. The file was one airing of a seven-song edit plus eighteen
+minutes of the rerun. The record held the twenty-song concert set. **A folder named "Full" is not
+evidence of a full show, and a caption that appears twice means a repeat, not an encore.**
+
 ### Sidecars are authoritative for their own show
 
 A sidecar inside the show's folder does not need corroboration. It was written from the
@@ -2067,6 +2086,27 @@ Until the tool grows a list-valued `subdir`, **capture from the richer half and 
 Here Disc 2's 33 minutes are near-continuous performance while Disc 1's half is mostly VJ links,
 audience Q&A and a *Speakers Corner* insert, so Disc 2 is the better candidate pool anyway. Trim
 before the credit roll (`"to": "33:30"`) or it floods the shortlist (§5.2).
+
+### Loose files, not a disc: the `files` split key
+
+`pick_source` on a folder with no `VIDEO_TS` takes the **single largest** video file. That is wrong
+twice over for a folder of per-song files — Soundgarden's Lollapalooza AMT folder is seven `.m2ts`
+tracks, so only one song was ever captured — and for a folder holding two programmes as separate
+files, like Jools Holland's `Extended Show` and `Live Show`. A split entry can name the files:
+
+```json
+{"files": ["Searching with my good eye closed.m2ts", "Rusty Cage.m2ts", "..."], "showid": "6ba8d09333cf"}
+```
+
+The unit concatenates them in the order given. A named file missing from the drive refuses the
+unit rather than capturing a partial set. Seeking across the joins fails on `.m2ts`, so expect the
+single-pass fallback (§5.2) — it is slow, not broken.
+
+**The tag in `rel` must digest the file names, not count them.** It was first `L<count>`: the two
+Jools parts both named one file, both tagged `L1`, got one `rel` and so one work directory, and the
+second capture would have landed on the first. Now `L<count>-<sha1 of the names>[:6]`. Changing a
+tag changes the key, so any unit already captured under the old key must be recaptured and its
+stale `picks.json` entry dropped — `shots.py picks` reports it as `NO SHOW`.
 
 Nothing about the record is wrong — the stills simply come from one half of the show. That is a
 fact worth recording, not a fault worth hiding.

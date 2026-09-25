@@ -597,5 +597,174 @@
       "This DVD was made thanks to the TS recording posted by Ural on alt.binaries.boneless"
     ],
     "why": "A header line and a trailer line from the folder's EXTRAS_TS/info.txt, imported into Setlist as if they were songs. The sidecar opens 'The Strokes / 2011-08-27 / Reading Festival, Reading, England' and closes with the provenance note about Ural's .ts recording. The rebuild uses the sidecar's 18 numbered tracks and ADDS two real songs the record was missing, 'What Ever Happened?' and 'Alone, Together'."
+  },
+  "4f7a30142bcd": {
+    "artist": "Soundgarden",
+    "show": "Soundgarden - 1992-06-08 PinkPop Festival - Landgraaf - The Netherland",
+    "entries": [
+      "Searching With My Good Eye Closed",
+      "Hands All Over",
+      "Room a Thousand Years Wide",
+      "Face Pollution",
+      "Gun",
+      "Flower",
+      "Ugly Truth",
+      "Big Dumb Sex",
+      "Drawing Flies",
+      "Incessant Mace",
+      "Mind Riot",
+      "Somewhere"
+    ],
+    "why": "Songs not in this recording. The record held the full 15-song festival set from an external source; this folder's own info.txt lists the 24:13 broadcast as an interview with the mayor of Landgraaf plus three songs - Rusty Cage, Jesus Christ Pose, Slaves & Bulldozers - which the record now holds. The sidecar is primary evidence about this recording."
+  },
+  "9aae9bf6d38b": {
+    "artist": "Soundgarden",
+    "show": "Soundgarden - Later with Jools Holland - 6th November 2012 [1080i]",
+    "entries": [
+      "Soundgarden",
+      "Later with Jools Holland",
+      "BBC Television Centre",
+      "Extended Show - Recorded on the 6th November and broadcast on the 9th November 2012",
+      "Running Time - 17m 3s",
+      "Live Show - broadcast on the 6th November 2012",
+      "Running Time - 8m 5s"
+    ],
+    "why": "Not songs: the sidecar's header lines (band, programme, venue, the Extended Show recording note, a running time and the Live Show heading) imported as setlist entries. The three real songs of the Extended Show - the programme this record's 17:03 runtime covers - remain."
+  },
+  "6ba8d09333cf": {
+    "artist": "Soundgarden",
+    "show": "Soundgarden - Lollapalooza 2010-08-08 1080i AMT Partial",
+    "entries": [
+      "Spoonman",
+      "Gun",
+      "Let Me Drown",
+      "Flower",
+      "Jesus Christ Pose",
+      "Fell on Black Days",
+      "Ugly Truth",
+      "Get on the Snake",
+      "Superunknown",
+      "Black Hole Sun",
+      "Mailman",
+      "4th of July",
+      "Like Suicide",
+      "Slaves & Bulldozers"
+    ],
+    "why": "Songs not in this recording. The folder holds seven per-song .m2ts files named by song; the record held all twenty songs of the festival set from an external source. The seven the files contain are kept, in setlist.fm's running order, and marked (incomplete). 'Like Suicide' is not removed but carries the house ' (incomplete)' suffix as the last entry of a partial list; listed here because the guard matches exact strings."
+  },
+  "32791c5e78eb": {
+    "artist": "Soundgarden",
+    "show": "Soundgarden - Special 1994 - Sony Music TV",
+    "entries": [
+      "Soundgarden Special 1994 - Sony Music TV",
+      "Chris Cornell & Ben Shepherd Interview",
+      "so I thought this stuff was enjoyable for Soundgarden fans and uploaded it",
+      "venom2619"
+    ],
+    "why": "Not songs: the sidecar's title line, an interview segment, a sentence from the uploader's note and the uploader's name. The programme's two live songs, Fell On Black Days and Spoonman, replace them."
+  },
+  "e84abdad957f": {
+    "artist": "Soundgarden",
+    "show": "Soundgarden_1995_09_06_OBERHAUSEN_DVD",
+    "entries": [
+      "Waiting For the Sun",
+      "Best",
+      "Bobfather"
+    ],
+    "why": "Not songs: the sidecar's sign-off, 'Best / Bobfather' (the taper's name), imported as two entries. Rebuilt to the sidecar's 17 songs. 'Waiting For the Sun' is not removed but renamed to 'Waiting for the Sun' (title case); the guard matches exact strings, so the old form is listed here."
+  },
+  "884da8e9cd6f": {
+    "artist": "Soundgarden",
+    "show": "Soundgarden on SNL 1996-05-18 HDTV 1080i",
+    "entries": [
+      "Pretty Noose"
+    ],
+    "why": "Song not in this recording. This is a 2017 HD rebroadcast holding only '01 Burden In My Hand.ts' and '02 closing segment.ts'; Pretty Noose is on the SD source of the same show, a760e0fab141, which keeps it."
+  },
+  "1786d6b3d902": {
+    "artist": "Soundgarden",
+    "show": "Soundgarden - 1990-04-16 DVB-S Dusseldorf",
+    "entries": [
+      "Bastard Child"
+    ],
+    "why": "Wrong song. Neither this folder's sidecar (chapter 10: '> Beyond the Wheel') nor the second source of the same broadcast (bf2e34763bf0) contains Bastard Child; the correct final song, Beyond the Wheel, replaces it."
+  },
+  "1bd1a4f07dfa": {
+    "artist": "Soundgarden",
+    "show": "Soundgarden 1995-09-06 Oberhausen, Germany DL-DVD",
+    "entries": [
+      "Soundgarden",
+      "Turbinenhalle",
+      "Waiting For the Sun",
+      "Do not sell this DVD. Do not convert to lossy formats. Please support the band by buying their official releases"
+    ],
+    "why": "Not songs: the sidecar's header lines ('Soundgarden', 'Turbinenhalle') and its trailer ('Do not sell this DVD...'). Rebuilt to the sidecar's 17 songs. 'Waiting For the Sun' is not removed but renamed to 'Waiting for the Sun' (title case); the guard matches exact strings, so the old form is listed here."
+  },
+  "024f42aee9e0": {
+    "artist": "Soundgarden",
+    "show": "Soundgarden - 2014-04-17 - Guitar Center Sessions",
+    "entries": [
+      "Intro",
+      "Interview",
+      "Credits"
+    ],
+    "why": "Not songs: 'Intro', 'Interview' and 'Credits' are programme segments the disc numbers as tracks. Recorded in Notes instead; the six songs remain."
+  },
+  "3b826194fc5e": {
+    "artist": "Soundgarden",
+    "show": "Soundgarden - 2014-06-03 - The Tonight Show Starring Jimmy Fallon",
+    "entries": [
+      "Soundgarden",
+      "The Tonight Show Starring Jimmy Fallon"
+    ],
+    "why": "Not songs: the sidecar's header lines naming the band and the programme. The one real song, Spoonman, remains."
+  },
+  "a7a8bc6b2662": {
+    "artist": "Soundgarden",
+    "show": "soundgarden live from lollapalooza 2010",
+    "entries": [
+      "Searching With My Good Eye Closed",
+      "Spoonman",
+      "Gun",
+      "Rusty Cage",
+      "Blow Up the Outside World",
+      "Let Me Drown",
+      "Flower",
+      "Outshined",
+      "Jesus Christ Pose",
+      "Fell on Black Days",
+      "Ugly Truth",
+      "Get on the Snake",
+      "Burden in My Hand",
+      "Superunknown",
+      "Black Hole Sun",
+      "Mailman",
+      "4th of July",
+      "Face Pollution",
+      "Like Suicide",
+      "Slaves & Bulldozers"
+    ],
+    "why": "Record retired as a duplicate of 3f73e639a3d0 (same file, same byte size, on the Seagate drive which is no longer available). Its setlist was identical to 3f73e639a3d0's, which has in the same change been corrected to the seven songs the broadcast captions; see that entry."
+  },
+  "3f73e639a3d0": {
+    "artist": "Soundgarden",
+    "show": "Soundgarden - Lollapalooza 2010-08-08 1080i Palladia Full",
+    "entries": [
+      "Gun",
+      "Flower",
+      "Jesus Christ Pose",
+      "Fell on Black Days",
+      "Ugly Truth",
+      "Get on the Snake",
+      "Burden in My Hand",
+      "Superunknown",
+      "Black Hole Sun",
+      "Mailman",
+      "4th of July",
+      "Face Pollution",
+      "Like Suicide",
+      "Slaves & Bulldozers"
+    ],
+    "why": "The broadcast's own on-screen captions name seven songs; the other thirteen are the concert's full set from elsewhere, not on this recording. 'Jesus Christ Pose' is not removed but renamed 'Jesus Christ Pose (incomplete)', the house marker that the list is partial."
   }
 }

@@ -173,11 +173,11 @@ write it back to the record in the same session — use the two-part form
 `4:3 (letterboxed 16:9)`, frame ratio first and true picture ratio second — and put the
 evidence in `Notes`.
 
-As of the last run: **51.2% of shows correct, 34.9% squashed, 5.4% undersized, 4.6%
+As of the last run: **54.9% of shows correct, 33.0% squashed, 4.3% undersized, 4.0%
 internally inconsistent, 2.5% letterboxed and needing a crop decision.** The bad majority predates the capture pipeline. Fully corrected so
 far: Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Bush, Chris
 Cornell, Filter, Foo Fighters, Green Day, Guns N' Roses, Kings of Leon, Pearl Jam, Queens of the
-Stone Age, R.E.M., Silverchair, Smashing Pumpkins, Supergrass and The Strokes; 30 Seconds to Mars
+Stone Age, R.E.M., Silverchair, Smashing Pumpkins, Soundgarden, Supergrass and The Strokes; 30 Seconds to Mars
 is mostly corrected.
 Everything else is outstanding.
 
@@ -990,9 +990,9 @@ print(len(d), 'shows /', len(a), 'artists'); print(a.most_common(9)); print(f.mo
 "
 ```
 
-- **898 shows** across **168 artists**
+- **902 shows** across **168 artists**
 - Top artists by volume: Stone Temple Pilots (85), Smashing Pumpkins (63),
-  Kings Of Leon (53), Soundgarden (32), Foo Fighters (31), Various Artists (29),
+  Kings Of Leon (53), Soundgarden (36), Foo Fighters (31), Various Artists (29),
   Red Hot Chili Peppers (27), Incubus (24), 30 Seconds to Mars (21)
-- Top festivals: Rock am Ring (44), Glastonbury Festival (29), Reading Festival (26),
-  MTV Unplugged (22), Pinkpop (21), Bizarre Festival (21), Big Day Out (19)
+- Top festivals: Rock am Ring (44), Glastonbury Festival (29), Reading Festival (27),
+  Pinkpop (22), MTV Unplugged (22), Bizarre Festival (21), Big Day Out (19)
