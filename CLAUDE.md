@@ -177,7 +177,7 @@ As of the last run: **60.2% of shows correct, 28.3% squashed, 4.2% undersized, 4
 internally inconsistent, 2.2% letterboxed and needing a crop decision.** The bad majority predates the capture pipeline. Fully corrected so
 far: Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Bush, Chris
 Cornell, Filter, Foo Fighters, Green Day, Guns N' Roses, Kings of Leon, Pearl Jam, Queens of the
-Stone Age, R.E.M., Red Hot Chili Peppers, Silverchair, Smashing Pumpkins, Soundgarden, Stereophonics, Supergrass and The Strokes; 30 Seconds to Mars
+Stone Age, R.E.M., Red Hot Chili Peppers, Silverchair, Smashing Pumpkins, Soundgarden, Stereophonics, Stone Temple Pilots, Supergrass and The Strokes; 30 Seconds to Mars
 is mostly corrected.
 Everything else is outstanding.
 
@@ -513,7 +513,7 @@ When a show is created before files are physically scanned, a random 40-char hex
 as a placeholder checksum. These stubs are identified by:
 - `Notes` field contains `"TEMP CHECKSUM - update when files are scanned"`
 
-Shows with temp checksums — **5 remain**. Regenerate this table rather than
+Shows with temp checksums — **none remain**. Regenerate this list rather than
 hand-editing it; earlier versions have twice drifted out of date:
 
 ```bash
@@ -525,18 +525,14 @@ for s in sorted(json.load(open('public/shows.json')), key=lambda x: (x['Artist']
 "
 ```
 
-| ShowID | Show | Date | Why it is still a stub |
-|---|---|---|---|
-| `9591d1560110` | Stone Temple Pilots — MTV Unplugged | 1993-11-17 | four candidate folders on the drive, every one already has its own record |
-| `88b30e27e380` | Stone Temple Pilots — WAAF | 2000-01-01 | only candidate is `VH1 + WAAF 2000`, two programmes in one folder already recorded — needs a split |
-| `f0516c90fab9` | Stone Temple Pilots — New York | 2010-01-01 | candidates exist but none is evidenced as this show |
-| `864ba0fb6931` | Stone Temple Pilots — 2010 Tour | 2010-08-20 | `Live From Chicago 2010`'s own file timestamp predates this date by three months |
-| `9da270a1217f` | Stone Temple Pilots — TV Compilation 6 | (undated) | the drive has TV Compilation 1–4 and no 5 or 6 |
-
 Resolved on 2026-08-24: Radiohead Jools Holland, Soundgarden SNL 1996-05-18 and
 STP Bizarre 2001-08-18, each confirmed by the sidecar in its own folder. Resolved on
 2026-09-25: RHCP Woodstock 1999, by a time-window split of `Woodstock 1994 + 1999` (it carries a
-derived checksum, explained in its `Notes`).
+derived checksum, explained in its `Notes`). Resolved on 2026-09-26, the last five, all STP and all by
+their OWN existing images: the Unplugged stub was the Palladia HD rebroadcast, WAAF was VTS_02 of
+`VH1 + WAAF 2000`, New York 2010 was an HD broadcast of the Blender Theater show, the "2010 Tour"
+stub was the Palladia broadcast of the Riviera Theatre 2010-03-27 (it had the wrong date, venue and
+setlist), and TV Compilation 6 was a duplicate of a record created a month later for the same file.
 
 **Match a stub by CONTENT, never by name.** Two folders that a name-and-size audit
 called undocumented were already recorded under names sharing nothing with them —
@@ -1035,9 +1031,9 @@ print(len(d), 'shows /', len(a), 'artists'); print(a.most_common(9)); print(f.mo
 "
 ```
 
-- **918 shows** across **168 artists**
-- Top artists by volume: Stone Temple Pilots (85), Smashing Pumpkins (63),
+- **931 shows** across **168 artists**
+- Top artists by volume: Stone Temple Pilots (99), Smashing Pumpkins (63),
   Kings Of Leon (53), Soundgarden (36), Red Hot Chili Peppers (32), Foo Fighters (31),
   Stereophonics (29), Various Artists (27), Incubus (24)
 - Top festivals: Rock am Ring (46), Glastonbury Festival (29), Reading Festival (27),
-  Pinkpop (22), MTV Unplugged (22), Bizarre Festival (21), Big Day Out (19)
+  MTV Unplugged (24), Pinkpop (22), Bizarre Festival (21), Big Day Out (19)
