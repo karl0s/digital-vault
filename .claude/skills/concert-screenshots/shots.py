@@ -117,6 +117,12 @@ def discover(artist: str):
     # uses the initialism.
     if {"red", "hot", "chili", "peppers"} <= artist_toks:
         ALIASES.add("rhcp")
+    # Stone Temple Pilots: "STP 2015-04-27 IRVING PLAZA", "Stp Bizarre 2001 Dvd",
+    # "Queensryche - Unplugged + STP Unplugged" and "VA - Farm Club 2000 - STP POD
+    # etc" share no token with {stone, temple, pilots}. Checked drive-wide: only
+    # those folders (plus "Story of STP Documentary") carry the token, all STP.
+    if {"stone", "temple", "pilots"} <= artist_toks:
+        ALIASES.add("stp")
     # A folder may squash the name into one word - "Greenday 1998-03-15 - NHK Hall"
     # never satisfies a ">=2 of {green, day}" rule and the show stays invisible.
     squashed = re.sub(r"[^a-z0-9]+", "", artist.casefold())
