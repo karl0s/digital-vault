@@ -45,14 +45,21 @@ out_dir.mkdir(parents=True, exist_ok=True)
 
 
 def has_bars(frames):
-    rows = []
+    rows, peaks = [], []
     for f in frames[::4]:
-        rows.append(np.asarray(Image.open(f).convert("L"), dtype=np.float32).mean(axis=1))
+        a = np.asarray(Image.open(f).convert("L"), dtype=np.float32)
+        rows.append(a.mean(axis=1)); peaks.append(a.max(axis=1))
     if not rows:
         return False
     rows.sort(key=lambda r: -r.mean())
     m = np.mean(rows[:max(10, len(rows) // 3)], axis=0)
-    dark = m < 22
+    # A dark MEAN is not a bar: a night crowd in the foreground of an outdoor wide averages
+    # 3-6 over its bottom 50 rows while phones and stage spill put pixels at 140-200 there
+    # in most frames. Tool BDO Sydney 2011 (camcorder from the stands) was dropped as
+    # "letterboxed" that way. A real bar is black in EVERY frame, so require the row's
+    # brightest pixel to stay dark too (95th percentile over frames; VHS bars sit at 8-20).
+    pk = np.percentile(np.array(peaks), 95, axis=0)
+    dark = (m < 22) & (pk < 48)
     top = next((i for i in range(len(m)) if not dark[i]), len(m))
     bot = next((i for i in range(len(m) - 1, -1, -1) if not dark[i]), -1)
     return top >= 8 or (len(m) - 1 - bot) >= 8

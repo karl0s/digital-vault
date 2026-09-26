@@ -177,7 +177,7 @@ As of the last run: **60.2% of shows correct, 28.3% squashed, 4.2% undersized, 4
 internally inconsistent, 2.2% letterboxed and needing a crop decision.** The bad majority predates the capture pipeline. Fully corrected so
 far: Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Bush, Chris
 Cornell, Filter, Foo Fighters, Green Day, Guns N' Roses, Kings of Leon, Pearl Jam, Queens of the
-Stone Age, R.E.M., Red Hot Chili Peppers, Silverchair, Smashing Pumpkins, Soundgarden, Stereophonics, Stone Temple Pilots, Supergrass and The Strokes; 30 Seconds to Mars
+Stone Age, R.E.M., Red Hot Chili Peppers, Silverchair, Smashing Pumpkins, Soundgarden, Stereophonics, Stone Temple Pilots, Supergrass, The Strokes and Tool; 30 Seconds to Mars
 is mostly corrected.
 Everything else is outstanding.
 

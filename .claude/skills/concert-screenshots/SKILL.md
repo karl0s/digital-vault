@@ -918,6 +918,13 @@ Add the page to the pre-promotion hand-off alongside the picks page, never after
 judges in `data/aspect_confirmed.json` (`{ShowID: {"dar": "4:3", ...}}`); `aspect_ab.py` skips those, so
 an answered question is never asked twice. Nine Stereophonics sources were confirmed 4:3 this way.
 
+**A dark foreground is not a letterbox.** `aspect_ab.py` once dropped Tool's Big Day Out Sydney 2011
+(camcorder from the stands, 4:3 flag, really 16:9) as "has bars": the night crowd along the bottom
+averaged luma 3-6 over ~50 rows. But most frames had pixels at 140-200 in those rows - phones, stage
+spill. A real bar is black in EVERY frame, so a row now counts as bar only if its mean is dark AND the
+95th percentile (over frames) of its brightest pixel stays under 48. Point lights then measured h/w 1.333
+(16:9 = 1.422) and the owner confirmed 16:9.
+
 **What to judge in the A/B:** a circle that is **front-on** to the camera — a mic's grille ring
 seen head-on (present in nearly every hero frame), a kick-drum head square to the lens, a round
 spotlight lens. On Headliners the grille ring at the mic reads visibly taller than wide at 768 and
