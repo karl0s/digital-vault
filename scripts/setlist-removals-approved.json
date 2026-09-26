@@ -958,5 +958,76 @@
       "General"
     ],
     "why": "Header lines, a MediaInfo section label ('General') and 'Flea Talking' (not a song). 'Blood Sugar Sex Magic' is still present, spelled 'Blood Sugar Sex Magik'. 'Can't Stop', which the importer had dropped, is restored."
+  },
+  "864ba0fb6931": {
+    "artist": "Stone Temple Pilots",
+    "show": "Chicago 2010 (Palladia broadcast)",
+    "entries": [
+      "Crackerman",
+      "Wicked Garden",
+      "Vasoline",
+      "Heaven and Hot Rods",
+      "Between the Lines",
+      "Hickory Dichotomy",
+      "Still Remains",
+      "Cinnamon",
+      "Big Empty",
+      "Dancing Days (Led Zeppelin cover)",
+      "Pretty Penny",
+      "Silvergun Superman",
+      "Plush",
+      "Interstate Love Song",
+      "Huckleberry Crumble",
+      "Down",
+      "Sex Type Thing",
+      "Encore break",
+      "Dead & Bloated",
+      "Trippin’ on a Hole in a Paper Heart"
+    ],
+    "why": "These were setlist.fm's Charter One Pavilion 2010-08-20 setlist, attached to a stub whose footage is the Palladia broadcast of the Riviera Theatre show of 2010-03-27. They describe a different concert; the broadcast's own running order is not yet sourced."
+  },
+  "7529b1786903": {
+    "artist": "Stone Temple Pilots",
+    "show": "Virgin Festival 2008 (Originals)",
+    "entries": [
+      "Vasoline",
+      "Wicked Garden",
+      "Big Bang Baby",
+      "Crackerman",
+      "Down",
+      "Sex Type Thing",
+      "Dead & Bloated"
+    ],
+    "why": "This folder holds four webcast songs only (STP.txt in STP_Virgin_Fest_2008 lists Plush, Interstate Love Song, Big Empty, Trippin'). The removed songs belong to the full-set audience tape, 6ec7029a9b9c, which keeps them."
+  },
+  "b8e8ca659f0c": {
+    "artist": "Stone Temple Pilots",
+    "show": "Virgin Festival 2008 (ReEncoded)",
+    "entries": [
+      "Vasoline",
+      "Wicked Garden",
+      "Big Bang Baby",
+      "Crackerman",
+      "Down",
+      "Sex Type Thing",
+      "Dead & Bloated"
+    ],
+    "why": "This folder holds four webcast songs only (STP.txt in STP_Virgin_Fest_2008 lists Plush, Interstate Love Song, Big Empty, Trippin'). The removed songs belong to the full-set audience tape, 6ec7029a9b9c, which keeps them."
+  },
+  "dcbb16c641a8": {
+    "artist": "Stone Temple Pilots",
+    "show": "MTV Spring Break Rocks 1997 (Daytona)",
+    "entries": [
+      "Meatplow",
+      "Tumble in the Rough",
+      "Wicked Garden",
+      "Trippin' on a Hole in a Paper Heart",
+      "Big Empty",
+      "Interstate Love Song",
+      "Unglued",
+      "Big Bang Baby",
+      "Dead & Bloated"
+    ],
+    "why": "This is the same 22-minute MTV Spring Break Rocks broadcast as 'Spring Break ONLY' (1f3deeb4ce4a). Its five songs are listed by the Panama City disc's sidecar (stp1997-03-14-mtv-dvd-source.txt); the removed fourteen-song list was a full concert set the broadcast does not contain."
   }
 }
