@@ -1029,5 +1029,24 @@
       "Dead & Bloated"
     ],
     "why": "This is the same 22-minute MTV Spring Break Rocks broadcast as 'Spring Break ONLY' (1f3deeb4ce4a). Its five songs are listed by the Panama City disc's sidecar (stp1997-03-14-mtv-dvd-source.txt); the removed fourteen-song list was a full concert set the broadcast does not contain."
+  },
+  "2386fcbc5576": {
+    "artist": "Stone Temple Pilots",
+    "show": "Toronto 1993 - Night 2 (Pete)",
+    "entries": [
+      "Crackerman",
+      "Wicked Garden",
+      "No Memory",
+      "Sin",
+      "Plush",
+      "Creep",
+      "Lounge Fly",
+      "Dead & Bloated",
+      "Sex Type Thing (Swing Version)",
+      "Sex Type Thing",
+      "Wet My Bed",
+      "Naked Sunday"
+    ],
+    "why": "These were setlist.fm's list for The Concert Hall, Toronto, 1993-10-18, copied onto both Toronto 1993 records. Night 2 is visibly a different performance (different clothing, Ford banners in shot) and Toronto appears only once on the October 1993 itinerary, so the list belongs to Night 1 (0658a6b6fc11), which keeps it."
   }
 }
