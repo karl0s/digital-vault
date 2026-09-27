@@ -1076,5 +1076,16 @@
       "Mind eraser"
     ],
     "why": "Not removed - renamed to the song's full title 'Mind Eraser, No Chaser', matching the sibling copy ee6e5a7e1480 of the same broadcast."
+  },
+  "80ef8fd86cc6": {
+    "artist": "Weezer",
+    "show": "Rock am Ring 2005 (MTV)",
+    "entries": [
+      "WEEZER",
+      "GENERATION",
+      "NOTES",
+      "Transferred by Dennis Mehren (DeMe)"
+    ],
+    "why": "Section headings and the transfer credit from the folder's Info.txt, imported into Setlist as if they were songs. The six numbered tracks remain."
   }
 }
