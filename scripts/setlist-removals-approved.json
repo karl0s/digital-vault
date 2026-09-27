@@ -1127,5 +1127,28 @@
       "Manic Street Preachers - Bizarre Festival"
     ],
     "why": "The sidecar's title line, imported into Setlist as a song. The 15 songs remain."
+  },
+  "82e761ce34e8": {
+    "artist": "Oasis",
+    "show": "Glastonbury Festival 2004-06-25",
+    "entries": [
+      "My Generation",
+      "Noel Interviews"
+    ],
+    "why": "'Noel Interviews' is an interview segment the sidecar numbered as a track; it is now in Notes. 'My Generation' is not lost - it is now 'My Generation (The Who cover)', per house style."
+  },
+  "35cb88666e49": {
+    "artist": "Oasis",
+    "show": "MTV Unplugged 1996 - Whatever clip",
+    "entries": [
+      "Artist - Oasis",
+      "Camera - Pro Shot",
+      "Resolution - 704 x 528",
+      "Size - 374 megas",
+      "After 16 years finally here is a decent version of Whatever taken from MTV Unplugged",
+      "Long time a go (apron. 10 years) MTV LATIN shown clips from MTV Unpluggeds around the years and they put this from the Oasis unplugged i recorded on an VHS in the middle of the midnight",
+      "Here is a rip from MTV HITLIST (Latin) taken from my Cablevision HD reciver"
+    ],
+    "why": "The clip's sidecar text (technical lines and the uploader's story), imported into Setlist line by line. The clip holds one song, Whatever, which remains."
   }
 }
