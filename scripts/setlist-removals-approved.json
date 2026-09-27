@@ -1098,5 +1098,34 @@
       "Running Time - 20m 22s"
     ],
     "why": "Header lines (band, festival, venue) and the running-time trailer from the folder's own .txt sidecar, imported into Setlist as if they were songs. The six numbered tracks remain."
+  },
+  "2654be8c7c7b": {
+    "artist": "Manic Street Preachers",
+    "show": "Rock am Ring 2001-06-01",
+    "entries": [
+      "roryglzep(a.k.a. Jeff)",
+      "Claretkid(a.k.a. Andrew)",
+      "Prudence(a.k.a. Stevie)",
+      "TheSeizure(a.k.a. Stefan)",
+      "Jorcarelo(a.k.a. Joca)",
+      "Estimatedrudi(a.k.a. Rudi)",
+      "I apologize if I missed to include some Rory mafia member",
+      "BluesOxator(a.k.a. Christian)",
+      "raimax a.k.a. rainerneu(a.k.a. Rainer)",
+      "chico1610 (a.k.a HO)",
+      "RoryGallagher(a.k.a. Axel)",
+      "No artwork",
+      "I Do... ...as well",
+      "P&L"
+    ],
+    "why": "The uploader's list of torrent-tracker credits from the disc's EXTRAS_TS sidecar, imported into Setlist as if they were songs. The field now holds the sidecar's 15 numbered tracks."
+  },
+  "c039d7963ad3": {
+    "artist": "Manic Street Preachers",
+    "show": "Bizarre Festival 2001-08-17",
+    "entries": [
+      "Manic Street Preachers - Bizarre Festival"
+    ],
+    "why": "The sidecar's title line, imported into Setlist as a song. The 15 songs remain."
   }
 }
