@@ -173,13 +173,16 @@ write it back to the record in the same session — use the two-part form
 `4:3 (letterboxed 16:9)`, frame ratio first and true picture ratio second — and put the
 evidence in `Notes`.
 
-As of the last run: **60.2% of shows correct, 28.3% squashed, 4.2% undersized, 4.0%
-internally inconsistent, 2.2% letterboxed and needing a crop decision.** The bad majority predates the capture pipeline. Fully corrected so
+As of 2026-09-27: **71.0% of shows correct, 21.0% squashed, 3.8% undersized, 1.8%
+internally inconsistent, 2.1% letterboxed and needing a crop decision.** The bad majority predates the capture pipeline. Fully corrected so
 far: Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Bush, Chris
-Cornell, Filter, Foo Fighters, Green Day, Guns N' Roses, Kings of Leon, Pearl Jam, Queens of the
-Stone Age, R.E.M., Red Hot Chili Peppers, Silverchair, Smashing Pumpkins, Soundgarden, Stereophonics, Stone Temple Pilots, Supergrass, The Strokes and Tool; 30 Seconds to Mars
-is mostly corrected.
-Everything else is outstanding.
+Cornell, Faith No More, Filter, Foo Fighters, Green Day, Guns N' Roses, Incubus, Jane's Addiction,
+Kings of Leon, Lenny Kravitz, Limp Bizkit, Nirvana, Pearl Jam, Queens of the Stone Age, R.E.M.,
+Radiohead, Rage Against the Machine, Red Hot Chili Peppers, Silverchair, Smashing Pumpkins,
+Soundgarden, Stereophonics, Stone Temple Pilots, Supergrass, The Offspring, The Strokes and Tool;
+30 Seconds to Mars is mostly corrected. A few residual flags remain on finished artists (Foo
+Fighters 2; Filter, Kings of Leon, Nirvana and Radiohead 1 each).
+Everything else is outstanding — `python3 scripts/audit-image-geometry.py` ranks it worst first.
 
 Two Smashing Pumpkins records (`d9b007dd78f2`, `32fafc677477`) can never be corrected: they point
 at a nested folder that no longer exists on the drive, so their stills cannot be re-taken.
@@ -313,21 +316,52 @@ renders each hero at both shapes on one page. **Most of those are genuinely 4:3*
 artist's WDR, SF2 and SIC broadcasts were), so the page goes to the owner with the picks page,
 before promotion. Details and the fix recipe: `concert-screenshots` skill §4.4.
 
-### Measure a disputed aspect off defocused point lights
+### Point lights do NOT measure the aspect of an SD source — tested, and it fails
 
-A bokeh blob is circular on screen, so its dimensions in **stored** pixels are the sample aspect
-ratio directly: `SAR = blob_h / blob_w`, and `DAR = (W × SAR) / H`. Sample tens of them across the
-runtime and take the median.
+The idea is sound on paper: a defocused point light is circular on screen, so its stored-pixel
+height/width is the sample aspect ratio. In practice, on SD broadcast material, it reads close to
+square whatever the truth is. Tested on 2026-09-27 against Chris Cornell's Rock am Ring 2009 PAL DVD,
+a true anamorphic 16:9 source that should read **1.422**:
 
-Silverchair's Melbourne Park 1999 was set to 16:9 on the strength of rendering one frame at both
-shapes and looking at it. It shipped squashed and the collection owner caught it. Measured
-afterwards: 73 isolated blobs across 90 native 720×576 frames gave a median height/width of
-**0.92** (IQR 0.82–1.13) against 1.067 for 4:3 and 1.422 for 16:9 — decisive, and one decode pass.
+| Method | Reading on the 16:9 control |
+|---|---|
+| bounding-box h/w, four different frame samplings | 1.000, 1.000, 0.909, 1.000 |
+| the same, only blobs ≥ 60 px / ≥ 120 px | 0.900 / 1.364 |
+| intensity-weighted second moments (sub-pixel) | 1.101, 1.106 |
 
-The unaided A/B is the thing to avoid, not the frame comparison itself. **Measure a reference, or
-compare against a source whose geometry is beyond doubt** — the same performer in the same era at
-an undisputed aspect. Both are cheap; neither was done. A channel logo can also be misread: the
-square Channel [V] box was called "square at 16:9" when it is square at 4:3.
+Every one of those would call a 16:9 disc **4:3**. The same code reads exactly 1.000 on square-pixel
+1920×1080 — which is why the flaw went unseen: **a control whose answer is 1.0 cannot reveal a bias
+toward 1.0.** Always control a measurement with a source of the geometry you are trying to detect.
+This is also the Stereophonics failure (Glasgow 2007, true 16:9, read 1.11).
+
+Consequences:
+- Silverchair's Melbourne Park 1999 "0.92, decisive" agreed with the owner only because the method
+  reads ~1 on everything SD. The 4:3 verdict stands on the owner's eye, not on that number.
+- Do not quote a point-light number as evidence in `Notes`, `overrides.json` or `aspect_confirmed.json`.
+
+What does work: the owner's A/B (`aspect_ab.py`); a source of the **same performer and era** at an
+undisputed aspect; a rigid designed graphic (a channel bug, a festival logo) shared with a source of
+known geometry; and structural evidence such as two independent captures sharing one framing (next
+section). A channel logo can still be misread by eye: the square Channel [V] box was called "square
+at 16:9" when it is square at 4:3 — measure its box, do not look at it.
+
+### A letterbox inside a 16:9-FLAGGED frame, and a container SAR that is simply invented
+
+Limp Bizkit's Rock am Ring 2009 existed twice: an MKV flagged SAR 247:176 (displays at 2.06:1) and a
+DVD flagged 16:9 whose picture sits in rows 44–529 behind digital-black bars — displaying at 2.11:1.
+Neither audit caught the DVD: cropdetect and the letterbox checks only look for bars in 4:3 frames,
+and "16:9 flag, 16:9 record" agreed. The tell was the scout: the MKV's geometry came back UNKNOWN
+(an empty `AspectRatio` and a SAR no standard produces), and probing it led to the DVD.
+
+What settled it was **structure, not measurement.** Frame-matching the two (64×36 grey thumbnails,
+normalised, bars cropped from the DVD) put them at a constant 36.5 s offset with identical framing —
+but only the DVD carries a Rock am Ring logo bug, so they are independent captures, and two captures
+sharing one framing means neither is a crop. Other broadcasts of the festival are full-frame 16:9.
+The DVD's whole frame is therefore 3:2 (16:9 picture × 576/486) — captured at 864×576 with the bars
+kept, `AspectRatio: "3:2"`, via a `showid`-scoped `dar` override.
+
+Check a 16:9-flagged DVD for bars the same way as a 4:3 one, and treat a non-standard container SAR
+(anything not 1:1, 8:9, 10:11, 16:15, 32:27, 40:33, 16:11, 64:45, 4:3) as unexplained until proven.
 
 Where a disc's own VOBs declare **different** aspects, pin the answer in `overrides.json` even when
 the default happens to be right — VOB sort order is not evidence.

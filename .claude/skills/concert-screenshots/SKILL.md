@@ -834,7 +834,7 @@ one makes people narrow and tall (or short and wide).
 Store overrides in a JSON file keyed by path fragment, with a `why` field recording the
 evidence. Never bury an override in code.
 
-### MEASURE the aspect off defocused point lights — do not judge it by eye
+### Adjudicate a disputed aspect against a KNOWN source — not by eye, and not off point lights
 
 **Failure this prevents:** Silverchair's Melbourne Park 1999 was set to 16:9, captured, picked and
 handed over, and the collection owner said the stills were squashed. He was right. The 16:9 call
@@ -845,30 +845,20 @@ The disc invites the mistake: `VTS_01_1` declares SAR 16:15 (4:3) while `VTS_01_
 64:45 (16:9), on one continuous concert. ffprobe reports the concat's FIRST stream, so the shape
 has to be adjudicated rather than read off — and adjudicating it by eye got it backwards.
 
-**A defocused point light is circular in DISPLAY geometry**, so its dimensions in STORED pixels
-give the sample aspect ratio directly:
+**Point lights looked like the answer and are not — tested 2026-09-27.** A defocused point light
+is circular on screen, so its stored-pixel h/w *should* be the SAR. On SD broadcast material it reads
+near-square whatever the truth: Chris Cornell's Rock am Ring 2009 PAL DVD, true anamorphic 16:9
+(expected h/w 1.422), read 1.000 / 1.000 / 0.909 / 1.000 over four frame samplings, 0.90 or 1.36 with
+a minimum blob size, and 1.10 with sub-pixel intensity moments. Every one calls a 16:9 disc 4:3. The
+same code reads exactly 1.000 on square-pixel HD — so a square-pixel control **cannot** reveal the
+bias; control with a source of the geometry you are trying to detect. The "0.92" once quoted for
+this disc agreed with the owner only because the method reads ~1 on everything SD. **Do not quote a
+point-light number as evidence anywhere.**
 
-```
-blob_w x SAR = blob_h   ->   SAR = blob_h / blob_w   ->   DAR = (W x SAR) / H
-```
-
-Sample tens of them across the runtime and take the median. On this disc, 73 isolated blobs across
-90 native 720x576 frames gave a **median h/w of 0.92** (IQR 0.82-1.13; only 7 of 73 above 1.30).
-4:3 predicts 1.067, 16:9 predicts 1.422 — nothing in that population is near 16:9, and the answer
-cost one decode pass.
-
-Filter hard, or the measurement is noise; specular highlights on cymbals and clipped whites are
-not bokeh:
-
-```python
-# solid (>= 0.74 of its bbox filled), small (20-600 px), not touching the frame edge,
-# and ISOLATED: a 4px ring around the bbox must be well darker than the core
-if ring.mean() > 0.72 * core.mean(): reject
-if not (0.6 < w/h < 1.9):            reject     # a streak is motion, not a point
-```
-
-Loose thresholds gave a median of 1.00 with an IQR of 0.80-1.29 — still decisive against 16:9, but
-the tightened pass is what makes the number quotable.
+What does settle a disputed shape: the owner's A/B (`aspect_ab.py`); a same-performer, same-era
+source at an undisputed aspect (below); a rigid graphic shared with a source of known geometry; and
+structure — two independent captures that share one framing are both uncropped (CLAUDE.md, the
+Limp Bizkit Rock am Ring 2009 case).
 
 **Then corroborate against a source whose geometry is beyond doubt** (§4.4): same performer, same
 era, undisputed aspect. Philipshalle Düsseldorf (720x576 PAL 4:3) sits four months from Melbourne
@@ -922,8 +912,8 @@ an answered question is never asked twice. Nine Stereophonics sources were confi
 (camcorder from the stands, 4:3 flag, really 16:9) as "has bars": the night crowd along the bottom
 averaged luma 3-6 over ~50 rows. But most frames had pixels at 140-200 in those rows - phones, stage
 spill. A real bar is black in EVERY frame, so a row now counts as bar only if its mean is dark AND the
-95th percentile (over frames) of its brightest pixel stays under 48. Point lights then measured h/w 1.333
-(16:9 = 1.422) and the owner confirmed 16:9.
+95th percentile (over frames) of its brightest pixel stays under 48. The owner then confirmed 16:9 on
+the A/B page (a point-light reading was also taken; that method is invalid on SD — see above).
 
 **What to judge in the A/B:** a circle that is **front-on** to the camera — a mic's grille ring
 seen head-on (present in nearly every hero frame), a kick-drum head square to the lens, a round
@@ -3029,8 +3019,10 @@ wrong about what you think it measures.
 - [ ] Deinterlacer demonstrably ran — output NOT byte-identical to the undeinterlaced frame,
       comb ratio below ~1.6 on a normal shot (§4.7)
 - [ ] Suspicious aspect flags (SD 4:3 dated ≥2008, non-standard ratios) visually verified
-- [ ] Any DISPUTED aspect MEASURED off defocused point lights (median stored h/w = SAR) and
-      corroborated against a known-good source — never settled by an unaided A/B look (§4.4)
+- [ ] Any DISPUTED aspect settled against a known-good source (same performer and era, a shared
+      rigid graphic, or two captures sharing one framing) or by the owner's A/B — never by an
+      unaided look, and never by a point-light number (invalid on SD, §4.4)
+- [ ] 16:9-FLAGGED DVDs checked for letterbox bars too, and any non-standard container SAR explained
 - [ ] A disc whose VOBs declare DIFFERENT aspects has the answer PINNED in overrides.json,
       even where the default happens to be right — VOB sort order is not evidence
 - [ ] After ANY geometry/crop/deinterlacer change, re-captured with `--fresh`, and the WORK
