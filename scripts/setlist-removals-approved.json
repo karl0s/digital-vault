@@ -1048,5 +1048,33 @@
       "Naked Sunday"
     ],
     "why": "These were setlist.fm's list for The Concert Hall, Toronto, 1993-10-18, copied onto both Toronto 1993 records. Night 2 is visibly a different performance (different clothing, Ford banners in shot) and Toronto appears only once on the October 1993 itinerary, so the list belongs to Night 1 (0658a6b6fc11), which keeps it."
+  },
+  "181bd1035ccb": {
+    "artist": "Them Crooked Vultures",
+    "show": "Saturday Night Live 2010-02-06",
+    "entries": [
+      "THEM CROOKED VULTURES",
+      "Saturday Night Live",
+      "intro",
+      "punk rock sketch (Dave drumming)",
+      "credits"
+    ],
+    "why": "Header lines (band, programme) and non-song segments from tcvinfo.txt, imported into Setlist as tracks. The sketch and credits are described in Notes."
+  },
+  "c2b5d45fb4c9": {
+    "artist": "Them Crooked Vultures",
+    "show": "Rock am Ring 2010-06-06 (1Plus DVD)",
+    "entries": [
+      "Warsaw Or The First Breath You Take After You Give Up"
+    ],
+    "why": "Played but not broadcast - the folder's own sidecar marks it '(Not Broadcasted)', so it is not on this recording. Noted in the record's Notes."
+  },
+  "73228649be4c": {
+    "artist": "Them Crooked Vultures",
+    "show": "Reading Festival 2009-08-29 (4:3 copy)",
+    "entries": [
+      "Mind eraser"
+    ],
+    "why": "Not removed - renamed to the song's full title 'Mind Eraser, No Chaser', matching the sibling copy ee6e5a7e1480 of the same broadcast."
   }
 }
