@@ -1464,7 +1464,9 @@ def cmd_archive(a):
         # in silence. A Silverchair scout page landed in the archive with 21 broken
         # images that way, which is the exact failure this block exists to prevent.
         # Copy per file, never per tree: HOME/ident holds every artist's evidence.
-        for ref in set(re.findall(r'(?:src|href)="([^"#:]+)"', html)):
+        # Either quote style: aspect_ab.py writes src='...', and a double-quote-only
+        # pattern skipped all ten of Weezer's A/B images while the counter read fine.
+        for ref in set(re.findall(r'''(?:src|href)=["']([^"'#:]+)["']''', html)):
             ref = urllib.parse.unquote(ref.split("#")[0])
             if ref.startswith(("/", "http")) or (dest/ref).exists():
                 continue
