@@ -173,13 +173,14 @@ write it back to the record in the same session — use the two-part form
 `4:3 (letterboxed 16:9)`, frame ratio first and true picture ratio second — and put the
 evidence in `Notes`.
 
-As of 2026-09-27: **71.0% of shows correct, 21.0% squashed, 3.8% undersized, 1.8%
-internally inconsistent, 2.1% letterboxed and needing a crop decision.** The bad majority predates the capture pipeline. Fully corrected so
+As of 2026-09-27: **71.7% of shows correct, 20.7% squashed, 3.6% undersized, 1.8%
+internally inconsistent, 1.8% letterboxed and needing a crop decision.** The bad majority predates the capture pipeline. Fully corrected so
 far: Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Bush, Chris
 Cornell, Faith No More, Filter, Foo Fighters, Green Day, Guns N' Roses, Incubus, Jane's Addiction,
 Kings of Leon, Lenny Kravitz, Limp Bizkit, Nirvana, Pearl Jam, Queens of the Stone Age, R.E.M.,
 Radiohead, Rage Against the Machine, Red Hot Chili Peppers, Silverchair, Smashing Pumpkins,
-Soundgarden, Stereophonics, Stone Temple Pilots, Supergrass, The Offspring, The Strokes and Tool;
+Soundgarden, Stereophonics, Stone Temple Pilots, Supergrass, The Offspring, The Strokes, Them Crooked
+Vultures and Tool;
 30 Seconds to Mars is mostly corrected. A few residual flags remain on finished artists (Foo
 Fighters 2; Filter, Kings of Leon, Nirvana and Radiohead 1 each).
 Everything else is outstanding — `python3 scripts/audit-image-geometry.py` ranks it worst first.
