@@ -173,9 +173,9 @@ write it back to the record in the same session — use the two-part form
 `4:3 (letterboxed 16:9)`, frame ratio first and true picture ratio second — and put the
 evidence in `Notes`.
 
-As of 2026-09-27: **73.4% of shows correct, 20.1% squashed, 2.7% undersized, 1.6%
+As of 2026-09-27: **73.5% of shows correct, 20.0% squashed, 2.7% undersized, 1.6%
 internally inconsistent, 1.8% letterboxed and needing a crop decision.** The bad majority predates the capture pipeline. Fully corrected so
-far: Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Black Keys, Bush, Chris
+far: Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Black Keys, Blink-182, Bush, Chris
 Cornell, Faith No More, Filter, Foo Fighters, Green Day, Guns N' Roses, Incubus, Jane's Addiction,
 Kings of Leon, Lenny Kravitz, Limp Bizkit, Nirvana, Pearl Jam, Queens of the Stone Age, R.E.M.,
 Radiohead, Rage Against the Machine, Red Hot Chili Peppers, Silverchair, Smashing Pumpkins,
