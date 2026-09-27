@@ -1148,6 +1148,13 @@ else:
 
 The 13.87s VOB set measured **10:05**. A disc claiming 2 minutes was really **62**.
 
+**A plausible bitrate is not proof either.** Oasis Glastonbury 2004 (three VOBs, 2.59 GB)
+reported **34 min** against a true **1:27:13**: 10.2 Mb/s, well inside the window, so it was
+trusted and 60% of the set would never have been sampled. A ~2.5x error on a DVD produces a
+bitrate that still looks like a DVD. `shots.py plan` now **always demuxes a multi-part
+`concat:` source**, as it already did for split units; the container is trusted only for a single
+file. Cross-check against a sidecar's stated length whenever there is one.
+
 **The demux fallback ITSELF fails on some discs.** On an MTV compilation,
 `ffmpeg -i VOB -c copy -f null -` returned in 0.5 s on a 29 MB file having emitted only
 `non monotonically increasing dts`, and ffprobe insisted on 16.8 s — for a file whose real

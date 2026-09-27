@@ -792,7 +792,11 @@ def cmd_plan(a):
         # the bitrate plausibility check because both readings look sane: the Top of
         # the Pops titleset reports 202s against a true 388s, which is 9.5 Mb/s
         # against 4.9 - both inside the window. Trusting it swept half the programme.
-        if it.get("vts") or it.get("vobs") or it.get("files") or it.get("t0") is not None or it.get("t1") is not None:
+        # The same applies to ANY multi-part DVD read through concat:. Oasis Glastonbury 2004
+        # (three VOBs, 1:27:13) reported 34 min: 10.2 Mb/s, a sane bitrate, so it was trusted
+        # and 60% of the set would never have been sampled. Demuxing runs at ~90x realtime.
+        if it.get("vts") or it.get("vobs") or it.get("files") or it.get("t0") is not None or it.get("t1") is not None \
+                or (str(src).startswith("concat:") and str(src).count("|") >= 1):
             _d = demux_duration(src)
             dur, how = (_d, "demuxed") if _d > 1 else true_duration(src, files, dur)
         else:
