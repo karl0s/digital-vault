@@ -282,6 +282,27 @@ def discover(artist: str):
             if sc > bestsc: best, bestsc = sh, sc
         strong = bestsc >= 3            # weak overlaps map many folders onto one record
         how = "%d tok" % bestsc
+        # A TIE at the top score is not a link. "Weezer - Rock am Ring 2005" scored 4/4
+        # against its own record AND against a split sibling renamed "Weezer - Reading +
+        # Rock am Ring 2005 (VTS_03 - Rock am Ring 2005, WDR)"; first-in-file won, so the
+        # MTV disc planned under the WDR record's ShowID and checksum, and both units
+        # would have promoted onto one record. An exact FolderName breaks the tie below;
+        # otherwise it is refused, loudly.
+        tied = [sh for sh in mine
+                if len(cand & (toks(sh.get("FolderName") or "") - artist_toks)) == bestsc]
+        try:
+            _split_ids = {(p.get("showid") or "").strip()
+                          for p in (_conf.get(rel) or _conf.get(base, []))}
+        except NameError:
+            _split_ids = set()
+        if strong and len(tied) > 1:
+            strong, how = False, "tie %d x%d" % (bestsc, len(tied))
+            # A split folder's siblings tie by construction; its splits.json entry
+            # assigns each part its ShowID, so the tie is expected, not a fault.
+            if not {sh.get("ShowID") for sh in tied} <= _split_ids:
+                print("  %sTIE%s %-52s %d records score %d tokens: %s"
+                      % (RED, RESET, base[:52], len(tied), bestsc,
+                         ", ".join(sh.get("ShowID", "") for sh in tied)))
         # A >=3 rule cannot be satisfied by a SHORT folder name, however exact the
         # match. "Silverchair - 1999 Australia" leaves {1999, australia} once the
         # artist tokens are removed and "Silverchair - Music Videos" leaves

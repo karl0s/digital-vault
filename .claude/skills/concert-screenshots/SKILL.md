@@ -2395,6 +2395,30 @@ Zero overlap is not automatically wrong — a record legitimately named `kingsem
 folder `Kings of Leon EMA Awards 2010`, confirmed by file size (212.04 MB record, 215 MB folder).
 But every zero-overlap link must be **looked at**, and confirmed by something other than the name.
 
+### Renaming a split record can STEAL another folder's link — a tie went to first-in-file
+
+**Failure this prevents:** after splitting `Weezer - Reading + Rock am Ring 2005`, its WDR record
+was renamed `... (VTS_03 - Rock am Ring 2005, WDR)`, as §10b requires. The separate MTV disc
+`Weezer - Rock am Ring 2005` then scored 4 of 4 tokens against **both** that record and its own.
+`discover()` kept the first record with the top score and only consulted an exact `FolderName`
+match when the token score was *weak*. The MTV disc therefore planned under the WDR record's ShowID
+**and checksum**, and both broadcasts would have promoted onto one record. The link column read
+`4 tok`, which looks healthy.
+
+`discover()` now refuses a tie at the top score (`tie N xK`, printed in red), and the exact-name
+rule then settles it. Tied siblings named in the folder's own `splits.json` entry are expected and
+stay quiet. The same bug was latent on STP: `Toronto 1993 - Night 2` tied with Night 1 and linked
+to Night 1's record. It didn't ship only because that run's promote map was built by hand.
+
+After ANY plan, check that the ShowIDs and checksums in `state.json` are unique and match
+`shows.json`:
+
+```python
+ids = [u["ShowID"] for u in state["shows"]]
+assert len(set(ids)) == len(ids)
+assert all(u["Checksum"] == rec[u["ShowID"]]["ChecksumSHA1"] for u in state["shows"])
+```
+
 ### A merge or a re-key ORPHANS images that `promote.py` cannot see
 
 **Failure this prevents:** after retiring the DVD 2 record, its four images and its

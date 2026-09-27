@@ -180,7 +180,7 @@ Cornell, Faith No More, Filter, Foo Fighters, Green Day, Guns N' Roses, Incubus,
 Kings of Leon, Lenny Kravitz, Limp Bizkit, Nirvana, Pearl Jam, Queens of the Stone Age, R.E.M.,
 Radiohead, Rage Against the Machine, Red Hot Chili Peppers, Silverchair, Smashing Pumpkins,
 Soundgarden, Stereophonics, Stone Temple Pilots, Supergrass, The Offspring, The Strokes, Them Crooked
-Vultures and Tool;
+Vultures, Tool and Weezer;
 30 Seconds to Mars is mostly corrected. A few residual flags remain on finished artists (Foo
 Fighters 2; Filter, Kings of Leon, Nirvana and Radiohead 1 each).
 Everything else is outstanding — `python3 scripts/audit-image-geometry.py` ranks it worst first.
@@ -1066,9 +1066,9 @@ print(len(d), 'shows /', len(a), 'artists'); print(a.most_common(9)); print(f.mo
 "
 ```
 
-- **931 shows** across **168 artists**
+- **936 shows** across **168 artists**
 - Top artists by volume: Stone Temple Pilots (99), Smashing Pumpkins (63),
   Kings Of Leon (53), Soundgarden (36), Red Hot Chili Peppers (32), Foo Fighters (31),
   Stereophonics (29), Various Artists (27), Incubus (24)
-- Top festivals: Rock am Ring (46), Glastonbury Festival (29), Reading Festival (27),
+- Top festivals: Rock am Ring (47), Glastonbury Festival (29), Reading Festival (28),
   MTV Unplugged (24), Pinkpop (22), Bizarre Festival (21), Big Day Out (19)
