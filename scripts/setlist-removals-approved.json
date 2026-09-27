@@ -1087,5 +1087,16 @@
       "Transferred by Dennis Mehren (DeMe)"
     ],
     "why": "Section headings and the transfer credit from the folder's Info.txt, imported into Setlist as if they were songs. The six numbered tracks remain."
+  },
+  "ffbe87f69e92": {
+    "artist": "Black Keys",
+    "show": "Reading Festival 2012-08-26",
+    "entries": [
+      "The Black Keys",
+      "Reading Festival",
+      "Little John's Farm",
+      "Running Time - 20m 22s"
+    ],
+    "why": "Header lines (band, festival, venue) and the running-time trailer from the folder's own .txt sidecar, imported into Setlist as if they were songs. The six numbered tracks remain."
   }
 }
