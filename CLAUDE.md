@@ -175,7 +175,7 @@ evidence in `Notes`.
 
 As of 2026-09-27: **74.5% of shows correct, 19.1% squashed, 2.6% undersized, 1.6%
 internally inconsistent, 1.8% letterboxed and needing a crop decision.** The bad majority predates the capture pipeline. Fully corrected so
-far: 30 Seconds to Mars, Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Black Keys, Blink-182, Bush, Chris
+far: 30 Seconds to Mars, Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Ben Harper, Black Keys, Blink-182, Bush, Chris
 Cornell, Faith No More, Filter, Foo Fighters, Green Day, Guns N' Roses, Incubus, Jane's Addiction,
 Kings of Leon, Lenny Kravitz, Limp Bizkit, Manic Street Preachers, Muse, Nirvana, Oasis, Pearl Jam, Queens of the Stone Age, R.E.M.,
 Radiohead, Rage Against the Machine, Red Hot Chili Peppers, Silverchair, Smashing Pumpkins,
