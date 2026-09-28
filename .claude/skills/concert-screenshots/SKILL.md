@@ -1552,6 +1552,18 @@ every slot, not just the hero. And a programme with a title card will usually ha
 score in the top few, because a clean graphic on black is the highest-contrast,
 quietest-background frame the show contains.
 
+### Two sources of ONE broadcast need DIFFERENT moments
+
+Ben Harper's Bonn 1998 exists as a DVB-S capture and a VHS master: two records, two checksums, the
+same WDR broadcast frame for frame (the full-capture sweeps lined up — the same orange close-up at
+00:13:58 in both). Picking the best frame per record independently would have put **the same four
+pictures on two records**, because the same scorer ranks the same frames first.
+
+When a show has more than one source, sweep them side by side before picking. If they align, choose
+different timestamps for each record's slots — a different hero moment, a different wide. The sources
+still differ in quality and bugs (here the VHS carried song captions, the DVB-S a Rockpalast logo), so
+each keeps its own record; they just should not look like duplicates on the site.
+
 ### A non-artist segment inside ONE titleset must scope every slot
 
 **Failure this prevents:** the VH2 Live Special disc is Supergrass for roughly 26 minutes and
@@ -1685,6 +1697,12 @@ check. Spend ~3k tokens at the START of an artist building a reference, then app
 1. Pull 6-8 frames spread across the artist's eras (a sweep row per era is enough).
 2. Write down, per era: who fronts the centre mic, hair and build of each member, who plays what.
 3. Note any **extra** people — touring keyboardists, horn players, guests, presenters.
+
+**Never write an era's row without frames from that era.** On Ben Harper the 1996–98 row was drafted
+from the 1999 sweep as "long hair tied back"; the first review montage showed a big afro in all three
+1996–98 sources. It was corrected before any pick, but a wrong discriminator is worse than none — it
+actively points the eye at the wrong person. If an era has no frames yet, leave its row blank until
+the capture's review montage exists.
 
 The traps that got through without it, all on one artist:
 
@@ -2468,6 +2486,13 @@ gave a byte-exact match to `VTS_01_1.VOB`, which settled that the record was sou
 question no amount of looking at metadata could have answered. `RepVideoFiles` tells you what to
 hash.
 
+**There are two conventions, and `titleset_checksums.py` now prints both.** Some records hash
+`VTS_NN_1..n` only; others put the titleset's `VTS_NN_0.VOB` in front (Ben Harper's ACL record,
+whose `RepVideoFiles` lists `VTS_02_0.VOB`). The tool used to print only the first, so that record
+matched nothing and had to be proved by hand. It now prints a `with VTS_NN_0.VOB` line as well and
+marks `<- MATCHES <ShowID>` against every record in `shows.json` — use whichever convention the
+sibling matched for the new record.
+
 ### A record can COVER one segment while its NAME describes another
 
 Two failures, same disc family, and both survive a montage review because the frames are all
@@ -3142,6 +3167,13 @@ A="Stone Temple Pilots"
 #    and full setlists - all before decoding a frame.
 #    Resolve every ambiguity BEFORE capturing. Stills of the wrong concert are not detectable
 #    afterwards. Build ONE html page of what is still open, open it, ask the owner once.
+#    Read "MENTIONED UNDER OTHER ARTISTS" too: a record filed under someone else can BE this
+#    artist's show (Ben Harper's Last Call was 29 min of him under Various Artists). Most hits
+#    are guest spots - the snippet says which.
+#    Do NOT idle while the owner answers. Capture every UNAMBIGUOUS unit now, and pin any
+#    ambiguous folder to its PROVEN titleset in splits.json first (Ben Harper: the ACL record's
+#    checksum proved VTS_02, so it was pinned there and captured while VTS_01 awaited a yes).
+#    Nothing whose identity is still open gets captured.
 
 # 1. WHO'S-WHO - before picking anything, not after (§6.2d-3)
 #    data/whoswho_<artist>.md: who fronts the centre mic, who plays what, extra people, and
@@ -3152,6 +3184,10 @@ A="Stone Temple Pilots"
 #    Use ./run_artist_noplan.sh when state.json has been deliberately pruned - re-running
 #    plan rebuilds it and undoes the pruning.
 #    Check the summary: 0 rejected, no show starved, picks attempted == resolved.
+#    ADDING A UNIT LATER is cheap: write the record, add its splits.json entry, re-run this
+#    same command. Existing units come back `cached=N` (nothing re-decoded), `autopick --merge`
+#    keeps every hand-picked entry, and an existing split unit's key does not change when a
+#    sibling entry is added. Back up data/picks.json first anyway.
 
 # 3. REVIEW ALL FOUR SLOTS - reports/review.jpg, ONE read for the whole artist (§6.2d-00)
 #    ~6k vision tokens. This is what catches commercials, title cards, credit rolls, channel

@@ -71,7 +71,7 @@ SEGMENT = re.compile(r"\b(interview with|in interview|introduced by|talking|talk
 # Without this the audit reports "000000 seconds of audio timestamp gaps." as a
 # missing song, which trains the reader to ignore real findings.
 TECHNICAL = re.compile(
-    r"(\bfps\b|\bmbps\b|\bkbps\b|\bkb/s\b|\bhz\b|bitrate|timestamp|resolution"
+    r"(\bfps\b|\bmbps\b|\bkbps\b|\bkb/s\b|\b[km]?hz\b|bitrate|timestamp|resolution"
     r"|codec|aspect|interlac|progressive|pal\b|ntsc\b|mpeg|ac3|\bvbr\b|\bcbr\b"
     r"|seconds of|channels?\b|sample rate|\bgb\b|\bmb\b|frame rate)", re.I)
 

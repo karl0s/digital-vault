@@ -867,6 +867,11 @@ Each show record contains clues that narrow down the exact date and event, even 
 ### Research rules
 
 - **2+ independent sources must agree** before any field is written. Never write from a single source.
+- **A search engine's summary is not a source — only a page you fetched and read is.** On Ben Harper's
+  Last Call record the search tool's summary stated "episodes May 2, 3, 4 and 5, 2006" as fact; no
+  fetched page confirmed it (IMDb blocked, TheTVDB listed only a 2009 episode), so the date stayed
+  year-only and the lead went into `Notes`. A summary can point at where to look; it never counts
+  toward the two.
 - Acceptable sources (ranked by reliability):
   1. setlist.fm (check user-confirmed count — higher = more reliable)
   2. Official band site tour pages
@@ -1072,9 +1077,9 @@ print(len(d), 'shows /', len(a), 'artists'); print(a.most_common(9)); print(f.mo
 "
 ```
 
-- **937 shows** across **168 artists**
+- **944 shows** across **169 artists**
 - Top artists by volume: Stone Temple Pilots (99), Smashing Pumpkins (63),
   Kings Of Leon (53), Soundgarden (36), Red Hot Chili Peppers (32), Foo Fighters (31),
   Stereophonics (29), Various Artists (27), Incubus (24)
-- Top festivals: Rock am Ring (47), Glastonbury Festival (29), Reading Festival (28),
-  MTV Unplugged (24), Pinkpop (22), Bizarre Festival (21), Big Day Out (19)
+- Top festivals: Rock am Ring (49), Glastonbury Festival (29), Reading Festival (28),
+  MTV Unplugged (24), Pinkpop (23), Bizarre Festival (21), Big Day Out (19)
