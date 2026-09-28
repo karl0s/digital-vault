@@ -1150,5 +1150,24 @@
       "Here is a rip from MTV HITLIST (Latin) taken from my Cablevision HD reciver"
     ],
     "why": "The clip's sidecar text (technical lines and the uploader's story), imported into Setlist line by line. The clip holds one song, Whatever, which remains."
+  },
+  "87a53ac7bb66": {
+    "artist": "Verve",
+    "show": "Glastonbury Festival 2008-06-29",
+    "entries": [
+      "Spiritualized",
+      "John Peel Stage",
+      "Glastonbury Festival",
+      "Glastonbury",
+      "U.K",
+      "no logo",
+      "The Verve",
+      "Pyramid Stage",
+      "were represented as being live may have had small time delays)",
+      "BBC3 logo in tracks 1-3",
+      "Sit And Wonder (only available from 3.54 Mbps BBC4 broadcast)",
+      "Bittersweet Symphony (best bitrate (4.81 Mbps) is BBC2 Scotland 2008-07-05)"
+    ],
+    "why": "Header lines, lineage notes and two per-track source annotations from the disc's two sidecars, pasted into Setlist as if they were songs. The Verve's 12 songs remain; Spiritualized's songs moved to their own record (4032e1370f2f), which holds the full 6-song list including 'Soul On Fire', missing before."
   }
 }
