@@ -175,14 +175,20 @@ evidence in `Notes`.
 
 As of 2026-09-27: **74.5% of shows correct, 19.1% squashed, 2.6% undersized, 1.6%
 internally inconsistent, 1.8% letterboxed and needing a crop decision.** The bad majority predates the capture pipeline. Fully corrected so
-far: Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Black Keys, Blink-182, Bush, Chris
+far: 30 Seconds to Mars, Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Black Keys, Blink-182, Bush, Chris
 Cornell, Faith No More, Filter, Foo Fighters, Green Day, Guns N' Roses, Incubus, Jane's Addiction,
-Kings of Leon, Lenny Kravitz, Limp Bizkit, Manic Street Preachers, Nirvana, Oasis, Pearl Jam, Queens of the Stone Age, R.E.M.,
+Kings of Leon, Lenny Kravitz, Limp Bizkit, Manic Street Preachers, Muse, Nirvana, Oasis, Pearl Jam, Queens of the Stone Age, R.E.M.,
 Radiohead, Rage Against the Machine, Red Hot Chili Peppers, Silverchair, Smashing Pumpkins,
 Soundgarden, Stereophonics, Stone Temple Pilots, Supergrass, The Offspring, The Strokes, Them Crooked
-Vultures, Tool and Weezer;
-30 Seconds to Mars is mostly corrected. A few residual flags remain on finished artists (Foo
-Fighters 2; Filter, Kings of Leon, Nirvana and Radiohead 1 each).
+Vultures, Tool and Weezer. A few residual flags remain on finished artists (Foo
+Fighters 2; Filter, Kings of Leon, Nirvana and Radiohead 1 each; 30STM 1 — its "Late Show" record
+is another band entirely and was left as is at the owner's request).
+
+**Look at a record's CURRENT stills before trusting its identity.** On 30STM, three records were
+showing the wrong thing on the live site and no audit could say so: a "Kooks" record showing 30STM
+(it held the wrong titleset's hash), a "Last Call" record showing Carson Daly's other guests (keyed
+to the wrong titleset of a VA compilation), and a "Late Show" record whose only image was a black
+frame, over footage of a different band on a different talk show. Geometry audits pass all three.
 Everything else is outstanding — `python3 scripts/audit-image-geometry.py` ranks it worst first.
 
 Two Smashing Pumpkins records (`d9b007dd78f2`, `32fafc677477`) can never be corrected: they point
