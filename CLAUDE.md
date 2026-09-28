@@ -108,6 +108,7 @@ Flat JSON array of show objects. Key fields:
 | `RecordingType` | string | "Proshot", "Soundboard", "Audience" |
 | `ChecksumSHA1` | 40-char hex string | SHA1 of the source file; used as image key |
 | `Notes` | string | Free text; temp checksum stubs have "TEMP CHECKSUM - update when files are scanned" here |
+| `Hidden` | `"Yes"` or absent | Keeps the record in `shows.json` but off the site — filtered once in `src/hooks/useShows.ts`. For two records of one recording where only one should show; set `DuplicateOf` to the shown record and say why in `Notes`. Do **not** reuse `DuplicateOf` alone to hide: Jay-Z and Jack White carry it and are meant to show |
 
 ### ShowDate rules
 - Format is always `YYYY-MM-DD` or empty string `""`
@@ -180,7 +181,7 @@ Cornell, Faith No More, Filter, Foo Fighters, Green Day, Guns N' Roses, Incubus,
 Killers, Kings of Leon, Lenny Kravitz, Limp Bizkit, Manic Street Preachers, Muse, Nirvana, Oasis, Pearl Jam, Queens of the Stone Age, R.E.M.,
 Radiohead, Rage Against the Machine, Red Hot Chili Peppers, Silverchair, Smashing Pumpkins,
 Soundgarden, Stereophonics, Stone Temple Pilots, Supergrass, The Offspring, The Strokes, Them Crooked
-Vultures, Tool, Verve (and the Spiritualized set on its Glastonbury disc) and Weezer. A few residual flags remain on finished artists (Foo
+Vultures, Tool, Velvet Revolver, Verve (and the Spiritualized set on its Glastonbury disc) and Weezer. A few residual flags remain on finished artists (Foo
 Fighters 2; Filter, Kings of Leon, Nirvana and Radiohead 1 each; 30STM 1 — its "Late Show" record
 is another band entirely and was left as is at the owner's request).
 

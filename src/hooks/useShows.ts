@@ -31,7 +31,11 @@ export function useShows() {
           throw new Error('Unexpected shows.json structure');
         }
 
-        setShows(items);
+        // A record marked Hidden stays in shows.json as the back-end record of a
+        // recording (metadata, images, provenance) but is never shown on the site.
+        // Used where two records are the same recording and only one should appear.
+        // Filtered here, at the single load point, so search, rows and counts all agree.
+        setShows(items.filter(s => s.Hidden !== 'Yes'));
       } catch (err) {
         // Report the failure rather than substituting sample data. The old
         // fallback rendered five hardcoded shows, which looked like a working

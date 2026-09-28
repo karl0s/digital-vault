@@ -51,6 +51,8 @@ export interface Show {
   TotalSizeHuman: string;
   ChecksumSHA1?: string;
   DuplicateOf?: string;
+  /** "Yes" keeps the record in shows.json but off the site (see useShows). */
+  Hidden?: string;
   Notes: string;
   ImageCount?: number;
   ImageURLs?: string[];
