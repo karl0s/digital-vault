@@ -177,7 +177,7 @@ As of 2026-09-27: **74.5% of shows correct, 19.1% squashed, 2.6% undersized, 1.6
 internally inconsistent, 1.8% letterboxed and needing a crop decision.** The bad majority predates the capture pipeline. Fully corrected so
 far: 30 Seconds to Mars, Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Ben Harper, Black Keys, Blink-182, Bush, Chris
 Cornell, Faith No More, Filter, Foo Fighters, Green Day, Guns N' Roses, Incubus, Jane's Addiction,
-Kings of Leon, Lenny Kravitz, Limp Bizkit, Manic Street Preachers, Muse, Nirvana, Oasis, Pearl Jam, Queens of the Stone Age, R.E.M.,
+Killers, Kings of Leon, Lenny Kravitz, Limp Bizkit, Manic Street Preachers, Muse, Nirvana, Oasis, Pearl Jam, Queens of the Stone Age, R.E.M.,
 Radiohead, Rage Against the Machine, Red Hot Chili Peppers, Silverchair, Smashing Pumpkins,
 Soundgarden, Stereophonics, Stone Temple Pilots, Supergrass, The Offspring, The Strokes, Them Crooked
 Vultures, Tool and Weezer. A few residual flags remain on finished artists (Foo
@@ -425,6 +425,18 @@ Same artist, three smaller traps: ten folders are named `RHCP …`, which shares
 name (an `rhcp` alias now catches them — the QOTSA case again); a record can be claimed for an
 artist only through `splits.json` (Rolling Stone 25's one RHCP chapter), which discovery now
 honours; and a folder shared by two artists now plans only the current artist's split part.
+
+### An artist filed without its article returns ZERO records, silently — `Killers`
+
+The Killers are filed as `Artist` = `Killers`. `scout.sh "The Killers"` printed a clean report of
+`0 records` with every section empty — no error, no hint — while five shows sat under the shorter
+name. Before any run, confirm the stored spelling:
+
+```bash
+python3 -c "
+import json; a='killers'
+print({s['Artist'] for s in json.load(open('public/shows.json')) if a in (s.get('Artist') or '').lower()})"
+```
 
 ### A folder can glue the artist's name to the date — `stereophonics2003-06-07dvd`
 
@@ -1077,7 +1089,7 @@ print(len(d), 'shows /', len(a), 'artists'); print(a.most_common(9)); print(f.mo
 "
 ```
 
-- **944 shows** across **169 artists**
+- **945 shows** across **169 artists**
 - Top artists by volume: Stone Temple Pilots (99), Smashing Pumpkins (63),
   Kings Of Leon (53), Soundgarden (36), Red Hot Chili Peppers (32), Foo Fighters (31),
   Stereophonics (29), Various Artists (27), Incubus (24)
