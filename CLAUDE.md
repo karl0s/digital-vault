@@ -180,7 +180,7 @@ Cornell, Faith No More, Filter, Foo Fighters, Green Day, Guns N' Roses, Incubus,
 Killers, Kings of Leon, Lenny Kravitz, Limp Bizkit, Manic Street Preachers, Muse, Nirvana, Oasis, Pearl Jam, Queens of the Stone Age, R.E.M.,
 Radiohead, Rage Against the Machine, Red Hot Chili Peppers, Silverchair, Smashing Pumpkins,
 Soundgarden, Stereophonics, Stone Temple Pilots, Supergrass, The Offspring, The Strokes, Them Crooked
-Vultures, Tool and Weezer. A few residual flags remain on finished artists (Foo
+Vultures, Tool, Verve (and the Spiritualized set on its Glastonbury disc) and Weezer. A few residual flags remain on finished artists (Foo
 Fighters 2; Filter, Kings of Leon, Nirvana and Radiohead 1 each; 30STM 1 — its "Late Show" record
 is another band entirely and was left as is at the owner's request).
 
@@ -1089,7 +1089,7 @@ print(len(d), 'shows /', len(a), 'artists'); print(a.most_common(9)); print(f.mo
 "
 ```
 
-- **945 shows** across **169 artists**
+- **945 shows** across **170 artists**
 - Top artists by volume: Stone Temple Pilots (99), Smashing Pumpkins (63),
   Kings Of Leon (53), Soundgarden (36), Red Hot Chili Peppers (32), Foo Fighters (31),
   Stereophonics (29), Various Artists (27), Incubus (24)

@@ -1169,5 +1169,24 @@
       "Bittersweet Symphony (best bitrate (4.81 Mbps) is BBC2 Scotland 2008-07-05)"
     ],
     "why": "Header lines, lineage notes and two per-track source annotations from the disc's two sidecars, pasted into Setlist as if they were songs. The Verve's 12 songs remain; Spiritualized's songs moved to their own record (4032e1370f2f), which holds the full 6-song list including 'Soul On Fire', missing before."
+  },
+  "3f8c9014944a": {
+    "artist": "Verve",
+    "show": "Glastonbury Festival 2008-06-29 (duplicate record, removed)",
+    "entries": [
+      "This Is Music",
+      "Sonnet",
+      "Space and Time",
+      "Sit and Wonder",
+      "History",
+      "Life's an Ocean",
+      "Velvet Morning",
+      "The Rolling People",
+      "The Drugs Don't Work",
+      "Lucky Man",
+      "Bitter Sweet Symphony",
+      "Love Is Noise"
+    ],
+    "why": "The whole record was deleted at Karl's instruction (2026-09-29): it was a second record for the same recording as 87a53ac7bb66 - its checksum is sha1(VTS_01_1.VOB) of that disc, from a copy no longer on the drive. The same 12 songs remain on 87a53ac7bb66, in the spelling of that disc's own sidecar."
   }
 }
