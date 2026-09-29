@@ -52,7 +52,15 @@ def main():
     # class as the R.E.M. empty-token-set bug: a matcher that widens is worse than one
     # that fails (SKILL.md 2). Single-word artists get no initials alias.
     initials = "".join(w[0] for w in a.artist.split() if w[:1].isalpha()).lower()
-    if len(initials) < 2: initials = ""
+    # Two letters is still too short: "Arctic Monkeys" -> "am" matched every "Rock am Ring"
+    # folder, and "SP" / "AF" are ordinary words or fragments elsewhere. Aliases must be 3+.
+    if len(initials) < 3: initials = ""
+    # Every alias matches at a WORD START, never mid-word: "ash" sat inside "Smashing" and
+    # ".Trashes" and listed the whole drive. Digits may follow ("stereophonics2003", as in
+    # shots.py); letters may not.
+    def _alias(name, alias):
+        return bool(alias) and re.search(r"(?<![a-z0-9])" + re.escape(alias) + r"(?![a-z])", name.casefold()) is not None
+    hit = lambda name: _alias(name, squashed) or _alias(name, initials)
     print("PRE-FLIGHT  %s   %d records\n" % (a.artist, len(mine)))
 
     print("1. RECORDS WITH NO CHECKSUM  (cannot carry images at all)")
@@ -85,7 +93,7 @@ def main():
         for f in sorted(DRIVE.glob("*")):
             if not f.is_file() or f.suffix.lower() not in (".ts",".mkv",".mp4",".avi",".m2ts"): continue
             ft = toks(f.stem)
-            if atk & ft or squashed in f.stem.casefold() or (initials and initials in f.stem.casefold()):
+            if atk & ft or hit(f.stem):
                 print("     %-52s %8.1f MB" % (f.name[:52], f.stat().st_size/1048576)); n+=1
     print("     none\n" if not n else "")
 
@@ -95,7 +103,7 @@ def main():
         for d in sorted(DRIVE.iterdir()):
             if not d.is_dir(): continue
             dt = toks(d.name)
-            if not (atk & dt or squashed in d.name.casefold() or (initials and initials in d.name.casefold())):
+            if d.name.startswith(".") or not (atk & dt or hit(d.name)):
                 continue
             # Look at the folder, its VIDEO_TS, AND one level of subdirectories. A folder
             # can hold whole nested DISCS ("Disc 1/", "Disc 2/") whose VOBs sit at their
@@ -104,7 +112,7 @@ def main():
             # the hardcoded-VIDEO_TS no-op from SKILL.md 11 and the nested-disc case
             # from SKILL.md 10b, in one folder.
             discs = []
-            for base in [d] + sorted(q for q in d.iterdir() if q.is_dir() and q.name != "VIDEO_TS"):
+            for base in [d] + sorted(q for q in d.iterdir() if q.is_dir() and q.name != "VIDEO_TS" and not q.name.startswith(".")):
                 for cand in (base/"VIDEO_TS", base):
                     if cand.is_dir() and any(cand.glob("VTS_*_[1-9].VOB")):
                         discs.append(cand); break
