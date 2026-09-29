@@ -1213,5 +1213,32 @@
       "Includes some funny interaction between the band and Security people"
     ],
     "why": "The Info.txt header line and its closing note ('Includes some funny interaction...') imported as songs; 'Don't Dream it's Over' re-cased to 'Don't Dream It's Over'. All six songs remain."
+  },
+  "56b3483f340f": {
+    "artist": "Editors",
+    "show": "Haldern Pop Festival 2008-08-08",
+    "entries": [
+      "Editors",
+      "Haldern Pop Festival",
+      "Intro",
+      "Interview",
+      "Rockwerchter Festival 2008",
+      "Chris Urbanowicz - guitar",
+      "Ed Lay - drums"
+    ],
+    "why": "Header lines, the Intro/Interview chapter labels, a bonus-section heading and two musician credits from the disc's sidecar imported as songs; songs re-cased. Every song remains."
+  },
+  "591a7635a4db": {
+    "artist": "Erykah Badu",
+    "show": "VH1 Soul Stage 2008-02-19",
+    "entries": [
+      "Next Lifetime",
+      "The Roots - You Got Me",
+      "Tyrone",
+      "Love of My Life w/ Common",
+      "Zap Mama - Bandy Bandy",
+      "Sergio Mendes w/ Will I Am - That Heat"
+    ],
+    "why": "The field held the disc's MUSIC-VIDEO list (a separate block before the show), not the show's setlist. Replaced with the Soul Stage setlist from the same sidecar."
   }
 }
