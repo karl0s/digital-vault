@@ -1240,5 +1240,16 @@
       "Sergio Mendes w/ Will I Am - That Heat"
     ],
     "why": "The field held the disc's MUSIC-VIDEO list (a separate block before the show), not the show's setlist. Replaced with the Soul Stage setlist from the same sidecar."
+  },
+  "e0c9cc428b88": {
+    "artist": "Joe Walsh",
+    "show": "US Festival 1983-05-30",
+    "entries": [
+      "Turn to Stone",
+      "Meadows",
+      "Walk Away",
+      "Mother Says"
+    ],
+    "why": "These four songs belong to the Don Kirshner's Rock Concert programme on the same disc (VTS_04), which is now its own record carrying them."
   }
 }

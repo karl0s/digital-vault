@@ -221,11 +221,18 @@ concatenating them for identification is what caused this disc to be written off
 no Incubus at all. `Notes` on such a record should name the other programmes so the
 identification is never repeated.
 
-### Split bills are filed under a joined artist name
+### Split bills: one record per band, per tape
 
-Two shows carry `Artist` = `Incubus / Deftones`. An exact-match filter on either band returns
-nothing, so they are invisible to both artists' runs *and* to search on the live site. Before
-calling an artist finished:
+Two MusiquePlus tapes (2000-11-14) were filed as `Artist` = `Incubus / Deftones`. An exact-match
+filter on either band returned nothing, so they were invisible to both artists' runs *and* to
+search on the live site. On 2026-09-30 the owner settled how split bills are filed: **each tape
+becomes one record per band**, time-windowed to that band's performance only, each with its own
+setlist. The two tapes are now four records (Incubus `34f2923f1e57`, `6aa691481fa9`; Deftones
+`d4081bb1afc6`, `70dabb713576`). The joint interview between the sets belongs to neither. The disc
+hash stays on the Incubus record and the Deftones record carries a derived key, as on the
+Bush / James Brown Woodstock disc.
+
+No joined artist names remain. Before calling an artist finished, still check for one:
 
 ```bash
 python3 -c "
@@ -237,8 +244,7 @@ for s in json.load(open('public/shows.json')):
 "
 ```
 
-Capturing their images does not make them findable — how split bills should be filed is an
-open question for the collection, not something to change silently.
+Split a new one only where the bands' sets are separable in time, and confirm with the owner first.
 
 ### A nested folder can hold a SECOND COMPLETE DISC, not just another titleset
 
@@ -1103,9 +1109,9 @@ print(len(d), 'shows /', len(a), 'artists'); print(a.most_common(9)); print(f.mo
 "
 ```
 
-- **945 shows** across **170 artists**
-- Top artists by volume: Stone Temple Pilots (99), Smashing Pumpkins (63),
+- **967 shows** across **173 artists**
+- Top artists by volume: Stone Temple Pilots (100), Smashing Pumpkins (63),
   Kings Of Leon (53), Soundgarden (36), Red Hot Chili Peppers (32), Foo Fighters (31),
-  Stereophonics (29), Various Artists (26), Incubus (24)
+  Stereophonics (29), Incubus (26), Various Artists (25)
 - Top festivals: Rock am Ring (49), Glastonbury Festival (29), Reading Festival (28),
   MTV Unplugged (24), Pinkpop (23), Bizarre Festival (21), Big Day Out (19)
