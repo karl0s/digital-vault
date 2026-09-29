@@ -1203,5 +1203,15 @@
       "Captured from HDTV digital cable and converted to DVD using AviSynth and CCE"
     ],
     "why": "Header lines, a chapter label, a section heading and a lineage sentence from the folder's info.txt, imported into Setlist as songs. 'Cold In My Place' is the sidecar's misspelling of 'In My Place' and 'Speed Of Sound' is re-cased to 'Speed of Sound'; both songs remain."
+  },
+  "1f0fe787dd27": {
+    "artist": "Crowded House",
+    "show": "Glastonbury 2008-06-28",
+    "entries": [
+      "Crowded House - Glastonbury 28 June 2008",
+      "Don't Dream it's Over",
+      "Includes some funny interaction between the band and Security people"
+    ],
+    "why": "The Info.txt header line and its closing note ('Includes some funny interaction...') imported as songs; 'Don't Dream it's Over' re-cased to 'Don't Dream It's Over'. All six songs remain."
   }
 }
