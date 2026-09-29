@@ -1188,5 +1188,20 @@
       "Love Is Noise"
     ],
     "why": "The whole record was deleted at Karl's instruction (2026-09-29): it was a second record for the same recording as 87a53ac7bb66 - its checksum is sha1(VTS_01_1.VOB) of that disc, from a copy no longer on the drive. The same 12 songs remain on 87a53ac7bb66, in the spelling of that disc's own sidecar."
+  },
+  "69bed786a908": {
+    "artist": "Coldplay",
+    "show": "VH1 Storytellers 2005-05-15",
+    "entries": [
+      "Coldplay",
+      "Brooklyn Academy of Music",
+      "Harvey Theater",
+      "Intro",
+      "Cold In My Place",
+      "Speed Of Sound",
+      "Storytellers",
+      "Captured from HDTV digital cable and converted to DVD using AviSynth and CCE"
+    ],
+    "why": "Header lines, a chapter label, a section heading and a lineage sentence from the folder's info.txt, imported into Setlist as songs. 'Cold In My Place' is the sidecar's misspelling of 'In My Place' and 'Speed Of Sound' is re-cased to 'Speed of Sound'; both songs remain."
   }
 }
