@@ -1251,5 +1251,49 @@
       "Mother Says"
     ],
     "why": "These four songs belong to the Don Kirshner's Rock Concert programme on the same disc (VTS_04), which is now its own record carrying them."
+  },
+  "504089115064": {
+    "artist": "Live",
+    "show": "Rockpalast 2006-04-09",
+    "entries": [
+      "Length 64 minutes(Main Feature- 77 Mins incl bonus footage)",
+      "Size 4.03GB",
+      "Interview",
+      "Show",
+      "Run Away",
+      "Lightning Crashes",
+      "BONUS FOOTAGE",
+      "Dutch TV Show Jensen",
+      "Broadcast 12-04-2006",
+      "Only Ed Kowalczyk interviewed and performed",
+      "Overcome"
+    ],
+    "why": "Sidecar dump: running time, size and bonus-footage header lines are not songs; 'Interview' and 'Show' are a mid-set interview segment; Run Away and Lightning Crashes were performed but not broadcast (per the sidecar); the Jensen! bonus section moved to its own record."
+  },
+  "76ab1d938779": {
+    "artist": "M83",
+    "show": "Melt! Festival 2012-07-14",
+    "entries": [
+      "Ferropolis",
+      "Germany",
+      "Running Time - 33m"
+    ],
+    "why": "Sidecar header/trailer lines (venue, country, running time) are not songs."
+  },
+  "13cc22485f09": {
+    "artist": "Mercury Crowe",
+    "show": "Good Morning 2008-11-14",
+    "entries": [
+      "Interview"
+    ],
+    "why": "'Interview' is a segment, not a song (kept in Notes)."
+  },
+  "29130db263ac": {
+    "artist": "Motorhead",
+    "show": " 2004-08-15",
+    "entries": [
+      "Outro"
+    ],
+    "why": "'Outro' is not a song."
   }
 }

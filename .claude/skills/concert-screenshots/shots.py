@@ -138,10 +138,13 @@ def discover(artist: str):
     artist_d = artist_toks - STOPWORDS
     # Belt and braces: if an artist name yields no usable token at all, matching
     # must FAIL LOUDLY rather than accept the whole drive.
-    if not artist_d and not ALIASES:
-        print("  %sno usable token for artist %r%s - refusing to match every folder"
-              % (RED, artist, RESET))
-        return []
+    # An artist whose whole name is a stopword ("Live") would otherwise match
+    # every folder (need falls to 0). Such an artist is matched ONLY through
+    # folders that data/splits.json explicitly assigns to one of its records.
+    claim_only = not artist_d and not ALIASES
+    if claim_only:
+        print("  %sno usable token for artist %r%s - matching only folders pinned "
+              "to its records in splits.json" % (YELLOW, artist, RESET))
 
     con = sqlite3.connect("file:%s?mode=ro" % DEDUPE_DB, uri=True)
     con.row_factory = sqlite3.Row
@@ -197,6 +200,8 @@ def discover(artist: str):
         # ("30_seconds_to_mars_-_live_at_mexico_city...") which a plain
         # substring test on the artist name would miss entirely.
         rt = toks(rel)
+        if claim_only and not (rel in split_claimed or os.path.basename(rel) in split_claimed):
+            continue
         # A single-word artist ("Aerosmith", "Muse") can never satisfy a fixed
         # ">=2 tokens" rule, so scale the requirement to the artist's own length.
         need = min(2, len(artist_d))
@@ -1108,6 +1113,22 @@ def cmd_capture(a):
         on_disk = len(list(outdir.glob("*.jpg")))
         mismatch = ("  %sDISK/COUNT MISMATCH: %d files but ok=%d%s" % (RED,on_disk,ok,RESET)
                     if on_disk != ok else "")
+        # "verified" must describe the FILES, not the target. After an aspect
+        # override, cached frames from the earlier capture stay at the old shape
+        # and are reused without re-encoding: Live's Rockpalast 2026-09-30 printed
+        # "1024x576 verified" over 500 cached 768x576 frames. Check a spread of
+        # files on disk and refuse to call a wrong shape verified.
+        from PIL import Image as _Im
+        _fs = sorted(outdir.glob("*.jpg")); _bad = []
+        for _f in _fs[::max(1, len(_fs)//8)][:9]:
+            with _Im.open(_f) as _im:
+                if _im.size != (s["target_w"], s["target_h"]): _bad.append(_im.size)
+        if _bad:
+            print("   %sWRONG SIZE ON DISK: %dx%d expected, found %s (cached from an earlier "
+                  "capture?) - rerun with --fresh%s" % (RED, s["target_w"], s["target_h"],
+                  sorted(set(_bad)), RESET))
+            grand_ok+=ok; grand_bad+=bad
+            continue
         print("   %s%dx%d verified%s%s%s" % (GREEN,s["target_w"],s["target_h"],RESET,
               ("  %s%d rejected%s"%(YELLOW,bad,RESET)) if bad else "", mismatch))
         grand_ok+=ok; grand_bad+=bad
