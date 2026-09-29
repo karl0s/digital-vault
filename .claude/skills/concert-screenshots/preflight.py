@@ -16,11 +16,21 @@ REPO = Path("/Users/ko/Desktop/Projects/the-vault")
 DRIVE = Path("/Volumes/Live Music")
 SHOWS = REPO/"public"/"shows.json"
 
+try:
+    import sys as _sys; _sys.path.insert(0, str(Path.home()/"VaultShots"))
+    from shots import STOPWORDS as _PLAN_STOP
+except Exception:                            # never let the import widen the match
+    _PLAN_STOP = {"in","on","at","for","to","with","from","an"}
+
 def toks(x):
     x = unicodedata.normalize("NFKD", x or "").encode("ascii","ignore").decode().casefold()
     x = x.replace("'", "")
+    # Union with shots.STOPWORDS, the list the planner already uses. This list lacked
+    # the prepositions, so "Alice In Chains" kept the token "in" and checks 3 and 4
+    # listed every folder containing "in" - Rock in Rio, T in the Park, Live In Milan.
+    # The R.E.M./Silverchair widening class again (SKILL.md 0b); one list, not two.
     STOP = set("the a of and live pro shot dvd dvdr tv hd hdtv ts ntsc pal ws master source "
-               "disc version official vts".split())
+               "disc version official vts".split()) | _PLAN_STOP
     return set(w for w in re.sub(r"[^a-z0-9]+"," ",x).split() if len(w)>1 and w not in STOP)
 
 def hms(s): return "%d:%02d" % (s//60, s%60)
