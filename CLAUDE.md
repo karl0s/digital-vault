@@ -439,6 +439,19 @@ import json; a='killers'
 print({s['Artist'] for s in json.load(open('public/shows.json')) if a in (s.get('Artist') or '').lower()})"
 ```
 
+### A record captured once can still have NO saved capture rule — re-picks fail
+
+The 2026-09-29 tier-2 hero review re-picked 107 already-captured shows and 20 of them would not plan:
+their split or disc mapping had been done by hand at first capture and never written to
+`~/VaultShots/data/splits.json`. Two-disc sets (`Disc 1/`, `Disc 2/`), time-window splits, a
+Blu-ray `BDMV/STREAM/` folder, a folder renamed on the drive (`DVD-Offspring-LiveWembley2001` →
+`Offspring - Live Wembley 2001`) and a drive-side typo (`Columbus OH 1009-5-28`) all dropped out
+silently in a plain artist run. Prove each by re-hashing `RepVideoFiles`, then save the rule.
+
+For a subset of shows across artists, `~/VaultShots/plan_subset.py --label L --ids ids.json` plans only
+the listed ShowIDs and **refuses** if any produces no unit; run it with `set -o pipefail` so the
+capture never starts on a refused plan.
+
 ### A folder can glue the artist's name to the date — `stereophonics2003-06-07dvd`
 
 That tokenises to `{stereophonics2003, 06, 07dvd}`: no token equals `stereophonics`, so `plan`
