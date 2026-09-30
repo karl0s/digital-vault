@@ -98,3 +98,4 @@ After sign-off: `promote.py --apply` (map built from state ShowIDs), health chec
 ## Done so far
 - **M01 Pinkpop 1994** — master `7efb4ead53d8`, SP `952d5f624f7a`, RATM `07346400f7e5`
 - **M02 Pinkpop 1995** — master `884a7250626e` + 6 linked (Live, Danzig, Bad Religion, Biohazard, FNM, Rollins Band — the last re-filed from the misfiled VA record `44e20e4e66fd`).
+- **M03 Phoenix 1996** — master `fb321cdafdbe` (re-filed VA record) + 11 linked, one titleset, time windows on chapter marks; each act dated to its own festival day, master to the month.
