@@ -1343,5 +1343,33 @@
       "Mt.Rushmore song"
     ],
     "why": "Programme names and the disc title are not songs; the programme breakdown is in Notes."
+  },
+  "f358adf36e19": {
+    "artist": "Scott Weiland",
+    "show": "Jimmy Kimmel 2008-11-26",
+    "entries": [
+      "Scott Weiland",
+      "November 21",
+      "NBC Studios Burbank CA USA",
+      "stereo (2/0)",
+      "Song on 'The Jimmy Kimmel Show'",
+      "NOvember 26",
+      "Hollywood CA USA",
+      "Arte - By Moonwall",
+      "This is a Hoarders Inc. Production a.k.a. Theyodaddy"
+    ],
+    "why": "The sidecar's header, dates, places and credits had been imported as songs."
+  },
+  "f1a86aba591c": {
+    "artist": "Sum 41",
+    "show": "Summer Sonic 2010-08-01",
+    "entries": [
+      "Various",
+      "Summer Sonic 2010",
+      "DVD 2 - Metal",
+      "Interview",
+      "Stereo"
+    ],
+    "why": "The 'setlist' was the disc's own header (Various; Summer Sonic 2010; DVD 2 - Metal; Interview; Stereo), not songs."
   }
 }

@@ -1109,7 +1109,7 @@ print(len(d), 'shows /', len(a), 'artists'); print(a.most_common(9)); print(f.mo
 "
 ```
 
-- **969 shows** across **173 artists**
+- **973 shows** across **173 artists**
 - Top artists by volume: Stone Temple Pilots (100), Smashing Pumpkins (63),
   Kings Of Leon (53), Soundgarden (36), Red Hot Chili Peppers (32), Foo Fighters (31),
   Stereophonics (29), Incubus (26), Various Artists (25)
