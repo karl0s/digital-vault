@@ -53,6 +53,15 @@ export interface Show {
   DuplicateOf?: string;
   /** "Yes" keeps the record in shows.json but off the site (see useShows). */
   Hidden?: string;
+  /**
+   * Set on a record cut from a longer multi-artist recording (a festival
+   * broadcast, a talk-show compilation): the ShowID of that master recording.
+   * The drawer links back to it, and the master lists every record pointing at it.
+   */
+  ParentShowID?: string;
+  /** Where this record sits on the master's timeline, "H:MM:SS". */
+  SegmentStart?: string;
+  SegmentEnd?: string;
   Notes: string;
   ImageCount?: number;
   ImageURLs?: string[];
@@ -358,7 +367,7 @@ export default function App() {
 
       <AnimatePresence>
         {selectedShow && (
-          <ShowDrawer show={selectedShow} onClose={handleCloseDrawer} getImageUrl={getImageUrl} />
+          <ShowDrawer show={selectedShow} onClose={handleCloseDrawer} getImageUrl={getImageUrl} shows={shows} onOpenShow={handleShowClick} />
         )}
       </AnimatePresence>
     </MotionConfig>

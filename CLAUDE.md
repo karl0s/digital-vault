@@ -109,6 +109,8 @@ Flat JSON array of show objects. Key fields:
 | `ChecksumSHA1` | 40-char hex string | SHA1 of the source file; used as image key |
 | `Notes` | string | Free text; temp checksum stubs have "TEMP CHECKSUM - update when files are scanned" here |
 | `Hidden` | `"Yes"` or absent | Keeps the record in `shows.json` but off the site — filtered once in `src/hooks/useShows.ts`. For two records of one recording where only one should show; set `DuplicateOf` to the shown record and say why in `Notes`. Do **not** reuse `DuplicateOf` alone to hide: Jay-Z and Jack White carry it and are meant to show |
+| `ParentShowID` | ShowID or absent | Set on a record cut from a multi-artist **master** recording (a festival broadcast, a talk-show compilation). The drawer shows a "Part of …" link to the master; the master's drawer lists every record pointing at it under "On this recording". One level only; the master must not be hidden. Checked by the health check |
+| `SegmentStart` / `SegmentEnd` | `H:MM:SS` | Where that linked record sits on the master's timeline. Always set together with `ParentShowID` |
 
 ### ShowDate rules
 - Format is always `YYYY-MM-DD` or empty string `""`

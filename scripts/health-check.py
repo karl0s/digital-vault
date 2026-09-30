@@ -105,6 +105,34 @@ if dupes:
 else:
     print(f'  No duplicate ShowIDs — OK')
 
+# ── 4b. Master / linked records ──────────────────────────────────────────────
+# A record cut from a multi-artist master carries ParentShowID + SegmentStart/End.
+# A dangling or hidden parent would render a dead "Part of" link on the site.
+
+section('Linked records (ParentShowID)')
+by_id = {s.get('ShowID'): s for s in shows}
+_ts = re.compile(r'^\d+:[0-5]\d:[0-5]\d$')
+_secs = lambda t: sum(int(x) * m for x, m in zip(t.split(':'), (3600, 60, 1)))
+linked = [s for s in shows if s.get('ParentShowID')]
+for s in linked:
+    sid, pid = s['ShowID'], s['ParentShowID']
+    p = by_id.get(pid)
+    if not p:
+        error(f'  {sid}: ParentShowID {pid} is not a record')
+        continue
+    if p.get('Hidden') == 'Yes' and s.get('Hidden') != 'Yes':
+        error(f'  {sid}: its master {pid} is hidden, so the link would be dead')
+    if p.get('ParentShowID'):
+        error(f'  {sid}: its master {pid} is itself a linked record (one level only)')
+    a, b = s.get('SegmentStart', ''), s.get('SegmentEnd', '')
+    if not (_ts.match(a) and _ts.match(b)) or _secs(a) >= _secs(b):
+        error(f'  {sid}: SegmentStart/SegmentEnd must be H:MM:SS with start < end (got {a!r}, {b!r})')
+_link_errs = [e for e in ERRORS if 'ParentShowID' in e or 'master' in e or 'SegmentStart' in e]
+if linked and not _link_errs:
+    print(f'  {len(linked)} linked record(s), every master resolves — OK')
+elif not linked:
+    print('  No linked records')
+
 # ── 5. Image manifest vs actual image files ───────────────────────────────────
 
 section('Image manifest vs disk')

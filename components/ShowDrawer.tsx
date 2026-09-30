@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Clock, Music, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
+import { Clock, Music, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Layers } from 'lucide-react';
 import { Show } from '../App';
 import { CloseButton } from './CloseButton';
 
@@ -8,7 +8,25 @@ interface ShowDrawerProps {
   show: Show;
   onClose: () => void;
   getImageUrl?: (checksum: string, index: number) => string | null;
+  /** Every loaded show — used to resolve the master / linked-record relationship. */
+  shows?: Show[];
+  /** Switch the open drawer to another show (a master or one of its linked records). */
+  onOpenShow?: (show: Show) => void;
 }
+
+/** "0:23:19" -> "23:19"; keeps the hour only when there is one. */
+const shortTime = (t?: string): string => {
+  if (!t) return '';
+  const [h, m, s] = t.split(':');
+  return h && h !== '0' && h !== '00' ? `${parseInt(h)}:${m}:${s}` : `${parseInt(m)}:${s}`;
+};
+
+const songCount = (setlist?: string): number =>
+  setlist ? setlist.split(';').map(s => s.trim()).filter(s => s && s !== 'Encore break').length : 0;
+
+/** How a master is named in a linked record's "Part of" label. */
+const masterTitle = (m: Show): string =>
+  [m.EventOrFestival || m.VenueName, m.ShowDate ? m.ShowDate.slice(0, 4) : ''].filter(Boolean).join(' ') || m.Artist;
 
 const getRecordingBadgeStyle = (type: string): string => {
   const lower = type.toLowerCase();
@@ -30,7 +48,7 @@ const getColorFromString = (str: string): string => {
 
 const LAYOUT_TRANSITION = { duration: 0.38, ease: [0.16, 1, 0.3, 1] };
 
-export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
+export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow }: ShowDrawerProps) {
   // expandedFromIndex: which thumbnail was clicked (anchors the layoutId for open/close animation)
   // viewingIndex: which image is currently shown (changes on prev/next without affecting layoutId)
   const [expandedFromIndex, setExpandedFromIndex] = useState<number | null>(null);
@@ -39,6 +57,22 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
   const isImageExpanded = expandedFromIndex !== null;
   const drawerRef = useRef<HTMLDivElement>(null);
   const titleId = `drawer-title-${show.ShowID}`;
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // A linked record points at its master; a master is pointed at by its linked records.
+  const parent = show.ParentShowID ? shows.find(s => s.ShowID === show.ParentShowID) : undefined;
+  const segments = shows
+    .filter(s => s.ParentShowID === show.ShowID)
+    .sort((a, b) => (a.SegmentStart || '').localeCompare(b.SegmentStart || '', undefined, { numeric: true }));
+
+  // Moving between a master and its linked records swaps the show without
+  // remounting the drawer, so reset per-show state and return to the top.
+  useEffect(() => {
+    setExpandedFromIndex(null);
+    setNotesExpanded(false);
+    setViewingIndex(0);
+    scrollRef.current?.scrollTo({ top: 0 });
+  }, [show.ShowID]);
 
   /**
    * Which way the drawer leaves. Read from matchMedia rather than a one-off
@@ -249,7 +283,7 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
         )}
 
         {/* Scrollable content */}
-        <div className="h-full overflow-y-auto">
+        <div ref={scrollRef} className="h-full overflow-y-auto">
 
           {/* Hero image — tall, cinematic */}
           <div className="relative h-56 md:h-[42vh] bg-[#0d0d0d] overflow-hidden">
@@ -326,6 +360,25 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
           {/* Content */}
           <div className="px-5 md:px-8 py-6 space-y-6">
 
+            {/* Linked record: where it was cut from */}
+            {parent && (
+              <button
+                onClick={() => onOpenShow?.(parent)}
+                className="w-full flex items-center gap-3 text-left px-3.5 py-2.5 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 transition-colors group/parent"
+              >
+                <Layers className="w-4 h-4 text-gray-400 shrink-0" />
+                <span className="text-sm text-gray-300 min-w-0">
+                  <span className="text-gray-400">Part of </span>
+                  <span className="text-white font-medium">{masterTitle(parent)}</span>
+                  <span className="text-gray-400"> · {parent.Artist}</span>
+                  {show.SegmentStart && show.SegmentEnd && (
+                    <span className="text-gray-400 tabular-nums"> · {shortTime(show.SegmentStart)}–{shortTime(show.SegmentEnd)}</span>
+                  )}
+                </span>
+                <ChevronRight className="w-4 h-4 text-gray-400 ml-auto shrink-0 group-hover/parent:translate-x-0.5 transition-transform" />
+              </button>
+            )}
+
             {/* Screenshots */}
             {images.length > 0 && (
               <div>
@@ -356,6 +409,37 @@ export function ShowDrawer({ show, onClose, getImageUrl }: ShowDrawerProps) {
                     </button>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {/* Master: every act cut from this recording, in running order */}
+            {segments.length > 0 && (
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-3 flex items-center gap-1.5">
+                  <Layers className="w-3 h-3" /> On this recording
+                </p>
+                <ol className="divide-y divide-white/5 border-y border-white/5">
+                  {segments.map(seg => {
+                    const n = songCount(seg.Setlist);
+                    return (
+                      <li key={seg.ShowID}>
+                        <button
+                          onClick={() => onOpenShow?.(seg)}
+                          className="w-full flex items-center gap-3 py-2.5 text-left hover:bg-white/5 transition-colors group/seg"
+                        >
+                          <span className="text-xs text-gray-400 tabular-nums w-24 shrink-0">
+                            {shortTime(seg.SegmentStart)}–{shortTime(seg.SegmentEnd)}
+                          </span>
+                          <span className="text-sm text-white flex-1 min-w-0 truncate">{seg.Artist}</span>
+                          {n > 0 && (
+                            <span className="text-xs text-gray-400 shrink-0">{n} {n === 1 ? 'song' : 'songs'}</span>
+                          )}
+                          <ChevronRight className="w-4 h-4 text-gray-500 shrink-0 group-hover/seg:text-gray-300 transition-colors" />
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ol>
               </div>
             )}
 
