@@ -99,3 +99,5 @@ After sign-off: `promote.py --apply` (map built from state ShowIDs), health chec
 - **M01 Pinkpop 1994** — master `7efb4ead53d8`, SP `952d5f624f7a`, RATM `07346400f7e5`
 - **M02 Pinkpop 1995** — master `884a7250626e` + 6 linked (Live, Danzig, Bad Religion, Biohazard, FNM, Rollins Band — the last re-filed from the misfiled VA record `44e20e4e66fd`).
 - **M03 Phoenix 1996** — master `fb321cdafdbe` (re-filed VA record) + 11 linked, one titleset, time windows on chapter marks; each act dated to its own festival day, master to the month.
+- **M04 Glastonbury 1997** — one master per volume (owner: acts repeat across volumes; one big record would get messy). 22 linked; unidentified segments stay inside the master, described. Vol 5 captions every act/song; an act with no visible face goes in `no_closeup.json`.
+- **M05/M07 Reading 1997/1998** — a band appearing twice in one master gets ONE linked record with both songs; SegmentStart/End = first clip, both windows in Notes (owner, 2026-10-01). MTV magazine formats: find clips with a caption-strip scan, then read boundaries from 10 s frames.

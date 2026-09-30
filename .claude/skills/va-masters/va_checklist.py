@@ -13,9 +13,9 @@ cards={}
 for m in T["masters"]:
     acts=m.get("acts") or []
     if acts:
-        tr="".join(f'''<tr><td><b>{e(a["artist"])}</b></td><td class=mono>{a["start"]}</td><td class=mono>{a["end"]}</td><td class=mono>{dur(a["start"],a["end"])}</td><td class=c>{a["songs"] if a["songs"] not in (None,"") else "?"}</td>
+        tr="".join(f'''<tr><td><b>{e(a["artist"])}</b></td><td class=mono>{a["start"]}</td><td class=mono>{a["end"]}</td><td class=mono>{("%d:%02d"%(a["dur"]//60,a["dur"]%60)) if a.get("dur") else dur(a["start"],a["end"])}</td><td class=c>{a["songs"] if a["songs"] not in (None,"") else "?"}</td>
 <td class=sl>{e(a.get("setlist") or "")}</td><td class=sm>{e(a.get("source") or "")}</td><td class=sm>{e(a.get("existing") or "—")}</td><td class=dec>{e(a.get("decision") or "")}</td></tr>''' for a in acts)
-        total=sum(secs(a["end"])-secs(a["start"]) for a in acts)
+        total=sum(a.get("dur") or (secs(a["end"])-secs(a["start"])) for a in acts)
         tbl=f'''<div class=wrap><table><tr><th>Act</th><th>Start</th><th>End</th><th>Length</th><th>Songs</th><th>Setlist</th><th>How we know</th><th>Record already?</th><th>Your decision</th></tr>{tr}</table></div>
 <div class=sm style="margin-top:6px">{len(acts)} acts · {total//60} min accounted for</div>'''
     else:
