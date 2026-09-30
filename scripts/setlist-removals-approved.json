@@ -1295,5 +1295,53 @@
       "Outro"
     ],
     "why": "'Outro' is not a song."
+  },
+  "4320a498139c": {
+    "artist": "Prodigy",
+    "show": "V Festival 2008-08-16",
+    "entries": [
+      "Short Interview"
+    ],
+    "why": "'Short Interview' is a segment, not a song."
+  },
+  "c0dee2ac575f": {
+    "artist": "Police",
+    "show": "Rockpalast 1980-01-11",
+    "entries": [
+      "FULL DIGITAL RECORDING & NOT RE-ENCODED",
+      "Single Layer DVD - 5",
+      "Enjoy the Show"
+    ],
+    "why": "Sidecar header/trailer lines, not songs. The three songs with apostrophes had been dropped by the import (the sidecar is Mac-Roman encoded); restored."
+  },
+  "b1a19e05d09b": {
+    "artist": "Raconteurs",
+    "show": "Eden Sessions 2008-06-29",
+    "entries": [
+      "Raconteurs",
+      "Eden Session",
+      "Eden Project",
+      "Bodelva",
+      "St Austell",
+      "Cornwall",
+      "England",
+      "This DVD from broadcast on MTV HD in about May/June 2009",
+      "of noise at the base of the picture in the bottom couple of lines of the picture which is a bit distracting if you watch it"
+    ],
+    "why": "Sidecar header lines (band, event, place names, broadcast note) are not songs."
+  },
+  "cb90878735fa": {
+    "artist": "Presidents of the USA",
+    "show": "US TV Appearances 1995–1996 ",
+    "entries": [
+      "The Presidents of The United States of America",
+      "U.S. TV Appearances-1995-1996",
+      "Late Night with David Letterman",
+      "The Tonight Show with Jay Leno",
+      "The Jenny McCarthy Show",
+      "Kick Out The Jams",
+      "Mt.Rushmore song"
+    ],
+    "why": "Programme names and the disc title are not songs; the programme breakdown is in Notes."
   }
 }
