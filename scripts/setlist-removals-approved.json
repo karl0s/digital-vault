@@ -1371,5 +1371,24 @@
       "Stereo"
     ],
     "why": "The 'setlist' was the disc's own header (Various; Summer Sonic 2010; DVD 2 - Metal; Interview; Stereo), not songs."
+  },
+  "92fa01c00d4c": {
+    "artist": "Various Artists",
+    "show": "Eurockéennes 1997",
+    "entries": [
+      "In It for the Money",
+      "I'd Like to Know",
+      "Richard III",
+      "Time",
+      "Tonight",
+      "You Can See Me",
+      "Caught by the Fuzz",
+      "Sun Hits the Sky",
+      "Going Out",
+      "It's Not Me",
+      "Strange Ones",
+      "Lenny"
+    ],
+    "why": "A 12-song Supergrass festival setlist pasted onto the multi-act master; the disc's Supergrass segment is ~7½ min (two songs), so the list describes no part of this recording."
   }
 }
