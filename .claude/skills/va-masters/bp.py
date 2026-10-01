@@ -8,7 +8,7 @@ st=json.load(open(statef))["shows"]
 d={s["ShowID"]:s for s in json.load(open(REPO/"public/shows.json"))}
 man=json.load(open(REPO/"public/image-manifest.json"))
 R=H/"reports"/f"{tag}_ba"; shutil.rmtree(R,ignore_errors=True); (R/"b").mkdir(parents=True); (R/"a").mkdir()
-picks=list((H/"picks").glob("*.jpg"))
+import os; picks=list((H/os.environ.get("PICKS_DIR","picks")).glob("*.jpg"))
 secs=[]; order={"A":0,"B":1,"C":2,"spare":3}
 for e in sorted(st,key=lambda e:(d[e["ShowID"]]["Artist"].lower(),d[e["ShowID"]].get("ShowDate") or "9")):
     sid=e["ShowID"]; s=d[sid]; ck=s["ChecksumSHA1"]
