@@ -525,6 +525,12 @@ def apply_override(it, t):
             t["computed_ar"] = t["dar"]
             t["target_w"], t["target_h"] = fit_no_downsample(cw, ch, t["dar"])
             t["override"] = (t.get("override","") + " crop %s (%s)" % (rule["crop"], rule.get("why",""))).strip()
+        if "upscale_to" in rule:                # "WxH" - an owner-approved exception to never-upscale
+            uw, uh = (int(v) for v in rule["upscale_to"].lower().split("x"))
+            if abs(uw / uh - t["target_w"] / t["target_h"]) > 0.02:
+                raise SystemExit("upscale_to %s does not match the source shape %dx%d" % (rule["upscale_to"], t["target_w"], t["target_h"]))
+            t["target_w"], t["target_h"] = uw, uh
+            t["override"] = (t.get("override","") + " upscaled to %s (%s)" % (rule["upscale_to"], rule.get("why",""))).strip()
     return t
 
 
