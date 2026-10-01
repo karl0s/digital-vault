@@ -107,6 +107,10 @@ def main():
 
     bad, checked = [], 0
     for frag, ov in overrides.items():
+        # Only shape-changing rules (dar / crop) must be mirrored in the record.
+        # An `upscale_to` rule changes the stills' SIZE, not their shape.
+        if "dar" not in ov and "crop" not in ov:
+            continue
         rec, err = match_record(frag, shows, ov.get("showid"))
         if not rec:
             bad.append((frag, err, ""))
