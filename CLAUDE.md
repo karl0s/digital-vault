@@ -184,8 +184,9 @@ Killers, Kings of Leon, Lenny Kravitz, Limp Bizkit, Manic Street Preachers, Muse
 Radiohead, Rage Against the Machine, Red Hot Chili Peppers, Silverchair, Smashing Pumpkins,
 Soundgarden, Stereophonics, Stone Temple Pilots, Supergrass, The Offspring, The Strokes, Them Crooked
 Vultures, Tool, Velvet Revolver, Verve (and the Spiritualized set on its Glastonbury disc) and Weezer. A few residual flags remain on finished artists (Foo
-Fighters 2; Filter, Kings of Leon, Nirvana and Radiohead 1 each; 30STM 1 — its "Late Show" record
-is another band entirely and was left as is at the owner's request).
+Fighters 2; Filter, Kings of Leon, Nirvana and Radiohead 1 each). 30STM's "Late Show" record
+`e814e4732ab9` was another band entirely: on 2026-10-02 it was re-filed, with the owner's agreement, as
+Nickel Creek under the Late Night #6 2005 master, of whose VTS_14 it is a byte-identical copy.
 
 **Look at a record's CURRENT stills before trusting its identity.** On 30STM, three records were
 showing the wrong thing on the live site and no audit could say so: a "Kooks" record showing 30STM
