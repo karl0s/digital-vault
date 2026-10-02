@@ -62,7 +62,11 @@ export interface Show {
   /** Where this record sits on the master's timeline, "H:MM:SS". */
   SegmentStart?: string;
   SegmentEnd?: string;
-  Notes: string;
+  /**
+   * Absent on the site's own load: Notes ship separately in show-notes.json
+   * (scripts/site-data.mjs). Read them through useShows' getNotes, never here.
+   */
+  Notes?: string;
   ImageCount?: number;
   ImageURLs?: string[];
   LastScannedAt?: string;
@@ -125,11 +129,11 @@ export default function App() {
     scrollToTop();
   }, [view]);
 
-  const { shows, getImageUrl, error } = useShows();
+  const { shows, getImageUrl, getNotes, error } = useShows();
   const debouncedQuery = useDebounce(searchQuery, 150);
 
   // One pipeline: text query -> facets -> sort, plus the counts the bar needs.
-  const { results, counts, histogram, songSuggestion } = useBrowseResults(shows, filterState);
+  const { results, counts, histogram, songSuggestion } = useBrowseResults(shows, filterState, getNotes);
   const filtered = computeIsFiltered(filterState);
 
   /**
@@ -392,6 +396,7 @@ export default function App() {
             shows={shows}
             onOpenShow={handleShowClick}
             onSettled={() => setDrawerSettled(true)}
+            notes={getNotes(selectedShow)}
           />
         )}
       </AnimatePresence>

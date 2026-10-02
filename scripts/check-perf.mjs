@@ -13,7 +13,9 @@
  * To measure rather than lint: npm run perf (scripts/perf/bench.mjs).
  */
 
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { join } from 'node:path';
+import { DROPPED, LITE_FILE } from './site-data.mjs';
 
 let failures = 0;
 let checks = 0;
@@ -82,6 +84,52 @@ ok('LazyImage uses native lazy loading',
 ok('LazyImage does not pin images to their own compositor layer',
   !/translateZ|will-?change/i.test(lazy),
   'translateZ(0) or will-change on every card image is a permanent layer each — over a thousand on Browse.');
+
+console.log('Show data');
+const useShowsSrc = code('src/hooks/useShows.ts');
+ok(`the site loads ${LITE_FILE} first, not the full shows.json`,
+  useShowsSrc.indexOf(LITE_FILE) !== -1 && useShowsSrc.indexOf(LITE_FILE) < useShowsSrc.indexOf('shows.json`'),
+  'shows.json is 4x the download (534 vs 131 KB gzipped); it is only the fallback.');
+ok('the build writes the derived show data',
+  /siteData\(\)/.test(code('vite.config.ts')),
+  'Without the plugin every load falls back to the full shows.json.');
+
+// Every file the browser runs. Field reads are `.Field`; the Show interface
+// in App.tsx declares them all, so it is skipped.
+const appFiles = ['App.tsx', 'main.tsx'];
+for (const dir of ['components', 'src']) {
+  const walk = d => readdirSync(d).forEach(f => {
+    const p = join(d, f);
+    if (statSync(p).isDirectory()) walk(p);
+    else if (/\.(tsx?)$/.test(f)) appFiles.push(p);
+  });
+  walk(dir);
+}
+const appCode = Object.fromEntries(appFiles.map(f => {
+  let src = code(f);
+  if (f === 'App.tsx') src = src.replace(/export interface Show \{[\s\S]*?\n\}/, '');
+  return [f, src];
+}));
+const reads = (field, except = []) => Object.entries(appCode)
+  .filter(([f, src]) => !except.includes(f) && new RegExp(`\\.${field}\\b`).test(src))
+  .map(([f]) => f);
+const droppedReads = DROPPED.flatMap(field => reads(field).map(f => `${field} in ${f}`));
+ok('no code reads a field the site data drops',
+  droppedReads.length === 0,
+  `${droppedReads.join(', ')} — remove the field from DROPPED in scripts/site-data.mjs, or it is blank on the live site.`);
+const notesReads = reads('Notes', ['src/hooks/useShows.ts', 'src/search/searchIndex.ts']);
+ok('Notes are read only through getNotes',
+  notesReads.length === 0,
+  `${notesReads.join(', ')} reads show.Notes, which the site's data does not carry. Use useShows' getNotes.`);
+
+console.log('Fonts');
+const html = read('index.html');
+ok('no third-party font stylesheet in index.html',
+  !/fonts\.(googleapis|gstatic)\.com/.test(html),
+  'A Google Fonts <link> is render-blocking: nothing paints until another server answers. Self-host (public/fonts/README.md).');
+ok('the body font is preloaded',
+  /rel="preload" href="\.\/fonts\/dm-sans-latin\.woff2"/.test(html),
+  'Without it DM Sans is only requested once the CSS is parsed, and text renders twice.');
 
 console.log(`\n${checks - failures}/${checks} passed`);
 if (failures > 0) process.exit(1);

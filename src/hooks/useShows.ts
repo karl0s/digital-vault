@@ -4,10 +4,31 @@ import { Show } from '../../App';
 export type ImageSize = 'full' | 'thumb';
 export type ImageUrlGetter = (checksum: string, index: number, size?: ImageSize) => string | null;
 
+export type NotesGetter = (show: Show) => string;
+
+/**
+ * Fetch JSON, or null on a 404 / network failure / bad body — the caller
+ * decides what a missing file means.
+ */
+async function fetchJson(url: string): Promise<unknown | null> {
+  try {
+    const res = await fetch(url);
+    return res.ok ? await res.json() : null;
+  } catch {
+    return null;
+  }
+}
+
 export function useShows() {
   const [shows, setShows] = useState<Show[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [imageManifest, setImageManifest] = useState<Record<string, number[]>>({});
+  /**
+   * Notes arrive after the shows, in a lookup of their own. Merging them into
+   * the show objects would replace every object and re-render every memoised
+   * card for text that only the drawer and the `note:` search read.
+   */
+  const [notes, setNotes] = useState<Record<string, string> | null>(null);
 
   useEffect(() => {
     const base = import.meta.env.BASE_URL;
@@ -19,11 +40,17 @@ export function useShows() {
       .catch(() => {});
 
     const loadShows = async () => {
-      const url = `${base}shows.json`;
       try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`Failed with status: ${response.status}`);
-        const data = await response.json();
+        // The trimmed list the build derives from shows.json (scripts/site-data.mjs):
+        // a quarter of the download, no Notes. The full file is the fallback,
+        // so a build without the derived files still works — just heavier.
+        let data = await fetchJson(`${base}shows-lite.json`);
+        const lite = data !== null;
+        if (!lite) {
+          const response = await fetch(`${base}shows.json`);
+          if (!response.ok) throw new Error(`Failed with status: ${response.status}`);
+          data = await response.json();
+        }
 
         let items: Show[];
         if (Array.isArray(data)) {
@@ -39,6 +66,14 @@ export function useShows() {
         // Used where two records are the same recording and only one should appear.
         // Filtered here, at the single load point, so search, rows and counts all agree.
         setShows(items.filter(s => s.Hidden !== 'Yes'));
+
+        // After the grid has what it needs. A failure only costs the Notes
+        // column and `note:` search, so it is logged, not shown as an error.
+        if (lite) {
+          const notesData = await fetchJson(`${base}show-notes.json`);
+          if (notesData && typeof notesData === 'object') setNotes(notesData as Record<string, string>);
+          else console.warn('show-notes.json did not load; Notes are unavailable');
+        }
       } catch (err) {
         // Report the failure rather than substituting sample data. The old
         // fallback rendered five hardcoded shows, which looked like a working
@@ -81,5 +116,15 @@ export function useShows() {
     return `${base}images/${checksum}_0${index}.jpg`;
   }, [imageManifest, hasManifest]);
 
-  return { shows, getImageUrl, error };
+  /**
+   * A show's Notes: from show-notes.json once it has arrived, or from the
+   * record itself when the full shows.json was loaded instead. '' until then.
+   * The one place the site reads Notes — the drawer and search go through it.
+   */
+  const getNotes = useCallback<NotesGetter>(
+    show => notes?.[show.ShowID] ?? show.Notes ?? '',
+    [notes],
+  );
+
+  return { shows, getImageUrl, getNotes, error };
 }

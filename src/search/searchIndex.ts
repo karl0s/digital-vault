@@ -301,7 +301,7 @@ function songTitles(setlist: string): string[] {
 // Query execution
 // ---------------------------------------------------------------------------
 
-function runFieldFilter(shows: Show[], field: string, value: string, query: string): Show[] {
+function runFieldFilter(shows: Show[], field: string, value: string, query: string, getNotes: NotesOf): Show[] {
   const v = value.toLowerCase().trim();
   return shows.filter(show => {
     switch (field) {
@@ -312,7 +312,7 @@ function runFieldFilter(shows: Show[], field: string, value: string, query: stri
       case 'venue':   return show.VenueName.toLowerCase().includes(v);
       case 'event':   return show.EventOrFestival?.toLowerCase().includes(v) ?? false;
       case 'song':    return show.Setlist.toLowerCase().includes(v);
-      case 'note':    return show.Notes.toLowerCase().includes(v);
+      case 'note':    return getNotes(show).toLowerCase().includes(v);
       case 'year':    return show.ShowDate.includes(v);
       case 'drive':   return show.MasterDriveName.toLowerCase().includes(v);
       case 'codec':   return show.VideoCodec.toLowerCase().includes(v);
@@ -326,7 +326,7 @@ function runFieldFilter(shows: Show[], field: string, value: string, query: stri
           (show.EventOrFestival?.toLowerCase().includes(query) ?? false) ||
           (show.RecordingType?.toLowerCase().includes(query) ?? false) ||
           show.Setlist.toLowerCase().includes(query) ||
-          show.Notes.toLowerCase().includes(query)
+          getNotes(show).toLowerCase().includes(query)
         );
     }
   }).sort(sortChronological);
@@ -336,7 +336,15 @@ function runFieldFilter(shows: Show[], field: string, value: string, query: stri
  * Resolve a query string to the exact list of shows it should display.
  * Mirrors the previous inline logic in `useSearchAndFilter` exactly.
  */
-export function runSearch(shows: Show[], searchQuery: string, index: SearchIndex): Show[] {
+/**
+ * Notes are not on the site's show objects (they load separately), so the
+ * two paths that search them take a lookup. The default reads the record,
+ * which is right for anything holding the full shows.json.
+ */
+type NotesOf = (show: Show) => string;
+const notesOnRecord: NotesOf = show => show.Notes ?? '';
+
+export function runSearch(shows: Show[], searchQuery: string, index: SearchIndex, getNotes: NotesOf = notesOnRecord): Show[] {
   if (!searchQuery) return shows;
 
   const { ms, showById } = index;
@@ -346,7 +354,7 @@ export function runSearch(shows: Show[], searchQuery: string, index: SearchIndex
   const fieldMatch = query.match(/^(\w+):(.+)$/);
   if (fieldMatch) {
     const [, field, value] = fieldMatch;
-    return runFieldFilter(shows, field, value, query);
+    return runFieldFilter(shows, field, value, query, getNotes);
   }
 
   // Artist view — an exact artist name is a facet, never a text search.

@@ -190,6 +190,11 @@ async function timingRun(chromium, url, throttle) {
     const { cards, firstRender } = await loadBrowse(b, url);
     const metric = async () => Object.fromEntries((await b.send('Performance.getMetrics')).result.metrics.map(m => [m.name, m.value]));
     const heapMB = (await metric()).JSHeapUsedSize / 1e6;
+    const fcp = await b.evaluate(`performance.getEntriesByName('first-contentful-paint')[0]?.startTime ?? 0`);
+    // Show data fetched for the first render. Raw bytes: vite preview does not
+    // gzip, so this tracks the size of what is parsed, not what crosses the wire.
+    const dataKB = await b.evaluate(`performance.getEntriesByType('resource')
+      .filter(e => /shows(-lite)?\\.json/.test(e.name)).reduce((s, e) => s + e.decodedBodySize, 0) / 1e3`);
 
     // Fast scroll through the whole grid: ~700 px every 60 ms.
     await b.evaluate(`document.documentElement.style.scrollBehavior = 'auto';
@@ -228,7 +233,7 @@ async function timingRun(chromium, url, throttle) {
     }
     const avg = (xs, k) => xs.reduce((s, x) => s + x[k], 0) / xs.length;
     return {
-      cards, firstRender, heapMB, imageMB,
+      cards, firstRender, fcp, dataKB, heapMB, imageMB,
       scrollP95: scroll.p95, scrollLong: scroll.long, blankPct: (100 * blank) / Math.max(seen, 1),
       open: avg(opens, 'first'), openWorst: avg(opens, 'worst'),
       close: avg(closes, 'first'), closeWorst: avg(closes, 'worst'),
@@ -303,6 +308,8 @@ async function main() {
 
     const m = (t, k) => median(runs[t].map(r => r[k]));
     const rows = [
+      ['first contentful paint', 'fcp', 'ms'],
+      ['show data parsed before first render', 'dataKB', 'KB'],
       ['grid first render', 'firstRender', 'ms'],
       ['JS heap after load', 'heapMB', 'MB'],
       ['scroll: image data downloaded', 'imageMB', 'MB'],

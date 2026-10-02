@@ -15,6 +15,11 @@ interface ShowDrawerProps {
   onOpenShow?: (show: Show) => void;
   /** Called once the drawer has finished sliding in (see the inert note in App). */
   onSettled?: () => void;
+  /**
+   * This show's Notes. They load separately from the shows (useShows'
+   * getNotes), so they are passed in rather than read off `show`.
+   */
+  notes?: string;
 }
 
 /** "0:23:19" -> "23:19"; keeps the hour only when there is one. */
@@ -51,7 +56,7 @@ const getColorFromString = (str: string): string => {
 
 const LAYOUT_TRANSITION = { duration: 0.38, ease: [0.16, 1, 0.3, 1] };
 
-export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow, onSettled }: ShowDrawerProps) {
+export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow, onSettled, notes = '' }: ShowDrawerProps) {
   // False while the drawer animates out, so finishing that animation is not
   // mistaken for having settled in.
   const isPresent = useIsPresent();
@@ -473,8 +478,8 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
 
             {/* Setlist · Technical · Notes — 3-column flat layout, same visual style throughout */}
             <div className={`grid grid-cols-1 gap-6 ${
-              setlistItems.length > 0 && show.Notes ? 'md:grid-cols-3' :
-              setlistItems.length > 0 || show.Notes ? 'md:grid-cols-2' : ''
+              setlistItems.length > 0 && notes ? 'md:grid-cols-3' :
+              setlistItems.length > 0 || notes ? 'md:grid-cols-2' : ''
             }`}>
 
               {/* Setlist */}
@@ -522,7 +527,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
               </div>
 
               {/* Notes */}
-              {show.Notes && (
+              {notes && (
                 <div>
                   <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4">
                     Notes
@@ -530,13 +535,13 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                   <div>
                     <div className="relative">
                       <p className={`text-xs text-gray-400 whitespace-pre-wrap wrap-break-word font-mono leading-relaxed ${notesExpanded ? '' : 'max-h-40 overflow-hidden'}`}>
-                        {show.Notes}
+                        {notes}
                       </p>
-                      {!notesExpanded && show.Notes.length > 320 && (
+                      {!notesExpanded && notes.length > 320 && (
                         <div className="absolute bottom-0 left-0 right-0 h-10 bg-linear-to-t from-[#181818] to-transparent pointer-events-none" />
                       )}
                     </div>
-                    {!notesExpanded && show.Notes.length > 320 && (
+                    {!notesExpanded && notes.length > 320 && (
                       <button
                         onClick={() => setNotesExpanded(true)}
                         className="mt-2 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 hover:text-gray-400 transition-colors"

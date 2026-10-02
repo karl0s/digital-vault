@@ -12,6 +12,7 @@ import {
 } from '../search/facets';
 import { getSongSuggestion, resolveArtist, runSearch, SongSuggestion } from '../search/searchIndex';
 import { useSearchEngine } from './useSearchEngine';
+import type { NotesGetter } from './useShows';
 
 /**
  * One pipeline for the browse view:
@@ -39,7 +40,7 @@ export interface BrowseResults {
   songSuggestion: SongSuggestion | null;
 }
 
-export function useBrowseResults(shows: Show[], state: FilterState): BrowseResults {
+export function useBrowseResults(shows: Show[], state: FilterState, getNotes?: NotesGetter): BrowseResults {
   const index = useSearchEngine(shows);
 
   // Derived once per catalogue load, not per keystroke.
@@ -53,8 +54,9 @@ export function useBrowseResults(shows: Show[], state: FilterState): BrowseResul
    */
   const searchIds = useMemo(() => {
     if (!query) return null;
-    return new Set(runSearch(shows, query, index).map(s => s.ShowID));
-  }, [shows, query, index]);
+    return new Set(runSearch(shows, query, index, getNotes).map(s => s.ShowID));
+    // getNotes changes once, when Notes arrive, so a `note:` search fills in.
+  }, [shows, query, index, getNotes]);
 
   const counts = useMemo(
     () => computeFacetCounts(derived, state, searchIds),

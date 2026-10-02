@@ -28,6 +28,7 @@ scripts/
   check-perf.mjs        ← front-end performance guard rails (npm run check:perf)
   perf/bench.mjs        ← measures Browse + drawer in headless Chromium (npm run perf)
   thumbs.mjs            ← card thumbnails, built into dist/thumbs/ by vite-plugin-thumbs.mjs
+  site-data.mjs         ← shows-lite.json + show-notes.json, derived from shows.json at build
 _playground/            ← isolated UI experiments, never imported by the live app
   branding/             ← logo and typographic effect experiments
   grid/                 ← card layout and filter chip experiments
@@ -95,6 +96,23 @@ as needed when complexity warrants it. Follow the depth of `branding/logo.md` as
 ---
 
 ## The data model
+
+### What the site loads (derived at build time)
+`public/shows.json` is the source of truth and still deploys untouched, but the site does
+not load it. Every build (and `npm run dev`) derives two files from it —
+`scripts/site-data.mjs`, wired in by `vite-plugin-site-data.mjs`:
+
+- `shows-lite.json` — every record minus `Notes` and the pipeline-only fields in
+  `DROPPED` (`FolderPath`, `RepVideoFiles`, `Lineage`, `LastScannedAt`, …). Loaded first:
+  534 → 131 KB gzipped.
+- `show-notes.json` — `{ ShowID: Notes }`, loaded straight after.
+
+Nothing to do when editing `shows.json`; the derived files follow it. Two rules for code:
+**read Notes only through `getNotes`** from `useShows` (show objects on the site carry no
+`Notes`), and **before displaying a field, check it is not in `DROPPED`** — if it is,
+remove it from the list, or it will be blank on the live site. `npm run check:perf`
+fails on either mistake. If the derived files are ever missing, the site falls back to
+the full `shows.json`.
 
 ### shows.json
 Flat JSON array of show objects. Key fields:
@@ -1034,6 +1052,12 @@ fails on each of them:
   thumbnails), with the original as `fallbackSrc`. Anything shown large — the drawer
   header, the viewer — uses the original; the drawer header shows the thumbnail first and
   fades the original in over it.
+- **The first load is the trimmed show list, not `shows.json`** (see The data model →
+  What the site loads). Notes arrive afterwards in their own lookup, never merged into the
+  show objects: replacing every object would re-render every memoised card.
+- **Fonts are self-hosted** (`public/fonts/README.md`), and DM Sans is preloaded. Never
+  add a Google Fonts `<link>`: it is render-blocking, so nothing paints until a
+  third-party server has answered.
 - **No `content-visibility` on cards** — tried three ways and rejected. On the card
   button it clips the hover zoom and shadow. On the image it stops lazy loading until the
   card is nearly on screen, so cards scroll in blank. On the overlays and caption it made
@@ -1052,8 +1076,9 @@ identical runs), so compare medians of alternating runs, never one against one. 
 will not start headless from a sandboxed shell; the script uses Playwright's headless
 shell from `~/Library/Caches/ms-playwright/` when it is there.
 
-Still to do, in order: a lean `shows.json` with `Notes` loaded after first paint plus
-self-hosted fonts, and only if a real phone still stutters, virtualising Browse.
+Still open: virtualising Browse, only if a real phone still stutters. It costs in-page
+Cmd+F, and what it would remove — grid first render and the stall when `inert` lands
+after the drawer settles — is small on a Mac.
 
 ---
 
