@@ -73,7 +73,8 @@ export function SearchResultsGrid({ shows, query, searchType, transitionKey, son
           </button>
         </div>
       ) : (
-        <AnimatePresence mode="wait">
+        // presenceAffectsLayout={false}: see the matching comment in App.tsx.
+        <AnimatePresence mode="wait" presenceAffectsLayout={false}>
           <motion.div
             key={transitionKey ?? cardMode}
             // Shared with the landing sections so card size and spacing match
@@ -88,7 +89,7 @@ export function SearchResultsGrid({ shows, query, searchType, transitionKey, son
               <ShowCard
                 key={show.ShowID}
                 show={show}
-                onClick={() => onShowClick(show)}
+                onSelect={onShowClick}
                 getImageUrl={getImageUrl}
                 searchMode={cardMode}
               />

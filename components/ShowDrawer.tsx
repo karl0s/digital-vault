@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useIsPresent } from 'motion/react';
 import { Clock, Music, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Layers } from 'lucide-react';
 import { Show } from '../App';
 import { CloseButton } from './CloseButton';
@@ -12,6 +12,8 @@ interface ShowDrawerProps {
   shows?: Show[];
   /** Switch the open drawer to another show (a master or one of its linked records). */
   onOpenShow?: (show: Show) => void;
+  /** Called once the drawer has finished sliding in (see the inert note in App). */
+  onSettled?: () => void;
 }
 
 /** "0:23:19" -> "23:19"; keeps the hour only when there is one. */
@@ -48,7 +50,10 @@ const getColorFromString = (str: string): string => {
 
 const LAYOUT_TRANSITION = { duration: 0.38, ease: [0.16, 1, 0.3, 1] };
 
-export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow }: ShowDrawerProps) {
+export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow, onSettled }: ShowDrawerProps) {
+  // False while the drawer animates out, so finishing that animation is not
+  // mistaken for having settled in.
+  const isPresent = useIsPresent();
   // expandedFromIndex: which thumbnail was clicked (anchors the layoutId for open/close animation)
   // viewingIndex: which image is currently shown (changes on prev/next without affecting layoutId)
   const [expandedFromIndex, setExpandedFromIndex] = useState<number | null>(null);
@@ -189,6 +194,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow 
         animate={{ x: 0, y: 0 }}
         exit={{ x: isMobile ? 0 : '100%', y: isMobile ? '100%' : 0 }}
         transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+        onAnimationComplete={() => { if (isPresent) onSettled?.(); }}
       >
         {/* In-drawer image viewer */}
         <AnimatePresence>

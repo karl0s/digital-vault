@@ -1,5 +1,5 @@
 
-import { useRef, useState, useEffect, useMemo } from 'react';
+import { useRef, useState, useEffect, useMemo, useCallback } from 'react';
 import { TopNav } from './components/TopNav';
 import { ArtistsView } from './components/ArtistsView';
 import { ShowDrawer } from './components/ShowDrawer';
@@ -189,7 +189,8 @@ export default function App() {
     return () => window.removeEventListener('keydown', onKey);
   }, [searchQuery, showAllMode]);
 
-  function handleShowClick(show: Show) {
+  // Stable, because every memoised ShowCard receives it as `onSelect`.
+  const handleShowClick = useCallback((show: Show) => {
     if (show.ChecksumSHA1) {
       [1, 2, 3, 4].forEach(index => {
         const url = getImageUrl(show.ChecksumSHA1!, index);
@@ -197,7 +198,7 @@ export default function App() {
       });
     }
     setSelectedShow(show);
-  }
+  }, [getImageUrl]);
 
   function handleSearchChange(query: string, type?: 'artist' | 'general') {
     setSearchQuery(query);
@@ -336,7 +337,16 @@ export default function App() {
   // While the drawer is open this takes the whole page behind it out of the tab
   // order and the accessibility tree, which is the half of the modal contract
   // a focus trap alone can't provide.
-  const backgroundInert = selectedShow ? ({ inert: '' } as Record<string, string>) : {};
+  //
+  // It goes on once the drawer has finished sliding in and comes off once it
+  // has finished sliding out — not at the click. Toggling it restyles every
+  // element behind it (~24,000 on Browse), and doing that inside the click
+  // held the drawer's first frame back by ~100 ms on a Mac and ~0.5 s on a
+  // phone-class CPU. Nothing is reachable in between: the backdrop covers the
+  // page for the whole animation, and focus moves into the drawer and is
+  // trapped from its first frame.
+  const [drawerSettled, setDrawerSettled] = useState(false);
+  const backgroundInert = drawerSettled ? ({ inert: '' } as Record<string, string>) : {};
 
   return (
     // reducedMotion="user" makes every motion/react animation honour the OS
@@ -359,15 +369,30 @@ export default function App() {
             />
           }
         >
-          <AnimatePresence mode="wait">
+          {/* presenceAffectsLayout={false} is a performance guard. At its
+              default, AnimatePresence hands every motion component beneath it
+              a new context object on each render, re-rendering all of them
+              straight past React.memo. When the cards still held motion.divs
+              that was ~4,600 components redrawn on every drawer open and
+              close — ~450 ms on a fast Mac. The flag only matters for `layout`
+              animations reacting to a sibling entering or leaving, and nothing
+              under here uses them. */}
+          <AnimatePresence mode="wait" presenceAffectsLayout={false}>
             {mainContent}
           </AnimatePresence>
         </AppShell>
       </div>
 
-      <AnimatePresence>
+      <AnimatePresence onExitComplete={() => setDrawerSettled(false)}>
         {selectedShow && (
-          <ShowDrawer show={selectedShow} onClose={handleCloseDrawer} getImageUrl={getImageUrl} shows={shows} onOpenShow={handleShowClick} />
+          <ShowDrawer
+            show={selectedShow}
+            onClose={handleCloseDrawer}
+            getImageUrl={getImageUrl}
+            shows={shows}
+            onOpenShow={handleShowClick}
+            onSettled={() => setDrawerSettled(true)}
+          />
         )}
       </AnimatePresence>
     </MotionConfig>

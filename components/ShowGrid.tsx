@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Show } from '../App';
 import { GRID_COLS } from './FeaturedRows';
 import { ShowCard } from './ShowCard';
@@ -20,7 +21,9 @@ interface ShowGridProps {
   onClearFilters: () => void;
 }
 
-export function ShowGrid({ shows, onShowClick, getImageUrl, onClearFilters }: ShowGridProps) {
+// Memoised: every prop is stable, so opening the drawer (state in App) skips
+// this grid entirely instead of walking 1,100+ cards to find nothing changed.
+export const ShowGrid = memo(function ShowGrid({ shows, onShowClick, getImageUrl, onClearFilters }: ShowGridProps) {
   if (shows.length === 0) {
     return (
       <div className="py-24 text-center">
@@ -44,11 +47,11 @@ export function ShowGrid({ shows, onShowClick, getImageUrl, onClearFilters }: Sh
         <ShowCard
           key={show.ShowID}
           show={show}
-          onClick={() => onShowClick(show)}
+          onSelect={onShowClick}
           getImageUrl={getImageUrl}
           searchMode="search"
         />
       ))}
     </div>
   );
-}
+});

@@ -64,7 +64,7 @@ function FeaturedSection({ title, shows, onShowClick, getImageUrl }: FeaturedSec
           <ShowCard
             key={show.ShowID}
             show={show}
-            onClick={() => onShowClick(show)}
+            onSelect={onShowClick}
             getImageUrl={getImageUrl}
           />
         ))}

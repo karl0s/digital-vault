@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Show } from '../../App';
 
 export function useShows() {
@@ -49,21 +49,28 @@ export function useShows() {
     loadShows();
   }, []);
 
+  // Once per manifest, not once per call: every card calls getImageUrl, and
+  // Object.keys copies all ~1,150 keys each time.
+  const hasManifest = useMemo(() => Object.keys(imageManifest).length > 0, [imageManifest]);
+
   /**
    * Returns a URL for the given checksum+index, or null if that slot is not
    * present in the image manifest (i.e. the file doesn't exist on disk).
+   *
+   * Stable between renders, and it has to be: it is a prop of every memoised
+   * ShowCard, so a fresh function here would re-render all of them.
    */
-  const getImageUrl = (checksum: string, index: number): string | null => {
+  const getImageUrl = useCallback((checksum: string, index: number): string | null => {
     const base = import.meta.env.BASE_URL;
 
     // If manifest is loaded, only return a URL for slots we know exist
-    if (Object.keys(imageManifest).length > 0) {
+    if (hasManifest) {
       const available = imageManifest[checksum];
       if (!available || !available.includes(index)) return null;
     }
 
     return `${base}images/${checksum}_0${index}.jpg`;
-  };
+  }, [imageManifest, hasManifest]);
 
   return { shows, getImageUrl, error };
 }
