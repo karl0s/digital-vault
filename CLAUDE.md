@@ -756,6 +756,8 @@ These are canonical — do not introduce variants.
 | MuchMusic (intimate) | `Much Music Intimate & Interactive` | `Chum City Building` | `Toronto` | `Canada` | `&` not `and` |
 | Nissan Live Sets | `Nissan Live Sets on Yahoo! Music` | _(blank)_ | _(varies)_ | `United States` | Full name always |
 | Farm Club | `Farm Club` | _(blank)_ | `Los Angeles` | `United States` | USA Network late-night music show (2000–2001) |
+| Leeds Festival | `Leeds Festival` | `Bramham Park` | `Leeds` | `United Kingdom` | 2003 onward; settled on Reading 2006 (M21) |
+| Reading + Leeds, site unknown | `Reading and Leeds Festival` | _(blank)_ | _(blank)_ | `United Kingdom` | Only when the footage names neither site — check stage banners ("Carling Weekend Reading") first |
 
 ---
 
