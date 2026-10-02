@@ -67,6 +67,12 @@ ok('inert waits for the drawer animation, not the click',
   'Toggling inert restyles the whole page (~24k elements). Keyed on selectedShow it delays the drawer by 100 ms+ (Mac) / 0.5 s (phone).');
 
 console.log('Images');
+ok('cards load the build thumbnail, with the original as fallback',
+  /getImageUrl\(show\.ChecksumSHA1, 1, 'thumb'\)/.test(card) && /src=\{thumbUrl\}/.test(card) && /fallbackSrc=\{imageUrl\}/.test(card),
+  'Cards show ~580 real pixels at most; the originals are 720–1920 px. Thumbnails: scripts/thumbs.mjs.');
+ok('the build makes the thumbnails',
+  /thumbnails\(\)/.test(code('vite.config.ts')),
+  'Without the plugin dist/thumbs/ is empty and every card silently falls back to the full original.');
 ok('getImageUrl is stable (useCallback)',
   /const getImageUrl = useCallback\(/.test(shows),
   'It is a prop of every memoised card.');

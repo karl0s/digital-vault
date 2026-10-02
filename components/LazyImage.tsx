@@ -7,6 +7,12 @@ interface LazyImageProps {
   placeholderColor?: string;
   onClick?: () => void;
   style?: React.CSSProperties;
+  /**
+   * Loaded instead if `src` fails. Cards pass the original here and a build
+   * thumbnail as `src`, so a thumbnail that does not exist yet (a fresh
+   * `npm run dev`, an image added since the last build) still shows a picture.
+   */
+  fallbackSrc?: string | null;
 }
 
 /**
@@ -24,11 +30,14 @@ export function LazyImage({
   className = '',
   placeholderColor = 'bg-gray-800',
   onClick,
-  style
+  style,
+  fallbackSrc = null,
 }: LazyImageProps) {
-  // Keyed by src, so a changed src fades in again without an effect to reset it.
+  // Both keyed by src, so a changed src starts over without an effect to reset it.
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const [loadedSrc, setLoadedSrc] = useState<string | null>(null);
-  const loaded = src !== null && loadedSrc === src;
+  const current = src !== null && failedSrc === src && fallbackSrc ? fallbackSrc : src;
+  const loaded = current !== null && loadedSrc === current;
 
   return (
     <div
@@ -47,13 +56,14 @@ export function LazyImage({
           one pins every card image to its own compositor layer for good —
           over a thousand layers on Browse — for a 500ms fade the browser
           composites on its own while it runs. */}
-      {src && (
+      {current && (
         <img
-          src={src}
+          src={current}
           alt={alt}
           loading="lazy"
           decoding="async"
-          onLoad={() => setLoadedSrc(src)}
+          onLoad={() => setLoadedSrc(current)}
+          onError={() => { if (current === src && fallbackSrc) setFailedSrc(src); }}
           className={`w-full h-full object-cover transition-opacity duration-500 ${
             loaded ? 'opacity-100' : 'opacity-0'
           }`}

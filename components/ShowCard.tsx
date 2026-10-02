@@ -1,6 +1,7 @@
 import { memo, useRef } from 'react';
 import { Show } from '../App';
 import { LazyImage } from './LazyImage';
+import type { ImageUrlGetter } from '../src/hooks/useShows';
 
 interface ShowCardProps {
   show: Show;
@@ -9,7 +10,7 @@ interface ShowCardProps {
    * closure, so every card gets the same function and `memo` below can hold.
    */
   onSelect: (show: Show) => void;
-  getImageUrl?: (checksum: string, index: number) => string | null;
+  getImageUrl?: ImageUrlGetter;
   searchMode?: 'artist' | 'search';
 }
 
@@ -49,6 +50,10 @@ export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, se
   const imageUrl = show.ChecksumSHA1
     ? (getImageUrl ? getImageUrl(show.ChecksumSHA1, 1) : `/images/${show.ChecksumSHA1}_01.jpg`)
     : null;
+  // What the card actually loads: the build's 640px WebP of the same image —
+  // more pixels than a card ever shows, a fraction of the bytes and decode
+  // memory. The original stays as the fallback.
+  const thumbUrl = show.ChecksumSHA1 && getImageUrl ? getImageUrl(show.ChecksumSHA1, 1, 'thumb') : imageUrl;
 
   const location = [show.City, show.Country].filter(Boolean).join(', ');
   // Full context label: event → venue → city/country
@@ -119,7 +124,8 @@ export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, se
         <div className="aspect-4/3 bg-neutral-900 relative">
           {imageUrl ? (
             <LazyImage
-              src={imageUrl}
+              src={thumbUrl}
+              fallbackSrc={imageUrl}
               alt={`${show.Artist} - ${show.VenueName}`}
               className="w-full h-full object-cover object-center"
               placeholderColor={getColorFromString(show.Artist)}

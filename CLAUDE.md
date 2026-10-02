@@ -27,6 +27,7 @@ scripts/
   health-check.py       ← integrity validator (runs automatically as pre-push hook)
   check-perf.mjs        ← front-end performance guard rails (npm run check:perf)
   perf/bench.mjs        ← measures Browse + drawer in headless Chromium (npm run perf)
+  thumbs.mjs            ← card thumbnails, built into dist/thumbs/ by vite-plugin-thumbs.mjs
 _playground/            ← isolated UI experiments, never imported by the live app
   branding/             ← logo and typographic effect experiments
   grid/                 ← card layout and filter chip experiments
@@ -137,6 +138,26 @@ Only slots listed here are served — if a slot isn't in the array, the image is
   1. Copy new files to `public/images/` with correct `{checksum}_0{n}.jpg` name
   2. Update `public/image-manifest.json` to reflect the new set of indices
   3. **Never** leave files in `public/images/temp-images/` — clean it up every task
+
+### Card thumbnails — build output, never committed
+
+Cards do not load the originals. Every build makes a 640px-wide WebP of each slot-1
+image (`scripts/thumbs.mjs`, run by the Vite plugin in `vite.config.ts`) and ships it as
+`dist/thumbs/{checksum}_01.webp`. A card is at most ~580 real pixels wide even on a 3×
+phone, so the thumbnail carries more detail than any card shows; it is encoded at WebP
+quality 90 with sharp-YUV chroma. Originals are untouched and still serve the drawer
+header and the image viewer.
+
+- **Nothing to do when images change.** Thumbnails are regenerated from `public/images/`
+  by content hash on the next build (or `npm run dev`); replaced images get new ones,
+  removed ones are dropped. The images workflow above is unchanged.
+- **Never commit them, never put them in `public/`.** They live in
+  `node_modules/.cache/vault-thumbs/` (and the deploy's Actions cache), where
+  `git add -f public/` cannot reach them.
+- **A missing thumbnail is not an error.** The card falls back to the original, so a
+  fresh `npm run dev` looks the same while it builds them in the background (~80 s for
+  ~1,170 the first time, then incremental).
+- Only slot 1 has a thumbnail; `getImageUrl(checksum, 1, 'thumb')` gives its URL.
 
 ### Image geometry — display shape, not stored shape
 
@@ -1009,6 +1030,10 @@ fails on each of them:
 - **Card images use native `loading="lazy"`** in `LazyImage`. No per-image
   IntersectionObserver, and no `translateZ(0)` or `will-change` — each pins a compositor
   layer per card.
+- **Cards load the build thumbnail, not the original** (see Image conventions → Card
+  thumbnails), with the original as `fallbackSrc`. Anything shown large — the drawer
+  header, the viewer — uses the original; the drawer header shows the thumbnail first and
+  fades the original in over it.
 - **No `content-visibility` on cards** — tried three ways and rejected. On the card
   button it clips the hover zoom and shadow. On the image it stops lazy loading until the
   card is nearly on screen, so cards scroll in blank. On the overlays and caption it made
@@ -1027,9 +1052,8 @@ identical runs), so compare medians of alternating runs, never one against one. 
 will not start headless from a sandboxed shell; the script uses Playwright's headless
 shell from `~/Library/Caches/ms-playwright/` when it is there.
 
-Still to do, in order: card thumbnails generated at build time (originals untouched), a
-lean `shows.json` with `Notes` loaded after first paint plus self-hosted fonts, and only
-if a real phone still stutters, virtualising Browse.
+Still to do, in order: a lean `shows.json` with `Notes` loaded after first paint plus
+self-hosted fonts, and only if a real phone still stutters, virtualising Browse.
 
 ---
 

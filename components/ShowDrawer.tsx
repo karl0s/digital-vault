@@ -3,11 +3,12 @@ import { motion, AnimatePresence, useIsPresent } from 'motion/react';
 import { Clock, Music, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Layers } from 'lucide-react';
 import { Show } from '../App';
 import { CloseButton } from './CloseButton';
+import type { ImageUrlGetter } from '../src/hooks/useShows';
 
 interface ShowDrawerProps {
   show: Show;
   onClose: () => void;
-  getImageUrl?: (checksum: string, index: number) => string | null;
+  getImageUrl?: ImageUrlGetter;
   /** Every loaded show — used to resolve the master / linked-record relationship. */
   shows?: Show[];
   /** Switch the open drawer to another show (a master or one of its linked records). */
@@ -105,6 +106,13 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
   const images = show.ChecksumSHA1
     ? [1, 2, 3, 4].map(i => getImageUrl ? getImageUrl(show.ChecksumSHA1!, i) : `/images/${show.ChecksumSHA1}_0${i}.jpg`).filter(Boolean) as string[]
     : [];
+
+  // The header shows the card's thumbnail straight away — almost always
+  // cached from the card just clicked — and fades the original in over it.
+  // Keyed by src, so moving to a linked record starts the fade over.
+  const heroThumb = show.ChecksumSHA1 && getImageUrl ? getImageUrl(show.ChecksumSHA1, 1, 'thumb') : null;
+  const [heroLoadedSrc, setHeroLoadedSrc] = useState<string | null>(null);
+  const heroReady = !heroThumb || heroLoadedSrc === images[0];
 
   function openImage(idx: number) {
     setExpandedFromIndex(idx);
@@ -296,12 +304,26 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
             {images.length > 0 ? (
               <>
                 {/* Decorative: it sits at 55% behind a gradient, and the artist
-                    name is the heading directly on top of it. */}
-                <img
-                  src={images[0]}
-                  alt=""
-                  className="w-full h-full object-cover object-center opacity-55"
-                />
+                    name is the heading directly on top of it. The 55% is on
+                    the wrapper, not each image, so thumbnail and original
+                    never add up to a brighter header mid-fade. */}
+                <div className="absolute inset-0 opacity-55">
+                  {heroThumb && (
+                    <img
+                      src={heroThumb}
+                      alt=""
+                      className="absolute inset-0 w-full h-full object-cover object-center"
+                    />
+                  )}
+                  <img
+                    src={images[0]}
+                    alt=""
+                    onLoad={() => setHeroLoadedSrc(images[0])}
+                    className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-300 ${
+                      heroReady ? 'opacity-100' : 'opacity-0'
+                    }`}
+                  />
+                </div>
                 <div className="absolute inset-0 bg-linear-to-t from-[#181818] via-[#181818]/50 to-transparent" />
               </>
             ) : (

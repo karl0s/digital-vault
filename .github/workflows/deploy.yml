@@ -30,6 +30,16 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      # Card thumbnails (scripts/thumbs.mjs) take ~1-2 min to encode from
+      # scratch. The cache carries them between deploys; the build re-encodes
+      # only images that are new or changed since, by content hash.
+      - name: Restore card thumbnails
+        uses: actions/cache@v4
+        with:
+          path: node_modules/.cache/vault-thumbs
+          key: thumbs-${{ hashFiles('public/images/*_01.jpg', 'scripts/thumbs.mjs') }}
+          restore-keys: thumbs-
+
       - name: Build
         run: npm run build
 

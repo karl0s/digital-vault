@@ -109,6 +109,9 @@ async function openBrowser(chromium, { throttle = 1, reducedMotion = false } = {
   };
 
   await send('Performance.enable');
+  await send('Page.enable');
+  // The default buffer keeps 250 entries; Browse loads over a thousand images.
+  await send('Page.addScriptToEvaluateOnNewDocument', { source: 'performance.setResourceTimingBufferSize(10000)' });
   if (throttle !== 1) await send('Emulation.setCPUThrottlingRate', { rate: throttle });
   if (reducedMotion) {
     await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
@@ -203,6 +206,9 @@ async function timingRun(chromium, url, throttle) {
       blank += n; seen += t;
     }
     await sleep(1000);
+    // Image bytes fetched so far: load plus the scroll through everything.
+    const imageMB = await b.evaluate(`performance.getEntriesByType('resource')
+      .filter(e => /\\.(jpe?g|webp)(\\?|$)/.test(e.name)).reduce((s, e) => s + e.encodedBodySize, 0) / 1e6`);
     const scroll = await b.evaluate(`(() => { cancelAnimationFrame(window.__raf); const f = window.__f, d = [];
       for (let i = 1; i < f.length; i++) d.push(f[i] - f[i - 1]); d.sort((a, b) => a - b);
       return { p95: d[Math.floor(d.length * 0.95)], long: d.filter(x => x > 50).length }; })()`);
@@ -222,7 +228,7 @@ async function timingRun(chromium, url, throttle) {
     }
     const avg = (xs, k) => xs.reduce((s, x) => s + x[k], 0) / xs.length;
     return {
-      cards, firstRender, heapMB,
+      cards, firstRender, heapMB, imageMB,
       scrollP95: scroll.p95, scrollLong: scroll.long, blankPct: (100 * blank) / Math.max(seen, 1),
       open: avg(opens, 'first'), openWorst: avg(opens, 'worst'),
       close: avg(closes, 'first'), closeWorst: avg(closes, 'worst'),
@@ -299,6 +305,7 @@ async function main() {
     const rows = [
       ['grid first render', 'firstRender', 'ms'],
       ['JS heap after load', 'heapMB', 'MB'],
+      ['scroll: image data downloaded', 'imageMB', 'MB'],
       ['scroll: p95 frame', 'scrollP95', 'ms'],
       ['scroll: frames over 50 ms', 'scrollLong', ''],
       // At 1x the scripted flick (~11,000 px/s) outruns any network, so that

@@ -1,6 +1,9 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Show } from '../../App';
 
+export type ImageSize = 'full' | 'thumb';
+export type ImageUrlGetter = (checksum: string, index: number, size?: ImageSize) => string | null;
+
 export function useShows() {
   const [shows, setShows] = useState<Show[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -57,10 +60,15 @@ export function useShows() {
    * Returns a URL for the given checksum+index, or null if that slot is not
    * present in the image manifest (i.e. the file doesn't exist on disk).
    *
+   * `size: 'thumb'` gives the 640px WebP the build makes of slot 1 for cards
+   * (scripts/thumbs.mjs). Only slot 1 has one; any other slot gets the
+   * original. Anything shown large — the drawer header, the viewer — uses
+   * the original.
+   *
    * Stable between renders, and it has to be: it is a prop of every memoised
    * ShowCard, so a fresh function here would re-render all of them.
    */
-  const getImageUrl = useCallback((checksum: string, index: number): string | null => {
+  const getImageUrl = useCallback((checksum: string, index: number, size: ImageSize = 'full'): string | null => {
     const base = import.meta.env.BASE_URL;
 
     // If manifest is loaded, only return a URL for slots we know exist
@@ -69,6 +77,7 @@ export function useShows() {
       if (!available || !available.includes(index)) return null;
     }
 
+    if (size === 'thumb' && index === 1) return `${base}thumbs/${checksum}_01.webp`;
     return `${base}images/${checksum}_0${index}.jpg`;
   }, [imageManifest, hasManifest]);
 
