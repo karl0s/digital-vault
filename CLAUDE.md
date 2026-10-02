@@ -25,6 +25,8 @@ src/hooks/              ← custom React hooks
 data-pipeline/          ← numbered Python scripts for scanning hard drives → CSV → shows.json
 scripts/
   health-check.py       ← integrity validator (runs automatically as pre-push hook)
+  check-perf.mjs        ← front-end performance guard rails (npm run check:perf)
+  perf/bench.mjs        ← measures Browse + drawer in headless Chromium (npm run perf)
 _playground/            ← isolated UI experiments, never imported by the live app
   branding/             ← logo and typographic effect experiments
   grid/                 ← card layout and filter chip experiments
@@ -975,6 +977,59 @@ recording and is intentionally excluded.
 > all shows" and the Seagate as "overflow + 2010–2013 era". Both were wrong —
 > the Seagate is larger on every measure, and only 13% of its shows fall in
 > 2010–2013.
+
+---
+
+## Front-end performance
+
+Measured, not guessed. On 2026-10-02 the drawer took 400–600 ms to open on a Mac
+(~1.9 s at 4× CPU throttle, a stand-in for a phone) and Browse scrolled at ~6 fps on a
+phone-class CPU. `a108257` brought the drawer to ~25 ms (~145 ms at 4×) and halved JS
+memory. These rules keep it there, and `npm run check:perf` (part of `npm run check`)
+fails on each of them:
+
+- **No motion components inside `ShowCard`.** Its hover and focus layers are CSS
+  (`group-hover`, `group-focus-visible`). Browse renders every show — ~1,200 cards — and
+  four `motion.div`s per card was ~4,600 animated components re-rendering together. Use
+  `motion` for one-off elements (drawer, hero), never per card. The vendored animation
+  skills in `.claude/skills/` do not know this; this rule wins.
+- **`AnimatePresence` around views or grids sets `presenceAffectsLayout={false}`.** At
+  its default it hands every motion component beneath it a new context object on every
+  render, which re-renders them all straight past `React.memo`. This was the single
+  biggest cost.
+- **Props that reach cards are stable.** `ShowCard` and `ShowGrid` are memoised: pass
+  `onSelect={onShowClick}`, never `onClick={() => …}`. `getImageUrl` (useShows) and
+  `handleShowClick` (App) are `useCallback`s. One inline arrow re-renders every card.
+- **`inert` behind the drawer waits for the animation.** It goes on when the drawer
+  finishes sliding in and comes off when it finishes sliding out (`drawerSettled` in App,
+  `onSettled` in ShowDrawer). Toggling it restyles every element on the page (~26k on
+  Browse); inside the click that delayed the drawer's first frame by ~100 ms (Mac) /
+  ~0.5 s (phone). Nothing is exposed meanwhile: the backdrop covers the page and focus is
+  moved into the drawer and trapped from its first frame.
+- **Card images use native `loading="lazy"`** in `LazyImage`. No per-image
+  IntersectionObserver, and no `translateZ(0)` or `will-change` — each pins a compositor
+  layer per card.
+- **No `content-visibility` on cards** — tried three ways and rejected. On the card
+  button it clips the hover zoom and shadow. On the image it stops lazy loading until the
+  card is nearly on screen, so cards scroll in blank. On the overlays and caption it made
+  fast scrolling choppier and no longer sped up the drawer once `inert` was deferred.
+
+**Measure before and after** any change to cards, grids, the drawer or image loading:
+
+```bash
+npm run perf               # build, serve, check drawer behaviour, time it, apply budgets (~4 min)
+npm run perf -- --quick    # one run per CPU speed (~2 min)
+npm run perf -- --url https://karl0s.github.io/digital-vault/   # probe any server, e.g. live
+```
+
+Single runs on this Mac swing widely (one drawer timing went 140 ms → 17 ms between
+identical runs), so compare medians of alternating runs, never one against one. Chrome.app
+will not start headless from a sandboxed shell; the script uses Playwright's headless
+shell from `~/Library/Caches/ms-playwright/` when it is there.
+
+Still to do, in order: card thumbnails generated at build time (originals untouched), a
+lean `shows.json` with `Notes` loaded after first paint plus self-hosted fonts, and only
+if a real phone still stutters, virtualising Browse.
 
 ---
 
