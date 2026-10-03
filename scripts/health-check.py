@@ -133,6 +133,26 @@ if linked and not _link_errs:
 elif not linked:
     print('  No linked records')
 
+# ── 4c. Content type ─────────────────────────────────────────────────────────
+# ContentType says what a record IS and is absent for a live show. RecordingType
+# says how it was filmed (Proshot / Audience / Soundboard); "Documentary" there
+# was the old misuse, moved to ContentType on 2026-10-04. A documentary is a
+# programme where half or more of the runtime is talking or narration.
+
+section('Content type')
+CONTENT_TYPES = {'Documentary'}
+_ct_before = len(ERRORS)
+for s in shows:
+    sid, ct = s.get('ShowID'), s.get('ContentType')
+    if ct is not None and ct not in CONTENT_TYPES:
+        error(f'  {sid}: ContentType {ct!r} is not one of {sorted(CONTENT_TYPES)} (leave it out for a live show)')
+    if 'documentary' in (s.get('RecordingType') or '').lower():
+        error(f'  {sid}: RecordingType is {s["RecordingType"]!r} - a documentary is ContentType "Documentary"; '
+              f'RecordingType says how it was filmed')
+if len(ERRORS) == _ct_before:
+    _docs = sum(1 for s in shows if s.get('ContentType') == 'Documentary')
+    print(f'  {_docs} documentaries, every ContentType valid — OK')
+
 # ── 5. Image manifest vs actual image files ───────────────────────────────────
 
 section('Image manifest vs disk')

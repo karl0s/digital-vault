@@ -53,7 +53,7 @@ function toSearchDoc(show: Show): SearchDoc {
     venue: show.VenueName,
     city: show.City,
     country: show.Country,
-    type: show.RecordingType || '',
+    type: [show.RecordingType, show.ContentType].filter(Boolean).join(' '),
     event: show.EventOrFestival || '',
     searchText: [
       show.Artist,
@@ -63,6 +63,7 @@ function toSearchDoc(show: Show): SearchDoc {
       show.Country,
       show.EventOrFestival || '',
       show.RecordingType || '',
+      show.ContentType || '',
       // Setlist stays indexed so users can find shows by song.
       //
       // Notes is deliberately NOT indexed. It is largely data-pipeline exhaust
@@ -306,7 +307,7 @@ function runFieldFilter(shows: Show[], field: string, value: string, query: stri
   return shows.filter(show => {
     switch (field) {
       case 'artist':  return show.Artist.toLowerCase().includes(v);
-      case 'type':    return show.RecordingType?.toLowerCase().includes(v) ?? false;
+      case 'type':    return [show.RecordingType, show.ContentType].some(t => t?.toLowerCase().includes(v));
       case 'country': return show.Country.toLowerCase().includes(v);
       case 'city':    return show.City.toLowerCase().includes(v);
       case 'venue':   return show.VenueName.toLowerCase().includes(v);
@@ -325,6 +326,7 @@ function runFieldFilter(shows: Show[], field: string, value: string, query: stri
           show.ShowDate.includes(query) ||
           (show.EventOrFestival?.toLowerCase().includes(query) ?? false) ||
           (show.RecordingType?.toLowerCase().includes(query) ?? false) ||
+          (show.ContentType?.toLowerCase().includes(query) ?? false) ||
           show.Setlist.toLowerCase().includes(query) ||
           getNotes(show).toLowerCase().includes(query)
         );

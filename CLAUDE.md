@@ -126,12 +126,46 @@ Flat JSON array of show objects. Key fields:
 | `VenueName` | string | Physical venue name — not the festival name |
 | `City` | string | |
 | `Country` | string | |
-| `RecordingType` | string | "Proshot", "Soundboard", "Audience" |
+| `RecordingType` | string | "Proshot", "Soundboard", "Audience": how it was **filmed**. Never "Documentary"; the health check rejects it |
+| `ContentType` | `"Documentary"` or absent | What the record **is**. Absent = a live show. Drives the sidebar's Live / Documentaries filter, the card badge and the drawer pill. See *Documentaries* below |
 | `ChecksumSHA1` | 40-char hex string | SHA1 of the source file; used as image key |
 | `Notes` | string | Free text; temp checksum stubs have "TEMP CHECKSUM - update when files are scanned" here |
 | `Hidden` | `"Yes"` or absent | Keeps the record in `shows.json` but off the site — filtered once in `src/hooks/useShows.ts`. For two records of one recording where only one should show; set `DuplicateOf` to the shown record and say why in `Notes`. Do **not** reuse `DuplicateOf` alone to hide: Jay-Z and Jack White carry it and are meant to show |
 | `ParentShowID` | ShowID or absent | Set on a record cut from a multi-artist **master** recording (a festival broadcast, a talk-show compilation). The drawer shows a "Part of …" link to the master; the master's drawer lists every record pointing at it under "On this recording". One level only; the master must not be hidden. Checked by the health check |
 | `SegmentStart` / `SegmentEnd` | `H:MM:SS` | Where that linked record sits on the master's timeline. Always set together with `ParentShowID` |
+
+### Documentaries — `ContentType`
+
+**The owner's rule: a record is a Documentary when half or more of its runtime is people
+talking or narration over footage.** Standalone interviews, making-of, behind-the-scenes, MTV
+Cribs-style shows, rockumentaries and TV biographies count. Storytellers, Unplugged and concert
+films with backstage inserts do not. Judge it from the footage, never from the title: the Vines
+titleset named "VTS_04 - documentary" is three-quarters live performance, and Foo Fighters MSG
+2008's Notes claimed "about half interviews" when a full sweep found almost none.
+
+The first full pass ran on 2026-10-04: every record's stills read blind, every folder name
+checked against each artist's known documentaries, and a 48-frame sweep across the whole
+programme for every borderline record. The owner decided all 87 candidates on a review page.
+29 records are Documentary. Each changed record says why in `Notes` under `CONTENT TYPE (2026-10-04)`.
+Before that pass, "Documentary" lived in `RecordingType` on 15 records, and 11 of them were
+concerts (Rockpalast, Haldern, Weezer *Across the Sea*).
+
+Set `ContentType` whenever a new record is created, the VA-master and screenshot procedures
+included. To measure a borderline programme, use the read-only sweep tool, which samples MPEG
+streams by byte position so broken DVD timestamps cannot misplace a frame:
+
+```bash
+python3 ~/VaultShots/doc_sweep.py <ShowID> [<ShowID> ...]   # contact sheets in ~/VaultShots/doc_sweeps/
+```
+
+Count the frames that are talking, interviews, archive or behind-the-scenes against the
+performance frames. With 48 frames the estimate is about ±7%, so put anything between roughly
+42% and 58% to the owner.
+
+Four pieces of documentary footage still have no record of their own, all left out earlier
+because they are not performances: the Cornell WDR interview (VTS_01 of the Audioslave
+`rar/` disc), the interviews in VTS_03 of `Kings of Leon - BDO 2006 and 2004`, and the making-of
+(VTS_03) and EPK (VTS_04) in `Supergrass - Pinkpop Festival Dutch TV 1997`.
 
 ### ShowDate rules
 - Format is always `YYYY-MM-DD` or empty string `""`

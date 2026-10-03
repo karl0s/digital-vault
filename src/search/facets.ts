@@ -39,15 +39,13 @@ function deriveYear(showDate: string): number | null {
 }
 
 /**
- * ContentType is a Phase 0 field that does not exist on most records yet.
- * Until it lands, everything untagged reads as 'live' — except the 18 shows
- * already carrying RecordingType 'Documentary', which are honoured now so the
- * facet is useful before the tagging pass completes.
+ * ContentType says what a record is. It is set only where the record is not a
+ * live show, so everything without it reads as 'live'. RecordingType says how
+ * it was filmed and plays no part here.
  */
 function deriveType(show: Show): string {
-  const explicit = (show as Show & { ContentType?: string }).ContentType;
+  const explicit = show.ContentType;
   if (explicit && explicit.trim()) return slugify(explicit);
-  if ((show.RecordingType || '').toLowerCase().includes('documentary')) return 'documentary';
   return 'live';
 }
 

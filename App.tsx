@@ -28,6 +28,8 @@ export interface Show {
   City: string;
   Country: string;
   RecordingType?: string;
+  /** What the record is; absent means a live show. Only 'Documentary' so far. */
+  ContentType?: string;
   Generation?: string;
   Setlist: string;
   Lineage: string;

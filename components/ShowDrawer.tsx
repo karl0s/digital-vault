@@ -368,8 +368,13 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                 ].filter(Boolean).join(' · ')}
               </p>
 
-              {/* Metadata badges: recording type, duration, TV standard */}
+              {/* Metadata badges: content type, recording type, duration, TV standard */}
               <div className="flex flex-wrap gap-1.5">
+                {show.ContentType && (
+                  <span className="px-2.5 py-0.5 rounded text-xs font-medium bg-violet-500/15 text-violet-300 border border-violet-500/25">
+                    {show.ContentType}
+                  </span>
+                )}
                 {show.RecordingType && (
                   <span className={`px-2.5 py-0.5 rounded text-xs font-medium ${getRecordingBadgeStyle(show.RecordingType)}`}>
                     {show.RecordingType}

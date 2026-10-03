@@ -60,10 +60,9 @@ interface TypeFilter {
 }
 
 /**
- * ContentType is a Phase 0 field still being tagged. Only the two values that
- * resolve today are offered — 'live' (everything untagged) and 'documentary'
- * (the 18 already carrying RecordingType Documentary). TV sessions and
- * compilations join this list once the tagging pass lands.
+ * Only the two values ContentType holds today are offered — 'live' (every
+ * record without it) and 'documentary'. TV sessions and compilations join this
+ * list if those values are ever written.
  */
 const TYPE_FILTERS: TypeFilter[] = [
   { value: 'live', label: 'Live shows', icon: Radio },

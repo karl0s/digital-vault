@@ -168,11 +168,11 @@ export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, se
               </div>
             </div>
 
-            {/* Recording type badge — bottom-right on hover */}
-            {show.RecordingType && (
+            {/* Type badge — bottom-right on hover. A documentary says so; anything else shows how it was filmed. */}
+            {(show.ContentType || show.RecordingType) && (
               <div className={`absolute bottom-2 right-2 z-10 transition-opacity duration-150 ${reveal}`}>
-                <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium tracking-wide ${getRecordingBadgeStyle(show.RecordingType)}`}>
-                  {show.RecordingType.split(' ')[0].toUpperCase()}
+                <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium tracking-wide ${getRecordingBadgeStyle(show.RecordingType ?? '')}`}>
+                  {(show.ContentType || show.RecordingType || '').split(' ')[0].toUpperCase()}
                 </span>
               </div>
             )}

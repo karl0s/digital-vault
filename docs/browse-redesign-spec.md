@@ -54,7 +54,7 @@ costs more trust than it earns.
 | Country | 84% (694) | ⚠️ `England` (8) and `US` (2) must fold into `United Kingdom` / `United States` before shipping |
 | Festival | 59% (488) | 154 distinct. 23 appear 5+ times (295 shows); 91 appear exactly once |
 | Recording type | 48% | Dropped as a facet |
-| Documentary | 18 tagged | Not derivable — `Notes` keyword matching is noise from pipeline lineage text |
+| Documentary | 29 tagged in `ContentType` (2026-10-04) | Not derivable from text — `Notes` keyword matching is noise. Classified from the footage; see CLAUDE.md, Documentaries |
 
 ### Phase 0 — data work, lands on `main` not this branch
 
