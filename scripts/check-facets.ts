@@ -26,7 +26,19 @@ function ok(label: string, pass: boolean, detail = ''): void {
 
 const f = (over: Partial<FilterState> = {}): FilterState => ({ ...EMPTY_FILTERS, ...over });
 
-console.log(`\ncorpus: ${shows.length} shows`);
+// Expected values come from the data itself, computed independently of the
+// facet engine. Hard-coded counts went stale as the collection grew (829 →
+// 1,200+ shows) and failed for reasons that had nothing to do with the engine.
+const yearOf = (s: Show): number | null => {
+  const m = /^(\d{4})/.exec((s.ShowDate || '').trim());
+  return m ? Number.parseInt(m[1], 10) : null;
+};
+const datedYears = shows.map(yearOf).filter((y): y is number => y !== null);
+const undatedTotal = shows.length - datedYears.length;
+const firstYear = Math.min(...datedYears);
+const lastYear = Math.max(...datedYears);
+
+console.log(`\ncorpus: ${shows.length} shows, ${undatedTotal} undated, ${firstYear}-${lastYear}`);
 
 console.log('\nderivation');
 const eras = new Map<string, number>();
@@ -35,7 +47,9 @@ console.log('  eras:', [...eras.entries()].sort().map(([k, v]) => `${k}=${v}`).j
 ok('every show derives an era (NONE allowed)', derived.every(d => d.era.length > 0));
 ok('undated shows derive era NONE', derived.filter(d => !d.show.ShowDate).every(d => d.era === NONE));
 ok('empty country becomes NONE', derived.filter(d => !d.show.Country?.trim()).every(d => d.country === NONE));
-ok('documentaries derive type', derived.some(d => d.type === 'documentary'));
+const docTotal = shows.filter(s => s.ContentType === 'Documentary').length;
+ok(`documentaries derive type (${docTotal})`,
+   docTotal > 0 && derived.filter(d => d.type === 'documentary').length === docTotal);
 
 console.log('\nno filters');
 ok('everything passes', applyFilters(derived, f(), null).length === shows.length);
@@ -88,7 +102,8 @@ console.log('\nyear range');
   ok(`open start (<=1979) yields ${openStart} (expected ${expectedOpen})`, openStart === expectedOpen);
 
   const single = applyFilters(derived, f({ from: 1996, to: 1996 }), null).length;
-  ok(`single year 1996 yields ${single} (expected 52)`, single === 52);
+  const expected1996 = datedYears.filter(y => y === 1996).length;
+  ok(`single year 1996 yields ${single} (expected ${expected1996})`, single === expected1996);
 
   ok('no range means undated shows are included',
      applyFilters(derived, f(), null).length === shows.length);
@@ -99,19 +114,20 @@ console.log('\nyear range');
 
   const withUndated = applyFilters(derived, f({ from: 1990, to: 1999, undated: true }), null);
   const undatedIn = withUndated.filter(s => !/^\d{4}/.test(s.ShowDate || '')).length;
-  ok(`opting in adds all 64 undated back (got ${undatedIn})`, undatedIn === 64);
-  ok('and keeps the dated ones', withUndated.length === nineties + 64);
+  ok(`opting in adds all ${undatedTotal} undated back (got ${undatedIn})`, undatedIn === undatedTotal);
+  ok('and keeps the dated ones', withUndated.length === nineties + undatedTotal);
 }
 
 console.log('\nyear histogram');
 {
   const full = computeYearHistogram(derived, f(), null);
-  ok(`spans ${full.minYear}-${full.maxYear}`, full.minYear === 1965 && full.maxYear === 2016);
+  ok(`spans ${full.minYear}-${full.maxYear} (expected ${firstYear}-${lastYear})`,
+     full.minYear === firstYear && full.maxYear === lastYear);
   ok('bins are contiguous, empty years included',
      full.bins.length === full.maxYear - full.minYear + 1);
   ok('bin totals match the dated corpus',
-     full.bins.reduce((n, b) => n + b.count, 0) === shows.length - 64);
-  ok(`undatedCount is ${full.undatedCount} (expected 64)`, full.undatedCount === 64);
+     full.bins.reduce((n, b) => n + b.count, 0) === datedYears.length);
+  ok(`undatedCount is ${full.undatedCount} (expected ${undatedTotal})`, full.undatedCount === undatedTotal);
   ok('peak is the tallest bar', full.peak === Math.max(...full.bins.map(b => b.count)));
 
   // The load-bearing rule: the histogram must ignore its OWN range, or every
@@ -187,7 +203,9 @@ console.log('\nsorting');
   ok('sorting is stable across calls',
     JSON.stringify(sortShows(shows, 'year-desc').map(s => s.ShowID)) ===
     JSON.stringify(sortShows(shows, 'year-desc').map(s => s.ShowID)));
-  ok('sortShows does not mutate its input', shows.length === 829 || shows.length > 0);
+  const before = shows.map(s => s.ShowID).join();
+  sortShows(shows, 'year-asc'); sortShows(shows, 'artist');
+  ok('sortShows does not mutate its input', shows.map(s => s.ShowID).join() === before);
 }
 
 console.log('\nperformance');

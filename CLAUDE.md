@@ -162,10 +162,10 @@ Count the frames that are talking, interviews, archive or behind-the-scenes agai
 performance frames. With 48 frames the estimate is about ±7%, so put anything between roughly
 42% and 58% to the owner.
 
-Four pieces of documentary footage still have no record of their own, all left out earlier
-because they are not performances: the Cornell WDR interview (VTS_01 of the Audioslave
-`rar/` disc), the interviews in VTS_03 of `Kings of Leon - BDO 2006 and 2004`, and the making-of
-(VTS_03) and EPK (VTS_04) in `Supergrass - Pinkpop Festival Dutch TV 1997`.
+Four pieces of documentary footage have no record **by the owner's choice** (2026-10-04, "not
+important"). Do not propose them again: the Cornell WDR interview (VTS_01 of the Audioslave `rar/`
+disc), the interviews in VTS_03 of `Kings of Leon - BDO 2006 and 2004`, and the making-of (VTS_03)
+and EPK (VTS_04) in `Supergrass - Pinkpop Festival Dutch TV 1997`.
 
 ### ShowDate rules
 - Format is always `YYYY-MM-DD` or empty string `""`
