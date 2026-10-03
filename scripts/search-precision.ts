@@ -46,7 +46,7 @@ const GOLDEN: { query: string; mustExclude?: string[]; mustInclude?: string[]; n
   { query: "Jane's Addiction", mustExclude: ['White Stripes'],
     note: 'apostrophe tokenisation + cover annotation' },
   { query: 'Smashing Pumpkins', mustExclude: ['Tool'], note: 'cover annotation' },
-  { query: 'Nirvana', mustExclude: ['Fun Loving Criminals', "Jane's Addiction"],
+  { query: 'Nirvana', mustExclude: ["Fun Lovin' Criminals", "Jane's Addiction"],
     note: 'cover annotation' },
   { query: 'Foo Fighters', mustExclude: ['Them Crooked Vultures', "Jane's Addiction"],
     note: 'shared-member name-drops' },
@@ -57,6 +57,10 @@ const GOLDEN: { query: string; mustExclude?: string[]; mustInclude?: string[]; n
   { query: 'Tool', mustInclude: ['Tool'], note: 'common-word artist name' },
   { query: 'Who', mustInclude: ['Who'], note: 'common-word artist name' },
   { query: 'Cake', mustInclude: ['Cake'], note: 'common-word artist name' },
+  { query: 'The Strokes', mustInclude: ['Strokes'],
+    note: 'artists are filed without a leading "The"; typing it must still open the view' },
+  { query: 'The Who', mustInclude: ['Who'], note: 'leading "The" on a common-word name' },
+  { query: 'Echo and the Bunnymen', mustInclude: ['Echo & the Bunnymen'], note: '"and" for "&"' },
 ];
 
 interface Row {
@@ -139,9 +143,12 @@ for (const g of GOLDEN) {
     const actual = returned.filter(s => s.Artist === good).length;
     if (actual !== expected) problems.push(`got ${actual}/${expected} of "${good}"`);
   }
-  // Any artist view should return only that artist when the query IS an artist name.
-  if (artistNames.includes(g.query)) {
-    const foreign = returned.filter(s => s.Artist !== g.query).length;
+  // Any artist view should return only that artist when the query IS an artist name,
+  // or another way of writing one ("The Strokes") — a single mustInclude names it.
+  const viewOf = artistNames.includes(g.query) ? g.query
+    : g.mustInclude?.length === 1 ? g.mustInclude[0] : null;
+  if (viewOf) {
+    const foreign = returned.filter(s => s.Artist !== viewOf).length;
     if (foreign > 0) problems.push(`${foreign} foreign shows`);
   }
 

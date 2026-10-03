@@ -174,9 +174,18 @@ const ARTIST_ALIASES: Record<string, string> = {
   rem: 'R.E.M.',
 };
 
-/** Lowercase and strip everything that isn't alphanumeric. */
+/**
+ * Lowercase, drop a leading "The", read "&" as "and", and strip everything that
+ * isn't alphanumeric. Artists are filed without the article (CLAUDE.md →
+ * Artist), so "The Strokes" must still find "Strokes".
+ */
 function normaliseArtist(value: string): string {
-  return value.toLowerCase().replace(/[^a-z0-9]/g, '');
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/^the\s+/, '')
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]/g, '');
 }
 
 /**
