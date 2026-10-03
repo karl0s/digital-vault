@@ -74,6 +74,11 @@ set `status: proposed`, render, open. **The owner decides which acts get records
   real content hash; if it is a time window inside a titleset, use a derived key
   `sha1(<titleset hash> + "|<Act>")` and say so in `Notes`. Set `ParentShowID`,
   `SegmentStart`, `SegmentEnd`, `Setlist`, `DurationSec` (the act's length only).
+- **`Artist` is the collection's stored name, never the on-screen billing.** Look it up
+  before writing (CLAUDE.md → Metadata conventions → Artist): no leading "The", the band's
+  own spelling, "Person & the Band" under the person. All 23 "The X" artists the collection
+  ever had came from this step copying a caption, and four of them split an artist in two
+  (`The Prodigy` beside `Prodigy`). Put the billing as captioned in `Notes`.
 - An existing record that turns out to be one act of the master (e.g. the misfiled
   Pinkpop "Various Artists / DVD" record = the Rollins Band titleset) is **re-filed** as that
   act's linked record — keep its ShowID and checksum, fix Artist/date/setlist.

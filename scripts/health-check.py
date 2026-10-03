@@ -153,6 +153,36 @@ if len(ERRORS) == _ct_before:
     _docs = sum(1 for s in shows if s.get('ContentType') == 'Documentary')
     print(f'  {_docs} documentaries, every ContentType valid — OK')
 
+# ── 4d. Artist name variants ─────────────────────────────────────────────────
+# The artist view and the A–Z directory group on the exact Artist string, so one
+# band under two spellings shows half its records in each. On 2026-10-04 four
+# artists were split this way ("Prodigy" / "The Prodigy" and others), every one
+# by a linked record that copied the billing off the screen. Convention since:
+# no leading "The" — the collection's existing habit (Strokes, Killers).
+
+section('Artist name variants')
+import unicodedata
+# A band whose name IS the article would lose it entirely. None in the collection.
+ARTICLE_KEPT = {'The The'}
+
+def _artist_key(name):
+    k = unicodedata.normalize('NFKD', name).encode('ascii', 'ignore').decode().lower()
+    k = re.sub(r'^the\s+', '', k.strip()).replace('&', ' and ')
+    return re.sub(r'[^a-z0-9]', '', k)
+
+_ar_before = len(ERRORS)
+_variants = {}
+for s in shows:
+    _variants.setdefault(_artist_key(s.get('Artist') or ''), set()).add(s.get('Artist') or '')
+for names in _variants.values():
+    if len(names) > 1:
+        error(f'  One artist under {len(names)} names: {sorted(names)} — pick one and rename the rest')
+for name in sorted({s.get('Artist') or '' for s in shows}):
+    if re.match(r'^The\s', name) and name not in ARTICLE_KEPT:
+        error(f'  Artist {name!r} — drop the leading "The" (file as {name[4:]!r})')
+if len(ERRORS) == _ar_before:
+    print(f'  {len(_variants)} artists, one name each, no leading "The" — OK')
+
 # ── 5. Image manifest vs actual image files ───────────────────────────────────
 
 section('Image manifest vs disk')

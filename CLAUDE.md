@@ -120,7 +120,7 @@ Flat JSON array of show objects. Key fields:
 | Field | Type | Notes |
 |---|---|---|
 | `ShowID` | 12-char hex string | Unique identifier |
-| `Artist` | string | Must match exactly (used for grouping) |
+| `Artist` | string | Must match exactly (used for grouping). No leading "The" — see Metadata conventions → Artist |
 | `ShowDate` | `YYYY-MM-DD` or `""` | Empty = undated; sorts to end of results |
 | `EventOrFestival` | string | Festival/event name e.g. "Glastonbury", "MTV Unplugged" |
 | `VenueName` | string | Physical venue name — not the festival name |
@@ -513,7 +513,8 @@ honours; and a folder shared by two artists now plans only the current artist's 
 
 ### An artist filed without its article returns ZERO records, silently — `Killers`
 
-The Killers are filed as `Artist` = `Killers`. `scout.sh "The Killers"` printed a clean report of
+The Killers are filed as `Artist` = `Killers` — since 2026-10-04 every artist is filed without
+its article (Metadata conventions → Artist). `scout.sh "The Killers"` printed a clean report of
 `0 records` with every section empty — no error, no hint — while five shows sat under the shorter
 name. Before any run, confirm the stored spelling:
 
@@ -742,6 +743,35 @@ time the model changes, and it goes stale silently.
 ## Metadata conventions
 
 These rules apply every time any field in `shows.json` is created or edited. No exceptions.
+
+---
+
+### Artist
+One artist, one exact string. The artist view and the A–Z directory group on it, so a band under
+two spellings shows half its records in each. Settled with the owner on 2026-10-04, when four
+artists were split this way (`Prodigy` / `The Prodigy`, `Datsuns`, `Roots`, `Fun Lovin' Criminals`) —
+every one by a linked record that copied the billing off the screen.
+
+- **No leading "The"** — `Strokes`, `Killers`, `Prodigy`, `Fray`, `Who`. Search still finds
+  "The Strokes" (`normaliseArtist` drops the article).
+- **The band's own spelling** — `Fun Lovin' Criminals`, not the folder's `Fun Loving`.
+- **"Person & the Band" is filed under the person** — `Iggy Pop` (billed Iggy & the Stooges),
+  `Neil Young` (& Crazy Horse), `Tom Petty`, `Bob Marley`, `Juliette Lewis` (and the Licks). Say
+  the billing in `Notes`. Not a band whose name merely contains "the": `Echo & the Bunnymen`.
+- **Small words lower-case** — `Kings of Leon`, `Alice in Chains`, `Queens of the Stone Age`.
+- **Solo careers are separate artists** — Chris Cornell is not Soundgarden.
+
+**Before creating any record, look up the stored spelling** and reuse it exactly:
+
+```bash
+python3 -c "
+import json; a='prodigy'
+print({s['Artist'] for s in json.load(open('public/shows.json')) if a in (s.get('Artist') or '').lower()})"
+```
+
+The health check blocks a push when two names differ only by case, a leading "The",
+punctuation, `&`/`and` or accents, or when any name starts with "The". It cannot see a spelling
+difference (`Lovin'` / `Loving`) — the lookup above is what catches those.
 
 ---
 
@@ -1254,7 +1284,7 @@ print(len(d), 'shows /', len(a), 'artists'); print(a.most_common(9)); print(f.mo
 
 - **973 shows** across **173 artists**
 - Top artists by volume: Stone Temple Pilots (100), Smashing Pumpkins (63),
-  Kings Of Leon (53), Soundgarden (36), Red Hot Chili Peppers (32), Foo Fighters (31),
+  Kings of Leon (53), Soundgarden (36), Red Hot Chili Peppers (32), Foo Fighters (31),
   Stereophonics (29), Incubus (26), Various Artists (25)
 - Top festivals: Rock am Ring (49), Glastonbury Festival (29), Reading Festival (28),
   MTV Unplugged (24), Pinkpop (23), Bizarre Festival (21), Big Day Out (19)
