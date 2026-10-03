@@ -103,3 +103,22 @@ After sign-off: `promote.py --apply` (map built from state ShowIDs), health chec
 - **M05/M07 Reading 1997/1998** — a band appearing twice in one master gets ONE linked record with both songs; SegmentStart/End = first clip, both windows in Notes (owner, 2026-10-01). MTV magazine formats: find clips with a caption-strip scan, then read boundaries from 10 s frames.
 - **Nested disc folders** (`Set/Disc 2 - …`) are indexed as their OWN units: a split keyed by the parent folder does not apply to a record whose folder IS the subfolder — key that rule by the subfolder name (RRTF 2000 EJ, Filter captured the whole disc until fixed). Always check each unit's `duration` in state against its window before picking.
 - **Low-resolution sources** (352x240, 352x288): the owner asked for stills enlarged to the standard size (720x540 NTSC, 768x576 PAL) via an `upscale_to` override in `overrides.json` - per folder or per ShowID, and say so in Notes. Ask before applying it to a new source.
+- **M14-M23, B01-B10, C01 (2026-10-02..04)** — checklist complete (41/41). Lessons:
+  - **Frame-count everything.** The pre-decoded 5-second index frames drift by minutes on concatenated or
+    timestamp-broken streams (Reading 2006 by up to 2 min, the MTV $2 Bill disc by 4). Decode with
+    `select='not(mod(n,K))'` and convert with the disc's real fps (NTSC is 30000/1001 — reading an NTSC
+    disc at 25 fps made correct boundaries look 20% wrong on MTV Spring Break 93).
+  - **`-reinit_filter 0` for frame-counted decodes.** A stream whose format changes mid-way makes ffmpeg
+    rebuild the filter graph, restarting `select`'s `n` at 0: a window 36 min in returned 0 frames (rc=0).
+    `shots.py` now passes it for `decode: single` units; pass it in ad-hoc decodes too.
+  - **TV compilations (Last Call, Conan, Leno):** one titleset per episode, in air-date order. Identify
+    from the CD the host holds up and the desk guest, then match TVmaze (`api.tvmaze.com/shows/<id>/episodes`)
+    or Wikipedia's season lists; file dates confirm the order.
+  - **Interleaved episodes** (VH1 Storytellers Train/Fuel): the bands alternate, so a per-titleset split
+    is wrong. Use the "act appears twice" rule and check every act record's hero is that act's singer —
+    the Train record had shown Fuel's singer.
+  - **Not every multi-programme disc is VA.** All-one-artist discs (Aerosmith compilation #123) and
+    discs pairing unrelated programmes get no master; each collection artist's unrecorded source becomes
+    its own record (owner, 2026-10-04).
+  - **A record keyed to the wrong titleset** (Incubus Cribs: VTS_05, an HGTV show) is re-keyed with the
+    owner's OK: rename the image files and the manifest key, keep ShowID and stills.
