@@ -3249,7 +3249,8 @@ wrong about what you think it measures.
 - [ ] Split bills: one record per band per tape, the second keyed by a derived checksum
       documented in Notes (§2); every multi-act disc, split bills included, filed through
       `va-masters` with a master — never as a standalone record made by a capture run (§10)
-- [ ] `~/VaultShots/sync_skill_copies.sh` run after promotion; changed copies in the run's commit
+- [ ] `~/VaultShots/sync_skill_copies.sh "<Artist> run"` run after promotion; changed copies in the run's
+      commit, and ~/VaultShots committed by it (local git, no remote)
 - [ ] Committed on `main` by explicit path in ONE command, new files `git add`ed by exact path (no `-f`)
       (§11); every manifest entry a tracked file (verify against git, not disk); NOT pushed
 - [ ] `~/VaultShots/promote-backup` moved to the Trash once the run is committed (§11)
@@ -3348,8 +3349,8 @@ python3 promote.py --apply
 #    the health check or look at git (§11).
 
 # 8. SYNC, VERIFY, COMMIT - on main, in the REPO, never pushed
-./sync_skill_copies.sh                       # ~/VaultShots is the master; refreshes the repo's
-                                             # skill copies and lists what changed (§18)
+./sync_skill_copies.sh "$A run"              # ~/VaultShots is the master; refreshes the repo's
+                                             # skill copies, lists them, commits ~/VaultShots (§18)
 cd "$R"
 python3 scripts/health-check.py
 python3 scripts/audit-image-geometry.py --artist "$A"  # must be 100% correct now
@@ -3433,8 +3434,11 @@ Say these plainly. A thin, honest result beats a padded one.
 directory, and in `.claude/skills/va-masters/`, are copies** — kept in the repo so the tools are
 versioned and backed up with the site. Edit and run only the `~/VaultShots/` versions; a repo
 copy that differs is stale, never a fork to merge back. `~/VaultShots/sync_skill_copies.sh`
-refreshes every copy from its live namesake and lists what changed (`--check` lists only, and
-exits 1 if any differ). Run it at the end of every run, after promotion and before the commit,
+refreshes every copy from its live namesake, lists what changed, then commits `~/VaultShots`
+itself to its own local git with the message given as its argument (`--check` lists only,
+commits nothing, and exits 1 if any copy differs). `~/VaultShots` has no remote by the owner's
+choice (2026-10-05), so that local commit is its only history — it once went nine days without
+one. Run it at the end of every run, after promotion and before the commit,
 and commit what it lists with the run (§17 step 8). To bundle a NEW script, copy it into the
 skill folder once and `git add` that exact path (§11); the sync keeps it current from then on.
 `shots.py` and `subject.py` implement most of this file.
@@ -3470,7 +3474,7 @@ python3 doc_sweep.py <ShowID> [...]           # 48-frame sweep for the Documenta
 python3 reconcile.py                          # records vs the drive -> data/reconcile.json
 python3 find_undocumented.py                  # folders with no record, matched on SIZE not name
 python3 fix_paths.py                          # repair FolderPath after a drive remount (reads data/reconcile.json)
-./sync_skill_copies.sh                        # refresh the repo's copies of these scripts
+./sync_skill_copies.sh "<msg>"                # refresh the repo's copies; commit ~/VaultShots
 ```
 
 Working files live under `~/VaultShots/data/` — `state.json`, `picks.json`, `splits.json`,

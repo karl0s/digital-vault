@@ -111,8 +111,9 @@ Build the before/after page (`python3 ~/VaultShots/bp.py TAG TITLE STATE NOTES.j
 ### 5. Close
 After sign-off, in this order (concert-screenshots §11 and §17 steps 7-9 have the detail):
 1. `python3 ~/VaultShots/promote.py --apply` (map built from state ShowIDs).
-2. `~/VaultShots/sync_skill_copies.sh` — `~/VaultShots` holds the master of every script; the
-   copies beside this file are refreshed from it, and whatever it lists joins the commit.
+2. `~/VaultShots/sync_skill_copies.sh "<master> VA run"` — `~/VaultShots` holds the master of
+   every script; the copies beside this file are refreshed from it, whatever it lists joins the
+   commit, and it commits `~/VaultShots` itself (local git; no remote).
 3. In the repo: `python3 scripts/health-check.py`, then commit on `main` by explicit path in ONE
    command (`feat(shows): <master> master + N linked records`), new files `git add`ed by exact
    path. Nothing left staged. **Never push** — each push to `main` deploys the live site; the

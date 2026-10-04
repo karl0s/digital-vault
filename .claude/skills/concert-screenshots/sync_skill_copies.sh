@@ -9,8 +9,13 @@
 # Every script already in a skill folder is refreshed from its namesake here. To
 # bundle a new script, copy it into the skill folder once; this keeps it current.
 #
-#   ~/VaultShots/sync_skill_copies.sh          # copy and list changes
-#   ~/VaultShots/sync_skill_copies.sh --check  # list only; exit 1 if any differ
+# It then commits ~/VaultShots itself (its own local git: scripts and data/, the
+# big generated folders are ignored). It has no remote by the owner's choice
+# (2026-10-05), so this commit is its only history — it went nine days
+# uncommitted before this step existed.
+#
+#   ~/VaultShots/sync_skill_copies.sh "Nirvana run"  # copy, list, commit VaultShots
+#   ~/VaultShots/sync_skill_copies.sh --check        # list only; exit 1 if any differ
 
 REPO="$HOME/Desktop/Projects/the-vault"
 LIVE="$HOME/VaultShots"
@@ -46,4 +51,13 @@ elif [ $CHECK -eq 1 ]; then
   exit 1
 else
   echo "$changed copy/copies refreshed — commit them with this run."
+fi
+
+[ $CHECK -eq 1 ] && exit 0
+if [ -n "$(git -C "$LIVE" status --porcelain)" ]; then
+  git -C "$LIVE" add -A && \
+  git -C "$LIVE" commit -q -m "run: ${1:-end-of-run snapshot} ($(date +%Y-%m-%d))" && \
+  echo "~/VaultShots committed: $(git -C "$LIVE" log --oneline -1)"
+else
+  echo "~/VaultShots already committed."
 fi

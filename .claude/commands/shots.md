@@ -95,8 +95,9 @@ He signs off on the picks **and** on each suspect source's shape.
 
 Promote only after he has signed off. Then:
 
-1. `~/VaultShots/sync_skill_copies.sh` — `~/VaultShots` holds the master of every script;
-   commit whatever copies it lists with the run.
+1. `~/VaultShots/sync_skill_copies.sh "<Artist> run"` — `~/VaultShots` holds the master of every
+   script; commit whatever copies it lists with the run. It also commits `~/VaultShots` itself
+   (local git, no remote).
 2. In the repo, `python3 scripts/health-check.py`, then commit on **`main`** by explicit
    path in **one** command, new files `git add`ed by exact path (no `-f`) (skill §11). Leave nothing
    staged. **Never push** — each push to `main` deploys the live site; Karl says when.
