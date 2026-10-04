@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+/* Tailwind scans every file git does not ignore for class names. These are
+   tracked but are not the site: the 3 MB of show data (any word in a Note can
+   become a class), dev-only experiments, and the screenshot pipeline's docs.
+   Without these lines the production stylesheet grows by ~6 kB of rules
+   nothing on the site uses. */
+@source not "../public";
+@source not "../_playground";
+@source not "../.claude";
+
 /* Custom scrollbar styles */
 .scrollbar-hide {
   -ms-overflow-style: none;  /* IE and Edge */
