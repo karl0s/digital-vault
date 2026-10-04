@@ -773,12 +773,12 @@ drive labels.
 
 | `MasterDriveName` | Records | Size | Notes |
 |---|---:|---:|---|
-| Seagate Expansion Drive | 627 (52%) | 1,364 GiB | The largest single source |
+| Seagate Expansion Drive | 628 (52%) | 1,364 GiB | The largest single source |
 | Big Daddy | 533 (44%) | 1,025 GiB | Same era mix as the Seagate |
 | Live Music | 47 | 100 GiB | |
 | `Untitled` (DVD archive) | 3 | 6 GiB | 316 folders scanned; 313 were byte-identical duplicates and were dropped |
 | _(blank)_ | 4 | 5 GiB | Added by hand after the scan |
-| **Total** | **1214 records** | **~2,500 GiB** | ~2.4 TiB. 10 records have no recorded size |
+| **Total** | **1215 records** | **~2,500 GiB** | ~2.4 TiB. 10 records have no recorded size |
 
 **The physical collection now lives on one drive, `Live Music`** (`/Volumes/Live Music`),
 which every capture and audit script reads. Most records still name their original drive in
@@ -1037,7 +1037,7 @@ print(a.most_common(9)); print(f.most_common(7))
 ```
 
 As of 2026-10-05:
-- **1214 shows** across **304 artists**. One is `Hidden`; 256 are linked records cut from 43
+- **1215 shows** across **304 artists**. One is `Hidden`; 256 are linked records cut from 43
   masters; 29 are documentaries
 - Top artists by volume: Stone Temple Pilots (101), Smashing Pumpkins (65), Kings of Leon (56),
   Various Artists (44), Soundgarden (36), Foo Fighters (34), Red Hot Chili Peppers (32),
