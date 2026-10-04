@@ -7,12 +7,14 @@ seen in a reference image (word: BLUR, dark background, purple/cyan radial glow)
 ---
 
 ## Typeface Decision
-**Archivo** weight 700 (Google Fonts, free, CDN) — final choice for v4+.
+**Archivo** weight 700 (Google Fonts family, SIL OFL) — final choice for v4+.
 - Heavy, wide, sharp square terminals — no rounding
 - The reference image BLUR letterforms LOOK rounded only because the glow/blur softens them
 - The underlying font is hard-edged; rounding is an artifact of the effect, not the typeface
 - Rejected: Nunito Black (too rounded), VAG Rounded (too rounded), Archivo Black (too heavy at large sizes — switched to Archivo weight 700)
-- Google Fonts URL: `https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&display=swap`
+- The playground variants load it at runtime from Google Fonts
+  (`https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&display=swap`). That is
+  dev-only and fine there; the live site self-hosts it instead — see Live Site Integration.
 
 ---
 
@@ -243,7 +245,12 @@ If effect magnitudes increase significantly beyond current defaults, these may n
 ## Live Site Integration — Implemented
 
 **File:** `components/logos/HalationLogo.tsx`
-**Font:** Archivo weight 700 added to `index.html` Google Fonts link (preloaded, no flash)
+**Used in:** `components/HeroSearch.tsx` only — the Browse masthead. Nothing else renders the
+wordmark: `TopNav` and the sidebar carry no brand by design (see the comments in both files).
+**Font:** Archivo 700 is **self-hosted** — `public/fonts/archivo-700-latin*.woff2`, declared by
+`@font-face` in `index.html` (`font-display: swap`; see `public/fonts/README.md`). It is not
+preloaded; only the body font is. Never add a Google Fonts `<link>` to the live site — it is
+render-blocking, and `npm run check:perf` fails on one.
 
 ### Scaling approach
 The SVG coordinate space stays fixed at `1060×300` with all effect values unchanged.
@@ -252,7 +259,8 @@ renderer scales everything proportionally (font size, blur radii, offsets).
 Only the CSS-space global blur needs explicit scaling: `D.globalBlur * scale`.
 
 **Props:**
-- `scale?: number` — `1` = playground size (130px letters). `~0.19` for nav.
+- `scale?: number` — `1` = playground size (130px letters). `~0.19` gives ~25px letters (the
+  size it had when it sat in the nav).
 - `style?: React.CSSProperties` — overrides SVG element style (e.g. `width:'100%'` for responsive hero use)
 - `className?: string`
 
@@ -260,14 +268,7 @@ Only the CSS-space global blur needs explicit scaling: `D.globalBlur * scale`.
 **Opacity fade** — SVG renders at `opacity: 0` until `document.fonts.ready` resolves + character
 positions are measured, then fades to `opacity: 1` over 0.15s. Imperceptible once Archivo is cached.
 
-### Usage in TopNav
-```tsx
-<HalationLogo scale={0.19} />
-// scale=0.19 → letters ~25px CSS, SVG box 201×57px
-// Glows overflow nav height via overflow:visible — intentional
-```
-
-### Usage in HeroSearch (landing page)
+### Usage in HeroSearch (the Browse masthead)
 ```tsx
 <HalationLogo scale={1} style={{ width: '70%', height: 'auto' }} />
 // width:'70%' overrides the fixed CSS width from scale
@@ -275,10 +276,16 @@ positions are measured, then fades to `opacity: 1` over 0.15s. Imperceptible onc
 // Wrapped in motion.div for entry fade+slide animation
 // Container is max-w-5xl — logo fills 70% of that
 ```
+The masthead collapses to zero height while any search or filter is active, so the wordmark
+shows only on the unfiltered Browse view.
+
+Before the Browse redesign (live 2026-10-05) `TopNav` also rendered it at `scale={0.19}` (SVG box
+201×57px, glows overflowing the nav via `overflow: visible`). That usage was removed as
+duplicate chrome.
 
 ### Swapping logos in future
-All logo variants live in `components/logos/`. To swap: change the import in `TopNav.tsx`
-and/or `HeroSearch.tsx`. No other files need touching.
+All logo variants live in `components/logos/`. To swap: change the import in `HeroSearch.tsx`.
+No other files need touching.
 
 ---
 

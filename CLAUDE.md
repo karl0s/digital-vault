@@ -4,8 +4,9 @@
 A personal archive and browser for a private collection of concert video recordings.
 Live site: https://karl0s.github.io/digital-vault/
 
-The frontend is a React/Vite SPA. All show data lives in a flat JSON file (`public/shows.json`).
-Images are static files served from `public/images/`. There is no backend.
+The frontend is a React 18 + Vite 6 SPA (Tailwind v4, `motion`, zustand, base-ui,
+MiniSearch). All show data lives in a flat JSON file (`public/shows.json`). Images are static
+files served from `public/images/`. There is no backend.
 
 ---
 
@@ -13,25 +14,47 @@ Images are static files served from `public/images/`. There is no backend.
 
 ```
 public/
-  shows.json            ← master show data (source of truth)
+  shows.json            ← master show data (source of truth, hand-curated)
   image-manifest.json   ← maps checksum → available image slot indices
   images/               ← {checksum}_01.jpg … _04.jpg per show
-  images/temp-images/   ← staging folder for new images (should always be empty after a task)
+  images/temp-images/   ← staging for hand-taken stills (gitignored; empty after every task)
+  fonts/                ← self-hosted woff2 (fonts/README.md)
 
+App.tsx                 ← root: views, search input, drawer state
+main.tsx                ← entry; DEV-only playground gate
+components/             ← cards, grids, ShowDrawer, ArtistsView, TopNav, HeroSearch, FeaturedRows
+  CloseButton.tsx       ← shared close button — use this for ALL close buttons
+  shell/                ← AppShell, Sidebar, MobileTabBar
+  filters/              ← FilterBar, FacetPopover, YearRangePopover, YearHistogram
+  logos/                ← HalationLogo (the wordmark)
+src/
+  hooks/                ← useShows (data + getNotes + getImageUrl), useBrowseResults, useSearchEngine, useDebounce
+  store/filters.ts      ← zustand filter store, synced to the URL
+  lib/                  ← url.ts (canonical URL state), brush.ts (year-brush maths), motion.ts, cn.ts
+  search/               ← searchIndex.ts (MiniSearch, field prefixes), facets.ts (filter, count, sort)
+styles/globals.css      ← Tailwind entry and global CSS (imported by main.tsx)
 dist/                   ← BUILD OUTPUT — never commit this, CI owns it
-components/             ← React components
-  CloseButton.tsx       ← shared close button (semi-transparent style) — use this for ALL close buttons
-src/hooks/              ← custom React hooks
-data-pipeline/          ← numbered Python scripts for scanning hard drives → CSV → shows.json
+data-pipeline/          ← historical drive-scan scripts and CSVs (see Data pipeline)
+docs/                   ← browse-redesign-spec.md — the Browse design and how the build departs from it
+tools/
+  add-temp-images.py    ← temp-images → slots + manifest, verified (see Temp images workflow)
+  show-editor/          ← Karl's metadata editor; build.py renders index.html (gitignored)
 scripts/
-  health-check.py       ← integrity validator (runs automatically as pre-push hook)
-  check-perf.mjs        ← front-end performance guard rails (npm run check:perf)
+  health-check.py       ← integrity validator (pre-push hook, and the deploy)
+  audit-*.py            ← read-only audits: image geometry, aspect vs source, sidecar setlists
+  consistency-audit.py  ← read-only: same festival or same show recorded with different venue/city/country
+  check-*.ts, check-perf.mjs ← the `npm run check` suite (see Browse architecture → Guards)
   perf/bench.mjs        ← measures Browse + drawer in headless Chromium (npm run perf)
-  thumbs.mjs            ← card thumbnails, built into dist/thumbs/ by vite-plugin-thumbs.mjs
+  thumbs.mjs            ← card thumbnails, built into dist/thumbs/
   site-data.mjs         ← shows-lite.json + show-notes.json, derived from shows.json at build
-_playground/            ← isolated UI experiments, never imported by the live app
+  vite-plugin-*.mjs     ← wire thumbs.mjs and site-data.mjs into vite.config.ts
+  setlist-removals-approved.json ← deliberate setlist removals the health check accepts
+_playground/            ← dev-only UI experiments, never imported by the live app
   branding/             ← logo and typographic effect experiments
   grid/                 ← card layout and filter chip experiments
+  proximity/            ← cursor-proximity hover experiments
+.claude/skills/         ← concert-screenshots, va-masters (tracked); the rest are local only
+.claude/commands/       ← /shots and /picks (screenshot runs)
 ```
 
 ---
@@ -40,6 +63,7 @@ _playground/            ← isolated UI experiments, never imported by the live 
 
 `_playground/` is a sandbox for UI experiments. Each subdirectory is a topic area.
 Experiments are routed automatically via `import.meta.glob` + `React.lazy` in `PlaygroundRouter.tsx`.
+Experiments and their notes are tracked in git, so they are backed up.
 
 **Dev only — the playground never ships.** `main.tsx` gates the router behind
 `import.meta.env.DEV` and loads it with a dynamic `import()`. Vite substitutes a
@@ -54,7 +78,7 @@ Two consequences worth knowing:
   bundles every experiment back into `dist/` regardless of the DEV check.
 
 ### Rules
-- Every playground subfolder **must** have exactly one MD file named after the folder (e.g. `branding/logo.md`, `grid/grid.md`).
+- Every playground subfolder **must** have exactly one MD file, named for its topic (`branding/logo.md`, `grid/grid.md`, `proximity/proximity.md`).
 - The MD file covers **all** TSX variants in the folder — not just v1. Update it as new variants are added.
 - MD filename must not include a version number. The versions table inside the file tracks individual variants.
 - TSX files are named `v{N}-{slug}.tsx` (e.g. `v3-halation-per-letter.tsx`). The MD file is just `{topic}.md`.
@@ -88,10 +112,14 @@ as needed when complexity warrants it. Follow the depth of `branding/logo.md` as
 
 ## Deployment
 
-- **GitHub Actions** (`.github/workflows/deploy.yml`) runs `npm run build` on every push to `main`
-- Vite copies everything from `public/` into `dist/` at build time
-- The built `dist/` is deployed to GitHub Pages — **never manually commit `dist/`**
-- `dist/` is already in `.gitignore` and should stay that way
+- **Every push to `main` deploys the live site** — so nothing is pushed until Karl says
+  (Git workflow).
+- **GitHub Actions** (`.github/workflows/deploy.yml`) runs `python3 scripts/health-check.py`
+  and `npm run check`, then `npm run build`, and publishes `dist/` to GitHub Pages. A failing
+  check stops the deploy; the live site keeps the previous version.
+- Vite copies everything from `public/` into `dist/`; the plugins add `thumbs/`,
+  `shows-lite.json` and `show-notes.json`.
+- `dist/` is gitignored and CI-owned — **never commit it**.
 
 ---
 
@@ -100,11 +128,11 @@ as needed when complexity warrants it. Follow the depth of `branding/logo.md` as
 ### What the site loads (derived at build time)
 `public/shows.json` is the source of truth and still deploys untouched, but the site does
 not load it. Every build (and `npm run dev`) derives two files from it —
-`scripts/site-data.mjs`, wired in by `vite-plugin-site-data.mjs`:
+`scripts/site-data.mjs`, wired in by `scripts/vite-plugin-site-data.mjs`:
 
 - `shows-lite.json` — every record minus `Notes` and the pipeline-only fields in
   `DROPPED` (`FolderPath`, `RepVideoFiles`, `Lineage`, `LastScannedAt`, …). Loaded first:
-  534 → 131 KB gzipped.
+  about a quarter of the full file (566 → 136 KB gzipped on 2026-10-05).
 - `show-notes.json` — `{ ShowID: Notes }`, loaded straight after.
 
 Nothing to do when editing `shows.json`; the derived files follow it. Two rules for code:
@@ -121,8 +149,8 @@ Flat JSON array of show objects. Key fields:
 |---|---|---|
 | `ShowID` | 12-char hex string | Unique identifier |
 | `Artist` | string | Must match exactly (used for grouping). No leading "The" — see Metadata conventions → Artist |
-| `ShowDate` | `YYYY-MM-DD` or `""` | Empty = undated; sorts to end of results |
-| `EventOrFestival` | string | Festival/event name e.g. "Glastonbury", "MTV Unplugged" |
+| `ShowDate` | `YYYY-MM-DD` or `""` | Empty = undated; sorts last. Rules: Metadata conventions → ShowDate |
+| `EventOrFestival` | string | Festival/event name e.g. "Glastonbury Festival", "MTV Unplugged" |
 | `VenueName` | string | Physical venue name — not the festival name |
 | `City` | string | |
 | `Country` | string | |
@@ -167,13 +195,6 @@ important"). Do not propose them again: the Cornell WDR interview (VTS_01 of the
 disc), the interviews in VTS_03 of `Kings of Leon - BDO 2006 and 2004`, and the making-of (VTS_03)
 and EPK (VTS_04) in `Supergrass - Pinkpop Festival Dutch TV 1997`.
 
-### ShowDate rules
-- Format is always `YYYY-MM-DD` or empty string `""`
-- Compilations, documentaries, TV shows with no specific date → set to `""`
-- When only year is known, use `YYYY-01-01` as a placeholder
-- Shows with empty or non-date ShowDate sort to the **end** of all result lists
-- Never use placeholder strings like `"0000-00-00"` or `"Compilation"`
-
 ### image-manifest.json
 Maps `ChecksumSHA1 → [1, 2, 3, 4]` (array of available slot indices).
 Only slots listed here are served — if a slot isn't in the array, the image is assumed missing.
@@ -204,11 +225,11 @@ header and the image viewer.
   by content hash on the next build (or `npm run dev`); replaced images get new ones,
   removed ones are dropped. The images workflow above is unchanged.
 - **Never commit them, never put them in `public/`.** They live in
-  `node_modules/.cache/vault-thumbs/` (and the deploy's Actions cache), where
-  `git add -f public/` cannot reach them.
+  `node_modules/.cache/vault-thumbs/` (and the deploy's Actions cache), outside anything
+  git tracks.
 - **A missing thumbnail is not an error.** The card falls back to the original, so a
   fresh `npm run dev` looks the same while it builds them in the background (~80 s for
-  ~1,170 the first time, then incremental).
+  ~1,200 the first time, then incremental).
 - Only slot 1 has a thumbnail; `getImageUrl(checksum, 1, 'thumb')` gives its URL.
 
 ### Image geometry — display shape, not stored shape
@@ -240,405 +261,45 @@ python3 scripts/audit-aspect-vs-source.py --artist "Nirvana"   # record vs SOURC
 ```
 
 The two audits answer different questions. The first compares the **images** to the
-**record** — it catches squashed stills. The second compares the **record** to the
-**source on the drive** — it catches records that are themselves wrong, which the first
-cannot, because when the record is wrong the images agree with it and the check passes.
+**record** — it catches squashed stills, and lists images that belong to no record
+(`no show record`: run it after merging, deleting or re-keying any record). The second
+compares the **record** to the **source on the drive** — it catches records that are
+themselves wrong, which the first cannot, because when the record is wrong the images agree
+with it and the check passes.
 
-**A show's recorded `AspectRatio` is frequently wrong.** Discs declare 4:3 when the
-broadcast was 16:9, and letterboxed or pillarboxed material is recorded as though the
-black bars were part of the picture. Where a correction is discovered during capture,
-write it back to the record in the same session — use the two-part form
-`4:3 (letterboxed 16:9)`, frame ratio first and true picture ratio second — and put the
-evidence in `Notes`.
+On 2026-10-05 the first passed 96.3% of records with images (another 2.1% the right shape but
+larger than target) and flagged 20: 4 squashed, 3 undersized, 1 inconsistent, 1 of unknown
+geometry, and 11 legacy letterboxed records it cannot check (below). Run it for the current
+list; do not copy one in here.
 
-As of 2026-09-27: **74.5% of shows correct, 19.1% squashed, 2.6% undersized, 1.6%
-internally inconsistent, 1.8% letterboxed and needing a crop decision.** The bad majority predates the capture pipeline. Fully corrected so
-far: 30 Seconds to Mars, Aerosmith, Alanis Morissette, Alice in Chains, Audioslave, Beastie Boys, Ben Harper, Black Keys, Blink-182, Bush, Chris
-Cornell, Faith No More, Filter, Foo Fighters, Green Day, Guns N' Roses, Incubus, Jane's Addiction,
-Killers, Kings of Leon, Lenny Kravitz, Limp Bizkit, Manic Street Preachers, Muse, Nirvana, Oasis, Pearl Jam, Queens of the Stone Age, R.E.M.,
-Radiohead, Rage Against the Machine, Red Hot Chili Peppers, Silverchair, Smashing Pumpkins,
-Soundgarden, Stereophonics, Stone Temple Pilots, Supergrass, The Offspring, The Strokes, Them Crooked
-Vultures, Tool, Velvet Revolver, Verve (and the Spiritualized set on its Glastonbury disc) and Weezer. A few residual flags remain on finished artists (Foo
-Fighters 2; Filter, Kings of Leon, Nirvana and Radiohead 1 each). 30STM's "Late Show" record
-`e814e4732ab9` was another band entirely: on 2026-10-02 it was re-filed, with the owner's agreement, as
-Nickel Creek under the Late Night #6 2005 master, of whose VTS_14 it is a byte-identical copy.
+**A record's `AspectRatio` is often wrong.** Discs declare 4:3 for a 16:9 broadcast that an
+off-air recorder squeezed, and nothing in the flags shows it. Where a capture finds a wrong
+aspect, write the correction back to the record in the same session, with the evidence in
+`Notes`.
 
-**Look at a record's CURRENT stills before trusting its identity.** On 30STM, three records were
-showing the wrong thing on the live site and no audit could say so: a "Kooks" record showing 30STM
-(it held the wrong titleset's hash), a "Last Call" record showing Carson Daly's other guests (keyed
-to the wrong titleset of a VA compilation), and a "Late Show" record whose only image was a black
-frame, over footage of a different band on a different talk show. Geometry audits pass all three.
-Everything else is outstanding — `python3 scripts/audit-image-geometry.py` ranks it worst first.
+**Letterbox bars are kept, always** (the owner, 2026-10-05). Capture the whole stored frame;
+`AspectRatio` is the **frame** ratio; the measured letterbox rows go in `Notes`. Correcting a
+wrong aspect flag is still right — that fixes the display shape, it crops nothing. The two-part
+form `4:3 (letterboxed 16:9)` survives only on legacy records whose images were cropped to the
+picture, and the geometry audit cannot check them — it reports each as `letterboxed - needs
+cropdetect`. Never write it for a new capture.
+
+**Look at a record's CURRENT stills before trusting its identity.** A geometry audit passes a
+record keyed to the wrong titleset, or showing another band, as long as the shape is right: on
+30 Seconds to Mars three records were showing the wrong footage on the live site.
 
 Two Smashing Pumpkins records (`d9b007dd78f2`, `32fafc677477`) can never be corrected: they point
 at a nested folder that no longer exists on the drive, so their stills cannot be re-taken.
-
-The capture pass is also the most reliable way this collection finds its own gaps: it has
-turned up shows with **no record at all**, records holding **another band's setlist**, records
-whose **dimensions disagree with the disc**, and several folders holding **two shows**. It has
-also turned up a record stating the folder held **none of the artist's footage** when the disc
-in fact carried their own episode in 1 of 16 titlesets.
-
-**A "no footage here" conclusion needs the same evidence as a positive one.** On discs whose
-containers report bad timestamps, sampling can appear to cover two hours while actually
-covering seconds — so absence looks identical to a failed scan. Re-check before excluding.
-
-### A record can cover one titleset while its name describes another
-
-Check both, and check where the images come from. One record named `MTV Studios` covered only
-its 7th titleset — a different concert. Another, dated for a 1993 TV appearance, drew every
-screenshot from the 1992 appearance sitting alongside it on the same disc. Both look correct in
-a review montage, because every frame is real footage of the right band. Sum the titleset
-runtimes and confirm each pick's timestamp falls inside the titleset the record covers.
-
-### Compilation discs: one wanted segment among many
-
-The mirror of the problem below. `<artist> - MTV Cribs 2002 + Others` holds 16 titlesets,
-~120 min, of which one 6.7-min segment is the band. Sweep **each titleset separately** —
-concatenating them for identification is what caused this disc to be written off as containing
-no Incubus at all. `Notes` on such a record should name the other programmes so the
-identification is never repeated.
-
-### Split bills: one record per band, per tape
-
-Two MusiquePlus tapes (2000-11-14) were filed as `Artist` = `Incubus / Deftones`. An exact-match
-filter on either band returned nothing, so they were invisible to both artists' runs *and* to
-search on the live site. On 2026-09-30 the owner settled how split bills are filed: **each tape
-becomes one record per band**, time-windowed to that band's performance only, each with its own
-setlist. The two tapes are now four records (Incubus `34f2923f1e57`, `6aa691481fa9`; Deftones
-`d4081bb1afc6`, `70dabb713576`). The joint interview between the sets belongs to neither. The disc
-hash stays on the Incubus record and the Deftones record carries a derived key, as on the
-Bush / James Brown Woodstock disc.
-
-No joined artist names remain. Before calling an artist finished, still check for one:
-
-```bash
-python3 -c "
-import json
-a='Incubus'
-for s in json.load(open('public/shows.json')):
-    art=s.get('Artist') or ''
-    if a.lower() in art.lower() and art != a: print(s['ShowID'], repr(art))
-"
-```
-
-Split a new one only where the bands' sets are separable in time, and confirm with the owner first.
-
-### A nested folder can hold a SECOND COMPLETE DISC, not just another titleset
-
-`R.E.M. - T in the Park, 2008-07-13 + Oxegen 2008` held two full `VIDEO_TS` trees: the show
-in the root, and an entirely different concert in a subfolder. The scan writes one row per
-folder, so the Oxegen disc had **no record at all** — and the surviving row had T in the Park's
-date with Oxegen's event, venue, city and lineage, because whoever wrote it read the nested
-disc's sidecar.
-
-This is not the §10b titleset case and the usual tools do not catch it:
-
-- `find_multishow.py` scores titlesets inside ONE `VIDEO_TS`; two sibling trees look like one disc.
-- `pick_source` in `shots.py` deliberately never recurses, so the parent unit captures only the
-  root disc and the nested one is invisible to the whole pipeline.
-- Both discs here are `VTS_01`, so a `vts` split cannot separate them either.
-
-The discriminator is the **directory**. `data/splits.json` now takes a `subdir` key for this.
-Keep the subdir readable in the unit's `rel` — squashing it to alphanumerics broke
-`data/overrides.json`, which is keyed by path fragment, and the nested disc captured with its
-letterbox bars still in frame.
-
-**`promote.py --propose-map` mapped BOTH split units to the SAME record.** It matches on name,
-and the two units share a folder name. Always build `data/promote_map.json` from each state
-entry's `ShowID`, and assert the values are unique before applying — a name-derived map would
-have put one concert's stills on the other's record.
-
-### A sidecar's LINE-UP block gets imported as data — into three different fields
-
-Queens of the Stone Age had the same sidecar section land in two records, two different ways:
-
-| Record | Field | Value it was given | Where it came from |
-|---|---|---|---|
-| `8e8d56e0a5f7` | `EventOrFestival` | `Nick Oliveri` | the 2nd name in `Lineup:` |
-| `8e8d56e0a5f7` | `VenueName` | `bass, lead vocals` | that name's instrument credit |
-| `cdd7abcd3d24` | `Setlist` | `Complete show; Josh Homme; Joey Castillo; …` | the whole `Line up :` block as tracks |
-
-This is the same class as the Alanis "Friesland" case (an uploader's home town read as the city) —
-**the importer took whatever line sat where it expected a value.** The tell is a field holding a
-person's name, an instrument, or a role.
-
-```bash
-# Fields holding something that looks like an instrument credit rather than a place
-python3 -c "
-import json, re
-for s in json.load(open('public/shows.json')):
-    for k in ('VenueName','EventOrFestival','City'):
-        v = (s.get(k) or '')
-        if re.search(r'(?i)\b(vocals|guitar|bass|drums|keyboards|backing)\b', v):
-            print(s['ShowID'], s['Artist'], k, repr(v))
-"
-```
-
-Read the whole sidecar before trusting any field derived from it, and check the **first and last
-three** setlist entries (already the rule) — a line-up block sits at the top or the bottom.
-
-### A circle test can lie — check the aspect against a known-good source instead
-
-Austin City Limits 2009 declares 4:3 (720x480, SAR 8:9) and is internally consistent, so no gate
-catches it. It is really 16:9: the sidecar's lineage is `HD Broadcast>SD Standalone DVD XP`, a
-widescreen broadcast squeezed into a 4:3 frame by a recorder that writes a 4:3 flag whatever it is
-fed. There are no letterbox bars, so nothing looks wrong until you look at a face.
-
-**The drum-head circle test got this backwards.** A kit shot from the side is foreshortened
-horizontally, so its head reads as *too wide* at any aspect and the frame "passes" as 4:3. Only use
-a circle that is square-on to the camera, and prefer a defocused point light, which is always round.
-
-**The reliable test is a person's head against a source whose geometry is beyond doubt** — a
-square-pixel HD capture of the same performer, ideally from the same era. Render the disputed frame
-at both shapes and compare. At 4:3 this one's face was visibly narrow and elongated; at 16:9 it
-matched the 1920x1080 Storytellers capture exactly. Found only because the collection owner said a
-show "looks squished" — after an automated check had cleared it.
-
-### A 4:3 flag with no bars on a post-2000 broadcast can be a squeezed 16:9
-
-Six Stereophonics sources (Headliners ×2, Re:covered, Later 2003, Glastonbury 2002, Move 2004 —
-UK TV, 2002–2004) were 720x576 SAR 16:15 with the picture filling the frame: a self-consistent
-4:3 flag on what was really anamorphic 16:9 squeezed by an off-air recorder. No gate can see it
-— the flags agree, and there are no bars — and a face compared across the hero montage cleared
-all six. The collection owner caught them.
-
-`python3 ~/VaultShots/aspect_ab.py` lists every 4:3-flagged, bar-free, post-2000 source and
-renders each hero at both shapes on one page. **Most of those are genuinely 4:3** (the same
-artist's WDR, SF2 and SIC broadcasts were), so the page goes to the owner with the picks page,
-before promotion. Details and the fix recipe: `concert-screenshots` skill §4.4.
-
-### Point lights do NOT measure the aspect of an SD source — tested, and it fails
-
-The idea is sound on paper: a defocused point light is circular on screen, so its stored-pixel
-height/width is the sample aspect ratio. In practice, on SD broadcast material, it reads close to
-square whatever the truth is. Tested on 2026-09-27 against Chris Cornell's Rock am Ring 2009 PAL DVD,
-a true anamorphic 16:9 source that should read **1.422**:
-
-| Method | Reading on the 16:9 control |
-|---|---|
-| bounding-box h/w, four different frame samplings | 1.000, 1.000, 0.909, 1.000 |
-| the same, only blobs ≥ 60 px / ≥ 120 px | 0.900 / 1.364 |
-| intensity-weighted second moments (sub-pixel) | 1.101, 1.106 |
-
-Every one of those would call a 16:9 disc **4:3**. The same code reads exactly 1.000 on square-pixel
-1920×1080 — which is why the flaw went unseen: **a control whose answer is 1.0 cannot reveal a bias
-toward 1.0.** Always control a measurement with a source of the geometry you are trying to detect.
-This is also the Stereophonics failure (Glasgow 2007, true 16:9, read 1.11).
-
-Consequences:
-- Silverchair's Melbourne Park 1999 "0.92, decisive" agreed with the owner only because the method
-  reads ~1 on everything SD. The 4:3 verdict stands on the owner's eye, not on that number.
-- Do not quote a point-light number as evidence in `Notes`, `overrides.json` or `aspect_confirmed.json`.
-
-What does work: the owner's A/B (`aspect_ab.py`); a source of the **same performer and era** at an
-undisputed aspect; a rigid designed graphic (a channel bug, a festival logo) shared with a source of
-known geometry; and structural evidence such as two independent captures sharing one framing (next
-section). A channel logo can still be misread by eye: the square Channel [V] box was called "square
-at 16:9" when it is square at 4:3 — measure its box, do not look at it.
-
-### A letterbox inside a 16:9-FLAGGED frame, and a container SAR that is simply invented
-
-Limp Bizkit's Rock am Ring 2009 existed twice: an MKV flagged SAR 247:176 (displays at 2.06:1) and a
-DVD flagged 16:9 whose picture sits in rows 44–529 behind digital-black bars — displaying at 2.11:1.
-Neither audit caught the DVD: cropdetect and the letterbox checks only look for bars in 4:3 frames,
-and "16:9 flag, 16:9 record" agreed. The tell was the scout: the MKV's geometry came back UNKNOWN
-(an empty `AspectRatio` and a SAR no standard produces), and probing it led to the DVD.
-
-What settled it was **structure, not measurement.** Frame-matching the two (64×36 grey thumbnails,
-normalised, bars cropped from the DVD) put them at a constant 36.5 s offset with identical framing —
-but only the DVD carries a Rock am Ring logo bug, so they are independent captures, and two captures
-sharing one framing means neither is a crop. Other broadcasts of the festival are full-frame 16:9.
-The DVD's whole frame is therefore 3:2 (16:9 picture × 576/486) — captured at 864×576 with the bars
-kept, `AspectRatio: "3:2"`, via a `showid`-scoped `dar` override.
-
-Check a 16:9-flagged DVD for bars the same way as a 4:3 one, and treat a non-standard container SAR
-(anything not 1:1, 8:9, 10:11, 16:15, 32:27, 40:33, 16:11, 64:45, 4:3) as unexplained until proven.
-
-Where a disc's own VOBs declare **different** aspects, pin the answer in `overrides.json` even when
-the default happens to be right — VOB sort order is not evidence.
-
-### cropdetect cannot see a VHS letterbox — measure rows instead
-
-`cropdetect` reported **FULL FRAME** on Supergrass's MTV Five Night Stand across 1,026 unanimous
-samples, and on the Köln VIVA disc across 3,486. Both are letterboxed. The bars come off a VHS or
-off-air master and sit at luminance **8–20, never 0**, which no cropdetect threshold separates from
-a dark picture.
-
-A per-row luminance profile settles it in one decode — but take it from the **brightest** frames
-only. An auto threshold over all frames reads a dark stage as bar and invents letterboxes: on the
-same run it "found" 2.0:1 on three sources that are full-frame.
-
-```python
-frames.sort(key=lambda r: -mean(r))          # brightest third only
-m = [mean(c) for c in zip(*frames[:len(frames)//3])]
-```
-
-**One disc can mix both.** MTV Five Night Stand letterboxes its concert and fills the frame for its
-interview segments, which is why cropdetect, a row profile and a rendered frame all disagreed with
-each other until the frames were looked at. A per-source crop is wrong for such a disc.
-
-### The two-part `AspectRatio` form means the IMAGES ARE CROPPED
-
-`parse_dar` returns the **second** ratio for a string containing "letterboxed", so
-`audit-image-geometry.py` then expects the stills to *be* that shape. Writing `4:3 (letterboxed 16:9)`
-while capturing the whole frame makes the audit report every one of that show's images as wrong.
-When the owner asks to keep the bars, leave `AspectRatio` as the frame ratio and put the measured
-letterbox rows in `Notes`.
-
-### A letterbox is not necessarily 16:9 — measure it
-
-Two Eurockéennes discs, same taper, same DVD recorder, same channel, both 4:3 PAL with the
-Europe 2 TV logo burned into the upper bar. The 2005 disc's picture is rows 72-503 = 432 rows,
-which is exactly 16:9. **The 2007 disc's is rows 56-519 = 464 rows, which is 1.66 — nearer 5:3.**
-The letterbox is symmetric about the frame centre on both, so neither is a mis-crop.
-
-Assuming 16:9 would have thrown away 32 rows of real picture. Record what it measures, using the
-two-part form (`4:3 (letterboxed 5:3)`), and put the row numbers in `Notes`.
-
-### A seek can land in the OTHER show — `Woodstock 1994 + 1999`
-
-One continuous stream holds two broadcasts, and its container timestamps are not monotonic across
-the join. The '94 window's seek path "succeeded" on 430 of 500 grabs — valid, distinct, correctly
-sized — and ~200 of them were the '99 festival. Every yield and distinctness gate passed; the
-broadcaster bug in the corner (circle-V vs RTL 5) is what showed it. The single decode pass
-counts frames and was correct at the same indices. A split entry can now pin
-`"decode": "single"` to skip seeking. **On any time-window split of a two-show stream, check the
-bug or the staging across the whole unit, not just its first and last frames.**
-
-Same artist, three smaller traps: ten folders are named `RHCP …`, which shares no token with the
-name (an `rhcp` alias now catches them — the QOTSA case again); a record can be claimed for an
-artist only through `splits.json` (Rolling Stone 25's one RHCP chapter), which discovery now
-honours; and a folder shared by two artists now plans only the current artist's split part.
-
-### An artist filed without its article returns ZERO records, silently — `Killers`
-
-The Killers are filed as `Artist` = `Killers` — since 2026-10-04 every artist is filed without
-its article (Metadata conventions → Artist). `scout.sh "The Killers"` printed a clean report of
-`0 records` with every section empty — no error, no hint — while five shows sat under the shorter
-name. Before any run, confirm the stored spelling:
-
-```bash
-python3 -c "
-import json; a='killers'
-print({s['Artist'] for s in json.load(open('public/shows.json')) if a in (s.get('Artist') or '').lower()})"
-```
-
-### A record captured once can still have NO saved capture rule — re-picks fail
-
-The 2026-09-29 tier-2 hero review re-picked 107 already-captured shows and 20 of them would not plan:
-their split or disc mapping had been done by hand at first capture and never written to
-`~/VaultShots/data/splits.json`. Two-disc sets (`Disc 1/`, `Disc 2/`), time-window splits, a
-Blu-ray `BDMV/STREAM/` folder, a folder renamed on the drive (`DVD-Offspring-LiveWembley2001` →
-`Offspring - Live Wembley 2001`) and a drive-side typo (`Columbus OH 1009-5-28`) all dropped out
-silently in a plain artist run. Prove each by re-hashing `RepVideoFiles`, then save the rule.
-
-For a subset of shows across artists, `~/VaultShots/plan_subset.py --label L --ids ids.json` plans only
-the listed ShowIDs and **refuses** if any produces no unit; run it with `set -o pipefail` so the
-capture never starts on a refused plan.
-
-### A folder can glue the artist's name to the date — `stereophonics2003-06-07dvd`
-
-That tokenises to `{stereophonics2003, 06, 07dvd}`: no token equals `stereophonics`, so `plan`
-reported `ready: 28  skipped: 0` for 29 records and the Rock am Ring 2003 disc was never captured.
-`shots.py` now accepts the squashed artist name followed **only by digits**; checked across all
-168 artists, it changes exactly that one match. The count check (folders found vs records) is
-what caught it — run it every time.
-
-### Five "FOTTP" discs held eighteen programmes
-
-Stereophonics' fan compilations `FOTTP 1/2/4/7/10` were five records for **eighteen titlesets,
-each a separate programme** (festival sets, *Later*, *Headliners*, *Re:covered*, talk shows, two
-documentaries). Every existing record had the disc's whole sidecar pasted in as its Setlist, and
-one (`f4445e77f8e6`) described *Later* 2002 while its checksum is Rock am Ring 2003. Now one
-record per titleset, each keyed by a real content hash over that titleset's `VTS_NN_0..n.VOB`.
-
-### An artist name of single letters matched EVERY folder on the drive
-
-`toks("R.E.M.")` splits to `{r, e, m}`, all discarded by the `len > 1` filter, leaving the
-artist's token set **empty**. `need` is `min(2, len(artist_toks))`, so it fell to 0 and the
-`>= need` test passed for everything: `plan` reported **144 shows ready** for a nine-show artist
-and flagged nothing. Fixed in `shots.py` by collapsing dotted initialisms to one token
-(`r.e.m.` → `rem`, `n.e.r.d` → `nerd`) so artist and folder names meet, plus a guard that
-refuses to match anything when a name yields no usable token.
-
-The general lesson: **a matcher that silently widens is more dangerous than one that fails.**
-The file already documented the opposite failure (too-strict matching dropping shows in
-silence); this is the same bug with the sign flipped, and only R.E.M. exposed it.
-
-### A prior session's "appears around X" is a GUESS unless it names its evidence
-
-The Eurockéennes 1997 record's `Notes` said "Supergrass appear around 45-62 min". That window holds
-two entirely different bands. The same note's Radiohead claim was exact — `'Radiohead (UK)' is first
-visible at frame 16,950` — because it cited the disc's burned-in title card.
-
-Read the evidence, not the conclusion. The Supergrass card turned out to be at frames 63,304-63,400
-(35:12-35:15), and their segment is 34:51-42:28 — 7m38s, two songs, nowhere near the stated window.
-
-**A twelve-song setlist cannot describe a seven-minute segment.** That record also carried a
-twelve-song list described as "the SUPERGRASS segment's setlist"; it is the festival set from
-somewhere else. Check a setlist's length against the runtime before trusting what it is attached to.
-
-### One folder can hold more than one show
-
-Several folders contain two or more concerts, and the scan records only one row per folder —
-so the other show has no record and cannot appear on the site at all. Sometimes the surviving
-row describes the *wrong* one. Detect before capturing:
-
-```bash
-python3 ~/VaultShots/find_multishow.py --artist "Nirvana"
-```
-
-**Read every sidecar it reports** (`info.txt`, `*.nfo`, `*.md5`). They are written by whoever
-made the disc and have so far revealed a two-show disc, a three-programme disc, a wrong date,
-a source lineage and two full setlists — before decoding a single frame. Roughly **20 folders
-collection-wide** are genuine candidates. Full procedure in the `concert-screenshots` skill,
-§10b.
-
-**After merging, deleting or re-keying any record, check for images that now belong to no
-record.** `promote.py` compares the manifest against files on disk in both directions and passes
-happily when an orphaned pair agrees with itself; it never checks the manifest against
-`shows.json`. `python3 scripts/audit-image-geometry.py` reports these as `no show record`.
-
-**Run `python3 ~/VaultShots/preflight.py --artist "<name>"` before capturing.** One read-only
-pass reports records with no checksum, duplicate groups whose metadata disagrees, loose media at
-the drive root, folders holding more than one titleset, and durations that imply an impossible
-bitrate. On Kings of Leon it found twelve multi-titleset folders and three loose root files.
-
-**Assume a multi-titleset folder is several shows.** In one artist, twelve folders held more than
-one programme — including a disc named for one festival that held three, and a "Big Day Out"
-master whose titlesets were Jet, then Kings of Leon, then Muse.
-
-**Image A is always a close-up of the lead singer.** The scorer picks the sharpest close-up
-but has no idea who is in it, and lead guitarists get more close-ups on many broadcasts. Check
-the heroes as one montage across all of an artist's shows before handing over. Where a source
-genuinely has no close-up (distant audience recordings), use the best wide with the singer
-centre stage and say so.
-
-**Hand-pick all four slots, on every artist.** The hero gate guards slot A only, and the other
-three are where commercials, title cards, credit rolls, channel idents and other bands land — they
-are the highest-contrast, quietest-background frames a programme contains, so they lead the
-shortlist on any source. Supergrass flagged **zero** of its 18 shows as dark and still needed 14 of
-18 heroes and 16 of 54 other slots replaced; one slot held a **Manic Street Preachers** title card.
-Read `reports/review.jpg` once for the whole artist — ~6k vision tokens — before handing anything over.
-
-**The bassist singing backing vocals is the hero trap that actually bites.** A mouth-open close-up
-of a *backing* singer at his own mic is indistinguishable from a hero frame by composition — it
-passed a 420px identity check on Supergrass's Glastonbury 2004 and the collection owner caught it.
-Before writing slot A, name one physical feature that separates the frontman from every other
-member and check for it specifically (for Gaz Coombes: sideburns down the jaw). Hair colour is not
-that feature — under stage light two members read the same shade.
-
-**Reviewing costs more than capturing.** One full-size contact sheet is ~6,000 vision tokens;
-a whole 16-programme disc can be identified for less by starting at 132px thumbnails and
-zooming only the ambiguous rows. Details in the skill, §0a-1.
 
 Capture and replacement is handled by the `concert-screenshots` skill
 (`.claude/skills/concert-screenshots/SKILL.md`), which owns the full procedure, the fixed
 encode settings (lanczos, `-q:v 2`, `yuvj420p`, `setsar=1`, no sharpening or colour changes)
 and the read-only safety rules. Do not hand-roll ffmpeg calls for this.
 
----
+**Collection traps found during capture** (multi-show folders, titleset/name mismatches,
+sidecar import errors, aspect traps, matcher bugs) are in the concert-screenshots skill,
+section "Field lessons — collection traps". Read it before any capture or record-splitting
+work.
 
 ### Temp images workflow
 User drops images into `public/images/temp-images/` then asks Claude to assign them to a show.
@@ -648,7 +309,22 @@ The user references the hero image by the last 3 digits (`NNN` — the milliseco
 
 **Slot ordering**: hero image → `_01`. Remaining images in ascending timestamp order (alphabetical by filename) unless the user specifies otherwise.
 
-Steps:
+**Use `tools/add-temp-images.py`** — it performs the steps below and verifies the result:
+
+```bash
+python3 tools/add-temp-images.py --show "irving plaza" --hero s257           # dry run: prints the plan
+python3 tools/add-temp-images.py --show "irving plaza" --hero s257 --apply   # writes it
+```
+
+`--show` is a substring of Artist + FolderName (add `--artist` to narrow it). It refuses an
+ambiguous or empty match, an image whose shape is more than 2% off the record's `AspectRatio`,
+and a repo that already has missing or orphaned images. With `--apply` it backs up the replaced
+slots to `~/VaultShots/promote-backup/`, writes the slots, deletes surplus ones, rewrites the
+manifest as `[1..N]`, checks `shows.json` is untouched and nothing is orphaned collection-wide,
+and empties `temp-images/`. It does not pick between copies by `TotalSizeHuman` — narrow
+`--show` until one record matches.
+
+The steps, for when doing it by hand:
 1. Identify target show (by FolderPath, FolderName, ShowID, or description). When multiple versions of the same show exist, disambiguate by `TotalSizeHuman` — the user will specify the size.
 2. Get the show's `ChecksumSHA1` from shows.json
 3. Check what slots currently exist on disk: `ls public/images/{checksum}*`
@@ -699,23 +375,44 @@ and update the manifest key. Clear the Note.
 
 ## Git workflow
 
-### Always use force-add for public/
-`public/` is listed in `.gitignore` (Gatsby leftover) but its files are tracked.
-Always use `git add -f public/` or `git add -f public/shows.json` etc.
+### Branch, commit, push (settled 2026-10-05)
+- **Work is committed straight to `main`.** `feat/browse-redesign` is merged and deleted.
+- **Never push until Karl says.** Every push to `main` deploys the live site.
+- **Commit by explicit path, in one command**, and never leave anything staged — parallel
+  sessions share one git index, so whatever another session staged rides along in yours:
+  `git commit -m "…" -- path/one path/two`. A new file needs adding first, in the same
+  command: `git add path/new && git commit -m "…" -- path/new path/other`.
+- **Add by explicit path, never by directory, and never with `-f`.** `public/` is no longer
+  gitignored, so `-f` is not needed; the old `git add -f public/` habit re-committed
+  `public/.DS_Store`.
 
-### Never commit dist/
-`dist/` is built by CI. Never `git add dist/` — it will be ignored correctly.
+### What git tracks
+- `dist/` — never; CI builds it.
+- `_playground/` — tracked (experiments and notes are backed up); still never shipped.
+- `.claude/skills/` — only `concert-screenshots/` and `va-masters/` are tracked; third-party
+  design skills stay local and gitignored. `.claude/settings.local.json` is ignored.
+- `public/images/temp-images/` and `tools/show-editor/index.html` are ignored.
 
 ### Push 408 timeouts
 GitHub occasionally returns `HTTP 408` on push. The commit is always created successfully — just retry `git push origin main` immediately. It succeeds on the second attempt.
 
-### Health check runs automatically
-A pre-push hook runs `scripts/health-check.py` before every push.
-- **Warnings** (temp checksums, orphaned images, empty checksums) — printed but don't block
-- **Errors** (bad dates, missing images listed in manifest, duplicate ShowIDs) — block the push
-- **Setlist loss** — any song that disappears from a `Setlist` blocks the push. Songs that move
-  to a record which gained them (a split) pass automatically; a deliberate removal needs an
-  entry in `scripts/setlist-removals-approved.json` giving the exact strings and the reason
+### Health check
+`scripts/health-check.py` runs from a local pre-push hook and again in the deploy.
+- **Blocks:** a `ShowDate` that is not a real `YYYY-MM-DD` or blank; a record without
+  `ShowID` or `Artist`; duplicate ShowIDs; a `ParentShowID` that is not a record, is a hidden
+  master of a shown record, is itself linked, or comes without `SegmentStart` < `SegmentEnd`
+  (`H:MM:SS`); a `ContentType` other than `Documentary`, or "Documentary" in `RecordingType`;
+  one artist under two names, or a name starting with "The"; a manifest slot whose file is
+  missing; **setlist loss**.
+- **Setlist loss** — a song gone from a `Setlist`. Songs that moved to a record which gained
+  them (a split) pass; a deliberate removal needs an entry in
+  `scripts/setlist-removals-approved.json` giving the exact strings and the reason. It compares
+  the working tree with `HEAD`, so it sees only **uncommitted** changes: run the health check
+  before committing a `shows.json` edit. Once committed, a loss passes the hook and the deploy.
+- **Warns only:** checksums missing from the manifest, orphaned images, temp checksums, files
+  left in `temp-images/`, records with no checksum, deprecated or garbage `EventOrFestival`
+  values, a "N shows" figure in README or CLAUDE.md more than 2% off the data, and uncommitted
+  README/CLAUDE.md edits.
 
 Run it manually anytime:
 ```bash
@@ -761,7 +458,10 @@ every one by a linked record that copied the billing off the screen.
 - **Small words lower-case** — `Kings of Leon`, `Alice in Chains`, `Queens of the Stone Age`.
 - **Solo careers are separate artists** — Chris Cornell is not Soundgarden.
 
-**Before creating any record, look up the stored spelling** and reuse it exactly:
+**Before creating any record, and before any per-artist run, look up the stored spelling** and
+reuse it exactly. Most tools match `Artist` exactly and fail silently: `scout.sh "The Killers"`
+printed a clean report of `0 records` while five sat under `Killers`. (`shots.py plan` now
+resolves the stored spelling regardless of case and warns loudly on a name with no records.)
 
 ```bash
 python3 -c "
@@ -772,6 +472,29 @@ print({s['Artist'] for s in json.load(open('public/shows.json')) if a in (s.get(
 The health check blocks a push when two names differ only by case, a leading "The",
 punctuation, `&`/`and` or accents, or when any name starts with "The". It cannot see a spelling
 difference (`Lovin'` / `Loving`) — the lookup above is what catches those.
+
+---
+
+### Split bills — one record per band, per tape
+A tape with two bands' sets gets **one record per band**, time-windowed to that band's
+performance, each with its own setlist (the owner, 2026-09-30). A joined name such as
+`Incubus / Deftones` is invisible to an exact-match filter on either band, on the site and in
+every per-artist run. The two MusiquePlus tapes of 2000-11-14 became Incubus `34f2923f1e57`,
+`6aa691481fa9` and Deftones `d4081bb1afc6`, `70dabb713576`; the joint interview between the
+sets belongs to neither. Since the two-act-disc pass each tape is also a Various Artists master
+(`9b53a1e2629d`, `527cba4f7921`) with the band records linked to it — the `va-masters` procedure,
+which is how any new split bill is filed. Split only where the sets are separable in time, and
+confirm with the owner first. Check for a joined name before calling an artist finished:
+
+```bash
+python3 -c "
+import json
+a='Incubus'
+for s in json.load(open('public/shows.json')):
+    art=s.get('Artist') or ''
+    if a.lower() in art.lower() and art != a: print(s['ShowID'], repr(art))
+"
+```
 
 ---
 
@@ -793,30 +516,14 @@ Always scan for duplicates when editing any of these fields.
 - Only year + month known → `YYYY-MM-01`
 - Compilations, documentaries, rockumentaries, TV-only specials with no air/performance date → `""`
 - Never use `"0000-00-00"`, `"Compilation"`, or any other placeholder string
+- Undated records sort last in both sort directions, and drop out of a year range unless the
+  viewer ticks "include undated"
 
 ---
 
-### Mojibake — U+FFFD in imported text
-
-Sidecars written in latin-1 or cp1252 and read as UTF-8 at scan time left a replacement
-character wherever an accented letter should be. All nine **user-visible** occurrences are fixed
-(Köln, Lüdinghausen, Nervión, Eurockéennes, Südwest, and a curly apostrophe in a lineage).
-
-**75 records still carry it inside `Notes`** and are deliberately untouched: `Notes` holds
-verbatim sidecar dumps, which are evidence, so each needs the original file re-read in its true
-encoding rather than a guess at the missing character. Find them with:
-
-```bash
-python3 -c "
-import json
-for s in json.load(open('public/shows.json')):
-    for k,v in s.items():
-        if isinstance(v,str) and chr(0xFFFD) in v: print(s['ShowID'], s['Artist'], k)
-"
-```
-
-This is not cosmetic: **the Artifact publisher refuses content containing U+FFFD**, so a review
-page cannot be built for any artist whose records still carry it in a displayed field.
+### Mojibake — U+FFFD
+None remains in any field (2026-10-05). Keep it that way: read a latin-1 or cp1252 sidecar in
+its true encoding before pasting from it — the Artifact publisher refuses any page containing U+FFFD.
 
 ### Country
 - Always the full English country name — never abbreviations or codes
@@ -845,7 +552,7 @@ These are canonical — do not introduce variants.
 |---|---|---|---|---|---|
 | Pinkpop | `Pinkpop` | `Megaland` | `Landgraaf` | `Netherlands` | |
 | Roskilde Festival | `Roskilde Festival` | `Dyrskuepladsen` | `Roskilde` | `Denmark` | |
-| Rock im Park | `Rock im Park` | `Frankenstadion` | `Nuremberg` | `Germany` | Not `Nürnberg` — matches the two existing records |
+| Rock im Park | `Rock im Park` | `Frankenstadion` | `Nuremberg` | `Germany` | Not `Nürnberg` — 3 of the 4 records; Pearl Jam `386ef26dbe15` still says `Nürnberg` |
 | Eurockéennes (Belfort) | `Eurockéennes Festival` | `Presqu'île de Malsaucy` | `Belfort` | `France` | Not `Les Eurockéennes` |
 | Lowlands | `Lowlands Festival` | `Evenemententerrein Walibi Holland` | `Biddinghuizen` | `Netherlands` | Not just `Lowlands` |
 | SWU (Brazil) | `SWU Music & Arts Festival` | _(blank)_ | `Itu - Sao Paulo` | `Brazil` | Not `SWU Festival` |
@@ -868,7 +575,7 @@ These are canonical — do not introduce variants.
 
 ### EventOrFestival
 - Festival/event name only — never include dates, venue, or city in this field
-- Examples: `"Glastonbury"`, `"Rock am Ring"`, `"MTV Unplugged"`, `"Later w/ Jools Holland"`
+- Examples: `"Glastonbury Festival"`, `"Rock am Ring"`, `"MTV Unplugged"`, `"Jools Holland"` — host-led talk shows use the host's name (see the table above)
 - Leave blank if it was a standard headline show with no named event/festival
 
 ---
@@ -969,7 +676,9 @@ Located in `data-pipeline/` — numbered Python scripts for scanning physical ha
 ```
 
 **These CSV files are historical archives — do not edit them.**
-The live source of truth is `public/shows.json`.
+The live source of truth is `public/shows.json`, corrected by hand record by record since the
+pipeline last ran. **Never copy the pipeline's output over it** (the old summary in
+`data-pipeline/README/` says to; it is superseded).
 The pipeline is only re-run when a new hard drive is added to the collection.
 The workflow for adding a new drive is not yet finalised.
 
@@ -1014,12 +723,8 @@ Each show record contains clues that narrow down the exact date and event, even 
   fetched page confirmed it (IMDb blocked, TheTVDB listed only a 2009 episode), so the date stayed
   year-only and the lead went into `Notes`. A summary can point at where to look; it never counts
   toward the two.
-- Acceptable sources (ranked by reliability):
-  1. setlist.fm (check user-confirmed count — higher = more reliable)
-  2. Official band site tour pages
-  3. Published concert reviews (Rolling Stone, NME, Billboard, Pitchfork, local press)
-  4. YouTube full-show videos with confirmed date/venue
-  5. Fan forums or Dime A Dozen NFO files with eyewitness accounts
+- Acceptable sources and their ranking: Metadata conventions → Setlist sourcing. The same
+  exceptions apply — the recording and a sidecar in the show's own folder outrank them.
 - If only 1 source is found, or sources conflict: leave the field unchanged and note the conflict in a comment to the user
 - Never infer or reconstruct a setlist from tour averages or nearby-show patterns alone
 - For `VenueName`: use the name the venue had **at the time of the show**, not its current branding
@@ -1035,6 +740,14 @@ Each show record contains clues that narrow down the exact date and event, even 
 5. Claude runs the health check and commits with `fix(shows):` or `feat(shows):` prefix
 
 **Never write to `shows.json` before the user confirms the batch.**
+
+### Karl's own edits — the Show Editor
+`python3 tools/show-editor/build.py` renders `tools/show-editor/index.html` (gitignored; rebuild
+after any `shows.json` change) — one self-contained page, A–Z by artist, editing the curatorial
+fields while technical ones stay locked. It writes nothing: Karl copies a text patch
+(`EDITS FOR N SHOWS … from: / to:`) and pastes it into a session. Apply it exactly as written
+and change nothing else — his own edits need no second source — then run the health check and
+commit.
 
 ---
 
@@ -1053,33 +766,33 @@ Claude will scan the artist's shows, identify gaps, research each one, and prese
 
 ## Hard drives in the collection
 
-Figures below are measured from `public/shows.json` (deduplicated) and the
-`data-pipeline/` scan CSVs (raw). Sizes are GiB — multiply by 1.074 for the
-decimal GB used on drive labels.
+`MasterDriveName` is the drive a record was **originally catalogued from**, not where it lives
+now (below). Counted from `public/shows.json` on 2026-10-05; sizes are GiB, each folder counted
+once (linked records share their master's folder) — multiply by 1.074 for the decimal GB on
+drive labels.
 
-| Drive | Shows (deduped) | Size | Contents |
+| `MasterDriveName` | Records | Size | Notes |
 |---|---:|---:|---|
-| Seagate Expansion Drive | 470 (57%) | 1,392 GiB | **Main collection** — the largest single source |
-| Big Daddy | 347 (42%) | 1,043 GiB | Second collection, broadly the same era mix |
-| `Untitled` (DVD archive) | 2 | 6 GiB | 316 scanned, but 313 are byte-identical duplicates of the above |
-| **Unique total** | **829** | **~2,441 GiB** | ~2.4 TiB / ~2.6 TB. Add ~30 GiB for 10 shows with no recorded size |
+| Seagate Expansion Drive | 627 (52%) | 1,364 GiB | The largest single source |
+| Big Daddy | 533 (44%) | 1,025 GiB | Same era mix as the Seagate |
+| Live Music | 47 | 100 GiB | |
+| `Untitled` (DVD archive) | 3 | 6 GiB | 316 folders scanned; 313 were byte-identical duplicates and were dropped |
+| _(blank)_ | 4 | 5 GiB | Added by hand after the scan |
+| **Total** | **1214 records** | **~2,500 GiB** | ~2.4 TiB. 10 records have no recorded size |
 
-**Both drives span the same eras** — roughly 1990s and 2000s heavy, with a
-2010s tail. Neither is era-specific.
+**The physical collection now lives on one drive, `Live Music`** (`/Volumes/Live Music`),
+which every capture and audit script reads. Most records still name their original drive in
+`MasterDriveName` and `FolderPath`, so the tools resolve folders by name and content hash rather
+than by stored path (concert-screenshots skill).
 
-### Duplication across media
-Raw scans total **1,421 show folders / 3,931 GiB (3.84 TiB)** across the three
-volumes. After dedup that resolves to 829 unique shows / 2,441 GiB, so roughly
-**1,490 GiB is redundant copies**. The `Untitled` volume is a DVD backup
-archive: of its 316 folders, 313 match an existing `ChecksumSHA1` exactly and
-were correctly dropped by the pipeline. Its one non-duplicate entry
-(`Mainly Hunting - Target 2009`, filed under artist "DVDs") is not a concert
-recording and is intentionally excluded.
+**Both original drives span the same eras** — 1990s and 2000s heavy, with a 2010s tail.
 
-> Historical note: this table previously described Big Daddy as the "bulk of
-> all shows" and the Seagate as "overflow + 2010–2013 era". Both were wrong —
-> the Seagate is larger on every measure, and only 13% of its shows fall in
-> 2010–2013.
+### Duplication across media — as of the original scan
+Raw scans totalled **1,421 show folders / 3,931 GiB (3.84 TiB)** across three volumes;
+deduplication left 829 unique records / 2,441 GiB, so roughly **1,490 GiB was redundant
+copies**. The `Untitled` volume is a DVD backup archive. Its one non-duplicate entry
+(`Mainly Hunting - Target 2009`, filed under artist "DVDs") is not a concert recording and is
+intentionally excluded.
 
 ---
 
@@ -1088,8 +801,8 @@ recording and is intentionally excluded.
 Measured, not guessed. On 2026-10-02 the drawer took 400–600 ms to open on a Mac
 (~1.9 s at 4× CPU throttle, a stand-in for a phone) and Browse scrolled at ~6 fps on a
 phone-class CPU. `e2d6d54` brought the drawer to ~25 ms (~145 ms at 4×) and halved JS
-memory. These rules keep it there, and `npm run check:perf` (part of `npm run check`)
-fails on each of them:
+memory. These rules keep it there. `npm run check:perf` (part of `npm run check`) fails on
+every one of them except the last, `content-visibility`, which nothing checks:
 
 - **No motion components inside `ShowCard`.** Its hover and focus layers are CSS
   (`group-hover`, `group-focus-visible`). Browse renders every show — ~1,200 cards — and
@@ -1146,43 +859,72 @@ after the drawer settles — is small on a Mac.
 
 ---
 
+## Browse architecture
+
+The Browse redesign went live on 2026-10-05. Its reasoning, and where the build departs from
+it, is in `docs/browse-redesign-spec.md`. What a change must not break:
+
+**Shell** (`components/shell/`). `AppShell` = fixed `TopNav` (search only, no wordmark) +
+`Sidebar` (md and up) + `<main>` + `MobileTabBar` (below md). The sidebar is a flex sibling,
+not an overlay, so content reflows rather than sliding under it. It is `expanded` (256px) or
+`rail` (72px, a small label under each icon), toggled by its own Collapse button and kept in
+`localStorage` under `vault:sidebar` (default expanded at every width). Its top group sets the
+destination (Browse, Artists); its lower group toggles the `type` facet (Live shows,
+Documentaries). Below md the sidebar is not rendered: the tab bar offers Browse · Artists ·
+Search, padded by `env(safe-area-inset-bottom)`, and `<main>` carries `pb-20` so the last row
+clears it. There is no Live/Documentaries control on mobile.
+
+**Views** (`App.tsx`). Browse (the default): `HeroSearch` masthead (wordmark and tagline;
+collapses to zero height while anything filters), sticky `FilterBar`, then — only when nothing
+filters — `FeaturedRows` and an "All shows" heading, then `ShowGrid` of `results`. Artists:
+`ArtistsView`, an A–Z directory with a sticky letter rail, flowed in CSS columns. Picking an
+artist puts its name in the search and renders `SearchResultsGrid` in place, so clearing goes
+back to the directory. A failed load renders one error state for every view.
+
+**State** (`src/store/filters.ts`, zustand): `view, q, from, to, undated, country, festival,
+type, sort`. Read the whole state only as `useFilterStore(useShallow(selectFilterState))` —
+`selectFilterState` builds a new object per call, and without `useShallow` zustand v5 re-renders
+until React throws ("getSnapshot should be cached"). Single fields take plain selectors. The
+search input is local to App; only its debounced value (150 ms) reaches the store.
+
+**URL** (`src/lib/url.ts`) is the store's serialisation, and it is canonical: keys in the fixed
+order above; facet values slugified, de-duplicated and sorted; defaults (`view=browse`,
+`sort=year-desc`, `undated` off) and empty values omitted. Query params on the root path, never
+path segments — GitHub Pages has no SPA fallback. Facet, query, range and sort changes
+`replaceState`; `setView` `pushState`s, so Back steps between destinations, not checkboxes.
+`initFilterUrlSync` (once, in App) rehydrates on popstate. Every filter write passes through
+`commitFilterState` — the one seam reserved for analytics.
+
+**Pipeline** (`src/hooks/useBrowseResults.ts`): text query → MiniSearch id set → facets → sort,
+all synchronous `useMemo`s. `src/search/facets.ts` counts each facet against every *other*
+active filter, so an option's count is what selecting it yields; zero-count options are
+disabled, never hidden. An empty `Country` or `EventOrFestival` becomes the `NONE` sentinel
+(`'none'`, labelled "Unknown location" / "No festival") so those records stay reachable. `type`
+is `ContentType` slugified, `live` when absent. Undated records sort last both ways and are
+excluded from a year range unless `undated=1`.
+
+**Controls** (`components/filters/`). `FilterBar`: Years, Country and Festival triggers;
+removable chips and Clear all while anything is set; the result count (`aria-live`) and sort.
+`FacetPopover` is a base-ui `Popover` (focus, Escape, outside click, positioning) — its `z-50`
+belongs on the `Positioner`; a text filter appears above 15 options. `YearRangePopover`: decade
+chips (decades with 5+ records), the `YearHistogram` brush, From/To inputs (the keyboard and
+screen-reader path) and "Include undated". The brush maths is pure, in `src/lib/brush.ts`; the
+store is written on pointer-up only, never during a drag.
+
+**Grids.** `GRID_COLS` (exported by `FeaturedRows.tsx`) is the one column set for every grid:
+2 → md 4 → lg 5 → xl 6 → 2xl 7. `ShowGrid` (Browse) is memoised and deliberately unanimated;
+`SearchResultsGrid` (Artists-view search) has its own header and the "N more shows feature a song
+called …" suggestion. Browse content, `TopNav` and `FilterBar` sit in `max-w-[1924px] mx-auto`;
+`SearchResultsGrid` and `ArtistsView` use `max-w-[1860px]`.
+
+**Guards.** `npm run check` = `check:perf` (Front-end performance), `check:url` (canonical
+serialisation), `check:facets` (counts against the real `shows.json`), `check:store` (stable
+selector snapshots), `check:brush` (brush geometry) and `typecheck`. Run it after touching any
+of these files; the deploy runs it too.
+
+---
+
 ## UI patterns
-
-### Content container width
-The homepage and nav share a standard max-width container to keep content visually centred on wide screens:
-
-- `max-w-[1924px] mx-auto` — used in `FeaturedRows` (outer wrapper) and `TopNav` (inner content wrapper). Caps the content area on ultra-wide screens so rows don't stretch edge-to-edge.
-- `max-w-[1860px] mx-auto` — used in `SearchResultsGrid`. Same effective inner width as FeaturedRows (1924px − 64px outer padding already applied by `App.tsx`).
-
-When adding any new full-width homepage section, wrap its content in `max-w-[1924px] mx-auto`. The nav background spans the full viewport; only its inner flex div gets the max-width wrapper.
-
-### Homepage row card widths
-On **mobile** (`< md`), each `FeaturedRow` renders as a 2-column CSS grid flowing vertically — no horizontal scroll, no fades, no arrows. All cards in the row are visible.
-
-On **desktop** (`md+`), `FeaturedRows` uses viewport-calc card widths at the same breakpoints as `SearchResultsGrid`:
-
-```
-md:     calc((100vw - 64px - 36px) / 4)          ← 4 visible (= search grid)
-lg:     calc((100vw - 64px - 48px) / 5)          ← 5 visible (= search grid)
-xl:     calc((100vw - 64px - 60px) / 6)          ← 6 visible (= search grid)
-2xl:    calc((min(100vw,1924px) - 64px - 72px) / 6.5)  ← 6.5 with scroll peek
-```
-
-At `2xl` the homepage shows 6.5 (one fewer than the grid's 7) to preserve the visible scroll peek.
-
-### Homepage row fade gradients
-Desktop only. In `FeaturedRow` (inside `FeaturedRows.tsx`), the left/right edge fades are **always visible** when there is content to scroll — they are separate `pointer-events-none` divs, not part of the arrow buttons. The arrow buttons (`z-20`) are hover-only (`opacity-0` → `opacity-100` on `isRowHovered`). The fade divs (`z-10`) have no opacity transition.
-
-This means desktop users always see the scroll affordance without needing to hover first. On mobile the grid layout makes fades and arrows unnecessary.
-
-### Search results grid
-`SearchResultsGrid` uses CSS `grid` with responsive column counts — no fixed card widths (columns size automatically via `1fr`):
-
-```
-grid-cols-2  →  md:grid-cols-4  →  lg:grid-cols-5  →  xl:grid-cols-6  →  2xl:grid-cols-7
-```
-
-Card widths at each breakpoint match the homepage row cards (same calc denominators), so both views feel visually consistent.
 
 ### Close buttons
 All close buttons use the shared `CloseButton` component (`components/CloseButton.tsx`).
@@ -1207,32 +949,42 @@ onClick={() => {
 }}
 ```
 
+Both ways into the mobile search do this: `TopNav`'s search button, and the tab bar's Search
+item (`handleMobileSearchClick` in App, which opens TopNav's field through its controlled
+`mobileSearchOpen` prop and focuses `mobileSearchInputRef`).
+
 Also ensure mobile inputs have `font-size: 16px` (`text-base`) or larger. iOS auto-zooms the page when focusing any input with `font-size < 16px`.
 
-### Hero section (HeroSearch)
-The hero title block (site name, subtitle, quick-search pills) is always mounted but animates to
-`height: 0 / opacity: 0` when `isSearching` is true. It is driven by Framer Motion's `animate` prop
-(not `AnimatePresence`) so the nav search input is never unmounted while typing.
-`App.tsx` passes `isSearching={isSearching || showAllMode}` to collapse it in both search and all-shows mode.
+### Masthead (HeroSearch)
+Wordmark (`HalationLogo`) and tagline, nothing else — the only place the brand appears. Always
+mounted, animating to `height: 0 / opacity: 0` while filtering (`isSearching={filtered}` from
+App, i.e. any query, range or facet). It uses motion's `animate` prop, not `AnimatePresence`,
+so nothing above the grid unmounts mid-keystroke.
 
-### ShowDrawer — mobile sizing
-On mobile the drawer is `h-dvh` (`height: 100dvh`) — **not** `h-[88vh]` or `h-screen`. `dvh` is the dynamic viewport height unit: the browser recalculates it live as the URL bar appears or disappears, so the drawer always fills exactly the visible screen. Do not change this to a static `vh` value.
+### ShowDrawer — sizing and modal behaviour
+On mobile the drawer is full width and `h-dvh` (`height: 100dvh`), sliding up from the bottom — **not** `h-[88vh]` or `h-screen`. `dvh` is the dynamic viewport height unit: the browser recalculates it live as the URL bar appears or disappears, so the drawer always fills exactly the visible screen. Do not change this to a static `vh` value. From md it slides in from the right at `58vw` (`52vw` from lg).
+
+It is a modal: `role="dialog"`, focus moves in on open and is trapped, Escape closes the image
+viewer first and then the drawer, focus returns to the card that opened it, and body scroll is
+locked. The page behind goes `inert` only once the slide-in finishes (Front-end performance).
 
 ### Drawer metadata layout (ShowDrawer)
-The drawer hero area and content grid follow this fixed structure:
-
-**Hero area** (top of drawer, above thumbnails):
+**Hero area** (over the header image):
 1. Artist name — large display font
 2. Single subtitle line — `Date · EventOrFestival (or VenueName if no event) · Country (or City, Country if no event)` — built as a filtered join with ` · ` separator; "Date Unknown" if `ShowDate` is empty
-3. Badge pills row — RecordingType, Duration (Clock icon + auto-formatted `DurationSec`), TVStandard — each only rendered if the field has a value
+3. Badge pills row — `ContentType` (violet), `RecordingType`, Duration (Clock icon + auto-formatted `DurationSec`), `TVStandard` — each only rendered if the field has a value
 
-**Content grid** (below thumbnails):
-- 3 columns on `md+`: Setlist | Technical | Notes
-- Column count is dynamic — `md:grid-cols-3` when all three exist, `md:grid-cols-2` when only two, no grid class when only one
-- Column labels use `text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-600`
-- Setlist: numbered list from semicolon-split `Setlist` field; `Encore break` rendered as a divider line
-- Technical: array of `{ label, value }` rows — label fixed `w-16 text-gray-500`, value `text-white`; only rows with a value are rendered
-- Notes: `whitespace-pre-wrap wrap-break-word font-mono text-xs text-gray-400`; truncated to `max-h-40` with a gradient fade when collapsed; **More ⌄ / Less ⌃** buttons toggle `notesExpanded` state; button only shown when `Notes.length > 320`. `wrap-break-word` is intentional — pipeline notes often contain long unbroken strings (URLs, codec lines, filenames) that would overflow the container on mobile and cause the browser to zoom
+**Below the hero**, in order: a "Part of …" link to the master (linked records only), the
+Screenshots strip, an "On this recording" list of linked records with their time windows and
+song counts (masters only), then the content grid. Following either link swaps the show inside
+the open drawer and resets it to the top.
+
+**Content grid**:
+- Technical always renders; Setlist and Notes only when they have content. `md:grid-cols-3` with both, `md:grid-cols-2` with one, a single column otherwise
+- Column labels use `text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400`
+- Setlist: numbered `<ol>` from the semicolon-split `Setlist`. `Encore break` renders as an ordinary numbered item — there is no divider (the song counts under "On this recording" do leave it out)
+- Technical: `{ label, value, mono }` rows — Video, Aspect, Standard, Container, Audio, Channels, Sample rate, Size, Files; label `w-16 text-xs text-gray-400`, value `text-gray-200` (`font-mono` for codec-like values); only rows with a value are rendered
+- Notes: from `getNotes`; `whitespace-pre-wrap wrap-break-word font-mono text-xs text-gray-400`; truncated to `max-h-40` with a gradient fade when collapsed; **More ⌄ / Less ⌃** buttons toggle `notesExpanded` state; button only shown when the notes run past 320 characters. `wrap-break-word` is intentional — pipeline notes often contain long unbroken strings (URLs, codec lines, filenames) that would overflow the container on mobile and cause the browser to zoom
 
 The Source & Files accordion has been removed — drive/folder/file metadata is no longer shown in the drawer.
 
@@ -1254,18 +1006,18 @@ Key state:
 
 How it works:
 - Each thumbnail is wrapped in `<motion.div layoutId={`drawer-img-${show.ShowID}-${idx}`}>` 
-- The overlay renders a `<motion.div>` with the same `layoutId` matching `expandedFromIndex` — Framer Motion animates the element between thumbnail and expanded positions
-- Navigating prev/next only updates `viewingIndex`; close always zooms back to the original thumbnail
+- The overlay renders a `<motion.div>` with the same `layoutId` matching `expandedFromIndex` — motion animates the element between thumbnail and expanded positions
+- Prev/next buttons and ← → (both wrap around) and the dots only update `viewingIndex`; close always zooms back to the original thumbnail
 - The drawer's own close button is hidden (`!isImageExpanded`) while the viewer is open to prevent z-index conflicts with the overlay's close button
 
 ---
 
-## Featured shows (homepage)
+## Featured shows
 
-`components/FeaturedRows.tsx` contains `FEATURED_IDS` — an array of ShowIDs shown in the
-"Featured" row on the homepage. Edit this array to add/remove featured shows.
-
-Current quick-search pills are defined in `components/HeroSearch.tsx` → `QUICK_SEARCHES`.
+`components/FeaturedRows.tsx` → `FEATURED_IDS`: hand-picked ShowIDs (14, a multiple of 7 so
+they fill whole rows at 2xl), shuffled once per load and shown on Browse only while nothing
+filters. A missing ID drops out silently. The comment beside each ID says why that copy was
+chosen — keep doing that.
 
 ---
 
@@ -1278,13 +1030,17 @@ import json, collections
 d = json.load(open('public/shows.json'))
 a = collections.Counter(s['Artist'] for s in d)
 f = collections.Counter(s['EventOrFestival'] for s in d if s.get('EventOrFestival'))
-print(len(d), 'shows /', len(a), 'artists'); print(a.most_common(9)); print(f.most_common(7))
+print(len(d), 'shows /', len(a), 'artists /', sum(s.get('Hidden') == 'Yes' for s in d), 'hidden /',
+      sum(bool(s.get('ParentShowID')) for s in d), 'linked /', sum(s.get('ContentType') == 'Documentary' for s in d), 'documentaries')
+print(a.most_common(9)); print(f.most_common(7))
 "
 ```
 
-- **973 shows** across **173 artists**
-- Top artists by volume: Stone Temple Pilots (100), Smashing Pumpkins (63),
-  Kings of Leon (53), Soundgarden (36), Red Hot Chili Peppers (32), Foo Fighters (31),
-  Stereophonics (29), Incubus (26), Various Artists (25)
-- Top festivals: Rock am Ring (49), Glastonbury Festival (29), Reading Festival (28),
-  MTV Unplugged (24), Pinkpop (23), Bizarre Festival (21), Big Day Out (19)
+As of 2026-10-05:
+- **1214 shows** across **304 artists**. One is `Hidden`; 256 are linked records cut from 43
+  masters; 29 are documentaries
+- Top artists by volume: Stone Temple Pilots (101), Smashing Pumpkins (65), Kings of Leon (56),
+  Various Artists (44), Soundgarden (36), Foo Fighters (34), Red Hot Chili Peppers (32),
+  Incubus (29), Stereophonics (29)
+- Top festivals: Glastonbury Festival (71), Reading Festival (64), Rock am Ring (53),
+  Big Day Out (34), Pinkpop (33), MTV Unplugged (25), Jay Leno (24)

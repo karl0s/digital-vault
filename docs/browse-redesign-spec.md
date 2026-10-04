@@ -1,6 +1,50 @@
 # Browse Redesign — Phase 1 Spec
 
-Branch: `feat/browse-redesign` · Base: `main @ 2ce2395` · Status: spec, not yet built
+Branch: `feat/browse-redesign` (merged and deleted) · Base: `main @ 2ce2395` · Status: **built,
+live since 2026-10-05**
+
+This is the design as specified before the build. It is kept for its reasoning; where it and the
+code disagree, the code wins. The architecture as built is summarised in `CLAUDE.md` → Browse
+architecture.
+
+## Deviations from this spec
+
+Checked against the code on 2026-10-05.
+
+- **No Era facet, no Year facet.** Years are one range control — `YearRangePopover`: decade
+  chips, a brushable `YearHistogram` (maths in `src/lib/brush.ts`) and From/To inputs, plus an
+  "include undated" toggle. The filter bar is Years · Country · Festival.
+- **URL and state shape differ from §URL schema and §State.** Params, in fixed order:
+  `view, q, from, to, undated, country, festival, type, sort` (`src/lib/url.ts`). There is no
+  `era` or `year` list; `contentType` is `type`; sort keys are `year-desc` (default, omitted),
+  `year-asc`, `artist`; `view=artists` is the only non-default destination.
+- **Sidebar is smaller.** Destinations are Browse and Artists only; the lower group toggles
+  Live shows / Documentaries. No Home, All shows, Festivals, Map or TV. The rail is not the
+  default at 768–1279px: the sidebar opens expanded at every width until toggled, the choice is
+  kept in `localStorage` (`vault:sidebar`), and the rail shows a small label under each icon
+  rather than labels on hover. The toggle lives in the sidebar, not in `TopNav`.
+- **Mobile tab bar** is Browse · Artists · Search — no Map. `ContentType` did not become a mobile
+  facet: below `md` there is no Live/Documentaries control at all.
+- **`ActiveFilterChips`, `ResultsHeader` and `useFacetCounts` were never created.** Chips, count
+  and sort live inside `FilterBar`; counting is `src/search/facets.ts`, driven by
+  `src/hooks/useBrowseResults.ts`.
+- **`HeroSearch` was kept**, as the landing masthead: wordmark and tagline stay there (they did
+  not move to the sidebar) and the block collapses while anything filters. The quick-search
+  pills were dropped, not folded into an Artist facet — there is no Artist facet.
+- **The card badge was kept.** It shows "DOCUMENTARY" for a documentary, otherwise the
+  `RecordingType`, on hover.
+- **Featured is a grid, not a strip:** two rows of seven (`FEATURED_IDS`), shuffled once per
+  load, above an "All shows" grid, both hidden while filtering. Festival options are not split
+  into a top 23 plus "Show all" — every option is listed by count, with a text filter.
+- **Phase 0 did not land on `main` separately**, and "merge per phase" became one: the data work
+  was committed on the branch, which reached `main` in one go. `ContentType` holds only
+  `Documentary` (29 records, 2026-10-04); `TV session` and `Compilation` were never written.
+  The last two `England` records were folded into `United Kingdom` on 2026-10-05, after the
+  merge.
+- **Counts here are historical.** "829 records" and "the existing 18" documentaries describe the
+  collection when this was written; it now holds about 1,200 records and 29 documentaries.
+- Not built: saved views, the ⌘K palette, the Geography page and globe. Virtualisation is still
+  deferred (see §Libraries and `CLAUDE.md` → Front-end performance).
 
 ## Why
 

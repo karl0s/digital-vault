@@ -1,5 +1,15 @@
 # The Vault: Project Overview and Technical Architecture
 
+> **Historical — superseded.** This describes the project as it was when the drive-scan
+> pipeline was built (late 2025). It is kept as a record, not as instructions.
+>
+> - **`public/shows.json` is the hand-curated source of truth.** Every record has been corrected
+>   by hand since the pipeline last ran — dates, setlists, aspect ratios, split and linked
+>   records, documentaries.
+> - **Never copy or symlink the pipeline's `shows.json` over `public/shows.json`** (Step 5 below
+>   says to). It would silently discard all of that work.
+> - Current conventions, architecture and workflows are in `CLAUDE.md` at the repo root.
+
 A local-first cataloging system for a large private collection of live concert recordings, combining structured metadata, rich media screenshots, and a Netflix-style browsing experience deployed to GitHub Pages.
 
 This document is the current authoritative technical specification.
