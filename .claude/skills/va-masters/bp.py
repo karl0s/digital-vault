@@ -1,5 +1,5 @@
 # bp.py TAG TITLE STATEFILE NOTES.json  -> ~/VaultShots/reports/TAG.html (+ TAG_ba/ image copies)
-import json, sys, shutil, html
+import json, sys, shutil, html, urllib.parse
 from pathlib import Path
 tag,title,statef,notesf=sys.argv[1:5]
 H=Path.home()/"VaultShots"; REPO=Path("/Users/ko/Desktop/Projects/the-vault")
@@ -19,8 +19,8 @@ for e in sorted(st,key=lambda e:(d[e["ShowID"]]["Artist"].lower(),d[e["ShowID"]]
     mine=sorted([p for p in picks if p.stem.rsplit("__",1)[0].endswith("_"+sid[:6])],key=lambda p:order.get(p.stem.rsplit("__",1)[1],9))
     as_=[]
     for p in mine: shutil.copy(p,R/"a"/p.name); as_.append(p.name)
-    bh="".join(f'<img loading=lazy src="{tag}_ba/b/{html.escape(n)}">' for n in bs) or '<div class=none>No images on the site yet</div>'
-    ah="".join(f'<img loading=lazy src="{tag}_ba/a/{html.escape(n)}">' for n in as_) or '<div class=none>MISSING</div>'
+    bh="".join(f'<img loading=lazy src="{tag}_ba/b/{urllib.parse.quote(n)}">' for n in bs) or '<div class=none>No images on the site yet</div>'
+    ah="".join(f'<img loading=lazy src="{tag}_ba/a/{urllib.parse.quote(n)}">' for n in as_) or '<div class=none>MISSING</div>'
     meta=" · ".join(x for x in [s.get("ShowDate") or "undated", s.get("EventOrFestival") or s.get("VenueName") or "", s.get("City") or ""] if x)
     nt=notes.get(sid,"")
     secs.append(f'''<section{' class=flag' if nt else ''}><h3>{html.escape(s["Artist"])} <span>{html.escape(meta)}</span></h3>

@@ -2,7 +2,7 @@
 """One cheap pass that surfaces, BEFORE capture, everything this pipeline keeps
 rediscovering one problem at a time. READ-ONLY on the drive and the repo.
 
-    python3 preflight.py --artist "Kings Of Leon"
+    python3 preflight.py --artist "Kings of Leon"
 
 Every check here exists because a whole session was spent finding these by
 conversation instead of by script. Running it first turns a dozen round trips

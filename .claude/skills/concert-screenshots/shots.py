@@ -771,7 +771,30 @@ STOPWORDS = {
 }
 
 
+def resolve_artist(name):
+    """The stored spelling of `name`, matched without regard to case.
+
+    Every later comparison is exact, so a run must start from the name exactly as
+    shows.json stores it. Since 2026-10-04 no artist carries a leading "The":
+    `--artist "The Killers"` matched nothing and plan printed a clean, empty report
+    with no hint. Now an unknown name warns loudly and lists likely matches.
+    """
+    stored = sorted({s.get("Artist") or "" for s in json.loads(SHOWS_JSON.read_text(encoding="utf-8"))})
+    hit = [x for x in stored if x.casefold() == name.casefold()]
+    if hit:
+        return hit[0]
+    key = re.sub(r"^the\s+", "", name.casefold()).strip()
+    near = [x for x in stored if key and (key in x.casefold() or x.casefold() in key)]
+    print(RED + BOLD + "\nNo records are filed under %r." % name + RESET)
+    print(RED + "  Did you mean: %s" % (", ".join(repr(x) for x in near[:8]) or "(nothing similar)") + RESET)
+    print(RED + "  Planning anyway: only folders on the drive can match, no existing record will." + RESET)
+    return name
+
+
 def cmd_plan(a):
+    if not a.artist:
+        sys.exit("plan needs --artist \"<name as stored in shows.json>\"")
+    a.artist = resolve_artist(a.artist)
     items = apply_splits(discover(a.artist), a.artist)
     print(BOLD + "\nPlan — %s (%d folders on the drive)" % (a.artist, len(items)) + RESET)
     print(DIM + "-"*104 + RESET)
@@ -977,7 +1000,15 @@ def capture_singlepass(s, vf_tail, outdir: Path, n: int, deint=DEFAULT_DEINT):
         vf = ",".join(x for x in (pre, head, di, tail) if x)
         offset = 0
 
-    r = run(["ffmpeg","-hide_banner","-loglevel","error","-y","-i",s["src"],
+    # A stream whose format changes mid-way (VOB joins, a 0x0 frame) makes ffmpeg
+    # rebuild the filter graph, and every rebuild restarts select's frame counter
+    # `n` at 0. A frame-numbered window deep in the stream is then never reached:
+    # the MTV compilation 'Incubus - Rock am Ring 2005 + Strokes + Foo Fighters 2D
+    # Bill' returned 0 frames for a window starting 36 minutes in, rc=0, and the
+    # whole-disc unit stopped at 56 of 79 minutes. Pinned single-decode units are
+    # exactly the frame-counted ones, so keep one graph for them.
+    reinit = ["-reinit_filter","0"] if s.get("decode") == "single" else []
+    r = run(["ffmpeg","-hide_banner","-loglevel","error","-y",*reinit,"-i",s["src"],
              "-vf",vf,"-vsync","0","-frames:v",str(n),"-q:v","2",
              "-pix_fmt","yuvj420p",str(tmp/"f_%04d.jpg")], timeout=3600)
     made = sorted(tmp.glob("f_*.jpg"))
@@ -1554,7 +1585,7 @@ def cmd_ab(a):
 # ---------------------------------------------------------------- main
 def main():
     p=argparse.ArgumentParser(prog="shots.py",description="Read-only screenshot capture from the Live Music HD.")
-    p.add_argument("--artist",default="30 Seconds to Mars")
+    p.add_argument("--artist",help="artist as stored in shows.json (plan only; other steps read data/state.json)")
     sub=p.add_subparsers(dest="cmd",required=True)
     for name,fn in (("plan",cmd_plan),("capture",cmd_capture),("score",cmd_score),
                     ("contact",cmd_contact),("picks",cmd_picks),("index",cmd_index),

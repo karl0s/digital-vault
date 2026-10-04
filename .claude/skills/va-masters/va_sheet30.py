@@ -3,7 +3,9 @@ import sys, json, subprocess
 from pathlib import Path
 from PIL import Image, ImageDraw
 tag, folder, step, out = sys.argv[1], sys.argv[2], int(sys.argv[3]), sys.argv[4]
-F=Path('/private/tmp/claude-501/-Users-ko-Desktop-Projects-the-vault/04c2dca9-7845-47fe-a09f-01d22d4e0a08/scratchpad/va/f5')/tag
+# Pre-decoded 5 s frames: <dir>/<tag>/v<VTS>_NNNNN.jpg. Override the dir with VA_FRAMES.
+import os
+F=Path(os.environ.get('VA_FRAMES', Path.home()/'VaultShots/va_frames'))/tag
 ch=json.loads(subprocess.run(['python3',str(Path.home()/'VaultShots/dvd_chapters.py'),'/Volumes/Live Music/'+folder,'--json'],capture_output=True,text=True).stdout or '{}')
 fs=sorted(F.glob('*.jpg')); by={}
 for f in fs: by.setdefault(f.name.split('_')[0][1:],[]).append(f)

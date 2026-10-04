@@ -13,7 +13,7 @@ The old value is preserved in Notes: nothing is discarded.
 """
 import json, sys
 from pathlib import Path
-S = Path("/private/tmp/claude-501/-Users-ko-Desktop-Projects-the-vault/c425e4be-2ae6-4e1a-b186-4b7be292da01/scratchpad")
+S = Path.home() / "VaultShots/data"   # reconcile.py writes reconcile.json here
 REPO = Path("/Users/ko/Desktop/Projects/the-vault")
 APPLY = "--apply" in sys.argv
 

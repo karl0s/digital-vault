@@ -32,7 +32,7 @@ def rep_media(p):
     vids = [q for q in p.rglob("*") if q.is_file() and q.suffix.lower() in VIDEO]
     return [max(vids, key=lambda q: q.stat().st_size)] if vids else []
 
-CACHE_F = Path("/private/tmp/claude-501/-Users-ko-Desktop-Projects-the-vault/c425e4be-2ae6-4e1a-b186-4b7be292da01/scratchpad/hash_cache.json")
+CACHE_F = Path.home() / "VaultShots/data/hash_cache.json"
 CACHE = json.loads(CACHE_F.read_text()) if CACHE_F.exists() else {}
 
 def sha1(paths):
@@ -111,4 +111,4 @@ json.dump({"mapping": {s["ShowID"]: str(matched_s[s["ShowID"]]) for s in shows i
                                 "size":s.get("TotalSizeHuman"),"ck":s.get("ChecksumSHA1","")[:12]}
                                for s in rest_s],
            "how": how},
-          open("/private/tmp/claude-501/-Users-ko-Desktop-Projects-the-vault/c425e4be-2ae6-4e1a-b186-4b7be292da01/scratchpad/reconcile.json","w"), indent=1)
+          open(Path.home() / "VaultShots/data/reconcile.json","w"), indent=1)
