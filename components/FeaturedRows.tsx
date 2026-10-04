@@ -92,12 +92,9 @@ const FEATURED_IDS = [
 
   // Row 2
   '761b022efa1e', // Beastie Boys — SECC Glasgow, 1999-05-03 (3.15 GB, of four Glasgow copies)
-  // Folder name is "Nirvana - Live N Loud1993-12-13", so this IS the Pier 48
-  // show — but the record is filed as MTV Unplugged on 1993-11-18, with Seattle
-  // in VenueName and "WA" in City. Four metadata errors; flagged, not yet fixed.
-  '4dba0c8ff6ae', // Nirvana — MTV Live and Loud, Pier 48 Seattle, 1993-12-13
+  '4dba0c8ff6ae', // Nirvana — MTV Live & Loud, Pier 48 Seattle, 1993-12-13 (the 38-min broadcast)
   'bfac3916a5f1', // Smashing Pumpkins — Belfort, 1997-07-04 (4.34 GB; EventOrFestival blank)
-  '14f712b69dd7', // The Strokes — San Francisco, 2001 (999.94 MB)
+  '14f712b69dd7', // Strokes — San Francisco, 2001 (999.94 MB)
   '19e3ce93b3d2', // Supergrass — MTV Five Night Stand, 1999-05-13
   'b3adea22181d', // Blur — Glastonbury Festival, 2009-06-28
   'd6f2b50df44c', // Foo Fighters — Melbourne, 2000-02-01 (1.61 GB, the 2000 copy)
