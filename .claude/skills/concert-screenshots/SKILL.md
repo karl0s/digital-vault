@@ -1,6 +1,6 @@
 ---
 name: concert-screenshots
-description: Capture high-quality, correctly-proportioned screenshots from concert video on an external drive, for any band and any source format (DVD/VOB, Blu-ray, TS, MKV, MP4, HD broadcast). Use when asked to take, redo, grab or improve screenshots/stills/thumbnails for shows, or when existing images look squashed, stretched, blurry or wrong. Read-only on the collection; all output is staged outside the repo.
+description: Capture high-quality, correctly-proportioned screenshots from concert video on an external drive, for any band and any source format (DVD/VOB, Blu-ray, TS, MKV, MP4, HD broadcast). Use when asked to take, redo, grab or improve screenshots/stills/thumbnails for shows, or when existing images look squashed, stretched, blurry or wrong. The collection drive is read-only and capture is staged in ~/VaultShots; after the owner signs off, promotion writes the images and manifest into the repo, alongside any record corrections made during the run.
 ---
 
 # Concert Screenshot Capture
@@ -144,7 +144,7 @@ Every expensive detour on the reference run came from doing these out of order.
 | `score` → `autopick` → ONE hero montage, all shows, 210px | ~3k | Judges every hero in a single read |
 | Sweep ONLY the shows whose hero is wrong | ~4k per 3 shows | Never the whole artist |
 | Verify replacement heroes at ≥340px, one montage | ~2k | Identity errors happen at thumbnail size |
-| `promote` → hash-verify all slots → commit → **archive last** | ~2k | |
+| `promote` → hash-verify all slots → sync skill copies → commit on `main`, never push → **archive last** | ~2k | §17 steps 7-9 |
 
 A 60-show artist fits comfortably under ~60k tokens of review this way. The reference run spent
 roughly four times that by reading contact sheets and re-picking one show at a time.
@@ -341,13 +341,17 @@ are unique and reproducible:
 ```python
 DISC       = "greenday"                       # short, stable discriminator
 gd_showid  = sha1(folder_path      + "|" + DISC).hexdigest()[:12]
-gd_checksum= sha1(primary_checksum + "|" + DISC).hexdigest()
+gd_checksum= sha1(primary_checksum + "|" + DISC).hexdigest()   # NOT a content hash
 ```
+
+The discriminator is whatever separates the shows — the date, the venue, or the artist for a
+split bill. Use the same value in both derivations.
 
 The **primary** record keeps the folder's real `FolderPath`-derived ShowID and real
 `ChecksumSHA1`. Record in both `Notes`: the sibling's ShowID, the segment boundary, and the fact
-that the identifiers are derived. Images key on `ChecksumSHA1`, so a derived checksum is what
-gives the second show its own image slots.
+that the identifiers are derived — **not a content hash**, so nobody later mistakes it for a scan
+artefact. Images key on `ChecksumSHA1`, so a derived checksum is what gives the second show its
+own image slots. This is the one statement of the formula; §10b step 4 and §13 point here.
 
 ### Generated pages: percent-encode filenames
 
@@ -537,13 +541,27 @@ and Presidents of the USA scores 0.
 The rejection rule is still right in principle — it exists because "Bush" pulled in
 `Smashing Pumpkins - Shepherd's Bush Empire`. It just has to compare on words that identify.
 
-**3. The combined-artist record.** A split bill may be filed under a joined name —
-`Artist` is literally `Incubus / Deftones`. An exact-match filter (`s["Artist"] == artist`)
-sees neither band, so the shows are invisible to BOTH artists' runs, and the folders are
-invisible to discovery because nothing links them. Two such shows sat unscreenshotted through a
-complete 27-show run and only surfaced because the collector knew they existed.
+**3. The joined-name record — and how split bills are filed now.** Two MusiquePlus tapes
+(2000-11-14) were filed under a joined name: `Artist` literally `Incubus / Deftones`. An
+exact-match filter (`s["Artist"] == artist`) saw neither band, so the shows were invisible to
+BOTH artists' runs and to search on the site, and the folders were invisible to discovery because
+nothing linked them. They sat unscreenshotted through a complete 27-show run and only surfaced
+because the collector knew they existed.
 
-Match the artist as a **token of a separator-joined field**, not as the whole field:
+**Settled by the owner, 2026-09-30: one record per band, per tape**, each time-windowed to that
+band's performance only, with its own setlist and stills. A joint segment (the interview between
+the sets) belongs to neither. The two tapes are now four records — Incubus `34f2923f1e57`,
+`6aa691481fa9`; Deftones `d4081bb1afc6`, `70dabb713576`. The disc hash stays on the Incubus
+record and the Deftones record carries a derived key ("Splitting when the shows are NOT
+separable", above), as on the Bush / James Brown Woodstock disc (`668e6eb35ec7` /
+`ba6597e650d8`). Since 2026-10-04 each such shared broadcast also has a Various Artists master
+that both bands' records link to (`ParentShowID`, `SegmentStart`/`SegmentEnd`) — `9b53a1e2629d`
+and `527cba4f7921` for the two tapes, `c741c689c2a7` for Woodstock — made with the `va-masters`
+skill (§10). Split a new one only where the bands' sets are separable in time, and confirm with
+the owner first.
+
+No joined names remain, but match the artist as a **token of a separator-joined field**, not as
+the whole field, so a new one cannot hide:
 
 ```python
 parts = [x.strip() for x in re.split(r"[/+&]|\bwith\b|\band\b", s.get("Artist") or "")]
@@ -561,10 +579,6 @@ for s in json.load(open('public/shows.json')):
     if a.lower() in art.lower() and art != a: print(s['ShowID'], repr(art), s.get('FolderName'))
 "
 ```
-
-**A combined-artist record still surfaces under neither name on the site.** Capturing its
-images does not fix that — filing is a separate decision for the collection owner. Say so
-rather than silently re-filing it.
 
 **4. The possessive apostrophe.** `Jane's Addiction` tokenises to `{jane, addiction}`, because
 the apostrophe is a separator. Folders overwhelmingly spell it `Janes Addiction` → `{janes,
@@ -708,15 +722,16 @@ python3 scripts/audit-image-geometry.py --list             # every affected show
 
 It classifies each show as `correct`, `SQUASHED` (wrong aspect — raw pixel dimensions),
 `SMALL` (right shape, below target), `MIXED` (slots disagree with each other),
-`LETTERBOX` (needs cropdetect, cannot be judged from metadata) or unknown geometry.
+`LETTERBOX` (`letterboxed - needs cropdetect`: a legacy two-part record, §4.3, which it cannot
+check from metadata) or unknown geometry.
 
 **It deliberately re-implements `fit_no_downsample` rather than importing it**, so the audit
 still fails if the pipeline's rule regresses. Two independent statements of the rule are the
 point; sharing one would let a bug hide from its own test.
 
-Baseline at the time of writing: **7.3% correct, 67.5% squashed, 9.6% undersized,
-11.2% internally inconsistent.** The squashed majority predates this pipeline — those images
-were written at raw pixel dimensions with no SAR correction at all.
+Run with no arguments it prints the current collection-wide figures and ranks artists worst
+first — that, not a number written here, is where progress lives. Most squashed images predate
+this pipeline: they were written at raw pixel dimensions with no SAR correction at all.
 
 ### 4.1c-2 A folder can CONTAIN other complete discs — never glob recursively
 
@@ -773,16 +788,30 @@ because the bad stream is no longer first.
 Encoders emit noise like `999:1000` and `1287:1280`. Within 1% of square, force `1:1` —
 otherwise you get a 1288-pixel-wide image for no reason.
 
-### 4.3 Detect letterbox with cropdetect at TWO OR MORE timestamps
+### 4.3 Letterbox and pillarbox: KEEP the bars, MEASURE them at two or more timestamps
 
-**Failure this prevents:** cropdetect on a single dark frame returns a bogus crop. Sampling
-one show at 55% runtime reported `636×556` when the true frame was full-width; a second
-sample at 30% exposed it.
+**House rule — the owner's: capture the whole stored frame, bars included. Never crop.** Losing
+picture is worse than carrying bars, and a crop is per-source, so on a disc that mixes shapes
+(§4.3b) it necessarily cuts the segments that fill the frame. Bars carrying a broadcaster's
+captions or logo are kept for the same reason. He said it of three Supergrass discs at once
+(2026-08-27) — *"keep aspect as is to capture all screen do not crop important details"* — and
+made it the rule for every source on 2026-10-05.
 
-- Sample at ≥2 points (e.g. 30% and 55%). Only trust a **consistent** result.
-- When cropping, recompute the target from the **cropped** pixels and the SAR — not from the
-  full frame's DAR, which included the bars and is meaningless once they're gone.
-  Getting this wrong produced `606×404` instead of the correct `720×404`.
+Still **measure** the bars — the rows are evidence:
+
+- Sample at ≥2 points (e.g. 30% and 55%) and only trust a **consistent** result. cropdetect on a
+  single dark frame returns a bogus answer: one show sampled at 55% reported `636×556` when the
+  true frame was full-width; a second sample at 30% exposed it. On VHS or off-air masters use a
+  row profile instead (§4.3b).
+- Write the picture's rows, and the ratio they give, into `Notes`. `AspectRatio` stays the
+  **frame** ratio (next section).
+- A picture that measures to a non-standard ratio inside a standard frame can mean the **flag** is
+  wrong, not the bars (Limp Bizkit, Field lessons). Fixing a wrong flag with a `dar` override is
+  not a crop, and is wanted (§4.4).
+
+**Legacy:** the eight `crop` rules already in `data/overrides.json` predate this rule. Leave
+them; add no new ones. If one is ever recaptured, its target comes from the **cropped** pixels
+and the SAR, not the full frame's DAR (that mistake produced `606×404` instead of `720×404`).
 
 ### 4.3b cropdetect is BLIND to a VHS letterbox — profile rows from bright frames
 
@@ -804,15 +833,19 @@ plateaus; a dark picture shows a gradient.
 
 **A single disc can mix shapes.** MTV Five Night Stand letterboxes its concert and fills the frame
 for its interviews, which is why cropdetect, a row profile and a rendered frame each gave a different
-answer until frames were rendered at native size and looked at. A per-source crop is wrong there.
+answer until frames were rendered at native size and looked at. A per-source crop is wrong there —
+one reason the bars stay (§4.3).
 
-### The two-part AspectRatio string tells the audit the images ARE cropped
+### The two-part AspectRatio string means the images ARE cropped — legacy records only
 
-`parse_dar` returns the SECOND ratio when the string contains "letterboxed", so
-`audit-image-geometry.py` expects the stills to be that shape. Writing `4:3 (letterboxed 16:9)` while
-deliberately capturing the whole frame — which the owner may ask for, to avoid losing picture — makes
-the audit flag every image of that show. Keep `AspectRatio` as the frame ratio and put the measured
-rows in `Notes`.
+`parse_dar` returns the SECOND ratio when the string contains "letterboxed" or "pillarboxed" —
+the picture, not the frame — so the tools that read the record (`check_overrides.py`, the
+"agrees with shows.json" gate) take the stills to be that shape, and `audit-image-geometry.py`
+stops checking the show at all, listing it as `letterboxed - needs cropdetect`. The form
+`4:3 (letterboxed 16:9)` therefore belongs only to legacy records whose images were cropped under
+a `crop` rule (§4.3). **Never write it for a new capture:** with the bars kept, the record would
+describe a shape the stills are not, and the audit would go blind to that show. Keep
+`AspectRatio` as the frame ratio and put the measured rows in `Notes`.
 
 ### 4.4 Aspect-flag overrides — the flag itself can be wrong
 
@@ -826,10 +859,12 @@ Detection heuristic — flag for human review when:
   2008 until six 2002–2004 UK broadcasts shipped squashed under it; or
 - the computed aspect is **non-standard** (not within 2% of 4:3 or 16:9).
 
-**Verification method (do this, don't guess):** render the *same frame* at both candidate
-shapes side by side and look for a known-circular or known-proportioned reference — a floor
-logo, a drum head, a wheel, human body proportions. The correct one looks natural; the wrong
-one makes people narrow and tall (or short and wide).
+**Verification: never by eye.** Rendering one frame at both shapes and judging it — a drum
+head, a face, body proportions — has been wrong three times on this collection (Pearl Jam ACL
+2009, Silverchair Melbourne Park 1999, six Stereophonics UK TV sources), and the owner caught
+every one. What settles a disputed shape is the owner's A/B (`aspect_ab.py`), a same-performer,
+same-era source at an undisputed aspect, a rigid graphic shared with a source of known geometry,
+or structure — all set out in the next two sections. Point-light measurements are invalid on SD.
 
 Store overrides in a JSON file keyed by path fragment, with a `why` field recording the
 evidence. Never bury an override in code.
@@ -857,8 +892,8 @@ point-light number as evidence anywhere.**
 
 What does settle a disputed shape: the owner's A/B (`aspect_ab.py`); a same-performer, same-era
 source at an undisputed aspect (below); a rigid graphic shared with a source of known geometry; and
-structure — two independent captures that share one framing are both uncropped (CLAUDE.md, the
-Limp Bizkit Rock am Ring 2009 case).
+structure — two independent captures that share one framing are both uncropped (the Limp Bizkit
+Rock am Ring 2009 case, Field lessons).
 
 **Then corroborate against a source whose geometry is beyond doubt** (§4.4): same performer, same
 era, undisputed aspect. Philipshalle Düsseldorf (720x576 PAL 4:3) sits four months from Melbourne
@@ -873,7 +908,10 @@ Three smaller lessons from the same show:
   happens to be right.** Without a pin this show captures at 4:3 only because `VTS_01_1` sorts
   first. That is luck, not evidence, and it inverts silently if the VOB order ever changes.
 - **An era prior is cheap and was ignored.** Australian television was 4:3 in 1999; widescreen came
-  later. One line of context would have outweighed the whole eyeball comparison.
+  later. One line of context would have outweighed the whole eyeball comparison. Others that have
+  held: UK TV widescreen from about 2000; SD festival broadcasts from 2008 usually 16:9; a sidecar
+  lineage reading `HD Broadcast > SD DVD` makes any 4:3 flag suspect. A prior is a reason to
+  look, not a verdict.
 
 ### A 4:3 flag with NO bars on a post-2000 broadcast is a SUSPECT — the owner judges it at both shapes
 
@@ -915,11 +953,12 @@ spill. A real bar is black in EVERY frame, so a row now counts as bar only if it
 95th percentile (over frames) of its brightest pixel stays under 48. The owner then confirmed 16:9 on
 the A/B page (a point-light reading was also taken; that method is invalid on SD — see above).
 
-**What to judge in the A/B:** a circle that is **front-on** to the camera — a mic's grille ring
-seen head-on (present in nearly every hero frame), a kick-drum head square to the lens, a round
-spotlight lens. On Headliners the grille ring at the mic reads visibly taller than wide at 768 and
-round at 1024. Not a face (this run proves faces fool the eye) and not a drum shot from the side
-(the Austin City Limits trap, CLAUDE.md).
+**The A/B is the owner's call — do not pre-judge it.** Every eyeball verdict recorded here was
+wrong at least once: faces cleared all six Stereophonics sources, and a side-on drum head passed
+Pearl Jam's ACL 2009 as 4:3 (Field lessons). If a reference helps him, the useful one is a circle
+square-on to the lens — a mic's grille ring seen head-on, present in nearly every hero frame. On
+Headliners it reads visibly taller than wide at 768 and round at 1024. Never a face, and never a
+drum shot from the side, which is foreshortened and reads too wide at any aspect.
 
 **Confirmed → fix:** a `dar: "16:9"` override **scoped by `showid`** (split folders share a
 `rel`), move the unit's old `work/<key>/` aside, re-plan, recapture that unit, re-materialise.
@@ -956,12 +995,15 @@ in `Notes`:
 
 | Override | Record change |
 |---|---|
-| `dar` forced | `AspectRatio` → the true ratio, e.g. `16:9 (native)` |
-| `crop` for letterbox | `AspectRatio` → `4:3 (letterboxed 16:9)` — frame ratio first, picture ratio second |
-| `crop` for pillarbox | `AspectRatio` → `16:9 (pillarboxed 3:2)` — same convention |
+| `dar` forced | `AspectRatio` → the true ratio, e.g. `16:9 (native)`; the disc's own flag goes in `Notes` |
+| none — bars kept (§4.3) | `AspectRatio` stays the frame ratio; the measured picture rows and their ratio go in `Notes` |
+| legacy `crop` only — add no new ones | `AspectRatio` → `4:3 (letterboxed 16:9)` / `16:9 (pillarboxed 3:2)` |
 
-The two-part form matters: the FIRST ratio is the stored frame, the SECOND is the real picture.
-Audits need both — image checks compare against the picture, source checks against the frame.
+On those legacy records the two-part form matters: the FIRST ratio is the stored frame, the
+SECOND is the real picture. Tools need both — `audit-aspect-vs-source.py` compares the source
+flag against the frame, `check_overrides.py` the crop against the picture.
+(`audit-image-geometry.py` does not check these records at all — §4.3, "The two-part
+AspectRatio string".)
 
 **This is now enforced, not merely documented.** `check_overrides.py` resolves every override
 to its record and fails if the correction is missing; `promote.py` runs it in pre-flight and
@@ -977,10 +1019,10 @@ Two things it taught us when first run against the existing overrides:
   (`2013 Rock In Rio DVD` never appears verbatim in a FolderName written
   `2013-09-14, Rock In Rio, …`) and too loose (`BBC Radio 1` also lands inside Ladyhawke's
   `BBC Radio 1's Big Weekend`). Where a fragment is ambiguous, add `"showid"` to the override.
-- **A crop is in STORED pixels; compare after SAR.** `712:432` looks like 1.648 and reads as a
-  mismatch against a correct `4:3 (letterboxed 16:9)` record — until PAL's 16:15 turns it into
-  1.758. Derive SAR from the record's own frame ratio (`SAR = frame_dar × H / W`) so the check
-  needs no drive access.
+- **A (legacy) crop is in STORED pixels; compare after SAR.** `712:432` looks like 1.648 and
+  reads as a mismatch against a correct `4:3 (letterboxed 16:9)` record — until PAL's 16:15
+  turns it into 1.758. Derive SAR from the record's own frame ratio (`SAR = frame_dar × H / W`)
+  so the check needs no drive access.
 
 ### The feature is not always titleset 01 — never probe VTS_01 blind
 
@@ -1020,20 +1062,20 @@ python3 scripts/audit-aspect-vs-source.py          # whole collection, slow
 ```
 
 A disagreement means the record, the source flag, or both are wrong — it does not say which.
-An internally consistent SAR/DAR pair can still be wrong (§4.4), so verify by rendering one frame
-at each candidate shape before changing anything.
+An internally consistent SAR/DAR pair can still be wrong (§4.4), so settle it with the evidence
+§4.4 accepts — the owner's A/B, a same-performer same-era source of undisputed aspect, a shared
+rigid graphic, structure — before changing anything. Never by rendering both shapes and looking.
 
 ### 4.5 Filter chain and ORDER
 
 ```
-crop=<w:h:x:y>          # only if letterboxed; strips bars FIRST
 bwdif=mode=send_frame:parity=auto:deint=all    # ONLY if interlaced, at native resolution
 scale=<tw>:<th>:flags=lanczos
 setsar=1
 ```
 
 Order matters: deinterlace **before** scaling, or you interpolate already-resampled lines.
-Crop before both.
+No `crop` — bars are kept (§4.3). A legacy `crop` rule, where one still applies, runs first.
 
 ### 4.6 Deinterlace conditionally — and use bwdif
 
@@ -1085,7 +1127,7 @@ Three call sites need care:
 2. **Single-pass sweep** — keep a short *run* of consecutive frames at each sample point,
    deinterlace the run, then take its middle frame:
    ```
-   select='lt(mod(n\,K)\,9)' , crop , bwdif , select='eq(mod(n\,9)\,4)' , scale , setsar=1
+   select='lt(mod(n\,K)\,9)' , bwdif , select='eq(mod(n\,9)\,4)' , scale , setsar=1
    ```
    Only 9/K of frames reach the filter, so the cost over plain selection is negligible.
    Timestamps shift by the window offset: `ts = (i×K + 4) / fps`.
@@ -1119,9 +1161,9 @@ next one.
 | Colour | **untouched** | No auto-levels, no saturation — broadcasts differ, and that is authentic |
 | Watermarks | **kept** | Broadcaster bugs, tickers and TV-PG marks are part of the recording (§9) |
 
-Storage: at `-q:v 2`, four SD frames per show is roughly 200 KB. Across 831 shows that is
-about 170 MB — acceptable for a repo that already ships the images. Do not lower quality to
-save space; drop to three frames per show instead if it ever matters.
+Storage: at `-q:v 2`, four SD frames per show is roughly 200 KB — acceptable across the whole
+collection for a repo that already ships the images. Do not lower quality to save space; drop
+to three frames per show instead if it ever matters.
 
 ---
 
@@ -1447,7 +1489,8 @@ grid is exactly where off-by-one happens, and the label under a thumbnail is eas
 with its neighbour.
 
 Choose from the montage, then render the **materialised picks** and look again. It costs one
-small image and catches both this and the "same frame on two records" case (§duplicate sources).
+small image and catches both this and the "same frame on two records" case (§6, "Two sources of
+ONE broadcast need DIFFERENT moments").
 
 ### 6.2d-1 Sweep the STRUCTURE before concluding what a programme contains
 
@@ -1572,10 +1615,11 @@ Two of its four auto-picked slots came from **after** that boundary. The record 
 one show, one unit, so nothing structural flagged it: `find_multishow` scores titlesets, and a
 `vts` split has nothing to split on.
 
-CLAUDE.md already says to confirm each pick's timestamp falls inside the titleset the record
-covers. That is not enough when the foreign material shares the titleset. **Where a sweep shows
-the artist's segment ending before the file does, write the boundary into `Notes` and check every
-slot's timestamp against it — not just slot A.**
+§10b already says to confirm each pick's timestamp falls inside the titleset the record covers
+("A record can COVER one segment while its NAME describes another"). That is not enough when the
+foreign material shares the titleset. **Where a sweep shows the artist's segment ending before
+the file does, write the boundary into `Notes` and check every slot's timestamp against it — not
+just slot A.**
 
 The tell in the sweep is a change of programme grammar rather than of venue: an ident, a
 different band's caption, a channel promo. It will not look like a different show, because it is
@@ -1876,7 +1920,7 @@ overwrote the first, leaving 18 entries for 19 shows, and the survivor's timesta
 resolved against the *other* disc's work directory, so one pick could not be found at all.
 
 Use the **whole** work-directory key as the picks key. It is already unique by construction
-(§"Work-directory keys"), and truncation is what destroys that guarantee.
+(§2, "Work-directory keys MUST be unique"), and truncation is what destroys that guarantee.
 
 **QA gate:** `len(picks) == len(shows_with_scores)`, and every picks key must match exactly one
 state key. A fragment that matches two keys is an error, never a first-match win.
@@ -1923,6 +1967,16 @@ Check what a folder actually contains before picking. Real examples from one art
 
 For these: capture a **targeted time window** around the band's segment rather than the whole
 runtime, and tell the user the folder is mislabelled. Flag it for metadata correction.
+
+**A recording with several acts on it goes through the `va-masters` skill.** A festival
+broadcast or TV compilation is filed as one Various Artists master plus one linked record per act
+(`ParentShowID`, `SegmentStart`/`SegmentEnd`, that act's setlist and stills). **A capture run
+never creates a standalone record for an act on such a disc:** if the artist's linked record
+exists, capture its window; if not, name the disc in the hand-off and set it up with
+`va-masters`. A two-band split bill is the same model at its smallest — one record per band per
+tape, plus a master (§2, "Artist matching", item 3). Only a disc that is all one artist, or pairs
+unrelated programmes, gets no master: each collection artist's unrecorded source on it becomes
+its own record (va-masters, "Not every multi-programme disc is VA").
 
 **Picking rule for compilations and split bills: only the target artist counts.** Frames of the
 other act, the interview segments, the host or the awards ceremony are all rejected regardless
@@ -2121,7 +2175,7 @@ Why the existing guards all miss it:
 | Guard | Why it passes |
 |---|---|
 | `find_multishow.py` | scores titlesets inside ONE `VIDEO_TS`; two sibling trees read as one disc |
-| `pick_source` | deliberately never recurses (§ its own docstring), so the nested tree is unreachable |
+| `pick_source` | deliberately never recurses (§4.1c-2), so the nested tree is unreachable |
 | a `vts` split | both discs are `VTS_01` — the titleset number cannot separate them |
 | `preflight` "folders with >1 titleset" | each tree has one titleset, so neither is flagged |
 
@@ -2145,8 +2199,8 @@ Two follow-on traps, both of which bit on this folder:
 1. **Keep the subdir readable in the unit's `rel`.** Squashing it to alphanumerics
    (`REM - Oxegen Festival 12 July 2008` → `REMOxegenFestival12J`) silently broke
    `data/overrides.json`, which is keyed by PATH FRAGMENT and matched against `rel` and
-   `label`. The crop written for the nested disc never applied and it captured with its
-   letterbox bars still in frame — and nothing said so.
+   `label`. The override written for the nested disc never applied — and nothing said so. (It
+   was a `crop`, now legacy, §4.3; a `dar` fix fails exactly the same way.)
 2. **`promote.py --propose-map` mapped BOTH units to the SAME record.** It matches on name,
    and the two units share a folder name. Build `data/promote_map.json` from each state
    entry's `ShowID` and assert the values are unique before applying, or one concert's stills
@@ -2225,11 +2279,12 @@ ShowID before capturing.** If the index had not held it, the show would have bee
 ### An informational gate that cries wolf gets ignored
 
 The "agrees with shows.json" gate used `re.search` for the first `N:M` in the aspect string. For
-the two-part form `4:3 (letterboxed 16:9)` that is the FRAME ratio, while `t["dar"]` is recomputed
-from the CROPPED pixels — so every correctly-recorded letterboxed show printed
-`gate failed` next to a crop that was right. It never fed `ok`, so nothing broke; the cost is that
-a gate which is wrong on the cases it exists for stops being read. It now takes the last ratio
-when the string says letterboxed or pillarboxed, matching `audit-image-geometry.py`'s `parse_dar`.
+the two-part form `4:3 (letterboxed 16:9)` — legacy cropped records, §4.3 — that is the FRAME
+ratio, while `t["dar"]` is recomputed from the CROPPED pixels, so every correctly-recorded
+letterboxed show printed `gate failed` next to a crop that was right. It never fed `ok`, so
+nothing broke; the cost is that a gate which is wrong on the cases it exists for stops being
+read. It now takes the last ratio when the string says letterboxed or pillarboxed, matching
+`audit-image-geometry.py`'s `parse_dar`.
 
 ### Bars can carry burned-in graphics — measure rows, don't trust one cropdetect
 
@@ -2249,10 +2304,11 @@ Rows 0-41 and 534-575 never exceeded luminance 5 — true bars. Rows 44-63 and 5
 ~2 but spiked to 250 — bars with graphics on them. The picture was 64-501. Re-measuring on
 columns clear of the logo gave the same top edge, proving the bars set it, not the overlay.
 
-**Trim the bars, not the side blanking.** The same source had ~10 dark columns at each edge.
-Cropping them keeps full height and drags the picture ratio from 1.753 (1.4% off 16:9) to 1.71,
-which `check_overrides.py` rejects at its 3% tolerance — and is further from the truth. Side
-blanking is a DVB artefact; the bars are the letterbox.
+**Measure the bars, not the side blanking.** The same source had ~10 dark columns at each edge.
+Counting them out of the picture drags its ratio from 1.753 (1.4% off 16:9) to 1.71 — further
+from the truth. Side blanking is a DVB artefact; the bars are the letterbox. (This disc, R.E.M.
+Oxegen, is one of the legacy crops. Today the rows go into `Notes` and the whole frame is
+captured, §4.3.)
 
 ### ASSUME a multi-titleset folder is several shows until proven otherwise
 
@@ -2305,6 +2361,10 @@ there.
 
 **Write what the other programmes are into `Notes`.** The next person to look at this record
 will otherwise repeat the entire identification. Name them.
+
+This section is about *finding* the artist's segment, not *filing* it. If the other programmes
+are other acts, the disc is a multi-artist recording: it is filed through the `va-masters` skill
+(§10), never as a standalone record made during a capture run.
 
 ### A TITLESET BOUNDARY IS NOT A SHOW BOUNDARY
 
@@ -2450,7 +2510,12 @@ assert all(u["Checksum"] == rec[u["ShowID"]]["ChecksumSHA1"] for u in state["sho
 `image-manifest.json` entry were still in the repo, now belonging to **no record at all**.
 `promote.py`'s pre/post-flight passed cleanly — it compares manifest entries against files on
 disk in both directions, and those four agreed with each other perfectly. What it never checks
-is the manifest against `shows.json`.
+is the manifest against `shows.json`. The same happens whenever a checksum changes: resolving a
+temp-checksum stub to its real hash left the images filed under the placeholder on disk and in
+the manifest — invisible on the site, counted by nothing.
+
+After any merge, delete, split or re-key — not just after a capture — list manifest entries no
+record references:
 
 ```bash
 python3 -c "
@@ -2460,13 +2525,13 @@ cks={(s.get('ChecksumSHA1') or '').strip() for s in json.load(open('public/shows
 print([c for c in mani if c not in cks])"
 ```
 
-`audit-image-geometry.py` reports the same thing as **`no show record`**, so run it after any
-merge, delete or re-key — not just after a capture. Back the files up outside the repo before
-deleting them.
+`audit-image-geometry.py` reports the same thing as **`no show record`**. Delete the files and
+the manifest entry only after asserting the checksum is genuinely unreferenced; use plain `rm`,
+not `git rm` (nothing left staged, §11). Git history keeps the files.
 
 ### Prefer a TITLESET split — it yields REAL checksums, not derived ones
 
-A time-window split has to derive identifiers (§"Splitting when the shows are NOT separable").
+A time-window split has to derive identifiers (§2, "Splitting when the shows are NOT separable").
 A **titleset** split does not: each show is its own file set, so each gets a genuine content
 hash that behaves like every other key in the collection. Always check whether the shows fall
 on titleset boundaries before reaching for derived ids.
@@ -2531,40 +2596,16 @@ filed under, and it is the one field that is verifiable from the drive.
 
 ### Re-keying a record ORPHANS its old images
 
-**Failure this prevents:** resolving a temp-checksum stub changed a record's `ChecksumSHA1`
-from the placeholder to a real content hash. The images filed under the *old* checksum stayed
-on disk and in the manifest, now referenced by no record at all — invisible on the site,
-counted by nothing, and never cleaned up. Promotion's own post-flight passed, because it
-checks manifest-vs-disk and both still agreed.
-
-Whenever a checksum changes — a resolved stub, a corrected mis-key, a split — audit for
-manifest entries that **no record references**:
-
-```python
-recs = {s["ChecksumSHA1"] for s in shows if s.get("ChecksumSHA1")}
-orphans = [k for k in manifest if k not in recs]
-```
-
-Delete the files and the manifest entry, but **only after asserting the checksum is genuinely
-unreferenced**. `scripts/audit-image-geometry.py` reports these as `no show record`.
+Whenever a checksum changes — a resolved stub, a corrected mis-key, a split — the images filed
+under the old one stay behind. Audit and clean up as in "A merge or a re-key ORPHANS images"
+above.
 
 ### Step 4 — Key the new record
 
-**Prefer a real content hash.** When the shows are separable at file level — distinct
-titlesets, distinct files — compute the new record's `ChecksumSHA1` from *its own* files
-using the pipeline's algorithm. It is a genuine content hash and behaves like every other key
-in the collection.
-
-Only when two shows share one inseparable file (a single continuous VOB) fall back to a
-derived key, and say so plainly in `Notes`:
-
-```python
-ChecksumSHA1 = sha1((primary_ck + "|" + discriminator).encode()).hexdigest()   # NOT content
-ShowID       = sha1((folder_path + "|" + discriminator).encode()).hexdigest()[:12]
-```
-
-The discriminator is whatever separates the shows — the date, the venue, or the artist for a
-split bill. Use the same value in both derivations.
+**Prefer a real content hash** from the new record's own files ("Prefer a TITLESET split",
+above). Only when two shows share one inseparable file (a single continuous VOB) fall back to a
+derived key — formula and `Notes` wording in §2, "Splitting when the shows are NOT separable at
+file level".
 
 ### Step 5 — Write the records
 
@@ -2577,6 +2618,15 @@ split bill. Use the same value in both derivations.
   ffprobe output, not the folder's. Two shows on one disc can differ in every one of them.
 - Each record gets **its own stills, captured from its own titleset**. Never share images
   between the two — they are different concerts.
+- `Artist` is the stored spelling — no leading "The" (§17 step 0 has the lookup).
+- Set `ContentType` on every new record: `"Documentary"` when half or more of **that
+  titleset's** runtime is people talking or narration over footage (interviews, making-of,
+  behind-the-scenes, Cribs-style tours, rockumentaries, TV biographies); otherwise leave it
+  absent. Storytellers, Unplugged and concert films with backstage inserts are not documentaries.
+  Judge from the footage, never the title; for a borderline one,
+  `python3 ~/VaultShots/doc_sweep.py <ShowID>` builds a 48-frame sweep (about ±7%, so put
+  anything between roughly 42% and 58% to the owner). `RecordingType` says how it was filmed —
+  Proshot, Soundboard, Audience — and is never `Documentary`; the health check rejects it.
 
 ### Step 6 — Promotion must not resolve by FolderName
 
@@ -2608,8 +2658,9 @@ Two cases justify it:
   decodes gigabytes twice and produces a second set of stills nothing will ever use. Confirm
   the duplication first — sample-hashing size plus the first and last 32 MiB of every VOB is
   decisive without reading the whole file.
-- **Material that is not a performance** — a narrative short film, a documentary — where the
-  user has decided it gets no record.
+- **Material the owner has decided gets no record** — a narrative short film, or the documentary
+  footage he ruled out on 2026-10-04 (CLAUDE.md → Documentaries lists it). A documentary is
+  otherwise a record like any other, with `ContentType: "Documentary"` (Step 5).
 
 Excluded folders are printed at plan time so the omission is visible, never silent.
 
@@ -2630,7 +2681,7 @@ Declare the split in `data/splits.json`, keyed by the folder's basename on the d
   ],
   "Alanis Morissette - MTV Unplugged 1999 (Pete)": [
     {"vts": ["01","02","03","04","05"], "showid": "edf18a8aa29e", "label": "MTV Unplugged 1999"},
-    {"vts": ["06"], "showid": "1b855d937789", "label": "unidentified CBC broadcast"}
+    {"vts": ["06"], "showid": "1b855d937789", "label": "Canada Day, Parliament Hill"}
   ]
 }
 ```
@@ -2667,8 +2718,9 @@ Promotion then keys on those ShowIDs (§10b step 6), not on `FolderName`.
 ### What NOT to do
 
 - Do not split on runtime, file count or titleset count alone.
-- Do not invent a date for footage you cannot identify. Leave `ShowDate` empty and say so —
-  `VTS_06` above is a confirmed separate show whose date and programme are still unknown.
+- Do not invent a date for footage you cannot date. Leave `ShowDate` empty and say so —
+  `VTS_06` above was identified as Canada Day on Parliament Hill from its landmarks and CBC bug
+  (Step 2), and its date is still empty because the year cannot be sourced.
 - Do not delete or re-key the existing record to "clean up". Fix its metadata in place and
   add the missing show alongside it.
 - Do not let the two records share images.
@@ -2782,65 +2834,112 @@ can be the correct one. A folder read `Bizarre Festival 2001` while its record r
 released after the 2001 festival. Resolve which is wrong from evidence before promoting, and
 write the reasoning into `Notes` so it is not re-derived.
 
-**Preconditions — refuse to run unless ALL hold:**
-1. Baseline audit clean: 0 manifest entries without files AND 0 files without manifest entries
-2. Every show maps to a **confirmed** `shows.json` record — a hand-checked table, never a guess.
-   Name matching alone mapped 14 drive folders onto 7 records in the reference run.
-3. `git status` clean, so the diff is reviewable
-4. Dry run first; `--apply` is a separate, explicit flag
+**What `promote.py` refuses on** — pre-flight, on the dry run and `--apply` alike:
+1. `check_overrides.py` fails — an aspect override not mirrored into its record (§4.4)
+2. `hero_gate.py` fails — a hero neither verified nor flagged (§6.2d-0)
+3. the repo already has orphans — a manifest entry with no file, or a file with no entry
+4. a discovered folder whose record exists but is not linked in `state.json` — unlinked,
+   ambiguous, or a probable token match against an unclaimed record (above)
+
+**What it only SKIPS**, listing each under `SKIPPED` — so read that list, and the plan's count:
+a picks key with no `promote_map.json` entry, a map value that resolves to no record or to
+several, a record with no checksum, a key with no capture state, picks that do not resolve, or
+more than one staged file matching a tag.
+
+**What it does not check — do these by hand around it:**
+- Every show maps to a **confirmed** `shows.json` record — the map built from state ShowIDs
+  (above), never a guess. Name matching alone mapped 14 drive folders onto 7 records in the
+  reference run.
+- `git status --short` in the repo first: note what is already modified — often another
+  session's work — so this promotion's diff stays reviewable.
+- Dry run first; `--apply` is a separate, explicit flag.
+- After `--apply`, `python3 scripts/health-check.py` in the repo.
 
 **Per show:**
-1. Back up every existing `{checksum}_*.jpg` plus its old manifest entry to a ledger
+1. Copy every existing `{checksum}_*.jpg` into `~/VaultShots/promote-backup/`, and the old
+   manifest entries into its `_ledger.json`
 2. Write picks to `{checksum}_01.jpg` … `_0N.jpg` in brief order (A, B, C, spare)
 3. **Delete every `{checksum}_0M.jpg` where M > N.** This is the orphan step — it bites
    whenever the new pick count is lower than the old one.
 4. Set `manifest[checksum] = [1..N]` exactly — contiguous, no gaps. (One show in the
    reference run had `[1, 2, 4]`; this normalises such gaps.)
 
-**Post-conditions — verify GLOBALLY, not just on what changed:**
+**Post-flight — verified GLOBALLY, not just on what changed; exits non-zero on any failure:**
 - 0 manifest entries without a file
 - 0 files without a manifest entry
 - **`shows.json` byte-identical** — promotion writes images and manifest only
 - per-show disk slots == manifest slots
-- `scripts/health-check.py` passes
-- Exit non-zero and stop if any check fails
 
 **Do NOT promote a show if it would reduce quality.** In the reference run two discs yielded
 only one usable frame each (the band appeared briefly on someone else's programme), which
 would have replaced three good images with one. Skip, report, and re-capture a targeted
 window instead.
 
-**Rollback:** restore files from the backup ledger and revert the manifest entries.
+**Rollback.** Between `--apply` and the commit: for each checksum keyed in `_ledger.json`,
+restore its files from `promote-backup/` and its old manifest entry from the ledger, and `rm`
+any slot the promotion added. After the commit, git is the backup:
+`git checkout <commit>^ -- public/images/<files> public/image-manifest.json` — it stages what it
+restores, so commit by path at once — and `rm` any slot that commit added. If anything else has
+touched the manifest since, restore only the affected entries.
 
-### `public/` is gitignored — ALWAYS `git add -f`
+**Clear `promote-backup/` once the run is committed.** It exists only to cover the gap between
+promotion and commit; after that, git history holds every replaced image. Move it to the Trash
+(§17 step 8). Left in place it only accumulates, and it is not a reliable record anyway: each
+`--apply` rewrites `_ledger.json` and overwrites the backup of any checksum promoted again.
 
-**Failure this prevents:** promotion added two new `_04.jpg` files (shows that went 3 slots
-to 4). `public/` is in `.gitignore` while its files are tracked, so `git add public/images/`
-staged **zero additions** — the new files were silently skipped while the manifest declared
-slot 4. Committed as-is, the deployed site would 404 on both images. Every local check
-passed, because `health-check.py` inspects the **disk**, not git.
+### Committing: on `main`, by explicit path, in one command — and never push
 
-Always finish with:
+Screenshot runs are committed on **`main`** (`feat/browse-redesign` was merged and deleted on
+2026-10-05). **Never push until the owner says** — every push to `main` deploys the live site.
+
+The owner often runs two sessions in this repo at once, and a commit takes the whole shared
+index — one session's commit has already swept in a deletion another had staged hours earlier.
+So:
+
+- **Never leave anything staged.** Delete with plain `rm`, never `git rm`.
+- **Commit by naming exact paths, in one command:** `git commit -m … -- path1 path2`.
+- Run `git status --short` immediately before. Anything you did not touch is the other
+  session's — leave it out. If a file you need (`public/shows.json`) also carries its edits, ask
+  before committing them.
+- Never `git add -A`, `git add .` or `git add -f public/`: each sweeps in someone else's work.
+
+**New files must be added — a commit by path never picks them up.** Until 2026-10-05 `public/`
+and `.claude/skills/` were gitignored while their files were tracked, and that hid new files
+completely: promotion added two new `_04.jpg` files (shows that went 3 slots to 4),
+`git add public/images/` staged **zero additions**, and the manifest declared slots the deployed
+site would 404 on. Every local check passed, because `health-check.py` inspects the **disk**,
+not git. Both folders are now visible to git (third-party skills stay ignored), so a new image
+or bundled script shows as `??` in `git status` — but `git commit -- <path>` still refuses an
+untracked file, so add each new one by exact path, never with `-f` and never by directory, in
+the same command as the commit:
 
 ```bash
-git add -f public/images/ public/image-manifest.json
+cd ~/Desktop/Projects/the-vault
+git status --short -- public/images .claude/skills               # NEW files show as ??
+git add -- public/images/<ck>_04.jpg && \
+git commit -m "feat(images): <Artist> — …" -- public/shows.json public/image-manifest.json \
+    'public/images/<ck1>_*' 'public/images/<ck2>_*' <changed skill copies>
+git status --short                                               # nothing staged afterwards
 ```
 
-**The same trap applies to this skill's own directory.** `.gitignore` also lists
-`.claude/skills/`. Files already tracked show up as modified, so edits to `SKILL.md` or
-`shots.py` commit normally — but any **new** bundled script (`repick.py`, a new helper) is
-silently invisible to `git add`. It looks committed, and the skill is then broken for anyone
-who clones. Whenever a file is added to the bundle:
+The deploy now runs the health check on a fresh checkout too, so an image that never reached
+git fails the deploy instead of 404ing live — but catch it here, before the commit.
+
+A quoted `'public/images/<ck>_*'` is a git pathspec, not a shell glob, so it also carries a slot
+the promotion deleted; a pathspec that matches nothing aborts the commit rather than skipping.
+
+**Then verify against git, not the filesystem** — every manifest entry must be a tracked file.
+A disk-only audit cannot catch this class of bug:
 
 ```bash
-git add -f .claude/skills/concert-screenshots/
+python3 -c "
+import json, subprocess
+t = set(subprocess.run(['git','ls-files','public/images'], capture_output=True, text=True).stdout.split())
+m = json.load(open('public/image-manifest.json'))
+print([f'{c}_{i:02d}.jpg' for c, v in m.items() for i in v if f'public/images/{c}_{i:02d}.jpg' not in t])"
 ```
 
-Verify with `git status --porcelain` showing nothing left, **and** `git ls-files` listing
-every file in the directory. Two gitignored-but-tracked directories, one habit.
-
-**Then verify against git, not the filesystem:** every manifest entry must map to a file that
-is tracked *or staged*. A disk-only audit cannot catch this class of bug.
+It must print `[]`.
 
 ---
 
@@ -2886,7 +2985,8 @@ promotion rewrites all four slots from `picks/`, where that frame did not exist.
 their pick revert.
 
 Copy a hand-supplied still into **both** `public/images/` and `picks/<...>__A.jpg`, or promote
-before staging it. Recover from `promote-backup/` if it has already been clobbered.
+before staging it. If it has already been clobbered, recover it from `promote-backup/` before
+the commit, or from git after it (§11, Rollback).
 
 ### `picks/` is not cleared between runs — remove stale files
 
@@ -2909,7 +3009,7 @@ editing `picks.json`,** and assert every entry produced a file.
 
 ## 12b. Re-rendering already-chosen picks (`repick.py`)
 
-When capture *settings* change — geometry, deinterlacer, crop — the selections are still
+When capture *settings* change — geometry, deinterlacer, an override — the selections are still
 valid but the pixels are stale. `repick.py` re-renders exactly the frames already listed in
 `picks.json` at the current settings, without re-scoring or re-choosing anything.
 
@@ -2977,8 +3077,15 @@ ChecksumSHA1 = sha1(concatenated representative media, in order).hexdigest()
 
 Populate the technical fields from `ffprobe` (container, codecs, width, height, duration,
 `AspectRatio` as `"<DAR> (native)"`, `TVStandard` from frame rate), `FileCount` and
-`TotalSizeBytes` from the filesystem. Leave `Setlist` blank. Record any uncertainty in `Notes`
-rather than inventing a value; use the `YYYY-01-01` convention when only the year is known.
+`TotalSizeBytes` from the filesystem. Leave `Setlist` blank unless the folder's own sidecar gives
+one (§2, "Read the sidecar for SETLIST too") — then write it in house format and name the file
+in `Notes`. Record any uncertainty in `Notes` rather than inventing a value; use the
+`YYYY-01-01` convention when only the year is known.
+
+`Artist` is the stored spelling, no leading "The" (§17 step 0). Set `ContentType` exactly as in
+§10b step 5: `"Documentary"` when half or more of the runtime is people talking or narration
+over footage, otherwise absent — judged from the footage, not the title. `RecordingType` is how
+it was filmed (Proshot, Soundboard, Audience) and is never `Documentary`.
 
 **Validate before writing:** `ShowID` unique, `ChecksumSHA1` unique, `ShowDate` either empty
 or exactly `YYYY-MM-DD`, and the record count increases by exactly the number added.
@@ -2990,14 +3097,9 @@ name with its own stills. But images are keyed by `ChecksumSHA1`, and in the ref
 collection **no checksum is shared by two records** — sharing one would give both acts
 identical pictures and break that invariant.
 
-Give the second record a derived key and say so plainly in `Notes`:
-
-```python
-derived = sha1((primary_checksum + "|" + artist).encode()).hexdigest()
-ShowID  = sha1((folder_path + "|" + artist).encode()).hexdigest()[:12]
-```
-
-Document that it is **not a content hash**, so nobody later mistakes it for a scan artefact.
+Give the second record a derived key, with the artist as the discriminator, and say so plainly
+in `Notes` — formula and wording in §2, "Splitting when the shows are NOT separable at file
+level". Filing (one record per band per tape, plus a master) is §2, "Artist matching", item 3.
 
 ---
 
@@ -3049,7 +3151,7 @@ a no-op that read as a clean success.
 interrupted run, wrong when the *settings* changed. The tally hid it by counting a cache hit as an
 `ok`.
 
-- **After any geometry, crop or deinterlacer change, re-capture with `--fresh`.** It is scoped to
+- **After any geometry, override or deinterlacer change, re-capture with `--fresh`.** It is scoped to
   the shows `--only` selected, so it is safe on a single unit.
 - The tally now prints `cached=N` beside `ok`, so a no-op is visible. Prove it fires before
   trusting it: re-run without `--fresh` and confirm `cached` equals the frame count.
@@ -3074,21 +3176,24 @@ wrong about what you think it measures.
       no sharpen/denoise/colour)
 - [ ] Deinterlacer demonstrably ran — output NOT byte-identical to the undeinterlaced frame,
       comb ratio below ~1.6 on a normal shot (§4.7)
-- [ ] Suspicious aspect flags (SD 4:3 dated ≥2008, non-standard ratios) visually verified
+- [ ] Suspicious aspect flags (SD 4:3 with no bars dated ≥2000 or undated, non-standard ratios)
+      put on the owner's A/B page (`aspect_ab.py`) — not judged by eye
 - [ ] Any DISPUTED aspect settled against a known-good source (same performer and era, a shared
       rigid graphic, or two captures sharing one framing) or by the owner's A/B — never by an
       unaided look, and never by a point-light number (invalid on SD, §4.4)
 - [ ] 16:9-FLAGGED DVDs checked for letterbox bars too, and any non-standard container SAR explained
 - [ ] A disc whose VOBs declare DIFFERENT aspects has the answer PINNED in overrides.json,
       even where the default happens to be right — VOB sort order is not evidence
-- [ ] After ANY geometry/crop/deinterlacer change, re-captured with `--fresh`, and the WORK
-      DIRECTORY's actual pixel sizes re-read — `ok=N` counts cached frames, not written ones
-- [ ] `preflight` reported a NON-ZERO record count for this artist; a 0 is a matcher bug,
-      not an empty artist (artist match is case-insensitive)
+- [ ] After ANY geometry, override or deinterlacer change, re-captured with `--fresh`, and the
+      WORK DIRECTORY's actual pixel sizes re-read — `ok=N` counts cached frames, not written ones
+- [ ] The artist's STORED spelling confirmed first (no leading "The" — `Killers`, not "The
+      Killers"), and `preflight` reported a NON-ZERO record count for it; a 0 is a matcher bug
+      or a wrong name, not an empty artist (case does not matter — artist match is case-insensitive)
 - [ ] EVERY override created this session mirrored into its `shows.json` record, with the
       evidence in Notes — the override fixes capture, the record is what the collection knows
 - [ ] `scripts/audit-aspect-vs-source.py --artist "<name>"` run; disagreements resolved
-- [ ] Letterbox checked at ≥2 timestamps
+- [ ] Letterbox measured at ≥2 timestamps (row profile from bright frames on VHS or off-air,
+      §4.3b); bars KEPT, rows in Notes, `AspectRatio` the frame ratio — no new `crop` rule (§4.3)
 - [ ] Full-collection dimension audit reports **0 wrong dimensions**
 - [ ] No show finished with 0 usable frames
 - [ ] Seek pass produced DISTINCT frames (not N copies of one) — check content hashes
@@ -3105,9 +3210,9 @@ wrong about what you think it measures.
       LIST is wrong, not merely the duration
 - [ ] Contact sheets built for every show
 - [ ] Picks recorded by timestamp and **all resolve** to files
-- [ ] Pick FILE COUNT ON DISK equals the resolved count — no filename collisions (§11)
+- [ ] Pick FILE COUNT ON DISK equals the resolved count — no filename collisions (§9)
 - [ ] Every pick in a show has a distinct brief tag (A/B/C/spare) — a duplicate silently
-      overwrites (§11)
+      overwrites (§9)
 - [ ] Shortlists reviewed for COMMERCIALS on any off-air source (§6.2d)
 - [ ] Every shortlist contains at least one CLOSE-UP and one instrument/detail frame — on dark
       sources score alone will not produce them (§6.2e)
@@ -3133,15 +3238,21 @@ wrong about what you think it measures.
 - [ ] After splitting: the ORIGINAL record renamed to name only its part, not the whole folder
 - [ ] No folder belonging to a DIFFERENT artist was planned — check the skip lines
 - [ ] Any new record from a split keyed by a REAL content hash where the files allow it
-- [ ] Collection drive unmodified; repo clean
+- [ ] Collection drive unmodified; nothing left staged in the repo
 - [ ] Pruning only after picks verified
 - [ ] `picks/` regenerated after any `picks.json` edit; every pick resolved to a file
 - [ ] Promotion sources from `picks/`, not `work/`
 - [ ] Loose media files at the drive root checked for missing records
-- [ ] New records: unique ShowID, unique checksum, valid date format
-- [ ] Split bills given derived checksums, documented in Notes
-- [ ] `git add -f` used for BOTH `public/` and `.claude/skills/` (§11); every manifest entry
-      tracked or staged (verify against git, not disk)
+- [ ] New records: unique ShowID, unique checksum, valid date format, `Artist` the stored
+      spelling (no leading "The"), `ContentType` set — `Documentary` when half or more is
+      talking or narration, otherwise absent (§10b step 5)
+- [ ] Split bills: one record per band per tape, the second keyed by a derived checksum
+      documented in Notes (§2); every multi-act disc, split bills included, filed through
+      `va-masters` with a master — never as a standalone record made by a capture run (§10)
+- [ ] `~/VaultShots/sync_skill_copies.sh` run after promotion; changed copies in the run's commit
+- [ ] Committed on `main` by explicit path in ONE command, new files `git add`ed by exact path (no `-f`)
+      (§11); every manifest entry a tracked file (verify against git, not disk); NOT pushed
+- [ ] `~/VaultShots/promote-backup` moved to the Trash once the run is committed (§11)
 - [ ] `scripts/audit-image-geometry.py --artist "<name>"` reports 100% correct for this artist,
       with no `no show record` rows — those are images orphaned by a checksum change (§10b)
 - [ ] No verification step can pass silently on failure
@@ -3154,10 +3265,17 @@ Every step that lived only in my head across two artists caused a bug. This is t
 follow it in order.
 
 ```bash
-cd ~/VaultShots
+cd ~/VaultShots                    # pipeline commands run HERE; repo commands (step 8) in the repo
+R=~/Desktop/Projects/the-vault
 A="Stone Temple Pilots"
 
 # 0. SCOUT - one read-only pass, before any decode.
+#    First confirm the name as STORED. Every artist is filed without a leading "The"
+#    (`Killers`, `Strokes`, `Offspring`, `Verve`, `Prodigy`), and a wrong name gives a clean,
+#    EMPTY report with no error (Field lessons, Killers). Case does not matter; spelling does.
+#    a = one distinctive word of the name, lower-case:
+python3 -c "import json; a='temple'
+print({s['Artist'] for s in json.load(open('$R/public/shows.json')) if a in (s.get('Artist') or '').lower()})"
 ./scout.sh "$A"
 #    Bundles preflight, multi-show detection, image-vs-record AND record-vs-source geometry,
 #    sidecar setlists, split bills, and the list of sidecars to read.
@@ -3174,6 +3292,8 @@ A="Stone Temple Pilots"
 #    ambiguous folder to its PROVEN titleset in splits.json first (Ben Harper: the ACL record's
 #    checksum proved VTS_02, so it was pinned there and captured while VTS_01 awaited a yes).
 #    Nothing whose identity is still open gets captured.
+#    A disc with several ACTS on it is a Various Artists recording - it is filed through the
+#    va-masters skill, never as a standalone record made here (§10).
 
 # 1. WHO'S-WHO - before picking anything, not after (§6.2d-3)
 #    data/whoswho_<artist>.md: who fronts the centre mic, who plays what, extra people, and
@@ -3222,20 +3342,30 @@ python3 aspect_ab.py
 #    Build data/promote_map.json from each state entry's ShowID, and assert the values are
 #    UNIQUE. Do NOT use --propose-map: it matches on name, and two units that share a folder
 #    (any split) both map to the same record - one concert's stills onto the other's record.
-python3 promote.py                           # dry run - read the OLD->NEW column
+python3 promote.py                           # dry run - read the OLD->NEW column and SKIPPED
 python3 promote.py --apply
+#    It refuses on overrides, heroes, existing orphans and unlinked folders; it does NOT run
+#    the health check or look at git (§11).
 
-# 8. VERIFY + COMMIT
-python3 scripts/health-check.py                        # in the repo
+# 8. SYNC, VERIFY, COMMIT - on main, in the REPO, never pushed
+./sync_skill_copies.sh                       # ~/VaultShots is the master; refreshes the repo's
+                                             # skill copies and lists what changed (§18)
+cd "$R"
+python3 scripts/health-check.py
 python3 scripts/audit-image-geometry.py --artist "$A"  # must be 100% correct now
 #    A deliberate Setlist removal needs an entry in scripts/setlist-removals-approved.json
 #    or the push is blocked.
-git add -f public/images/ public/image-manifest.json public/shows.json
-git add -f .claude/skills/concert-screenshots/         # if any bundled script changed
-#    assert every manifest entry is tracked or staged (§11), then commit
+git status --short                           # what you did not touch is another session's
+git status --short --ignored -- public/images .claude/skills   # NEW files show only as !!
+git add -- <each new file> && git commit -m "feat(images): $A ..." -- <every path, by name>
+#    One command, explicit paths, the changed skill copies included - full form in §11.
+#    Nothing left staged. Every manifest entry a tracked file (§11). NEVER push: each push
+#    to main deploys the live site, and the owner says when.
+mv ~/VaultShots/promote-backup ~/.Trash/promote-backup-$(date +%Y%m%d-%H%M%S)
+#    The backup only covers promotion -> commit; git holds everything now (§11).
 
 # 9. ARCHIVE - LAST, and only after the commit
-python3 shots.py --artist "$A" archive
+cd ~/VaultShots && python3 shots.py --artist "$A" archive
 #    It clears work/ and moves picks/, which breaks the review page and forces a re-capture
 #    for any later correction. Never run it before sign-off.
 ```
@@ -3270,16 +3400,19 @@ would take the whole collection's identification work with one artist's archive.
 assert the target exists on disk. Silverchair now reports 21 assets carried and 0 missing across
 three pages; before the fix the same counter said 0 and 0 was wrong.
 
-**Do not keep a promote-backup directory as the rollback plan.** Every promotion is committed,
-so git history already holds the replaced images, and the directory is pure duplication — 11 MB
-of it in the reference collection. Roll back with `git checkout` instead.
+**`promote-backup/` is not the rollback plan once a run is committed.** `promote.py` writes it on
+every `--apply`, and it covers only the gap between promotion and commit; after the commit, git
+history holds the replaced images and the directory is pure duplication. Trash it at step 8 and
+roll back with git (§11).
 
 ### Scale expectations
 
 | Shows | Frames | Capture | Review |
 |---:|---:|---|---|
-| 7 | ~3,500 | ~20 min | 7 sheet reads |
-| 21 | ~7,500 | ~45 min | 21 sheet reads |
+| 7 | ~3,500 | ~20 min | `review.jpg` once, one hero montage, a sweep image per 3 shows whose hero is wrong |
+| 21 | ~7,500 | ~45 min | the same — still one `review.jpg` and one hero montage; sweeps only where needed |
+
+Never per-show contact sheets (§0a-2).
 
 Storage runs ~600 MB during capture, dropping to ~50 MB after pruning (§12).
 
@@ -3296,11 +3429,22 @@ Say these plainly. A thin, honest result beats a padded one.
 
 ## 18. Reference implementation
 
-`shots.py` and `subject.py` in this skill directory implement the above.
+**`~/VaultShots/` holds the master copy of every pipeline script. The scripts in this skill
+directory, and in `.claude/skills/va-masters/`, are copies** — kept in the repo so the tools are
+versioned and backed up with the site. Edit and run only the `~/VaultShots/` versions; a repo
+copy that differs is stale, never a fork to merge back. `~/VaultShots/sync_skill_copies.sh`
+refreshes every copy from its live namesake and lists what changed (`--check` lists only, and
+exits 1 if any differ). Run it at the end of every run, after promotion and before the commit,
+and commit what it lists with the run (§17 step 8). To bundle a NEW script, copy it into the
+skill folder once and `git add` that exact path (§11); the sync keeps it current from then on.
+`shots.py` and `subject.py` implement most of this file.
 
 ```
 python3 shots.py --artist "<Artist>" plan    # probe, compute targets, run gates
-#   NOTE: --artist is a GLOBAL flag and must precede the subcommand
+#   --artist is a GLOBAL flag and must precede the subcommand. `plan` requires it (there is
+#   no default) and resolves it case-insensitively to the stored spelling, warning loudly
+#   with suggestions when nothing is filed under it. The other subcommands read the artist
+#   from data/state.json.
 python3 shots.py capture                      # extract + verify every frame
 python3 shots.py score --top 24 --mindist 12  # filter crowds/graphics/blur, rank
 python3 shots.py contact                      # contact sheet per show
@@ -3314,15 +3458,256 @@ python3 promote.py --apply                    # write images + manifest
 #   promote.py --propose-map exists but matches on NAME: two units sharing a folder (any
 #   split) both map to the same record. Build data/promote_map.json from ShowIDs instead.
 
-./scout.sh "<Artist>"                         # one read-only pass before any decode (§17.0)
+./scout.sh "<Artist>"                         # one read-only pass before any decode (§17 step 0)
 ./run_artist.sh "<Artist>"                    # plan -> capture -> score -> autopick -> picks
-./run_artist_noplan.sh "<Artist>"             # same, without PLAN, for a pruned state.json
+./run_artist_noplan.sh "<Label>"              # same, without PLAN, for a pruned or subset state.json
+python3 plan_subset.py --label L --ids ids.json   # plan only listed ShowIDs ({artist: [ShowID,…]});
+                                              # REFUSES if any yields no unit (Field lessons)
 ./showpicks.sh "<Artist>"                     # materialise, verify links, open for the owner
 python3 hero_gate.py                          # refuse promotion until every hero is verified
-python3 reconcile.py                          # records vs the drive
+python3 aspect_ab.py                          # every 4:3-flagged, bar-free, post-2000 source at both shapes
+python3 doc_sweep.py <ShowID> [...]           # 48-frame sweep for the Documentary call -> doc_sweeps/
+python3 reconcile.py                          # records vs the drive -> data/reconcile.json
 python3 find_undocumented.py                  # folders with no record, matched on SIZE not name
-python3 fix_paths.py                          # repair FolderPath after a drive remount
+python3 fix_paths.py                          # repair FolderPath after a drive remount (reads data/reconcile.json)
+./sync_skill_copies.sh                        # refresh the repo's copies of these scripts
 ```
 
-Paths at the top of `shots.py` (`HD_ROOT`, `REPO`, `HOME`) are the only things to change per
-collection. `data/overrides.json` holds per-show aspect corrections.
+Working files live under `~/VaultShots/data/` — `state.json`, `picks.json`, `splits.json`,
+`overrides.json` (per-show aspect corrections), `promote_map.json`, `reconcile.json` and
+`reconcile.py`'s `hash_cache.json` among them — never a session scratchpad.
+
+**The paths are hard-coded to this machine.** Not only `shots.py` (`HD_ROOT`, `REPO`, `HOME`,
+`DEDUPE_DB`): `preflight.py`, `scout.sh`, `promote.py`, `aspect_ab.py`, `check_overrides.py`,
+`find_multishow.py`, `find_undocumented.py`, `reconcile.py`, `fix_paths.py`,
+`titleset_checksums.py`, `doc_sweep.py` and `bp.py` name `/Users/ko/...`,
+`~/Desktop/Projects/the-vault` or `/Volumes/Live Music` themselves. Moving the collection or the
+repo means finding them all:
+
+```bash
+grep -n '/Users/ko\|Desktop/Projects\|/Volumes/' ~/VaultShots/*.py ~/VaultShots/*.sh
+```
+
+---
+
+## Field lessons — collection traps
+
+Lessons from capture runs across the collection, moved here from CLAUDE.md on 2026-10-05. Most
+already had a home in this file, and the index says where. The rest follow in full.
+
+| Lesson | Where it lives |
+|---|---|
+| Reach the display shape by growing the under-sampled axis — never downscale, never upscale past native to make two shows match | §4.1, §4.1b |
+| Two audits: images vs record (squashed stills), record vs source (records that are themselves wrong) | §4.1c; §4.4, "Auditing records against the SOURCE" |
+| A record's `AspectRatio` is frequently wrong — write the correction back with its evidence | §4.4, "WRITE THE CORRECTION BACK" |
+| Look at a record's CURRENT stills before trusting its identity | below |
+| The capture pass finds the collection's gaps; "no footage here" needs the same evidence as a positive | below |
+| A record can cover one titleset while its name describes another | §10b, "A record can COVER one segment while its NAME describes another" |
+| Compilation discs: one wanted segment among many | §10b, "A compilation disc hides ONE wanted segment" |
+| Split bills: one record per band, per tape | §2, "Artist matching", item 3 |
+| A nested folder can hold a SECOND COMPLETE DISC | §10b, "A SECOND COMPLETE DISC can sit in a subfolder" |
+| A sidecar's LINE-UP block imported as data | below |
+| A circle test can lie — Pearl Jam, ACL 2009 | below |
+| A 4:3 flag with no bars on a post-2000 broadcast can be a squeezed 16:9 | §4.4, "A 4:3 flag with NO bars" |
+| Point lights do NOT measure the aspect of an SD source | §4.4, "Adjudicate a disputed aspect against a KNOWN source" |
+| A letterbox inside a 16:9-FLAGGED frame; an invented container SAR — Limp Bizkit | below |
+| cropdetect cannot see a VHS letterbox | §4.3b |
+| The two-part `AspectRatio` form means the images are cropped — now legacy only | §4.3, "The two-part AspectRatio string" |
+| A letterbox is not necessarily 16:9 — measure it | below |
+| A seek can land in the OTHER show — Woodstock 1994 + 1999 | §5.2, "A seek can succeed and land in a DIFFERENT SHOW"; its three RHCP matching traps below |
+| An artist filed without its article returns ZERO records — Killers | below |
+| A record captured once can have NO saved capture rule | below |
+| A folder can glue the artist's name to the date | below |
+| Five "FOTTP" discs held eighteen programmes | below |
+| An artist name of single letters matched EVERY folder — R.E.M. | below |
+| A prior session's "appears around X" is a guess | §10b, "A prior session's prose conclusion is not evidence" |
+| One folder can hold more than one show; read every sidecar | §10b — Step 1 (`find_multishow.py`), Step 2 (sidecars); §17 step 0 |
+| Check for orphaned images after any merge, delete or re-key | §10b, "A merge or a re-key ORPHANS images" |
+| Run `preflight.py` before capturing | §0b |
+| Assume a multi-titleset folder is several shows | §10b, "ASSUME a multi-titleset folder is several shows" |
+| Image A is always a close-up of the lead singer | §6.2d-0, §6.2d-2 |
+| Hand-pick all four slots, on every artist | §6.2d-00 |
+| The bassist singing backing vocals | §6.2d-2, "The BACKING singer at his own mic" |
+| Reviewing costs more than capturing | §0a, §0a-1 |
+
+### Look at a record's CURRENT stills before trusting its identity
+
+On 30 Seconds to Mars, three records were showing the wrong thing on the live site and no audit
+could say so: a "Kooks" record showing 30STM (it held the wrong titleset's hash), a "Last Call"
+record showing Carson Daly's other guests (keyed to the wrong titleset of a VA compilation), and
+a "Late Show" record whose only image was a black frame, over footage of a different band on a
+different talk show. Geometry audits pass all three — the images agree with the record. The
+last, `e814e4732ab9`, was re-filed with the owner's agreement (2026-10-02) as Nickel Creek under
+the Late Night #6 2005 master, of whose VTS_14 it is a byte-identical copy.
+
+The capture pass is also the most reliable way this collection finds its own gaps: shows with
+**no record at all**, records holding **another band's setlist**, records whose **dimensions
+disagree with the disc**, folders holding **two shows** (§10b), and a record stating its folder
+held **none of the artist's footage** when 1 of its 16 titlesets was their own episode (§10b,
+compilation discs).
+
+**A "no footage here" conclusion needs the same evidence as a positive one.** On a disc whose
+container reports bad timestamps, sampling can appear to cover two hours while covering seconds
+(§5.1, §5.2b), so absence looks identical to a failed scan. Re-check before excluding.
+
+Two Smashing Pumpkins records, `d9b007dd78f2` and `32fafc677477` (Brixton 1996, `Disc1` /
+`Disc2`), can never be re-captured: they point at a nested folder that no longer exists on the
+drive. Do not chase them.
+
+### A sidecar's LINE-UP block gets imported as data — into three different fields
+
+Queens of the Stone Age had one sidecar section land in two records, two different ways:
+
+| Record | Field | Value it was given | Where it came from |
+|---|---|---|---|
+| `8e8d56e0a5f7` | `EventOrFestival` | `Nick Oliveri` | the 2nd name in `Lineup:` |
+| `8e8d56e0a5f7` | `VenueName` | `bass, lead vocals` | that name's instrument credit |
+| `cdd7abcd3d24` | `Setlist` | `Complete show; Josh Homme; Joey Castillo; …` | the whole `Line up :` block as tracks |
+
+The same class as the Alanis "Friesland" case (§10b, an uploader's home town read as the city):
+**the importer took whatever line sat where it expected a value.** The tell is a field holding a
+person's name, an instrument or a role:
+
+```bash
+python3 -c "
+import json, re
+for s in json.load(open('public/shows.json')):
+    for k in ('VenueName','EventOrFestival','City'):
+        v = (s.get(k) or '')
+        if re.search(r'(?i)\b(vocals|guitar|bass|drums|keyboards|backing)\b', v):
+            print(s['ShowID'], s['Artist'], k, repr(v))
+"
+```
+
+Read the whole sidecar before trusting any field derived from it, and check the **first and
+last three** setlist entries (§2, "A populated Setlist is not a checked Setlist") — a line-up
+block sits at the top or the bottom.
+
+### A circle test can lie — Pearl Jam, Austin City Limits 2009
+
+`fa2699316abb` declared 4:3 (720x480, SAR 8:9) and was internally consistent, so no gate caught
+it. It is 16:9: the sidecar's lineage is `HD Broadcast>SD Standalone DVD XP`, a widescreen
+broadcast squeezed into a 4:3 frame by a recorder that writes a 4:3 flag whatever it is fed.
+There are no bars, so nothing looks wrong until you look at a face — which is how the owner
+caught it ("looks squished"), after an automated check had cleared it.
+
+- **The drum-head circle test got it backwards.** A kit shot from the side is foreshortened
+  horizontally, so its head reads *too wide* at any aspect and the frame "passes" as 4:3.
+- **What settled it was a source whose geometry is beyond doubt**: a square-pixel HD capture of
+  the same performer from the same era, the 1920x1080 Storytellers. Rendered against it, the
+  disputed face was narrow and elongated at 4:3 and matched exactly at 16:9. That is §4.4's
+  same-performer, same-era method — evidence. Judging the disputed frame at both shapes on its
+  own is not.
+- A lineage reading `HD Broadcast > SD DVD` makes a 4:3 flag suspect before anything is decoded.
+
+### A letterbox inside a 16:9-FLAGGED frame, and a container SAR that is simply invented — Limp Bizkit, Rock am Ring 2009
+
+The show existed twice: an MKV (`a82c7d813257`) flagged SAR 247:176, displaying at 2.06:1, and a
+DVD (`dd47c5fa0e57`) flagged 16:9 whose picture sits in rows 44–529 behind digital-black bars,
+displaying at 2.11:1. Neither audit caught the DVD: cropdetect and the letterbox checks only
+looked for bars in 4:3 frames, and "16:9 flag, 16:9 record" agreed. The tell was the scout — the
+MKV's geometry came back UNKNOWN (an empty `AspectRatio` and a SAR no standard produces), and
+probing it led to the DVD.
+
+What settled it was **structure, not measurement.** Frame-matching the two (64×36 grey
+thumbnails, normalised, the DVD's bars cut off for the comparison only) put them at a constant
+36.5 s offset with identical framing — but only the DVD carries a Rock am Ring logo bug, so they
+are independent captures, and two captures sharing one framing means neither is a crop. Other
+broadcasts of the festival are full-frame 16:9. The DVD's whole frame is therefore 3:2 (16:9
+picture × 576/486): captured at 864×576 **with the bars kept**, `AspectRatio: "3:2"`, through a
+`showid`-scoped `dar` override — keep-bars (§4.3) and a flag fix (§4.4) in one record.
+
+- Check a 16:9-flagged DVD for bars the same way as a 4:3 one.
+- Treat a non-standard container SAR — anything not 1:1, 8:9, 10:11, 16:15, 32:27, 40:33, 16:11,
+  64:45 or 4:3 — as unexplained until proven.
+- Where a disc's own VOBs declare **different** aspects, pin the answer in `overrides.json` even
+  when the default happens to be right (§4.4). VOB sort order is not evidence.
+
+### A letterbox is not necessarily 16:9 — measure it
+
+Two Queens of the Stone Age Eurockéennes discs: same taper, same DVD recorder, same channel, both
+4:3 PAL with the Europe 2 TV logo burned into the upper bar. The 2005 disc's picture is rows
+72-503 = 432 rows, exactly 16:9. **The 2007 disc's is rows 56-519 = 464 rows, which is 1.66 —
+nearer 5:3.** Both letterboxes are symmetric about the frame centre, so neither is a mis-measure.
+
+Assuming 16:9 would have thrown away 32 rows of real picture under a crop, and today would put a
+wrong ratio in `Notes`. Record the rows and the ratio they actually give (§4.3). Both discs were
+captured before the keep-bars rule and are legacy crops — `a096956b26e1` is recorded
+`4:3 (letterboxed 16:9)` and `cdd7abcd3d24` `4:3 (letterboxed 5:3)`, matching their cropped
+images. Leave them as they are.
+
+### Three RHCP matching traps (the Woodstock 1994 + 1999 run)
+
+The two-show-stream seek trap from that run is in §5.2. Three smaller ones from the same artist:
+
+- **Ten folders are named `RHCP …`**, which shares no token with the name. An `rhcp` alias now
+  catches them — the QOTSA case again (§10b, "The artist-matcher can widen as silently as it
+  narrows").
+- **A record can be claimed for an artist only through `splits.json`** — Rolling Stone 25's one
+  RHCP chapter. Discovery now honours such claims.
+- **A folder shared by two artists** now plans only the current artist's split part.
+
+### An artist filed without its article returns ZERO records, silently — `Killers`
+
+Since 2026-10-04 every artist is stored without a leading "The" — `Killers`, `Strokes`,
+`Offspring`, `Verve`, `Prodigy` (CLAUDE.md → Metadata conventions → Artist). `scout.sh "The
+Killers"` printed a clean report of `0 records` with every section empty — no error, no hint —
+while five shows sat under the shorter name. Case no longer matters (`shots.py plan` resolves the
+name case-insensitively and warns, with suggestions, when nothing is filed under it); the article
+and the spelling still do. Before any run, confirm the stored spelling (§17 step 0):
+
+```bash
+python3 -c "
+import json; a='killers'
+print({s['Artist'] for s in json.load(open('public/shows.json')) if a in (s.get('Artist') or '').lower()})"
+```
+
+### A record captured once can still have NO saved capture rule — re-picks fail
+
+The 2026-09-29 tier-2 hero review re-picked 107 already-captured shows, and 20 would not plan:
+their split or disc mapping had been done by hand at first capture and never written to
+`~/VaultShots/data/splits.json`. Two-disc sets (`Disc 1/`, `Disc 2/`), time-window splits, a
+Blu-ray `BDMV/STREAM/` folder, a folder renamed on the drive (`DVD-Offspring-LiveWembley2001` →
+`Offspring - Live Wembley 2001`) and a drive-side typo (`Columbus OH 1009-5-28`) all dropped out
+silently in a plain artist run. Prove each by re-hashing its `RepVideoFiles`, then save the rule
+— and write every hand mapping into `splits.json` in the session that makes it.
+
+For a subset of shows across artists, `plan_subset.py` plans only the listed ShowIDs and
+**refuses** if any produces no unit:
+
+```bash
+set -o pipefail      # so a refused plan stops the chain even through the pipe
+python3 ~/VaultShots/plan_subset.py --label L --ids ids.json | tee plan.log && \
+  ~/VaultShots/run_artist_noplan.sh L                  # ids.json: {artist: [ShowID, ...]}
+```
+
+### A folder can glue the artist's name to the date — `stereophonics2003-06-07dvd`
+
+That tokenises to `{stereophonics2003, 06, 07dvd}`: no token equals `stereophonics`, so `plan`
+reported `ready: 28  skipped: 0` for 29 records and the Rock am Ring 2003 disc was never
+captured. `shots.py` now accepts the squashed artist name followed **only by digits**; checked
+across all 168 artists then in the collection, it changed exactly that one match. The count
+check (folders found vs records, §2) is what caught it — run it every time.
+
+### Five "FOTTP" discs held eighteen programmes
+
+Stereophonics' fan compilations `FOTTP 1/2/4/7/10` were five records for **eighteen titlesets,
+each a separate programme** (festival sets, *Later*, *Headliners*, *Re:covered*, talk shows, two
+documentaries). Every existing record had its disc's whole sidecar pasted in as its `Setlist`, and
+one (`f4445e77f8e6`) described *Later* 2002 while its checksum is Rock am Ring 2003. They are now
+one record per titleset, each keyed by a real content hash over that titleset's
+`VTS_NN_0..n.VOB` (§10b, "Prefer a TITLESET split"). A disc named only by a volume number is a
+§10b multi-show folder until swept.
+
+### An artist name of single letters matched EVERY folder on the drive — R.E.M.
+
+`toks("R.E.M.")` split to `{r, e, m}`, all discarded by the `len > 1` filter, leaving the
+artist's token set **empty**. `need = min(2, len(artist_toks))` (§2) fell to 0, and the
+`>= need` test passed for everything: `plan` reported **144 shows ready** for a nine-show artist
+and flagged nothing. Fixed in `shots.py` by collapsing dotted initialisms to one token (`r.e.m.`
+→ `rem`, `n.e.r.d` → `nerd`) so artist and folder names meet, plus a guard that refuses to match
+anything when a name yields no usable token.
+
+**A matcher that silently widens is more dangerous than one that fails.** §2 documents the
+opposite failure — too-strict matching dropping shows in silence. This is the same bug with the
+sign flipped, and the folder-count check catches both.

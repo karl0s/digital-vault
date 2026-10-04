@@ -50,8 +50,10 @@ python3 ~/VaultShots/titleset_checksums.py "<folder>"                        # w
   file to prove a match when the whole-titleset hash does not.
 
 ### 2. Break down the acts
-Frames every 5 s are pre-decoded under the scratchpad (`va/f5/<tag>/v<VTS>_NNNNN.jpg`,
-frame N = (N−1)×5 s into that titleset). Build a chapter-marked sheet and read it:
+Frames every 5 s are pre-decoded under `~/VaultShots/va_frames/<tag>/v<VTS>_NNNNN.jpg`
+(frame N = (N−1)×5 s into that titleset; override the directory with `VA_FRAMES=<dir>`). They
+are an index, not a clock — on concatenated or timestamp-broken streams they drift by minutes
+(see "Frame-count everything" below). Build a chapter-marked sheet and read it:
 ```bash
 python3 ~/VaultShots/va_sheet30.py <tag> "<folder>" 3 out.jpg     # 1 frame / 15 s, chapter starts in red
 ```
@@ -79,6 +81,12 @@ set `status: proposed`, render, open. **The owner decides which acts get records
   own spelling, "Person & the Band" under the person. All 23 "The X" artists the collection
   ever had came from this step copying a caption, and four of them split an artist in two
   (`The Prodigy` beside `Prodigy`). Put the billing as captioned in `Notes`.
+- **Set `ContentType` on every new record, master and linked alike** (CLAUDE.md → Documentaries):
+  `"Documentary"` when half or more of that record's runtime is people talking or narration over
+  footage — an interview segment, a making-of, a behind-the-scenes piece — otherwise absent. A
+  performance with host links is not a documentary. Judge from the frames, not the caption;
+  `python3 ~/VaultShots/doc_sweep.py <ShowID>` sweeps a borderline one. `RecordingType` is how
+  it was filmed and is never `Documentary`.
 - An existing record that turns out to be one act of the master (e.g. the misfiled
   Pinkpop "Various Artists / DVD" record = the Rollins Band titleset) is **re-filed** as that
   act's linked record — keep its ShowID and checksum, fix Artist/date/setlist.
@@ -87,18 +95,31 @@ set `status: proposed`, render, open. **The owner decides which acts get records
 
 ### 4. Capture
 Pin every unit in `~/VaultShots/data/splits.json` (subdir / vts / from–to / decode single),
-then `plan_subset.py --label "VA Mnn" --ids ids.json` and `run_artist_noplan.sh`, as in the
-concert-screenshots skill. Picks, all hand-chosen, heroes verified at ≥340 px:
+then plan and capture only those records, as in the concert-screenshots skill:
+```bash
+set -o pipefail            # so a refused plan stops the chain even through the pipe
+python3 ~/VaultShots/plan_subset.py --label "VA Mnn" --ids ids.json | tee plan.log && \
+  ~/VaultShots/run_artist_noplan.sh "VA Mnn"          # ids.json: {artist: [ShowID, ...]}
+```
+Picks, all hand-chosen, heroes verified at ≥340 px:
 - master: slot A a lead-singer close-up of the most prominent act; the four slots spread
   over **different acts** (two acts → two each);
 - linked record: the usual A/B/C/spare, that act only.
-Build the before/after page (`~/VaultShots/bp.py TAG TITLE STATE NOTES.json`), open it, and point the owner at the local dev site
+Build the before/after page (`python3 ~/VaultShots/bp.py TAG TITLE STATE NOTES.json`), open it, and point the owner at the local dev site
 (`localhost:5173/digital-vault/`, search the festival) to check the links.
 
 ### 5. Close
-After sign-off: `promote.py --apply` (map built from state ShowIDs), health check, commit
-(`feat(shows): <master> master + N linked records`), archive the run, set the tracker entry
-`status: done` with the commit hash, re-render and open the checklist.
+After sign-off, in this order (concert-screenshots §11 and §17 steps 7-9 have the detail):
+1. `python3 ~/VaultShots/promote.py --apply` (map built from state ShowIDs).
+2. `~/VaultShots/sync_skill_copies.sh` — `~/VaultShots` holds the master of every script; the
+   copies beside this file are refreshed from it, and whatever it lists joins the commit.
+3. In the repo: `python3 scripts/health-check.py`, then commit on `main` by explicit path in ONE
+   command (`feat(shows): <master> master + N linked records`), new files `git add`ed by exact
+   path. Nothing left staged. **Never push** — each push to `main` deploys the live site; the
+   owner says when.
+4. Move `~/VaultShots/promote-backup` to `~/.Trash` — it only covers promotion → commit.
+5. Archive the run, set the tracker entry `status: done` with the commit hash, re-render and
+   open the checklist.
 
 ## Done so far
 - **M01 Pinkpop 1994** — master `7efb4ead53d8`, SP `952d5f624f7a`, RATM `07346400f7e5`

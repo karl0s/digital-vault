@@ -6,6 +6,18 @@ Do a complete screenshot run for **$ARGUMENTS**, following the `concert-screensh
 
 ## 1. Scout — before any frame is captured
 
+First confirm the name as **stored**. Every artist is filed without a leading "The"
+(`Killers`, `Strokes`, `Offspring`), and a wrong name gives a clean, empty report with no
+error. Case does not matter; spelling does. Use one distinctive word, lower-case:
+
+```bash
+cd ~/Desktop/Projects/the-vault && python3 -c "
+import json; a='killers'
+print({s['Artist'] for s in json.load(open('public/shows.json')) if a in (s.get('Artist') or '').lower()})"
+```
+
+If the stored name differs from **$ARGUMENTS**, use the stored name in every command below.
+
 ```bash
 ~/VaultShots/scout.sh "$ARGUMENTS"
 ```
@@ -17,7 +29,8 @@ Resolve everything it reports — folders with more than one titleset, duplicate
 that disagree, runtimes that imply an impossible bitrate, records with no checksum.
 Build **one HTML page** of anything still ambiguous, `open` it, and ask Karl about all
 of it together. Do not capture until that is settled: stills of the wrong concert are
-not detectable afterwards.
+not detectable afterwards. A disc with several acts on it is filed through the
+`va-masters` skill — never as a standalone record made during this run (skill §10).
 
 ## 2. Identify the band once
 
@@ -62,10 +75,11 @@ renders each hero at 4:3 and at 16:9 side by side. An off-air recorder that sque
 widescreen broadcast into a 4:3 frame leaves flags that agree with each other and no bars,
 so every automated gate passes: six Stereophonics sources (UK TV, 2002–2004) shipped
 squashed that way and Karl caught them on the picks page. Most suspects are genuinely 4:3
-— the profile is a reason to look, not a verdict — so **do not decide these yourself by
-comparing faces**; that is exactly the check that cleared all six. Judge a front-on circle
-(a mic grille seen head-on) if you must, and put the page in front of Karl either way.
-Fix confirmed ones per skill §4.4 ("A 4:3 flag with NO bars").
+— the profile is a reason to look, not a verdict — so **do not decide these yourself**:
+not by comparing faces (that is exactly the check that cleared all six), not by a circle,
+and never by a point-light number (invalid on SD). The shape is Karl's call on this page.
+Fix confirmed ones per skill §4.4 ("A 4:3 flag with NO bars"). Letterboxed sources keep
+their bars — measure the rows into `Notes`, never crop (skill §4.3).
 
 ## 5. Show Karl
 
@@ -77,8 +91,16 @@ open ~/VaultShots/reports/<artist>_aspect_ab.html
 The deliverable is those **local** pages opened in his browser, not a Claude Artifact.
 He signs off on the picks **and** on each suspect source's shape.
 
-## 6. Stop
+## 6. Stop — then promote, sync, commit (skill §17 steps 7-9)
 
-Promote only after he has signed off, then commit. **Do not run `shots.py archive`**
-until then — it clears `work/` and moves `picks/`, which breaks the page and forces a
-re-capture for any later correction.
+Promote only after he has signed off. Then:
+
+1. `~/VaultShots/sync_skill_copies.sh` — `~/VaultShots` holds the master of every script;
+   commit whatever copies it lists with the run.
+2. In the repo, `python3 scripts/health-check.py`, then commit on **`main`** by explicit
+   path in **one** command, new files `git add`ed by exact path (no `-f`) (skill §11). Leave nothing
+   staged. **Never push** — each push to `main` deploys the live site; Karl says when.
+3. Move `~/VaultShots/promote-backup` to `~/.Trash`: it only covers promotion → commit.
+
+**Do not run `shots.py archive`** until all of that is done — it clears `work/` and moves
+`picks/`, which breaks the page and forces a re-capture for any later correction.
