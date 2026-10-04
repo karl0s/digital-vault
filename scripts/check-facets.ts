@@ -213,7 +213,7 @@ console.log('\nperformance');
   const t0 = Date.now();
   const N = 50;
   for (let i = 0; i < N; i++) {
-    computeFacetCounts(derived, f({ era: ['1990s'], country: ['germany'] }), null);
+    computeFacetCounts(derived, f({ from: 1990, to: 1999, country: ['germany'] }), null);
   }
   const per = (Date.now() - t0) / N;
   console.log(`  full recount: ${per.toFixed(2)}ms per interaction`);

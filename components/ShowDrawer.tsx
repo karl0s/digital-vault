@@ -54,7 +54,10 @@ const getColorFromString = (str: string): string => {
   return colors[Math.abs(hash) % colors.length];
 };
 
-const LAYOUT_TRANSITION = { duration: 0.38, ease: [0.16, 1, 0.3, 1] };
+const LAYOUT_TRANSITION = { duration: 0.38, ease: [0.16, 1, 0.3, 1] as const };
+
+/** One row of the drawer's Technical column. */
+type TechRow = { label: string; value: string; mono: boolean };
 
 export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow, onSettled, notes = '' }: ShowDrawerProps) {
   // False while the drawer animates out, so finishing that animation is not
@@ -522,7 +525,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                     show.AudioSampleRate && { label: 'Sample rate', value: `${(parseInt(show.AudioSampleRate) / 1000).toFixed(1)} kHz`, mono: true },
                     show.TotalSizeHuman && { label: 'Size',     value: show.TotalSizeHuman,    mono: false },
                     show.FileCount   && { label: 'Files',       value: show.FileCount,         mono: false },
-                  ].filter(Boolean).map(({ label, value, mono }) => (
+                  ].filter((row): row is TechRow => Boolean(row)).map(({ label, value, mono }) => (
                     <div key={label} className="flex items-start gap-3 text-sm">
                       <span className="text-gray-400 text-xs w-16 shrink-0 pt-px">{label}</span>
                       <span className={`text-gray-200 leading-snug ${mono ? 'font-mono' : ''}`}>{value}</span>
