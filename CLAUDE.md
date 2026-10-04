@@ -1087,7 +1087,7 @@ recording and is intentionally excluded.
 
 Measured, not guessed. On 2026-10-02 the drawer took 400–600 ms to open on a Mac
 (~1.9 s at 4× CPU throttle, a stand-in for a phone) and Browse scrolled at ~6 fps on a
-phone-class CPU. `a108257` brought the drawer to ~25 ms (~145 ms at 4×) and halved JS
+phone-class CPU. `e2d6d54` brought the drawer to ~25 ms (~145 ms at 4×) and halved JS
 memory. These rules keep it there, and `npm run check:perf` (part of `npm run check`)
 fails on each of them:
 
