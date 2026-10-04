@@ -43,7 +43,13 @@ lerna-debug.log*
 # aid, not part of the site, and never ship (Vite only copies public/ into
 # dist/). Kept out of git so they don't enter this public repo's history.
 # Reinstall with:  npx skills@latest add <owner>/<repo> --agent claude-code
-.claude/skills/
+# The project's own two skills are tracked: their SKILL.md plus copies of the
+# pipeline scripts (master copies live in ~/VaultShots; see sync_skill_copies.sh).
+.claude/skills/*
+!.claude/skills/concert-screenshots/
+!.claude/skills/va-masters/
+# Machine-specific Claude Code permissions.
+.claude/settings.local.json
 # Manifest written by the same tool (source + hashes, no skill content).
 # Commit this instead if you ever want the skill set to be reproducible.
 skills-lock.json
@@ -106,7 +112,6 @@ out
 
 # Gatsby
 .cache/
-public
 
 # Storybook build outputs
 .out
@@ -116,9 +121,6 @@ storybook-static
 # Temporary folders
 tmp/
 temp/
-
-# Playground — local experiments only, never deployed
-_playground/
 
 # Python (for data-pipeline)
 __pycache__/
