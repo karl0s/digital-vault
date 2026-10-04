@@ -30,6 +30,16 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      # The same data gate as the local pre-push hook, then the code checks.
+      # Either failing stops the run before anything is built or deployed, so
+      # the live site keeps the previous version. On a fresh checkout the health
+      # check also catches an image listed in the manifest but never committed.
+      - name: Health check
+        run: python3 scripts/health-check.py
+
+      - name: Code checks
+        run: npm run check
+
       # Card thumbnails (scripts/thumbs.mjs) take ~1-2 min to encode from
       # scratch. The cache carries them between deploys; the build re-encodes
       # only images that are new or changed since, by content hash.

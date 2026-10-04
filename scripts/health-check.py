@@ -363,22 +363,8 @@ for doc_path, doc_name in [('README.md', 'README'), ('CLAUDE.md', 'CLAUDE.md')]:
         if abs(c - actual_count) > max(5, actual_count * 0.02):
             doc_issues.append(f'{doc_name} mentions {c} shows but actual is {actual_count} — update may be needed')
 
-# Check if any new component or hook files exist that aren't mentioned in README
-readme_path = os.path.join(ROOT, 'README.md')
-if os.path.exists(readme_path):
-    with open(readme_path) as f:
-        readme_text = f.read()
-
-    for search_dir, label in [('components', 'component'), ('src/hooks', 'hook'), ('scripts', 'script')]:
-        dir_path = os.path.join(ROOT, search_dir)
-        if not os.path.isdir(dir_path):
-            continue
-        for fname in os.listdir(dir_path):
-            if fname.startswith('.') or fname.startswith('_') or fname == '__pycache__':
-                continue
-            base = fname.rsplit('.', 1)[0]
-            if base not in readme_text:
-                doc_issues.append(f'{label} "{fname}" not mentioned in README — consider adding it')
+# No per-file README coverage check: the README is deliberately short (what the
+# site is, how to run and deploy) and CLAUDE.md carries the architecture.
 
 # Check for uncommitted changes to docs themselves relative to last commit
 try:
