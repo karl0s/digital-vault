@@ -24,7 +24,7 @@ import type { NotesGetter } from './useShows';
  * matters: search narrows first and facets refine *within* that, so the counts a
  * facet shows always describe the results actually on screen.
  *
- * Every step is synchronous. A full recount measures well under a frame on 829
+ * Every step is synchronous. A full recount measures well under a frame on ~1,200
  * records, which is why there is no debounce here.
  */
 

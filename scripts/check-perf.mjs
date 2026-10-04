@@ -89,7 +89,7 @@ console.log('Show data');
 const useShowsSrc = code('src/hooks/useShows.ts');
 ok(`the site loads ${LITE_FILE} first, not the full shows.json`,
   useShowsSrc.indexOf(LITE_FILE) !== -1 && useShowsSrc.indexOf(LITE_FILE) < useShowsSrc.indexOf('shows.json`'),
-  'shows.json is 4x the download (534 vs 131 KB gzipped); it is only the fallback.');
+  'shows.json is ~4x the download gzipped; it is only the fallback.');
 ok('the build writes the derived show data',
   /siteData\(\)/.test(code('vite.config.ts')),
   'Without the plugin every load falls back to the full shows.json.');
