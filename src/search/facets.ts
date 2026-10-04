@@ -4,7 +4,7 @@ import { FACET_KEYS, FacetKey, FilterState, NONE, SortKey, slugify } from '../li
 /**
  * Faceted filtering, counting and sorting over the show catalogue.
  *
- * Pure functions over an in-memory array. 829 records is small enough that every
+ * Pure functions over an in-memory array. ~1,200 records is small enough that every
  * count is recomputed synchronously on each interaction — no debounce, no async,
  * no backend.
  */
@@ -295,8 +295,8 @@ export function applyFilters(
 /**
  * Undated shows sort last in BOTH directions.
  *
- * Undated is not "year zero" — flipping to oldest-first must not surface 64
- * unknowns above a 1968 recording. Ties break on artist then ShowID so the order
+ * Undated is not "year zero" — flipping to oldest-first must not surface dozens
+ * of unknowns above a 1968 recording. Ties break on artist then ShowID so the order
  * is stable across renders rather than depending on array order.
  */
 export function sortShows(shows: Show[], sort: SortKey): Show[] {

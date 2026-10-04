@@ -8,8 +8,8 @@
  *
  * The four rules, all enforced by `serializeFilters`:
  *   1. keys emitted in a fixed order, never object-key order
- *   2. multi-values sorted, so ?era=1990s,2000s == ?era=2000s,1990s
- *   3. empty facets omitted entirely — no ?era=&country=
+ *   2. multi-values sorted, so ?country=france,germany == ?country=germany,france
+ *   3. empty facets omitted entirely — no ?country=&festival=
  *   4. values slugified, so casing and spacing can't fork a URL
  *
  * Query params on the root path, not path segments: GitHub Pages has no SPA
@@ -35,7 +35,7 @@ const VIEW_KEYS: readonly ViewKey[] = ['browse', 'artists'];
 /**
  * Sentinel for "this field is empty on the record".
  *
- * A show with no Country must stay reachable — 135 of them have none, and 341
+ * A show with no Country must stay reachable — dozens have none, and hundreds
  * have no festival. They get a real, selectable facet option rather than
  * silently dropping out of every filtered view. The UI labels it per facet
  * ("Unknown location" vs "No festival"); the data meaning is the same.
@@ -54,7 +54,7 @@ export interface FilterState {
   to: number | null;
   /**
    * Undated shows are excluded from a year range by default: a show with no
-   * date is not "in" 1993-2011. This opts the 64 of them back in, so they stay
+   * date is not "in" 1993-2011. This opts them back in, so they stay
    * reachable rather than silently vanishing whenever a range is set.
    */
   undated: boolean;
@@ -198,7 +198,7 @@ export function parseFilters(search: string): FilterState {
   };
 }
 
-/** True when nothing is filtering — drives whether the featured strip renders. */
+/** True when anything is filtering — the featured strip renders only when this is false. */
 export function isFiltered(state: FilterState): boolean {
   return (
     state.q.trim().length > 0 ||

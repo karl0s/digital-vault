@@ -1,5 +1,6 @@
 
-import { useRef, useState, useEffect, useMemo, useCallback } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
+import { flushSync } from 'react-dom';
 import { TopNav } from './components/TopNav';
 import { ArtistsView } from './components/ArtistsView';
 import { ShowDrawer } from './components/ShowDrawer';
@@ -81,20 +82,8 @@ export default function App() {
   const [pillTransitionKey, setPillTransitionKey] = useState(0);
   const [selectedShow, setSelectedShow] = useState<Show | null>(null);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
-  /**
-   * PARKED — intentionally unreachable, do not delete as dead code.
-   *
-   * "All shows" mode renders the whole catalogue in one grid. Its only entry
-   * point was the hero's "All Shows →" link, which now goes to the artist
-   * directory instead, so nothing sets this to true today. It is kept for the
-   * planned sidebar, which will link to it again.
-   *
-   * Everything reachable only from here is parked with it: `allShowsSorted`,
-   * `handleShowAllShows`, the Escape-key branch below, and the `showAllMode`
-   * render branch. A dead-code sweep will flag all of them — that is expected.
-   */
-  const [showAllMode, setShowAllMode] = useState(false);
   const navSearchRef = useRef<HTMLInputElement>(null);
+  const mobileSearchRef = useRef<HTMLInputElement>(null);
 
   // Destination lives in the store so it is linkable; see src/lib/url.ts.
   const view = useFilterStore(s => s.view);
@@ -127,7 +116,6 @@ export default function App() {
   useEffect(() => {
     if (!viewMounted.current) { viewMounted.current = true; return; }
     setSearchQuery('');
-    setShowAllMode(false);
     scrollToTop();
   }, [view]);
 
@@ -158,24 +146,6 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storeQuery]);
 
-
-  const allShowsSorted = useMemo(() =>
-    [...shows].sort((a, b) => {
-      const artistCmp = a.Artist.localeCompare(b.Artist);
-      if (artistCmp !== 0) return artistCmp;
-      const ad = a.ShowDate || '';
-      const bd = b.ShowDate || '';
-      if (!ad && !bd) {
-        // Group undated shows by event/title (e.g. "TV Compilation 1..6") so
-        // they cluster together deterministically instead of by array order.
-        const byEvent = (a.EventOrFestival || '').localeCompare(b.EventOrFestival || '', undefined, { numeric: true });
-        return byEvent !== 0 ? byEvent : a.ShowID.localeCompare(b.ShowID);
-      }
-      if (!ad) return 1;
-      if (!bd) return -1;
-      return bd.localeCompare(ad);
-    }), [shows]);
-
   const isSearching = debouncedQuery.trim().length > 0;
 
   // Auto-focus the nav search bar on initial load
@@ -183,17 +153,14 @@ export default function App() {
     navSearchRef.current?.focus();
   }, []);
 
-  // Escape clears search or all-shows mode
+  // Escape clears the search
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        if (searchQuery) { setSearchQuery(''); navSearchRef.current?.focus(); }
-        else if (showAllMode) { setShowAllMode(false); navSearchRef.current?.focus(); }
-      }
+      if (e.key === 'Escape' && searchQuery) { setSearchQuery(''); navSearchRef.current?.focus(); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [searchQuery, showAllMode]);
+  }, [searchQuery]);
 
   // Stable, because every memoised ShowCard receives it as `onSelect`.
   const handleShowClick = useCallback((show: Show) => {
@@ -210,15 +177,16 @@ export default function App() {
     setSearchQuery(query);
     setSearchType(query.trim() ? type : undefined);
     if (type !== undefined) setPillTransitionKey(k => k + 1);
-    if (query.trim()) setShowAllMode(false);
   }
 
-  // PARKED — see the showAllMode declaration above. No caller today; the
-  // planned sidebar will wire this back up.
-  function handleShowAllShows() {
-    setShowAllMode(true);
-    setSearchQuery('');
-    scrollToTop();
+  /**
+   * The tab bar's Search item. flushSync renders the field before focus() so
+   * both happen inside the tap — iOS ignores a focus() made any later and the
+   * keyboard never rises. Same pattern as TopNav's own search button.
+   */
+  function handleMobileSearchClick() {
+    flushSync(() => setMobileSearchOpen(true));
+    mobileSearchRef.current?.focus();
   }
 
   function handleCloseDrawer() { setSelectedShow(null); }
@@ -364,7 +332,7 @@ export default function App() {
 
       <div {...backgroundInert}>
         <AppShell
-          onMobileSearchClick={() => setMobileSearchOpen(true)}
+          onMobileSearchClick={handleMobileSearchClick}
           topBar={
             <TopNav
               searchQuery={searchQuery}
@@ -372,6 +340,7 @@ export default function App() {
               searchInputRef={navSearchRef}
               mobileSearchOpen={mobileSearchOpen}
               onMobileSearchOpenChange={setMobileSearchOpen}
+              mobileSearchInputRef={mobileSearchRef}
             />
           }
         >

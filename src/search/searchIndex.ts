@@ -345,7 +345,6 @@ function runFieldFilter(shows: Show[], field: string, value: string, query: stri
 
 /**
  * Resolve a query string to the exact list of shows it should display.
- * Mirrors the previous inline logic in `useSearchAndFilter` exactly.
  */
 /**
  * Notes are not on the site's show objects (they load separately), so the

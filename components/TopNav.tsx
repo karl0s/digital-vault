@@ -9,10 +9,16 @@ interface TopNavProps {
   /** Controlled so the mobile tab bar's Search item can open this. */
   mobileSearchOpen?: boolean;
   onMobileSearchOpenChange?: (open: boolean) => void;
+  /**
+   * The mobile field, so a host that opens it can also focus it inside the
+   * same tap — iOS only raises the keyboard for a synchronous focus().
+   */
+  mobileSearchInputRef?: React.RefObject<HTMLInputElement>;
 }
 
 export function TopNav({
   searchQuery, onSearchChange, searchInputRef, mobileSearchOpen, onMobileSearchOpenChange,
+  mobileSearchInputRef,
 }: TopNavProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [uncontrolledMobileSearch, setUncontrolledMobileSearch] = useState(false);
@@ -24,8 +30,9 @@ export function TopNav({
     onMobileSearchOpenChange?.(open);
   };
   const localRef = useRef<HTMLInputElement>(null);
-  const mobileInputRef = useRef<HTMLInputElement>(null);
+  const localMobileRef = useRef<HTMLInputElement>(null);
   const inputRef = searchInputRef ?? localRef;
+  const mobileInputRef = mobileSearchInputRef ?? localMobileRef;
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 48);

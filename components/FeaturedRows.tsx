@@ -125,28 +125,19 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
       FEATURED_IDS.map(id => byId.get(id)).filter(Boolean) as Show[],
     );
 
-    const soundboards = shows
-      .filter(s => s.RecordingType?.toLowerCase().includes('soundboard'))
-      .sort((a, b) => (b.ShowDate || '').localeCompare(a.ShowDate || ''))
-      .slice(0, 14);
-
-    return { featured, soundboards };
+    return { featured };
   }, [shows]);
 
   if (!sections) {
     return (
       <div className="mx-auto max-w-[1924px] px-4 py-8 md:px-8" role="status" aria-label="Loading shows">
-        <div className="animate-pulse space-y-10">
-          {[1, 2].map(i => (
-            <div key={i}>
-              <div className="mb-4 h-3 w-32 rounded bg-white/5" />
-              <div className={GRID_COLS}>
-                {Array.from({ length: 7 }, (_, j) => (
-                  <div key={j} className="aspect-4/3 rounded-md bg-white/5" />
-                ))}
-              </div>
-            </div>
-          ))}
+        <div className="animate-pulse">
+          <div className="mb-4 h-3 w-32 rounded bg-white/5" />
+          <div className={GRID_COLS}>
+            {Array.from({ length: FEATURED_IDS.length }, (_, j) => (
+              <div key={j} className="aspect-4/3 rounded-md bg-white/5" />
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -157,12 +148,6 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
       <FeaturedSection
         title="Featured shows"
         shows={sections.featured}
-        onShowClick={onShowClick}
-        getImageUrl={getImageUrl}
-      />
-      <FeaturedSection
-        title="Soundboard Recordings"
-        shows={sections.soundboards}
         onShowClick={onShowClick}
         getImageUrl={getImageUrl}
       />
