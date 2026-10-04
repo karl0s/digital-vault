@@ -392,6 +392,10 @@ and update the manifest key. Clear the Note.
 - `.claude/skills/` — only `concert-screenshots/` and `va-masters/` are tracked; third-party
   design skills stay local and gitignored. `.claude/settings.local.json` is ignored.
 - `public/images/temp-images/` and `tools/show-editor/index.html` are ignored.
+- **Tailwind v4 reads class names from every file git does not ignore.** Tracking a folder that
+  is not the site makes it part of the production stylesheet unless `styles/globals.css` excludes
+  it with `@source not` (as it does `public/`, `_playground/` and `.claude/`). Un-ignoring those
+  three on 2026-10-05 added ~6 kB of unused CSS before the exclusions went in.
 
 ### Push 408 timeouts
 GitHub occasionally returns `HTTP 408` on push. The commit is always created successfully — just retry `git push origin main` immediately. It succeeds on the second attempt.
