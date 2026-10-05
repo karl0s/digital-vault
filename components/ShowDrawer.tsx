@@ -67,6 +67,11 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
   // viewingIndex: which image is currently shown (changes on prev/next without affecting layoutId)
   const [expandedFromIndex, setExpandedFromIndex] = useState<number | null>(null);
   const [notesExpanded, setNotesExpanded] = useState(false);
+  // Whether the collapsed Notes are actually cut off. Measured, not guessed
+  // from a character count: short notes with many lines overflowed with no
+  // More button, and long single-paragraph notes showed one that did nothing.
+  const notesRef = useRef<HTMLParagraphElement>(null);
+  const [notesOverflow, setNotesOverflow] = useState(false);
   // Below md the Technical panel folds behind a toggle; from md it is always open.
   const [techOpen, setTechOpen] = useState(false);
   const [viewingIndex, setViewingIndex] = useState(0);
@@ -90,6 +95,17 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
     setViewingIndex(0);
     scrollRef.current?.scrollTo({ top: 0 });
   }, [show.ShowID]);
+
+  // Re-measured when the notes change and when the column's width does (a
+  // rotated phone rewraps them). Skipped while expanded, where nothing is
+  // clipped; the last collapsed answer keeps the Less button.
+  useEffect(() => {
+    const el = notesRef.current;
+    if (!el || notesExpanded) return;
+    const ro = new ResizeObserver(() => setNotesOverflow(el.scrollHeight > el.clientHeight + 1));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [notes, notesExpanded]);
 
   /**
    * Which way the drawer leaves. Read from matchMedia rather than a one-off
@@ -545,17 +561,21 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                   </p>
                   <div>
                     <div className="relative">
-                      <p className={`text-xs text-gray-400 whitespace-pre-wrap wrap-break-word font-mono leading-relaxed ${notesExpanded ? '' : 'max-h-40 overflow-hidden'}`}>
+                      {/* max-h-72 is about 14 lines, level with the Technical panel beside it */}
+                      <p
+                        ref={notesRef}
+                        className={`text-xs text-gray-400 whitespace-pre-wrap wrap-break-word font-mono leading-relaxed ${notesExpanded ? '' : 'max-h-72 overflow-hidden'}`}
+                      >
                         {notes}
                       </p>
-                      {!notesExpanded && notes.length > 320 && (
+                      {!notesExpanded && notesOverflow && (
                         <div className="absolute bottom-0 left-0 right-0 h-10 bg-linear-to-t from-[#181818] to-transparent pointer-events-none" />
                       )}
                     </div>
-                    {!notesExpanded && notes.length > 320 && (
+                    {!notesExpanded && notesOverflow && (
                       <button
                         onClick={() => setNotesExpanded(true)}
-                        className="mt-2 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 hover:text-gray-400 transition-colors"
+                        className="mt-2 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 hover:text-gray-300 transition-colors"
                       >
                         More <ChevronDown className="w-3 h-3" />
                       </button>
@@ -563,7 +583,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                     {notesExpanded && (
                       <button
                         onClick={() => setNotesExpanded(false)}
-                        className="mt-2 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 hover:text-gray-400 transition-colors"
+                        className="mt-2 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 hover:text-gray-300 transition-colors"
                       >
                         Less <ChevronUp className="w-3 h-3" />
                       </button>
