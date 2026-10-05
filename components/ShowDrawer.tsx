@@ -67,6 +67,8 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
   // viewingIndex: which image is currently shown (changes on prev/next without affecting layoutId)
   const [expandedFromIndex, setExpandedFromIndex] = useState<number | null>(null);
   const [notesExpanded, setNotesExpanded] = useState(false);
+  // Below md the Technical panel folds behind a toggle; from md it is always open.
+  const [techOpen, setTechOpen] = useState(false);
   const [viewingIndex, setViewingIndex] = useState(0);
   const isImageExpanded = expandedFromIndex !== null;
   const drawerRef = useRef<HTMLDivElement>(null);
@@ -84,6 +86,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
   useEffect(() => {
     setExpandedFromIndex(null);
     setNotesExpanded(false);
+    setTechOpen(false);
     setViewingIndex(0);
     scrollRef.current?.scrollTo({ top: 0 });
   }, [show.ShowID]);
@@ -182,6 +185,27 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
     : null;
 
   const setlistItems = show.Setlist ? show.Setlist.split(';').map(s => s.trim()).filter(Boolean) : [];
+
+  // The Setlist heading is always drawn, so a show without songs says so
+  // instead of letting Technical take the place people read as the setlist.
+  const emptySetlistText = segments.length > 0
+    ? "Each act's songs are on its own page, under On this recording"
+    : show.ContentType === 'Documentary'
+      ? 'Documentary, no setlist'
+      : 'No setlist yet';
+
+  const techRows = [
+    show.VideoCodec  && { label: 'Video',       value: show.VideoCodec,       mono: true  },
+    show.AspectRatio && { label: 'Aspect',      value: show.AspectRatio,       mono: false },
+    show.TVStandard  && { label: 'Standard',    value: show.TVStandard,        mono: false },
+    show.Container   && { label: 'Container',   value: show.Container,         mono: true  },
+    show.AudioCodec  && { label: 'Audio',       value: show.AudioCodec,        mono: true  },
+    show.AudioChannels && { label: 'Channels',  value: `${show.AudioChannels}ch`, mono: false },
+    show.AudioSampleRate && { label: 'Sample rate', value: `${(parseInt(show.AudioSampleRate) / 1000).toFixed(1)} kHz`, mono: true },
+    show.TotalSizeHuman && { label: 'Size',     value: show.TotalSizeHuman,    mono: false },
+    show.FileCount   && { label: 'Files',       value: show.FileCount,         mono: false },
+  ].filter((row): row is TechRow => Boolean(row));
+  const techId = `drawer-tech-${show.ShowID}`;
 
   const artistInitials = show.Artist
     .split(' ').map(w => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
@@ -484,18 +508,20 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
               </div>
             )}
 
-            {/* Setlist · Technical · Notes — 3-column flat layout, same visual style throughout */}
-            <div className={`grid grid-cols-1 gap-6 ${
-              setlistItems.length > 0 && notes ? 'md:grid-cols-3' :
-              setlistItems.length > 0 || notes ? 'md:grid-cols-2' : ''
-            }`}>
+            {/* Main column: Setlist, then Notes. Side column: Technical, in a
+                panel so it reads as reference detail rather than content. The
+                Setlist heading is always drawn, so Technical can never take
+                its place. Below md the columns stack and Technical folds
+                behind a "Technical details" toggle. */}
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)] md:items-start">
+              <div className="min-w-0 space-y-6">
 
               {/* Setlist */}
-              {setlistItems.length > 0 && (
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4 flex items-center gap-1.5">
-                    <Music className="w-3 h-3" /> Setlist
-                  </p>
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4 flex items-center gap-1.5">
+                  <Music className="w-3 h-3" /> Setlist
+                </p>
+                {setlistItems.length > 0 ? (
                   <ol className="space-y-2">
                     {setlistItems.map((song, idx) => (
                       <li key={idx} className="flex items-start gap-3 text-sm">
@@ -506,32 +532,9 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                       </li>
                     ))}
                   </ol>
-                </div>
-              )}
-
-              {/* Technical */}
-              <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4">
-                  Technical
-                </p>
-                <div className="space-y-2">
-                  {[
-                    show.VideoCodec  && { label: 'Video',       value: show.VideoCodec,       mono: true  },
-                    show.AspectRatio && { label: 'Aspect',      value: show.AspectRatio,       mono: false },
-                    show.TVStandard  && { label: 'Standard',    value: show.TVStandard,        mono: false },
-                    show.Container   && { label: 'Container',   value: show.Container,         mono: true  },
-                    show.AudioCodec  && { label: 'Audio',       value: show.AudioCodec,        mono: true  },
-                    show.AudioChannels && { label: 'Channels',  value: `${show.AudioChannels}ch`, mono: false },
-                    show.AudioSampleRate && { label: 'Sample rate', value: `${(parseInt(show.AudioSampleRate) / 1000).toFixed(1)} kHz`, mono: true },
-                    show.TotalSizeHuman && { label: 'Size',     value: show.TotalSizeHuman,    mono: false },
-                    show.FileCount   && { label: 'Files',       value: show.FileCount,         mono: false },
-                  ].filter((row): row is TechRow => Boolean(row)).map(({ label, value, mono }) => (
-                    <div key={label} className="flex items-start gap-3 text-sm">
-                      <span className="text-gray-400 text-xs w-16 shrink-0 pt-px">{label}</span>
-                      <span className={`text-gray-200 leading-snug ${mono ? 'font-mono' : ''}`}>{value}</span>
-                    </div>
-                  ))}
-                </div>
+                ) : (
+                  <p className="text-sm italic text-gray-500">{emptySetlistText}</p>
+                )}
               </div>
 
               {/* Notes */}
@@ -565,6 +568,35 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                         Less <ChevronUp className="w-3 h-3" />
                       </button>
                     )}
+                  </div>
+                </div>
+              )}
+
+              </div>
+
+              {/* Technical */}
+              {techRows.length > 0 && (
+                <div className="border-t border-white/6 pt-4 md:rounded-lg md:border md:bg-white/4 md:p-4">
+                  <button
+                    type="button"
+                    onClick={() => setTechOpen(open => !open)}
+                    aria-expanded={techOpen}
+                    aria-controls={techId}
+                    className="md:hidden w-full flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 hover:text-gray-300 transition-colors"
+                  >
+                    Technical details
+                    <ChevronDown className={`w-3 h-3 transition-transform ${techOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  <p className="hidden md:block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4">
+                    Technical
+                  </p>
+                  <div id={techId} className={`${techOpen ? 'block' : 'hidden'} md:block space-y-2 mt-4 md:mt-0`}>
+                    {techRows.map(({ label, value, mono }) => (
+                      <div key={label} className="flex items-start gap-3 text-sm">
+                        <span className="text-gray-400 text-xs w-16 shrink-0 pt-px">{label}</span>
+                        <span className={`text-gray-200 leading-snug ${mono ? 'font-mono' : ''}`}>{value}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}

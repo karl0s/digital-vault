@@ -984,10 +984,11 @@ song counts (masters only), then the content grid. Following either link swaps t
 the open drawer and resets it to the top.
 
 **Content grid**:
-- Technical always renders; Setlist and Notes only when they have content. `md:grid-cols-3` with both, `md:grid-cols-2` with one, a single column otherwise
+- Two columns from md (`md:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]`): the main column holds Setlist, then Notes; the side column holds Technical in a tinted panel (`md:rounded-lg md:border md:bg-white/4`). Below md they stack in that order and Technical folds behind a **Technical details** toggle (`techOpen`, reset per show)
+- **The Setlist heading always renders**, so nothing else can take the place people read as the setlist (owner's decision 2026-10-06; until then Technical slid into the first column on the 483 shows with no songs). With no songs it says `No setlist yet`, `Documentary, no setlist` (`ContentType`), or, on a master, `Each act's songs are on its own page, under On this recording`
 - Column labels use `text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400`
 - Setlist: numbered `<ol>` from the semicolon-split `Setlist`. `Encore break` renders as an ordinary numbered item — there is no divider (the song counts under "On this recording" do leave it out)
-- Technical: `{ label, value, mono }` rows — Video, Aspect, Standard, Container, Audio, Channels, Sample rate, Size, Files; label `w-16 text-xs text-gray-400`, value `text-gray-200` (`font-mono` for codec-like values); only rows with a value are rendered
+- Technical: `{ label, value, mono }` rows (`techRows`) — Video, Aspect, Standard, Container, Audio, Channels, Sample rate, Size, Files; label `w-16 text-xs text-gray-400`, value `text-gray-200` (`font-mono` for codec-like values); only rows with a value are rendered, and the panel is left out when there are none
 - Notes: from `getNotes`; `whitespace-pre-wrap wrap-break-word font-mono text-xs text-gray-400`; truncated to `max-h-40` with a gradient fade when collapsed; **More ⌄ / Less ⌃** buttons toggle `notesExpanded` state; button only shown when the notes run past 320 characters. `wrap-break-word` is intentional — pipeline notes often contain long unbroken strings (URLs, codec lines, filenames) that would overflow the container on mobile and cause the browser to zoom
 
 The Source & Files accordion has been removed — drive/folder/file metadata is no longer shown in the drawer.
