@@ -11,10 +11,11 @@
     "typecheck": "tsc --noEmit -p .",
     "check:url": "esbuild scripts/check-url-canonical.ts --bundle --platform=node --format=esm --outfile=node_modules/.cache/check-url.mjs --log-level=error && node node_modules/.cache/check-url.mjs",
     "check:facets": "esbuild scripts/check-facets.ts --bundle --platform=node --format=esm --outfile=node_modules/.cache/check-facets.mjs --log-level=error && node node_modules/.cache/check-facets.mjs",
-    "check": "npm run typecheck && npm run check:perf && npm run check:url && npm run check:facets && npm run check:store && npm run check:brush",
+    "check": "npm run typecheck && npm run check:perf && npm run check:url && npm run check:facets && npm run check:store && npm run check:brush && npm run check:search",
     "check:store": "esbuild scripts/check-store.ts --bundle --platform=node --format=esm --outfile=node_modules/.cache/check-store.mjs --log-level=error && node node_modules/.cache/check-store.mjs",
     "check:brush": "esbuild scripts/check-brush.ts --bundle --platform=node --format=esm --outfile=node_modules/.cache/check-brush.mjs --log-level=error && node node_modules/.cache/check-brush.mjs",
-    "check:perf": "node scripts/check-perf.mjs"
+    "check:perf": "node scripts/check-perf.mjs",
+    "check:search": "esbuild scripts/search-precision.ts --bundle --platform=node --format=esm --outfile=node_modules/.cache/check-search.mjs --log-level=error && node node_modules/.cache/check-search.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
@@ -32,7 +33,6 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
-    "autoprefixer": "^10.4.22",
     "postcss": "^8.5.6",
     "sharp": "^0.34.5",
     "tailwindcss": "^4.1.17",

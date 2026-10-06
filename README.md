@@ -29,7 +29,7 @@ they are never part of a build.
 
 ```bash
 npm run build                     # static site in dist/ (never committed)
-npm run check                     # type-check, performance guard rails, URL/facet/store/brush tests
+npm run check                     # type-check, performance guard rails, URL/facet/store/brush/search tests
 npm run perf                      # times Browse and the show drawer in headless Chromium
 python3 scripts/health-check.py   # data integrity: dates, images, manifest, setlists, artist names
 ```

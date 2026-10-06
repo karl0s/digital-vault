@@ -11,24 +11,22 @@
  *   false positive = a show by a DIFFERENT artist appearing in the view
  *   false negative = one of the artist's own shows missing from the view
  *
- * Run:  node scripts/search-precision.ts
- *       node scripts/search-precision.ts --verbose   (list every false positive)
+ * Run:  npm run check:search                      (part of npm run check and the deploy)
+ *       node scripts/search-precision.ts --verbose   (list every false positive; Node 22.6+)
  *
- * Node 22.6+ strips TypeScript types natively, so this runs with no build step.
+ * Exits 1 on any false positive, false negative, or failed golden case.
  */
 
 import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { createSearchIndex, runSearch, resolveArtist, getSongSuggestion } from '../src/search/searchIndex.ts';
 import type { Show } from '../App';
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VERBOSE = process.argv.includes('--verbose');
 
-const shows: Show[] = JSON.parse(
-  fs.readFileSync(path.join(ROOT, 'public/shows.json'), 'utf8'),
-);
+// Relative to the repo root, where npm runs it — like the other checks. Not
+// derived from import.meta.url: `npm run check:search` bundles this file into
+// node_modules/.cache first, so its own location is not the repo.
+const shows: Show[] = JSON.parse(fs.readFileSync('public/shows.json', 'utf8'));
 const index = createSearchIndex(shows);
 const artistNames = index.artistNames;
 

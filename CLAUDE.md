@@ -43,7 +43,7 @@ scripts/
   health-check.py       ← integrity validator (pre-push hook, and the deploy)
   audit-*.py            ← read-only audits: image geometry, aspect vs source, sidecar setlists
   consistency-audit.py  ← read-only: same festival or same show recorded with different venue/city/country
-  check-*.ts, check-perf.mjs ← the `npm run check` suite (see Browse architecture → Guards)
+  check-*.ts, check-perf.mjs, search-precision.ts ← the `npm run check` suite (see Browse architecture → Guards)
   perf/bench.mjs        ← measures Browse + drawer in headless Chromium (npm run perf)
   thumbs.mjs            ← card thumbnails, built into dist/thumbs/
   site-data.mjs         ← shows-lite.json + show-notes.json, derived from shows.json at build
@@ -923,8 +923,9 @@ called …" suggestion. Browse content, `TopNav` and `FilterBar` sit in `max-w-[
 
 **Guards.** `npm run check` = `check:perf` (Front-end performance), `check:url` (canonical
 serialisation), `check:facets` (counts against the real `shows.json`), `check:store` (stable
-selector snapshots), `check:brush` (brush geometry) and `typecheck`. Run it after touching any
-of these files; the deploy runs it too.
+selector snapshots), `check:brush` (brush geometry), `check:search` (every artist view returns exactly
+that artist's shows, plus hand-checked search cases; `scripts/search-precision.ts`) and `typecheck`.
+Run it after touching any of these files; the deploy runs it too.
 
 ---
 
