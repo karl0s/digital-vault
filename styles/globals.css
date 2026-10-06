@@ -1,13 +1,19 @@
 @import "tailwindcss";
 
-/* Tailwind scans every file git does not ignore for class names. These are
-   tracked but are not the site: the 3 MB of show data (any word in a Note can
-   become a class), dev-only experiments, and the screenshot pipeline's docs.
-   Without these lines the production stylesheet grows by ~6 kB of rules
-   nothing on the site uses. */
+/* Tailwind scans every file git does not ignore for class names. Everything
+   below is tracked but is not the site: the show data (any word in a Note can
+   become a class), dev-only experiments, the skills, the docs (which quote
+   class names, like "top-6 right-6"), the data pipeline, build and check
+   scripts, and tools. Left in, they add rules nothing on the site uses. */
 @source not "../public";
 @source not "../_playground";
 @source not "../.claude";
+@source not "../docs";
+@source not "../data-pipeline";
+@source not "../scripts";
+@source not "../tools";
+@source not "../CLAUDE.md";
+@source not "../README.md";
 
 /* Custom scrollbar styles */
 .scrollbar-hide {
