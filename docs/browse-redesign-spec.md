@@ -1,6 +1,6 @@
 # Browse Redesign — Phase 1 Spec
 
-Branch: `feat/browse-redesign` (merged and deleted) · Base: `main @ 2ce2395` · Status: **built,
+Branch: `feat/browse-redesign` (merged and deleted) · Base: `main @ 3795d17` · Status: **built,
 live since 2026-10-05**
 
 This is the design as specified before the build. It is kept for its reasoning; where it and the
@@ -380,10 +380,10 @@ argument** — the unfiltered 829 is no longer a rare worst case, it is the *def
 first paint on every cold load*.
 
 Rough shape of the problem: 829 cards × ~15 DOM nodes ≈ 12,000 nodes on mount.
-`LazyImage` defers image bytes (native `loading="lazy"` since `e2d6d54`), so the
+`LazyImage` defers image bytes (native `loading="lazy"` since `c1e4033`), so the
 network cost stays bounded; the exposure is initial render time and scroll jank.
 
-Still not adding it blind — `@tanstack/react-virtual` was removed in `76452e6` as
+Still not adding it blind — `@tanstack/react-virtual` was removed in `7cd77d7` as
 unused and re-adding a virtualizer on a hunch repeats that mistake. **Action:** build
 the grid unvirtualized, profile the unfiltered landing on a mid-range phone, and add
 Virtuoso if it stutters. Decide with a number, not a guess.
@@ -392,7 +392,7 @@ Virtuoso if it stutters. Decide with a number, not a guess.
 DOM nodes. The drawer took 400–600 ms to open on a Mac and ~1.9 s at 4× CPU throttle,
 but the node count was not the main cause: every card's motion layers were re-rendering
 on each drawer open (an `AnimatePresence` default), and `inert` restyled the whole page
-inside the click. Fixing those in `e2d6d54`, with no virtualizer, brought it to ~25 ms /
+inside the click. Fixing those in `c1e4033`, with no virtualizer, brought it to ~25 ms /
 ~145 ms. What remains that only virtualizing would remove: grid first render (~1.2 s at
 1×, ~3–5 s at 4×) and a stall when `inert` lands after the drawer settles (~100 ms at 1×,
 ~0.5–0.8 s at 4×). Re-measure with `npm run perf`, and check on a real phone, before

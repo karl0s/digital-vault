@@ -463,6 +463,12 @@ hand record by record since; **never copy the pipeline's output over it** (the s
 `data-pipeline/README/` says to; it is superseded). The pipeline reruns only when a new drive is
 added, and that workflow is not finalised.
 
+**The scanner reads every folder it is pointed at, music or not, and pastes text from any file it
+finds — and the repo is public.** The Big Daddy scan walked a PC backup (`Karls PC before it dies/`)
+and committed text from Karl's personal documents; on 2026-10-07 those 19 rows were purged from
+every commit and force-pushed. Before committing any scan output, check its folder paths and Notes
+for anything that is not a show.
+
 ### Drives
 `MasterDriveName` is the drive a record was **originally catalogued from** (mostly `Seagate
 Expansion Drive` or `Big Daddy`). **The whole collection now lives on one drive, `Live Music`**
