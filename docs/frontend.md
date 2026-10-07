@@ -128,7 +128,7 @@ Drive/folder/file metadata is not shown.
 - Technical: `techRows` of `{ label, value, mono }` — Video, Aspect, Standard, Container, Audio,
   Channels, Sample rate, Size, Files; label `w-16 text-xs text-gray-400`, value `text-gray-200`
   (`font-mono` for codec-like values); only rows with a value, and no panel when there are none.
-- Notes: from `getNotes`; `whitespace-pre-wrap wrap-break-word font-mono text-xs text-gray-400`
+- Notes: from `getNotes` — public sidecar text only; `PrivateNotes` never ships (CLAUDE.md); `whitespace-pre-wrap wrap-break-word font-mono text-xs text-gray-400`
   (`wrap-break-word` stops long unbroken strings overflowing on mobile); collapsed to `max-h-72`
   (about 14 lines) with a gradient fade and **More ⌄ / Less ⌃** (`notesExpanded`). The fade and More
   appear only when the collapsed text really overflows (`notesOverflow`, measured by a

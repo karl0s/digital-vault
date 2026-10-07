@@ -95,19 +95,22 @@ Rules:
 ## The data model
 
 ### What the site loads (derived at build time)
-`public/shows.json` is the source of truth and still deploys, but the site does not load it.
-Every build (and `npm run dev`) derives two files from it (`scripts/site-data.mjs`, wired in by
+`public/shows.json` is the source of truth; the site does not load it. Every build (and `npm run
+dev`) derives three files from it (`scripts/site-data.mjs`, wired in by
 `scripts/vite-plugin-site-data.mjs`):
 
 - `shows-lite.json` — every record minus `Notes` and the pipeline-only fields in `DROPPED`
   (`FolderPath`, `RepVideoFiles`, `Lineage`, `LastScannedAt`, …). Loaded first, about a quarter of
   the full file.
 - `show-notes.json` — `{ ShowID: Notes }`, loaded straight after.
+- `shows.json` — the full records minus the `PRIVATE` fields (`PrivateNotes`), written over the
+  copy Vite publishes. The site's fallback; never carries a private field.
 
 Nothing to do when editing `shows.json`. Two rules for code: **read Notes only through
 `getNotes`** from `useShows` (show objects on the site carry no `Notes`), and **before displaying a
 field, check it is not in `DROPPED`**, or it will be blank on the live site. `npm run check:perf`
-fails on either. If the derived files are missing, the site falls back to `shows.json`.
+fails on either, and on any published file carrying a `PRIVATE` field or site code reading one. If
+the derived files are missing, the site falls back to `shows.json`.
 
 ### shows.json
 Flat JSON array of show objects. Key fields:
@@ -124,17 +127,29 @@ Flat JSON array of show objects. Key fields:
 | `RecordingType` | string | "Proshot", "Soundboard", "Audience": how it was **filmed**. Never "Documentary"; the health check rejects it |
 | `ContentType` | `"Documentary"` or absent | What the record **is**. Absent = a live show. Drives the sidebar's Live / Documentaries filter, the card badge and the drawer pill. See *Documentaries* below |
 | `ChecksumSHA1` | 40-char hex string | SHA1 of the source file; used as image key |
-| `Notes` | string | Free text: provenance, pasted sidecars, and why each correction was made |
-| `Hidden` | `"Yes"` or absent | Keeps the record in `shows.json` but off the site (filtered in `src/hooks/useShows.ts`). For two records of one recording where only one should show: set `DuplicateOf` to the shown record and say why in `Notes`. `DuplicateOf` alone does **not** hide (Jay-Z and Jack White carry it and are meant to show) |
+| `Notes` | string | **Public.** Only text pasted verbatim from the show's own sidecar files, each under `---- filename ----`. Shown in the drawer. See *Notes and PrivateNotes* |
+| `PrivateNotes` | string or absent | **Never on the site.** Everything Claude or Karl writes: provenance, corrections and their evidence, capture and identity notes. See *Notes and PrivateNotes* |
+| `Hidden` | `"Yes"` or absent | Keeps the record in `shows.json` but off the site (filtered in `src/hooks/useShows.ts`). For two records of one recording where only one should show: set `DuplicateOf` to the shown record and say why in `PrivateNotes`. `DuplicateOf` alone does **not** hide (Jay-Z and Jack White carry it and are meant to show) |
 | `ParentShowID` | ShowID or absent | Set on a record cut from a multi-artist **master** recording (festival broadcast, talk-show compilation). The drawer links to the master ("Part of …"); the master's drawer lists its records under "On this recording". One level only; the master must not be hidden. Checked by the health check |
 | `SegmentStart` / `SegmentEnd` | `H:MM:SS` | Where that linked record sits on the master's timeline. Always set together with `ParentShowID` |
+
+### Notes and PrivateNotes
+**The owner's rule (2026-10-07): `Notes` is public and holds only sidecar text; everything else
+goes in `PrivateNotes`, which never reaches the site.**
+- `Notes` — the text of an info file from the show's **own folder** (`info.txt`, `*.nfo`, `*.txt`),
+  pasted verbatim under `---- filename ----`. Nothing else: no headings, summaries or comments of
+  ours, and no file from outside the show's folder (a PC backup on the drive holds personal files).
+- `PrivateNotes` — every word Claude or Karl writes: why a field changed and the evidence, splits
+  and links, capture and aspect notes, identity checks, dated headings like `CONTENT TYPE (date)`.
+  When in doubt, it goes here. Add new entries at the end, each starting with what and when.
+- Visible to Karl in the Show Editor; `npm run check:perf` fails if it is ever published.
 
 ### Documentaries — `ContentType`
 **The owner's rule: a record is a Documentary when half or more of its runtime is people talking
 or narration over footage.** Standalone interviews, making-of, behind-the-scenes, MTV Cribs-style
 shows, rockumentaries and TV biographies count. Storytellers, Unplugged and concert films with
-backstage inserts do not. Judge from the footage, never the title or the Notes. Each changed record
-says why in `Notes` under `CONTENT TYPE (date)`.
+backstage inserts do not. Judge from the footage, never the title or the notes. Each changed record
+says why in `PrivateNotes` under `CONTENT TYPE (date)`.
 
 Set `ContentType` whenever a record is created, the VA-master and screenshot procedures included.
 For a borderline programme, use the read-only sweep tool (it samples by byte position, so broken
@@ -204,9 +219,10 @@ record (`no show record`; run it after merging, deleting or re-keying any record
 images agree with it). Run them for the current list; never copy one in here.
 
 - **A record's `AspectRatio` is often wrong** (discs declare 4:3 for a squeezed 16:9 broadcast).
-  Where a capture finds a wrong aspect, correct the record in the same session, evidence in `Notes`.
+  Where a capture finds a wrong aspect, correct the record in the same session, evidence in
+  `PrivateNotes`.
 - **Letterbox bars are kept, always** (owner, 2026-10-05). Capture the whole stored frame;
-  `AspectRatio` is the **frame** ratio; measured letterbox rows go in `Notes`. Correcting a wrong
+  `AspectRatio` is the **frame** ratio; measured letterbox rows go in `PrivateNotes`. Correcting a wrong
   aspect flag is still right — it crops nothing. The form `4:3 (letterboxed 16:9)` survives only on
   legacy records whose images were cropped (the audit reports them as `letterboxed - needs
   cropdetect`); never write it for a new capture.
@@ -246,13 +262,13 @@ no longer in the manifest** (replacing 4 with 3 always leaves one); delete the t
 
 ## Temp checksum stubs
 A record created before its files were scanned gets a random 40-char placeholder checksum, marked
-by `"TEMP CHECKSUM - update when files are scanned"` in `Notes`. None remain; list any with:
+by `"TEMP CHECKSUM - update when files are scanned"` in `PrivateNotes`. None remain; list any with:
 
 ```bash
 python3 -c "
 import json
 for s in sorted(json.load(open('public/shows.json')), key=lambda x: (x['Artist'], x.get('ShowDate') or 'zzzz')):
-    if 'TEMP CHECKSUM' in (s.get('Notes') or ''):
+    if 'TEMP CHECKSUM' in (s.get('Notes') or '') + (s.get('PrivateNotes') or ''):
         print(s['ShowID'], s['Artist'], s.get('ShowDate') or '(undated)')
 "
 ```
@@ -319,7 +335,7 @@ split a band's records (owner, 2026-10-04).
   "The Strokes" (`normaliseArtist` drops the article).
 - **The band's own spelling** — `Fun Lovin' Criminals`, not the folder's `Fun Loving`.
 - **"Person & the Band" is filed under the person** — `Iggy Pop`, `Neil Young`, `Tom Petty`,
-  `Bob Marley`, `Juliette Lewis`; say the billing in `Notes`. Not a band whose name merely
+  `Bob Marley`, `Juliette Lewis`; say the billing in `PrivateNotes`. Not a band whose name merely
   contains "the": `Echo & the Bunnymen`.
 - **Small words lower-case** — `Kings of Leon`, `Alice in Chains`, `Queens of the Stone Age`.
 - **Solo careers are separate artists** — Chris Cornell is not Soundgarden.
@@ -420,12 +436,13 @@ Song One; Song Two; Song Three; Encore break; Song Four; Song Five
 ### Setlist sourcing
 - **The recording outranks everything.** What is captioned, printed or visible on screen is
   primary evidence about *this* recording. Where a published setlist disagrees, the video wins:
-  write it, mark a partial list `(incomplete)`, record the conflict in `Notes`. Dates likewise: use
-  external sources to choose between candidates the recording narrows down, then **commit to the
-  best-evidenced one** and say why in `Notes`.
+  write it, mark a partial list `(incomplete)`, record the conflict in `PrivateNotes`. Dates
+  likewise: use external sources to choose between candidates the recording narrows down, then
+  **commit to the best-evidenced one** and say why in `PrivateNotes`.
 - **A sidecar inside the show's own folder is truth on its own** (`*.nfo`, `*.txt`, `info.txt`,
-  `*.md5`) — written from the disc by whoever made it. Check it first; write the setlist and say in
-  `Notes` which file it came from. House formatting still applies.
+  `*.md5`) — written from the disc by whoever made it. Check it first; write the setlist, paste the
+  file verbatim into `Notes` under `---- filename ----`, and say in `PrivateNotes` that the setlist
+  came from it. House formatting still applies.
 - Otherwise **2+ independent sources must agree** on songs and order, ranked: setlist.fm (check
   the user-confirmed count) · official band tour pages · published reviews (Rolling Stone, NME,
   Billboard, Pitchfork, local press) · YouTube full-show videos with confirmed date/venue · fan
@@ -440,7 +457,7 @@ python3 scripts/audit-sidecar-setlists.py --artist "Bush"   # read-only: sidecar
 A non-empty `Setlist` is not a checked one. Sidecars pasted in wholesale leave header lines at the
 top (band, venue, date, city) and trailer notes at the bottom (running time, lineage, credits,
 "thanx to") — check the **first and last three entries** of any long setlist. A disc-numbered
-segment (`Interview (cuts in)`, `jam`) belongs in `Notes` rather than being deleted silently, and
+segment (`Interview (cuts in)`, `jam`) belongs in `PrivateNotes` rather than being deleted silently, and
 real songs collide with junk patterns (*Taper Jean Girl*, *Running on Faith*, *Pumping On Your
 Stereo*).
 
@@ -484,7 +501,7 @@ A **recurring task**: each session picks an artist (or batch) and fills missing 
 Research is inline web search; no scripts or accounts needed.
 
 Identify each show from, in order: `FolderPath` / `FolderName` (dates, venue shorthand, event
-names), `Notes` (lineage, broadcast source, eyewitness text), `EventOrFestival`, `City` + `Country`
+names), `Notes` and `PrivateNotes` (lineage, broadcast source, eyewitness text), `EventOrFestival`, `City` + `Country`
 + year, `VenueName`.
 
 Research rules:

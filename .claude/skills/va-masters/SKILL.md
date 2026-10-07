@@ -5,6 +5,10 @@ description: Turn a multi-artist recording (festival broadcast, TV compilation, 
 
 # Various Artists masters and linked records
 
+**`Notes` is public; `PrivateNotes` never reaches the site.** The running order, sources, billing
+and every other note this procedure writes go in `PrivateNotes`; `Notes` holds only an info file
+from the disc's own folder, pasted verbatim (CLAUDE.md → *Notes and PrivateNotes*).
+
 The owner's model, stated 2026-09-30:
 
 - The **master** is the whole recording as it exists on this disc — filed under
@@ -14,7 +18,7 @@ The owner's model, stated 2026-09-30:
   master ("Part of …").
 - A linked record describes **this disc's copy, honestly**. If the collection already has
   a longer copy of the same set from another disc, do NOT reuse or link it — make a new
-  record from this disc's shorter real version and name the other copy in `Notes`.
+  record from this disc's shorter real version and name the other copy in `PrivateNotes`.
   ("dont use unrelated existing longer recordings from another source — that is lying.")
 
 Progress lives in `~/VaultShots/data/va_tracker.json` and renders to
@@ -71,16 +75,16 @@ set `status: proposed`, render, open. **The owner decides which acts get records
 ### 3. Create the records
 - **Master**: new ShowID `sha1(FolderPath + "|MASTER|<name>")[:12]`; `ChecksumSHA1` = real
   content hash of all its titlesets' VOBs in order; `Artist: Various Artists`; full
-  `DurationSec`; `Notes` = the running order (`H:MM:SS-H:MM:SS  Act (N songs)`) + sources.
+  `DurationSec`; `PrivateNotes` = the running order (`H:MM:SS-H:MM:SS  Act (N songs)`) + sources.
 - **Linked record per act**: if the act is exactly one titleset, key it by that titleset's
   real content hash; if it is a time window inside a titleset, use a derived key
-  `sha1(<titleset hash> + "|<Act>")` and say so in `Notes`. Set `ParentShowID`,
+  `sha1(<titleset hash> + "|<Act>")` and say so in `PrivateNotes`. Set `ParentShowID`,
   `SegmentStart`, `SegmentEnd`, `Setlist`, `DurationSec` (the act's length only).
 - **`Artist` is the collection's stored name, never the on-screen billing.** Look it up
   before writing (CLAUDE.md → Metadata conventions → Artist): no leading "The", the band's
   own spelling, "Person & the Band" under the person. All 23 "The X" artists the collection
   ever had came from this step copying a caption, and four of them split an artist in two
-  (`The Prodigy` beside `Prodigy`). Put the billing as captioned in `Notes`.
+  (`The Prodigy` beside `Prodigy`). Put the billing as captioned in `PrivateNotes`.
 - **Set `ContentType` on every new record, master and linked alike** (CLAUDE.md → Documentaries):
   `"Documentary"` when half or more of that record's runtime is people talking or narration over
   footage — an interview segment, a making-of, a behind-the-scenes piece — otherwise absent. A
@@ -127,9 +131,9 @@ After sign-off, in this order (concert-screenshots §11 and §17 steps 7-9 have 
 - **M02 Pinkpop 1995** — master `884a7250626e` + 6 linked (Live, Danzig, Bad Religion, Biohazard, FNM, Rollins Band — the last re-filed from the misfiled VA record `44e20e4e66fd`).
 - **M03 Phoenix 1996** — master `fb321cdafdbe` (re-filed VA record) + 11 linked, one titleset, time windows on chapter marks; each act dated to its own festival day, master to the month.
 - **M04 Glastonbury 1997** — one master per volume (owner: acts repeat across volumes; one big record would get messy). 22 linked; unidentified segments stay inside the master, described. Vol 5 captions every act/song; an act with no visible face goes in `no_closeup.json`.
-- **M05/M07 Reading 1997/1998** — a band appearing twice in one master gets ONE linked record with both songs; SegmentStart/End = first clip, both windows in Notes (owner, 2026-10-01). MTV magazine formats: find clips with a caption-strip scan, then read boundaries from 10 s frames.
+- **M05/M07 Reading 1997/1998** — a band appearing twice in one master gets ONE linked record with both songs; SegmentStart/End = first clip, both windows in PrivateNotes (owner, 2026-10-01). MTV magazine formats: find clips with a caption-strip scan, then read boundaries from 10 s frames.
 - **Nested disc folders** (`Set/Disc 2 - …`) are indexed as their OWN units: a split keyed by the parent folder does not apply to a record whose folder IS the subfolder — key that rule by the subfolder name (RRTF 2000 EJ, Filter captured the whole disc until fixed). Always check each unit's `duration` in state against its window before picking.
-- **Low-resolution sources** (352x240, 352x288): the owner asked for stills enlarged to the standard size (720x540 NTSC, 768x576 PAL) via an `upscale_to` override in `overrides.json` - per folder or per ShowID, and say so in Notes. Ask before applying it to a new source.
+- **Low-resolution sources** (352x240, 352x288): the owner asked for stills enlarged to the standard size (720x540 NTSC, 768x576 PAL) via an `upscale_to` override in `overrides.json` - per folder or per ShowID, and say so in PrivateNotes. Ask before applying it to a new source.
 - **M14-M23, B01-B10, C01 (2026-10-02..04)** — checklist complete (41/41). Lessons:
   - **Frame-count everything.** The pre-decoded 5-second index frames drift by minutes on concatenated or
     timestamp-broken streams (Reading 2006 by up to 2 min, the MTV $2 Bill disc by 4). Decode with

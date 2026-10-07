@@ -79,7 +79,7 @@ squashed that way and Karl caught them on the picks page. Most suspects are genu
 not by comparing faces (that is exactly the check that cleared all six), not by a circle,
 and never by a point-light number (invalid on SD). The shape is Karl's call on this page.
 Fix confirmed ones per skill §4.4 ("A 4:3 flag with NO bars"). Letterboxed sources keep
-their bars — measure the rows into `Notes`, never crop (skill §4.3).
+their bars — measure the rows into `PrivateNotes`, never crop (skill §4.3).
 
 ## 5. Show Karl
 

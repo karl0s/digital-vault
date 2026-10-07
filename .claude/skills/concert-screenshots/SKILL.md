@@ -9,6 +9,11 @@ A repeatable pipeline for pulling stills from the collection. Every rule here ex
 something went wrong; each says, in a line, what it prevents. §17 is the runbook, §16 the
 checklist, §18 the tools and the invariants they already implement.
 
+**`Notes` is public; `PrivateNotes` never reaches the site.** Everything this procedure writes —
+evidence, corrections, splits, aspect and identity notes — goes in `PrivateNotes`. `Notes` holds
+only an info file from the show's own folder, pasted verbatim under `---- filename ----`
+(CLAUDE.md → *Notes and PrivateNotes*).
+
 ---
 
 ## 0a. RUN IT OFFLINE — the cost of this task is attention, not compute
@@ -162,14 +167,14 @@ The collection has been reorganised since the scan (22 of 37 cached paths once d
 an entry in `scripts/setlist-removals-approved.json`). Pasted sidecars leave junk at the **top**
 (band, venue, date, city) and **bottom** (running time, lineage, credits, "thanx to") — check the
 first and last three entries. One record held another band's whole setlist. A disc-numbered
-segment (`Interview (cuts in)`, `Dave Talks`, `jam`) goes to `Notes`, and real songs collide with
+segment (`Interview (cuts in)`, `Dave Talks`, `jam`) goes to `PrivateNotes`, and real songs collide with
 junk patterns (*Taper Jean Girl*, *Running on Faith*, *February Stars*).
 
 ### Read every sidecar — for setlist, not just identity
 A sidecar in the show's own folder is **authoritative for that show** (written from the disc).
 Read every one before capture and take, in order: **setlist** (house format), **date, venue,
-city**, **lineage** (evidence for aspect and quality), and **non-song segments** (to `Notes`).
-Name the file in `Notes`. Verify per artist:
+city**, **lineage** (evidence for aspect and quality), and **non-song segments** (to `PrivateNotes`).
+Paste the file verbatim into `Notes` under `---- filename ----`; name it in `PrivateNotes`. Verify per artist:
 
 ```bash
 python3 scripts/audit-sidecar-setlists.py --artist "Bush"
@@ -181,7 +186,7 @@ pools every record from a folder before calling a song missing.
 ### The recording outranks every external source
 Captions, banners, backdrops and title cards are primary evidence about *this* recording. When a
 published setlist disagrees, write what the video shows, mark a partial list `(incomplete)`, and
-put the conflict in `Notes`. Use external sources only to choose between dates the recording
+put the conflict in `PrivateNotes`. Use external sources only to choose between dates the recording
 narrows down, then **commit to the best-evidenced one** and say why. The footage often identifies
 the show outright (a "WELCOME BACK TO THE RITZ" banner, a Live Earth lower-third).
 
@@ -199,7 +204,7 @@ encore** (Soundgarden Lollapalooza 2010 was a seven-song edit plus half its own 
 ### One recording, two bands — whose songs are in the record?
 On any folder whose name contains `+`, `&`, `with`, `VA -` or two artist names: **sweep the whole
 runtime first** (the shortlist says what looks good, never who is on stage), find the boundary and
-write it into `Notes`, pick only inside the segment, and check the setlist belongs to the artist
+write it into `PrivateNotes`, pick only inside the segment, and check the setlist belongs to the artist
 on the record. Multi-act discs are filed through `va-masters` (§10); a two-band split bill is one
 record per band per tape, plus a master.
 
@@ -214,7 +219,7 @@ gd_checksum = sha1(primary_checksum + "|" + DISC).hexdigest()   # NOT a content 
 ```
 
 The primary record keeps the real `FolderPath`-derived ShowID and real `ChecksumSHA1`. Both
-`Notes` record the sibling's ShowID, the segment boundary, and that the identifiers are derived,
+`PrivateNotes` record the sibling's ShowID, the segment boundary, and that the identifiers are derived,
 not a content hash. This is the one statement of the formula (§10b step 4 and §13 point here).
 
 ---
@@ -305,7 +310,7 @@ part of the recording, and on a disc that mixes shapes a crop cuts the full-fram
 
 - **Measure** the bars at ≥2 points (e.g. 30% and 55%) and trust only a consistent result —
   cropdetect on one dark frame returns nonsense. On VHS or off-air masters use a row profile (§4.3b).
-- Write the picture's rows and the ratio they give into `Notes`. `AspectRatio` stays the **frame**
+- Write the picture's rows and the ratio they give into `PrivateNotes`. `AspectRatio` stays the **frame**
   ratio.
 - A picture measuring to a non-standard ratio inside a standard frame can mean the **flag** is
   wrong (Limp Bizkit, Field lessons); fixing a flag with a `dar` override is not a crop (§4.4).
@@ -374,16 +379,16 @@ reference helps, a mic grille's ring seen head-on is a true circle; never a face
 **Confirmed 16:9 → fix:** a `dar: "16:9"` override **scoped by `showid`**, move the unit's old
 `work/<key>/` aside, re-plan, recapture with `--fresh` (§15), re-materialise (timestamps unchanged,
 `picks.json` needs no edit), write `AspectRatio: "16:9 (native)"` to the record and note the disc's
-own 4:3 flag in `Notes`.
+own 4:3 flag in `PrivateNotes`.
 
 ### WRITE THE CORRECTION BACK TO `shows.json` — the override is not the record
 An override fixes the CAPTURE; the record is what the site and every audit read. Mirror every
-override into its record **in the same session**, evidence in `Notes`:
+override into its record **in the same session**, evidence in `PrivateNotes`:
 
 | Override | Record change |
 |---|---|
-| `dar` forced | `AspectRatio` → the true ratio, e.g. `16:9 (native)`; the disc's flag in `Notes` |
-| none — bars kept (§4.3) | `AspectRatio` stays the frame ratio; measured rows and ratio in `Notes` |
+| `dar` forced | `AspectRatio` → the true ratio, e.g. `16:9 (native)`; the disc's flag in `PrivateNotes` |
+| none — bars kept (§4.3) | `AspectRatio` stays the frame ratio; measured rows and ratio in `PrivateNotes` |
 | legacy `crop` only — add no new ones | `AspectRatio` → `4:3 (letterboxed 16:9)` / `16:9 (pillarboxed 3:2)` |
 
 **Enforced:** `check_overrides.py` resolves every override to its record and fails if the
@@ -639,7 +644,7 @@ so the site does not show the same four pictures twice. Each keeps its own recor
 
 ### A non-artist segment inside ONE titleset must scope every slot
 When a sweep shows the artist's segment ending before the file does (an ident, another band's
-caption, channel filler), write the boundary into `Notes` and check **every** slot's timestamp
+caption, channel filler), write the boundary into `PrivateNotes` and check **every** slot's timestamp
 against it, not just slot A. Nothing structural flags it.
 
 ### 6.2d-0 THE HERO RULE IS ENFORCED, NOT ADVISED — `hero_gate.py`
@@ -870,7 +875,7 @@ timestamps. Procedure:
 2. Sweep each titleset by sequential decode (`fps=1/20`), which also measures it (§5.1).
 3. One montage, one row per titleset (§0a-1); go to full resolution only for a name caption.
 4. Capture from the wanted titleset **alone**.
-5. **Write what the other programmes are into `Notes`.**
+5. **Write what the other programmes are into `PrivateNotes`.**
 
 A titleset can be pure filler (`stddev < 6` across every frame). If the other programmes are other
 acts, file the disc through `va-masters` (§10).
@@ -879,7 +884,7 @@ acts, file the disc through `va-masters` (§10).
 - **A second complete disc in a subfolder** (R.E.M. T in the Park + Oxegen) is invisible to
   `find_multishow`, `pick_source`, `vts` splits and preflight's titleset count. Split it with
   `subdir` (one per entry; a record spanning two nested discs cannot draw from both — capture the
-  richer half and say so in `Notes`):
+  richer half and say so in `PrivateNotes`):
   ```json
   {"R.E.M. - T in the Park, 2008-07-13 + Oxegen 2008": [
      {"showid": "7af6be6f7f6a", "label": "T in the Park 2008-07-13"},
@@ -915,7 +920,7 @@ acts, file the disc through `va-masters` (§10).
 ### Merging two records that are ONE show (a concert across two discs)
 1. Name the show from the **parent** folder (artist, city, date); note drive typos, never "fix" the drive.
 2. Keep the surviving record's real checksum; record the retired sibling's `ShowID` and `ChecksumSHA1`
-   in `Notes`.
+   in `PrivateNotes`.
 3. Sum `DurationSec` and `TotalSizeHuman`.
 4. Put the images on one timeline — offset disc 2's frames by disc 1's runtime before naming.
 5. Clean up the orphaned images (below).
@@ -955,12 +960,12 @@ It prints both conventions in use — `VTS_NN_1..n` only, and with `VTS_NN_0.VOB
 
 ### Step 4 — Key the new record
 **Prefer a real content hash** from the new record's own titleset. Only when two shows share one
-inseparable stream, derive the key (formula and `Notes` wording: §2, "Splitting when the shows are NOT
+inseparable stream, derive the key (formula and `PrivateNotes` wording: §2, "Splitting when the shows are NOT
 separable at file level").
 
 ### Step 5 — Write the records
 - Both keep the **same `FolderPath`**; give each a **distinct `FolderName`** and cross-reference the
-  titleset and sibling ShowID in both `Notes`.
+  titleset and sibling ShowID in both `PrivateNotes`.
 - Take `Width`/`Height`/`AspectRatio`/`TVStandard`/`DurationSec` from **that titleset's** ffprobe.
 - Each record gets **its own stills from its own titleset** — never shared.
 - `Artist` is the stored spelling, no leading "The" (§17 step 0).
@@ -1053,7 +1058,7 @@ lessons).
 - **QA gate:** the dry-run plan lists as many shows as `picks.json` has entries, minus deliberate
   exclusions. A short plan means a stale map, not missing shows.
 - The drive folder name and the record's `FolderName` can legitimately differ, and the record can be
-  the right one — resolve which from evidence and write the reasoning into `Notes`.
+  the right one — resolve which from evidence and write the reasoning into `PrivateNotes`.
 - **Prove a guard fires before trusting it:** blank one ShowID in `state.json`, confirm `promote.py`
   exits non-zero on the dry run and `--apply`, restore.
 
@@ -1202,7 +1207,7 @@ ChecksumSHA1 = sha1(concatenated representative media, in order).hexdigest()
 
 Technical fields from `ffprobe` (container, codecs, width, height, duration, `AspectRatio` as
 `"<DAR> (native)"`, `TVStandard` from frame rate), `FileCount` and `TotalSizeBytes` from the filesystem.
-`Setlist` only from the folder's own sidecar (named in `Notes`); uncertainty goes in `Notes`;
+`Setlist` only from the folder's own sidecar (pasted into `Notes`, named in `PrivateNotes`); uncertainty goes in `PrivateNotes`;
 `YYYY-01-01` when only the year is known. `Artist` and `ContentType` exactly as §10b step 5. **Validate
 before writing:** ShowID and checksum unique, `ShowDate` empty or exactly `YYYY-MM-DD`, and the record
 count up by exactly the number added. Split bills get a derived checksum for the second act (§2).
@@ -1265,10 +1270,10 @@ geometry, override or deinterlacer change, re-capture with `--fresh`** (scoped t
       Killers"), and `preflight` reported a NON-ZERO record count for it; a 0 is a matcher bug
       or a wrong name, not an empty artist (case does not matter — artist match is case-insensitive)
 - [ ] EVERY override created this session mirrored into its `shows.json` record, with the
-      evidence in Notes — the override fixes capture, the record is what the collection knows
+      evidence in PrivateNotes — the override fixes capture, the record is what the collection knows
 - [ ] `scripts/audit-aspect-vs-source.py --artist "<name>"` run; disagreements resolved
 - [ ] Letterbox measured at ≥2 timestamps (row profile from bright frames on VHS or off-air,
-      §4.3b); bars KEPT, rows in Notes, `AspectRatio` the frame ratio — no new `crop` rule (§4.3)
+      §4.3b); bars KEPT, rows in PrivateNotes, `AspectRatio` the frame ratio — no new `crop` rule (§4.3)
 - [ ] Full-collection dimension audit reports **0 wrong dimensions**
 - [ ] No show finished with 0 usable frames
 - [ ] Seek pass produced DISTINCT frames (not N copies of one) — check content hashes
@@ -1322,7 +1327,7 @@ geometry, override or deinterlacer change, re-capture with `--fresh`** (scoped t
       spelling (no leading "The"), `ContentType` set — `Documentary` when half or more is
       talking or narration, otherwise absent (§10b step 5)
 - [ ] Split bills: one record per band per tape, the second keyed by a derived checksum
-      documented in Notes (§2); every multi-act disc, split bills included, filed through
+      documented in PrivateNotes (§2); every multi-act disc, split bills included, filed through
       `va-masters` with a master — never as a standalone record made by a capture run (§10)
 - [ ] `~/VaultShots/sync_skill_copies.sh "<Artist> run"` run after promotion; changed copies in the run's
       commit, and ~/VaultShots committed by it (local git, no remote)
