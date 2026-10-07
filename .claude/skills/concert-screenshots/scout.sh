@@ -41,7 +41,7 @@ rx = re.compile(r"(?<![a-z0-9])" + re.escape(a.casefold()) + r"(?![a-z0-9])")
 n = 0
 for s in json.load(open("/Users/ko/Desktop/Projects/the-vault/public/shows.json")):
     if a.casefold() in (s.get("Artist") or "").casefold(): continue
-    for k in ("FolderName", "EventOrFestival", "Setlist", "Notes"):
+    for k in ("FolderName", "EventOrFestival", "Setlist", "Notes", "PrivateNotes"):
         v = s.get(k) or ""; m = rx.search(v.casefold())
         if not m: continue
         snip = v[max(0, m.start()-70):m.end()+50].replace("\n", " / ")

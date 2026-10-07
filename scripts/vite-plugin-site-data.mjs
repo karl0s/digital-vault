@@ -1,14 +1,16 @@
 /**
  * Serves and builds the derived show data (scripts/site-data.mjs).
  *
- * - build:  writes shows-lite.json and show-notes.json into <outDir>.
- * - dev:    serves both, regenerated whenever public/shows.json changes, so
+ * - build:  writes shows-lite.json, show-notes.json and shows.json into <outDir>,
+ *           the last over the copy of public/shows.json Vite made, so private
+ *           fields never deploy.
+ * - dev:    serves all three, regenerated whenever public/shows.json changes, so
  *           `npm run dev` loads data exactly the way the live site does.
  */
 
 import { statSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { buildSiteData, LITE_FILE, NOTES_FILE } from './site-data.mjs';
+import { buildSiteData, LITE_FILE, NOTES_FILE, SHOWS_FILE } from './site-data.mjs';
 
 export function siteData() {
   let root = '';
@@ -28,7 +30,7 @@ export function siteData() {
       let cached = { mtime: 0, files: {} };
       server.middlewares.use((req, res, next) => {
         const name = (req.url || '').split('?')[0].split('/').pop();
-        if (name !== LITE_FILE && name !== NOTES_FILE) return next();
+        if (![LITE_FILE, NOTES_FILE, SHOWS_FILE].includes(name)) return next();
         const mtime = statSync(join(root, 'public/shows.json')).mtimeMs;
         if (mtime !== cached.mtime) cached = { mtime, files: buildSiteData(root) };
         res.setHeader('Content-Type', 'application/json');

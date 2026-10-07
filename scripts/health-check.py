@@ -242,7 +242,7 @@ else:
 # ── 8. Temp checksum stubs ────────────────────────────────────────────────────
 
 section('Temp checksum stubs')
-temp_shows = [s for s in shows if 'TEMP CHECKSUM' in (s.get('Notes','') or '')]
+temp_shows = [s for s in shows if 'TEMP CHECKSUM' in (s.get('Notes') or '') + (s.get('PrivateNotes') or '')]
 if temp_shows:
     for s in temp_shows:
         warn(f'  Temp checksum: {s["ShowID"]} — {s.get("Artist","")} {s.get("EventOrFestival","") or s.get("City","")} {s.get("ShowDate","")}')

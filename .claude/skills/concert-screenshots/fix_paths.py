@@ -9,7 +9,7 @@ band's file, and two 'undocumented' shows that were already recorded.
 
 Takes the mapping from reconcile.py, which resolves by path, then by name, then by
 content hash - so a folder that was renamed is still matched by what is inside it.
-The old value is preserved in Notes: nothing is discarded.
+The old value is preserved in PrivateNotes: nothing is discarded.
 """
 import json, sys
 from pathlib import Path
@@ -35,7 +35,7 @@ for sid, newpath in mapping.items():
         note = "FolderPath updated 2026-08-25 to where this show now lives on the drive. Previously %r" % old_p
         if old_n != new_n: note += " with FolderName %r" % old_n
         note += ". Matched by content hash where the name had changed."
-        s["Notes"] = (note + "\n\n" + (s.get("Notes") or "")).strip()
+        s["PrivateNotes"] = (note + "\n\n" + (s.get("PrivateNotes") or "")).strip()
         s["FolderPath"] = newpath
         s["FolderName"] = new_n
         s["MasterDriveName"] = "Live Music"

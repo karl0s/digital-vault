@@ -15,7 +15,8 @@
 
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { DROPPED, LITE_FILE } from './site-data.mjs';
+import { fileURLToPath } from 'node:url';
+import { buildSiteData, DROPPED, LITE_FILE, PRIVATE } from './site-data.mjs';
 
 let failures = 0;
 let checks = 0;
@@ -121,6 +122,32 @@ const notesReads = reads('Notes', ['src/hooks/useShows.ts', 'src/search/searchIn
 ok('Notes are read only through getNotes',
   notesReads.length === 0,
   `${notesReads.join(', ')} reads show.Notes, which the site's data does not carry. Use useShows' getNotes.`);
+
+console.log('Privacy');
+// PRIVATE fields (PrivateNotes) are Claude's and Karl's working notes: they must
+// never reach a file the site publishes, nor be read by the site's code.
+const privateReads = PRIVATE.flatMap(field => reads(field).map(f => `${field} in ${f}`));
+ok('no code reads a private field',
+  privateReads.length === 0,
+  `${privateReads.join(', ')} — PRIVATE fields (scripts/site-data.mjs) never ship; the site cannot show them.`);
+const source = JSON.parse(read('public/shows.json'));
+const published = buildSiteData(fileURLToPath(new URL('..', import.meta.url)));
+const carried = Object.entries(published)
+  .filter(([, body]) => PRIVATE.some(field => body.includes(`"${field}"`)))
+  .map(([name]) => name);
+ok('no published data file carries a private field',
+  carried.length === 0,
+  `${carried.join(', ')} — strip PRIVATE fields in buildSiteData (scripts/site-data.mjs).`);
+// Belt and braces: no private note's text turns up in a published file either,
+// e.g. pasted into Notes by mistake. Long, wordy lines only, so a shared short
+// line or a row of asterisks is not a hit.
+const privateLines = new Set(source.flatMap(s => PRIVATE.flatMap(field => (s[field] || '').split('\n')))
+  .map(l => l.trim()).filter(l => l.length >= 60 && (l.match(/[A-Za-z]/g) || []).length >= 30));
+const publicNotes = new Set(source.flatMap(s => (s.Notes || '').split('\n').map(l => l.trim())));
+const leaked = [...privateLines].filter(l => publicNotes.has(l));
+ok('no private note text is also in a public Notes field',
+  leaked.length === 0,
+  `${leaked.length} line(s), e.g. "${(leaked[0] || '').slice(0, 80)}…" — it belongs in PrivateNotes only.`);
 
 console.log('Fonts');
 const html = read('index.html');

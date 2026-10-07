@@ -131,7 +131,8 @@ const D = __DATA__;
 const SHOWS = D.shows, VOCAB = D.vocab;
 const EDIT = D.editable.concat([
   {f:"Setlist", kind:"setlist", label:"Setlist"},
-  {f:"Notes",   kind:"notes",   label:"Notes"}
+  {f:"Notes",   kind:"notes",   label:"Notes"},
+  {f:"PrivateNotes", kind:"notes", label:"Private notes"}
 ]);
 const EDIT_FIELDS = EDIT.map(e=>e.f);
 const $ = s => document.querySelector(s);
@@ -210,7 +211,7 @@ function patchFor(id){
   order.forEach(f=>{
     const o=orig(id,f), nv=cur(id,f);
     L.push("");
-    const multi = f==="Setlist"||f==="Notes"||f==="Lineage";
+    const multi = f==="Setlist"||f==="Notes"||f==="PrivateNotes"||f==="Lineage";
     if(f==="Setlist"){
       const d=lineDiff(slToLines(o),slToLines(nv));
       const bits=[];
@@ -342,7 +343,7 @@ function paintCounts(){
 /* ---------- expanded body, built lazily on first open ---------- */
 function fieldHTML(id,e){
   const val=cur(id,e.f), changed=E[id]&&(e.f in E[id]);
-  const cls="f"+(changed?" changed":"")+(e.f==="Setlist"?" sl":"")+(e.f==="Notes"?" nt":"");
+  const cls="f"+(changed?" changed":"")+(e.f==="Setlist"?" sl":"")+(e.f==="Notes"||e.f==="PrivateNotes"?" nt":"");
   let ctl="";
   if(e.kind==="select"||e.kind==="suggest"){
     const opts=(VOCAB[e.f]||[]);
@@ -381,7 +382,8 @@ function fillBody(det){
         '<h4 style="margin-top:16px">Source detail</h4>'+mid.map(e=>fieldHTML(id,e)).join("")+'</div>'+
       '<div class="col"><h4>From the scan — read only</h4><dl class="lock">'+lockRows+'</dl></div>'+
       '<div class="col"><h4>Setlist</h4>'+fieldHTML(id,{f:"Setlist",kind:"setlist",label:"Songs, one per line"})+
-        '<h4 style="margin-top:14px">Notes</h4>'+fieldHTML(id,{f:"Notes",kind:"notes",label:"Notes"})+'</div>'+
+        '<h4 style="margin-top:14px">Notes — public: text from the show’s own sidecar files</h4>'+fieldHTML(id,{f:"Notes",kind:"notes",label:"Notes"})+
+        '<h4 style="margin-top:14px">Private notes — you and Claude only, never on the site</h4>'+fieldHTML(id,{f:"PrivateNotes",kind:"notes",label:"Private notes"})+'</div>'+
     '</div>'+
     '<div class="acts">'+
       '<button class="go" data-copy="'+esc(id)+'">Copy changes</button>'+

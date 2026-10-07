@@ -159,7 +159,7 @@ def main():
         print("    %sUNMIRRORED%s %-46s %-12s %s" % (RED, RESET, frag[:46], sid, why))
     if bad:
         print("\n    An override fixes the CAPTURE; the record is what the collection knows.")
-        print("    Write the correction into shows.json with the evidence in Notes.")
+        print("    Write the correction into shows.json with the evidence in PrivateNotes.")
         return 1
     print("    %severy override is reflected in its record%s" % (DIM, RESET))
     return 0
