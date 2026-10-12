@@ -99,10 +99,15 @@
     line-height: calc(24px - 3px * var(--p, 0));
   }
 }
-/* To the docked bar's middle (--close-dy, measured), and 48 → 40px from md. */
-.drawer-dock-close {
+/* To the docked bar's middle (--close-dy, measured), and 48 → 40px from md.
+   The image viewer's Back button is its twin; its title line follows along. */
+.drawer-dock-close,
+.drawer-dock-back {
   transform: translateY(calc(var(--close-dy, 0px) * var(--p, 0))) scale(calc(1 - var(--close-ds, 0) * var(--p, 0)));
   @variant md {
     --close-ds: 0.1667;
   }
+}
+.drawer-dock-follow {
+  transform: translateY(calc(var(--close-dy, 0px) * var(--p, 0)));
 }

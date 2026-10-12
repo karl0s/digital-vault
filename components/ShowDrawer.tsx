@@ -78,6 +78,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
   const heroTitleRef = useRef<HTMLDivElement>(null);
   // Set while the header is docked; a tap on it then scrolls back to the top.
   const dockedRef = useRef(false);
+  const viewerBackRef = useRef<HTMLButtonElement>(null);
 
   // A linked record points at its master; a master is pointed at by its linked records.
   const parent = show.ParentShowID ? shows.find(s => s.ShowID === show.ParentShowID) : undefined;
@@ -193,9 +194,19 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
     setExpandedFromIndex(idx);
     setViewingIndex(idx);
   }
-  function closeImage() { setExpandedFromIndex(null); }
+  // Back to the thumbnails, with focus on the one the viewer was opened from.
+  function closeImage() {
+    const from = expandedFromIndex;
+    setExpandedFromIndex(null);
+    requestAnimationFrame(() =>
+      drawerRef.current?.querySelector<HTMLElement>(`[data-thumb="${from}"]`)?.focus({ preventScroll: true }));
+  }
   function prevImage() { setViewingIndex(i => (i > 0 ? i - 1 : images.length - 1)); }
   function nextImage() { setViewingIndex(i => (i < images.length - 1 ? i + 1 : 0)); }
+
+  useEffect(() => {
+    if (isImageExpanded) viewerBackRef.current?.focus({ preventScroll: true });
+  }, [isImageExpanded]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -211,7 +222,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
           drawerRef.current.querySelectorAll<HTMLElement>(
             'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])',
           ),
-        ).filter(el => el.offsetParent !== null);
+        ).filter(el => el.offsetParent !== null && !el.closest('[inert]'));
         if (focusables.length === 0) return;
 
         const first = focusables[0];
@@ -305,24 +316,41 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
           {isImageExpanded && (
             <motion.div
               key="img-overlay"
-              className="absolute inset-0 z-10 flex flex-col bg-[#0d0d0d]/97"
+              // Above the sticky header (z-20), below the drawer's close button (z-60).
+              className="absolute inset-0 z-30 flex flex-col bg-[#0d0d0d]/97 cursor-zoom-out"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.25 } }}
               transition={{ duration: 0.18 }}
+              // A click on the dark around the picture goes back, as Esc and Back do.
+              onClick={e => { if (!(e.target as HTMLElement).closest('button, img')) closeImage(); }}
             >
-              {/* Close — identical coords to the drawer close button so there's no jump on dismiss */}
-              <CloseButton
+              {/* Back to the thumbnails: the close button's twin, mirrored on
+                  the left. The drawer's own close button stays over the viewer
+                  and still closes the show, so × means one thing everywhere.
+                  drawer-dock-back moves both with the docked header. */}
+              <button
+                ref={viewerBackRef}
+                type="button"
                 onClick={closeImage}
-                className="absolute top-4 right-4 md:top-6 md:right-6"
-              />
+                aria-label="Back to the show"
+                className="drawer-dock-back absolute top-4 left-4 md:top-6 md:left-6 p-2 md:p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors cursor-pointer"
+              >
+                <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+              </button>
 
-              {/* Counter — same vertical level, mirrored to the left */}
-              {images.length > 1 && (
-                <span className="absolute top-4 left-4 md:top-6 md:left-6 py-2 md:py-3 text-xs text-gray-400 tabular-nums">
-                  {viewingIndex + 1} / {images.length}
-                </span>
-              )}
+              {/* Where you are, set like the docked header bar. */}
+              <div className="drawer-dock-follow absolute top-4 md:top-6 left-16 md:left-[88px] right-16 md:right-20 h-9 md:h-12 flex flex-col justify-center pointer-events-none">
+                <p
+                  className="text-white text-[22px] md:text-2xl leading-none truncate"
+                  style={{ fontFamily: 'var(--font-display)', letterSpacing: '0.04em' }}
+                >
+                  {show.Artist}
+                </p>
+                <p className="mt-1 text-xs text-gray-400 tabular-nums">
+                  {images.length > 1 ? `Screenshot ${viewingIndex + 1} of ${images.length}` : 'Screenshot'}
+                </p>
+              </div>
 
               {/* Image — top padding clears the absolutely-positioned close button */}
               <div className="flex-1 flex items-center justify-center min-h-0 px-6 pt-14 md:pt-20">
@@ -334,7 +362,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                   <img
                     src={images[viewingIndex]}
                     alt={`Screenshot ${viewingIndex + 1}`}
-                    className="max-w-full max-h-[62vh] object-contain"
+                    className="max-w-full max-h-[62vh] object-contain cursor-default"
                     style={{ display: 'block', borderRadius: 8 }}
                   />
                 </motion.div>
@@ -384,16 +412,19 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
           )}
         </AnimatePresence>
 
-        {/* Close button — outside scroll div so it never occupies flow space on mobile */}
-        {!isImageExpanded && (
-          <CloseButton
-            onClick={onClose}
-            className="drawer-dock-close absolute top-4 right-4 md:fixed md:top-6 md:right-6 z-60"
-          />
-        )}
+        {/* Close button — outside scroll div so it never occupies flow space
+            on mobile. Shown over the image viewer too: it always closes the show. */}
+        <CloseButton
+          onClick={onClose}
+          className="drawer-dock-close absolute top-4 right-4 md:fixed md:top-6 md:right-6 z-60"
+        />
 
         {/* Scrollable content */}
-        <div ref={scrollRef} className="h-full overflow-y-auto">
+        <div
+          ref={scrollRef}
+          className="h-full overflow-y-auto"
+          {...(isImageExpanded ? ({ inert: '' } as Record<string, string>) : {})}
+        >
 
           {/* Hero image. A minimum height, not a fixed one: the title sits in
               the flow at its foot, so a header shorter than the title grows
@@ -531,6 +562,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                   {images.map((url, idx) => (
                     <button
                       key={idx}
+                      data-thumb={idx}
                       onClick={() => openImage(idx)}
                       className="shrink-0 w-[42%] md:w-full group/thumb hover:ring-2 hover:ring-white/30 transition-shadow"
                       style={{ borderRadius: 4 }}

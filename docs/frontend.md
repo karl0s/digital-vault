@@ -184,5 +184,14 @@ Tailwind v4: use `bg-linear-to-t`, not `bg-gradient-to-t` (deprecated).
 - The viewer is internal (no external lightbox). `expandedFromIndex` (the clicked thumbnail; anchors
   `layoutId={`drawer-img-${show.ShowID}-${idx}`}` for the open/close animation; `null` closes) and
   `viewingIndex` (the image shown; prev/next, ← →, and the dots change only this, wrapping around).
-  Close always zooms back to the original thumbnail. The drawer's own close button is hidden while
-  the viewer is open, to avoid z-index conflicts.
+  Going back always zooms back to the original thumbnail.
+- The viewer covers the drawer at `z-30`, above the sticky header (`z-20`) and below the drawer's
+  close button (`z-60`). **× means one thing everywhere** (owner, 2026-10-12): the drawer's close
+  button stays visible over the viewer and closes the show. Its twin on the left, a round **Back**
+  button (`ChevronLeft`, same style, `aria-label="Back to the show"`), returns to the thumbnails;
+  beside it the artist name and `Screenshot N of M`, set like the docked header bar. Both carry
+  the docking transform (`drawer-dock-back`, `drawer-dock-follow`), so they line up with × whether
+  or not the header is docked. Back also on Esc and on a click in the dark around the picture.
+- Focus: Back takes focus when the viewer opens; going back returns it to the thumbnail
+  (`data-thumb`). The drawer content behind the viewer is `inert` while it is open, and the focus
+  trap skips it.
