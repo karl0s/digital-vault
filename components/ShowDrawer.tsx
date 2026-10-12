@@ -245,7 +245,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
         aria-modal="true"
         aria-labelledby={titleId}
         tabIndex={-1}
-        className="fixed bottom-0 md:top-0 left-0 md:left-auto right-0 md:right-0 w-full md:w-[58vw] lg:w-[52vw] h-dvh md:h-full bg-[#181818] z-50 focus:outline-none"
+        className="fixed bottom-0 md:top-0 left-0 md:left-auto right-0 md:right-0 w-full md:w-[58vw] lg:w-[52vw] 2xl:w-[41.6vw] 3xl:w-[33.3vw] h-dvh md:h-full bg-[#181818] z-50 focus:outline-none"
         initial={{ x: isMobile ? 0 : '100%', y: isMobile ? '100%' : 0 }}
         animate={{ x: 0, y: 0 }}
         exit={{ x: isMobile ? 0 : '100%', y: isMobile ? '100%' : 0 }}
@@ -347,8 +347,11 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
         {/* Scrollable content */}
         <div ref={scrollRef} className="h-full overflow-y-auto">
 
-          {/* Hero image — tall, cinematic */}
-          <div className="relative h-56 md:h-[42vh] bg-[#0d0d0d] overflow-hidden">
+          {/* Hero image. A minimum height, not a fixed one: the title sits in
+              the flow at its foot, so a header shorter than the title grows
+              to hold it instead of clipping it. Sizes per breakpoint were
+              picked by the owner on 2026-10-12 (docs/frontend.md). */}
+          <div className="relative flex flex-col justify-end min-h-56 md:min-h-[21.5vh] bg-[#0d0d0d] overflow-hidden">
             {images.length > 0 ? (
               <>
                 {/* Decorative: it sits at 55% behind a gradient, and the artist
@@ -375,7 +378,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                 <div className="absolute inset-0 bg-linear-to-t from-[#181818] via-[#181818]/50 to-transparent" />
               </>
             ) : (
-              <div className={`w-full h-full ${getColorFromString(show.Artist)} flex items-center justify-center`}>
+              <div className={`absolute inset-0 ${getColorFromString(show.Artist)} flex items-center justify-center`}>
                 <span className="text-7xl md:text-9xl font-bold text-white/20"
                   style={{ fontFamily: 'var(--font-display)', letterSpacing: '0.05em' }}>
                   {artistInitials}
@@ -384,8 +387,9 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
               </div>
             )}
 
-            {/* Artist info over hero */}
-            <div className="absolute bottom-0 left-0 right-0 px-5 md:px-8 pb-5">
+            {/* Artist info over hero — in the flow, so it sets the header's
+                floor. The right padding clears the close button. */}
+            <div className="relative px-5 md:px-8 pt-4 pb-5 pr-16 md:pr-20">
               {/* h2, not h1 — the page owns the single h1, and this heading is
                   also the dialog's accessible name via aria-labelledby. */}
               <h2

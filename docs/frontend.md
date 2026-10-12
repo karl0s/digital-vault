@@ -119,7 +119,8 @@ motion's `animate` prop, not `AnimatePresence`, so nothing above the grid unmoun
 ### ShowDrawer — sizing and modal behaviour
 On mobile: full width, `h-dvh` (live dynamic viewport height, so it always fills the visible screen
 as the URL bar moves — never a static `vh`), sliding up from the bottom. From md: slides in from the
-right at `58vw` (`52vw` from lg). It is a modal: `role="dialog"`, focus moves in on open and is
+right at `58vw`, then `52vw` from lg, `41.6vw` from 2xl and `33.3vw` from 3xl (picked per breakpoint
+by the owner, 2026-10-12). It is a modal: `role="dialog"`, focus moves in on open and is
 trapped, Escape closes the image viewer first and then the drawer, focus returns to the card, body
 scroll is locked, and the page behind goes `inert` once the slide-in finishes.
 
@@ -128,6 +129,13 @@ scroll is locked, and the page behind goes `inert` once the slide-in finishes.
 EventOrFestival (or VenueName if no event) · Country (or City, Country if no event)`, "Date
 Unknown" when undated; badge pills — `ContentType` (violet), `RecordingType`, Duration (Clock icon
 + formatted `DurationSec`), `TVStandard`, each only when set.
+
+The header is a **minimum** height — `min-h-56` (224px) on phones, `21.5vh` from md (owner,
+2026-10-12) — not a fixed one. The title block sits in the flow at its foot (`flex flex-col
+justify-end`; the image, its 55% wrapper, the gradient and the no-image initials are `absolute`
+behind it), so a header shorter than its title grows to hold it instead of clipping it: the title
+needs about 130–150px on a phone and about 160px on desktop. `pr-16 md:pr-20` keeps the title clear
+of the close button.
 
 **Below the hero**, in order: a "Part of …" link to the master (linked records), the Screenshots
 strip, an "On this recording" list of linked records with time windows and song counts (masters),
