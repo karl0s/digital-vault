@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence, useIsPresent } from 'motion/react';
-import { Clock, Music, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Layers } from 'lucide-react';
+import { Clock, Music, ChevronLeft, ChevronRight, ChevronDown, Layers } from 'lucide-react';
 import { Show } from '../App';
 import { CloseButton } from './CloseButton';
 import type { ImageUrlGetter } from '../src/hooks/useShows';
+import { scrollContainerToTop } from '../src/lib/motion';
 
 interface ShowDrawerProps {
   show: Show;
@@ -66,12 +67,6 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
   // expandedFromIndex: which thumbnail was clicked (anchors the layoutId for open/close animation)
   // viewingIndex: which image is currently shown (changes on prev/next without affecting layoutId)
   const [expandedFromIndex, setExpandedFromIndex] = useState<number | null>(null);
-  const [notesExpanded, setNotesExpanded] = useState(false);
-  // Whether the collapsed Notes are actually cut off. Measured, not guessed
-  // from a character count: short notes with many lines overflowed with no
-  // More button, and long single-paragraph notes showed one that did nothing.
-  const notesRef = useRef<HTMLParagraphElement>(null);
-  const [notesOverflow, setNotesOverflow] = useState(false);
   // Below md the Technical panel folds behind a toggle; from md it is always open.
   const [techOpen, setTechOpen] = useState(false);
   const [viewingIndex, setViewingIndex] = useState(0);
@@ -79,6 +74,10 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
   const drawerRef = useRef<HTMLDivElement>(null);
   const titleId = `drawer-title-${show.ShowID}`;
   const scrollRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const heroTitleRef = useRef<HTMLDivElement>(null);
+  // Set while the header is docked; a tap on it then scrolls back to the top.
+  const dockedRef = useRef(false);
 
   // A linked record points at its master; a master is pointed at by its linked records.
   const parent = show.ParentShowID ? shows.find(s => s.ShowID === show.ParentShowID) : undefined;
@@ -90,22 +89,71 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
   // remounting the drawer, so reset per-show state and return to the top.
   useEffect(() => {
     setExpandedFromIndex(null);
-    setNotesExpanded(false);
     setTechOpen(false);
     setViewingIndex(0);
     scrollRef.current?.scrollTo({ top: 0 });
   }, [show.ShowID]);
 
-  // Re-measured when the notes change and when the column's width does (a
-  // rotated phone rewraps them). Skipped while expanded, where nothing is
-  // clipped; the last collapsed answer keeps the Less button.
+  /**
+   * The docking header. It is sticky with a negative `top`, so it rides up
+   * until only its foot — the title — is left on screen, then stays. `--p`
+   * (0 at rest, 1 docked) is written straight from the scroll position onto
+   * the drawer, and the `drawer-dock-*` rules in styles/globals.css follow it:
+   * the title shrinks, the fade under it appears, the close button settles
+   * into the bar. Written to the DOM, not state, so scrolling never
+   * re-renders the drawer.
+   *
+   * Measured at rest and docked, again whenever the drawer changes size (the
+   * header's vh height, rewrapped titles) and once the fonts have loaded.
+   * Until the first measure the header is simply not sticky yet.
+   */
   useEffect(() => {
-    const el = notesRef.current;
-    if (!el || notesExpanded) return;
-    const ro = new ResizeObserver(() => setNotesOverflow(el.scrollHeight > el.clientHeight + 1));
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [notes, notesExpanded]);
+    const drawer = drawerRef.current, hero = heroRef.current, title = heroTitleRef.current, scroller = scrollRef.current;
+    if (!drawer || !hero || !title || !scroller) return;
+    let range = 1;
+    const onScroll = () => {
+      const p = Math.min(1, Math.max(0, scroller.scrollTop / range));
+      drawer.style.setProperty('--p', p.toFixed(4));
+      dockedRef.current = p > 0.98;
+      drawer.toggleAttribute('data-docked', dockedRef.current);
+    };
+    const measure = () => {
+      drawer.style.setProperty('--p', '0');
+      hero.style.height = '';
+      hero.style.top = '';
+      const height = hero.offsetHeight;
+      // The close button sits outside the scroll area. Read at rest (--p 0,
+      // so untransformed), or a second measure would read its docked place.
+      const close = drawer.querySelector<HTMLElement>('.drawer-dock-close');
+      const d = drawer.getBoundingClientRect(), c = close?.getBoundingClientRect();
+      drawer.style.setProperty('--p', '1');
+      const docked = title.offsetHeight;
+      range = Math.max(1, height - docked);
+      // A fixed height, so the title shrinking never moves the content below it.
+      hero.style.height = `${height}px`;
+      hero.style.top = `${-range}px`;
+      // Docked, the close button's centre sits on the bar's.
+      if (c) drawer.style.setProperty('--close-dy', `${docked / 2 - (c.top - d.top + c.height / 2)}px`);
+      onScroll();
+    };
+    // After the first frame, not in it: measuring forces two layouts of the
+    // whole drawer, and in the click's frame that delayed the slide-in
+    // (npm run perf, open at 4x 116 -> 166 ms). Nothing can scroll before then.
+    let live = true;
+    let frame = requestAnimationFrame(() => { frame = requestAnimationFrame(() => { if (live) measure(); }); });
+    if (document.fonts && document.fonts.status !== 'loaded') document.fonts.ready.then(() => { if (live) measure(); });
+    scroller.addEventListener('scroll', onScroll, { passive: true });
+    // Skips the call observe() makes at once; later calls are real resizes.
+    let initial = true;
+    const ro = new ResizeObserver(() => { if (initial) initial = false; else measure(); });
+    ro.observe(drawer);
+    return () => {
+      live = false;
+      cancelAnimationFrame(frame);
+      scroller.removeEventListener('scroll', onScroll);
+      ro.disconnect();
+    };
+  }, [show.ShowID]);
 
   /**
    * Which way the drawer leaves. Read from matchMedia rather than a one-off
@@ -340,7 +388,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
         {!isImageExpanded && (
           <CloseButton
             onClick={onClose}
-            className="absolute top-4 right-4 md:fixed md:top-6 md:right-6 z-60"
+            className="drawer-dock-close absolute top-4 right-4 md:fixed md:top-6 md:right-6 z-60"
           />
         )}
 
@@ -350,8 +398,15 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
           {/* Hero image. A minimum height, not a fixed one: the title sits in
               the flow at its foot, so a header shorter than the title grows
               to hold it instead of clipping it. Sizes per breakpoint were
-              picked by the owner on 2026-10-12 (docs/frontend.md). */}
-          <div className="relative flex flex-col justify-end min-h-56 md:min-h-[21.5vh] bg-[#0d0d0d] overflow-hidden">
+              picked by the owner on 2026-10-12 (docs/frontend.md). Sticky:
+              it docks as a bar on scroll (the docking effect above). */}
+          <div
+            ref={heroRef}
+            className="drawer-dock-hero sticky z-20 flex flex-col justify-end min-h-56 md:min-h-[21.5vh] bg-[#0d0d0d]"
+          >
+            {/* Clipped here rather than on the header, so the fade under the
+                docked bar can hang below it. */}
+            <div className="absolute inset-0 overflow-hidden">
             {images.length > 0 ? (
               <>
                 {/* Decorative: it sits at 55% behind a gradient, and the artist
@@ -386,24 +441,26 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                 <div className="absolute inset-0 bg-linear-to-t from-[#181818] via-[#181818]/40 to-transparent" />
               </div>
             )}
+            </div>
 
             {/* Artist info over hero — in the flow, so it sets the header's
-                floor. The right padding clears the close button. */}
-            <div className="relative px-5 md:px-8 pt-4 pb-5 pr-16 md:pr-20">
+                floor. The right padding clears the close button. Docked, a
+                tap on it scrolls back to the top. */}
+            <div
+              ref={heroTitleRef}
+              onClick={() => { if (dockedRef.current) scrollContainerToTop(scrollRef.current); }}
+              className="drawer-dock-title relative px-5 md:px-8 pr-16 md:pr-20"
+            >
               {/* h2, not h1 — the page owns the single h1, and this heading is
                   also the dialog's accessible name via aria-labelledby. */}
               <h2
                 id={titleId}
-                className="text-white leading-none mb-2"
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 'clamp(32px, 5vw, 56px)',
-                  letterSpacing: '0.04em',
-                }}
+                className="drawer-dock-name text-white leading-none"
+                style={{ fontFamily: 'var(--font-display)', letterSpacing: '0.04em' }}
               >
                 {show.Artist}
               </h2>
-              <p className="text-gray-400 text-sm md:text-base mb-3">
+              <p className="drawer-dock-sub text-gray-400">
                 {[
                   show.ShowDate || 'Date Unknown',
                   show.EventOrFestival
@@ -563,36 +620,10 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                   <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4">
                     Notes
                   </p>
-                  <div>
-                    <div className="relative">
-                      {/* max-h-72 is about 14 lines, level with the Technical panel beside it */}
-                      <p
-                        ref={notesRef}
-                        className={`text-xs text-gray-400 whitespace-pre-wrap wrap-break-word font-mono leading-relaxed ${notesExpanded ? '' : 'max-h-72 overflow-hidden'}`}
-                      >
-                        {notes}
-                      </p>
-                      {!notesExpanded && notesOverflow && (
-                        <div className="absolute bottom-0 left-0 right-0 h-10 bg-linear-to-t from-[#181818] to-transparent pointer-events-none" />
-                      )}
-                    </div>
-                    {!notesExpanded && notesOverflow && (
-                      <button
-                        onClick={() => setNotesExpanded(true)}
-                        className="mt-2 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 hover:text-gray-300 transition-colors"
-                      >
-                        More <ChevronDown className="w-3 h-3" />
-                      </button>
-                    )}
-                    {notesExpanded && (
-                      <button
-                        onClick={() => setNotesExpanded(false)}
-                        className="mt-2 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 hover:text-gray-300 transition-colors"
-                      >
-                        Less <ChevronUp className="w-3 h-3" />
-                      </button>
-                    )}
-                  </div>
+                  {/* In full (owner, 2026-10-12): no clamp, no More. */}
+                  <p className="text-xs text-gray-400 whitespace-pre-wrap wrap-break-word font-mono leading-relaxed">
+                    {notes}
+                  </p>
                 </div>
               )}
 

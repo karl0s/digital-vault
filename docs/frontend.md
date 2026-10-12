@@ -90,7 +90,8 @@ All close buttons use `components/CloseButton.tsx` (`bg-white/10 hover:bg-white/
 icon `w-5 h-5 md:w-6 md:h-6`); pass positioning via `className` — standard `top-4 right-4` mobile,
 `top-6 right-6` desktop. In `ShowDrawer` the close button sits **outside** the scroll div (sibling,
 inside the fixed drawer `motion.div`) as `absolute top-4 right-4 md:fixed md:top-6 md:right-6`, so
-on mobile it floats over the hero without taking layout space.
+on mobile it floats over the hero without taking layout space. It also carries `drawer-dock-close`,
+which settles it into the docked header bar on scroll (Drawer metadata layout).
 
 ### Mobile input focus and iOS keyboard
 iOS Safari raises the keyboard only when `input.focus()` runs in the **same synchronous call
@@ -137,6 +138,20 @@ behind it), so a header shorter than its title grows to hold it instead of clipp
 needs about 130–150px on a phone and about 160px on desktop. `pr-16 md:pr-20` keeps the title clear
 of the close button.
 
+**The header docks on scroll** (owner, 2026-10-12, the "Photo" bar). It is `sticky` with a negative
+`top` (minus the distance between its height at rest and docked), so it rides up until only the
+title is left on screen, then stays: name, subtitle and badges become a bar at the top of the
+drawer, about 107px on desktop and 122px on a phone. The docking effect in `ShowDrawer` measures
+both heights (after the first frame, on drawer resize, once fonts load) and writes `--p` (0 at rest,
+1 docked) onto the drawer from the scroll position; the `drawer-dock-*` rules in
+`styles/globals.css` follow it — the name eases 56 → 28px (32 → 24px on a phone), the subtitle 16 →
+14px from md, the padding tightens, a fade appears under the bar, and the close button moves to the
+bar's middle and shrinks 48 → 40px from md. The photo stays at the top of the bar, darkening into
+the drawer colour. Scroll-linked, so it never re-renders the drawer and has nothing for reduced
+motion to remove. Docked, a tap on the bar scrolls back to the top (`scrollContainerToTop` in
+`src/lib/motion.ts`). The image and gradient clip in their own `absolute inset-0 overflow-hidden`
+wrapper, not on the header, so the fade can hang below it.
+
 **Below the hero**, in order: a "Part of …" link to the master (linked records), the Screenshots
 strip, an "On this recording" list of linked records with time windows and song counts (masters),
 then the content grid. Following either link swaps the show in the open drawer and scrolls to top.
@@ -157,10 +172,8 @@ Drive/folder/file metadata is not shown.
   Channels, Sample rate, Size, Files; label `w-16 text-xs text-gray-400`, value `text-gray-200`
   (`font-mono` for codec-like values); only rows with a value, and no panel when there are none.
 - Notes: from `getNotes` — public sidecar text only; `PrivateNotes` never ships (CLAUDE.md); `whitespace-pre-wrap wrap-break-word font-mono text-xs text-gray-400`
-  (`wrap-break-word` stops long unbroken strings overflowing on mobile); collapsed to `max-h-72`
-  (about 14 lines) with a gradient fade and **More ⌄ / Less ⌃** (`notesExpanded`). The fade and More
-  appear only when the collapsed text really overflows (`notesOverflow`, measured by a
-  ResizeObserver), never from a character count.
+  (`wrap-break-word` stops long unbroken strings overflowing on mobile). Always shown in full
+  (owner, 2026-10-12): no clamp, no More / Less.
 
 Tailwind v4: use `bg-linear-to-t`, not `bg-gradient-to-t` (deprecated).
 

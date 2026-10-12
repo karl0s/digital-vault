@@ -5,7 +5,7 @@
  * App.tsx handles motion/react. Neither covers programmatic scrolling: a
  * `window.scrollTo({ behavior: 'smooth' })` call ignores the user's preference
  * entirely, because the preference lives in CSS and this is JS. These wrap the
- * two scroll calls the app makes so every path honours it.
+ * scroll calls the app makes so every path honours it.
  */
 
 export function prefersReducedMotion(): boolean {
@@ -19,6 +19,11 @@ function behavior(): ScrollBehavior {
 
 export function scrollToTop(): void {
   window.scrollTo({ top: 0, behavior: behavior() });
+}
+
+/** A scrolling element back to its top: the docked drawer header uses it. */
+export function scrollContainerToTop(el: Element | null | undefined): void {
+  el?.scrollTo({ top: 0, behavior: behavior() });
 }
 
 export function scrollIntoView(
