@@ -421,6 +421,10 @@ Always the full English name, consistently across duplicate recordings: `United 
 ### EventOrFestival
 The festival or event name only — never dates, venue or city. Host-led talk shows use the host's
 name (table above). Leave blank for a standard headline show with no named event.
+- An edition with its own name keeps it: `Rock in Rio Lisboa`, `Rock in Rio Madrid`,
+  `Lollapalooza Brasil`. One name per series, no year: `Woodstock`, `MTV Spring Break`, `MTV $2 Bill`.
+- Never a release, compilation or film title (`Live in Japan`, `TV Compilation 2`, `Thank You DVD`) —
+  leave it blank. The site labels this field **Event** (owner, 2026-10-13).
 
 ### Setlist format
 **Always** one semicolon-separated string — never newlines, numbers or bullets:

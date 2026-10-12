@@ -310,6 +310,16 @@ BANNED_EVENT_VALUES = {
     'Nissan Live Sets':                 'Nissan Live Sets on Yahoo! Music',
     'Much Music Intimate and Interactive': 'Much Music Intimate & Interactive',
     'Live from the Basement':           'From the Basement',
+    # Merged by the festival audit (2026-10-13)
+    '$2 Bill':                          'MTV $2 Bill',
+    '2$Bill Concert':                   'MTV $2 Bill',
+    'Live at the Chapel':               'Cold Live at the Chapel',
+    'Eurockéennes de Belfort':          'Eurockéennes Festival',
+    'Rolling Rock Festival':            'Rolling Rock Town Fair',
+    "Woodstock '94":                    'Woodstock',
+    "Woodstock '99":                    'Woodstock',
+    'MTV Spring Break Rocks':           'MTV Spring Break',
+    'triple j AWOL':                    'Triple J AWOL',
 }
 
 # Patterns that are clearly garbage in EventOrFestival
@@ -328,6 +338,9 @@ for s in shows:
         event_issues.append(f'  Date in EventOrFestival: {sid} {artist} — "{ev}"')
     elif ev.startswith('----') or ev.startswith('=='):
         event_issues.append(f'  File content in EventOrFestival: {sid} {artist} — "{ev[:40]}"')
+    elif _re.search(r'\b(Compilation|DVD|Documentary)\b', ev, _re.I):
+        # A disc or film description from the folder name, not an event.
+        event_issues.append(f'  Not an event in EventOrFestival: {sid} {artist} — "{ev}"')
 
 if event_issues:
     for issue in event_issues:
