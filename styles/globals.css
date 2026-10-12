@@ -15,6 +15,19 @@
 @source not "../CLAUDE.md";
 @source not "../README.md";
 
+/* Breakpoints: the only ones the site uses, one test size each
+   (docs/frontend.md, Breakpoints). Tailwind's defaults written out, minus sm
+   (unused: the phone layout runs to 767px) and plus 3xl for big monitors.
+   In rem, so they follow the browser's font-size setting. */
+@theme {
+  --breakpoint-sm: initial;
+  --breakpoint-md: 48rem;    /* 768px   tablet; the phone/desktop switch */
+  --breakpoint-lg: 64rem;    /* 1024px  small laptop, tablet landscape */
+  --breakpoint-xl: 80rem;    /* 1280px  laptop */
+  --breakpoint-2xl: 96rem;   /* 1536px  desktop */
+  --breakpoint-3xl: 120rem;  /* 1920px  large desktop, 24–27" monitor */
+}
+
 /* Custom scrollbar styles */
 .scrollbar-hide {
   -ms-overflow-style: none;  /* IE and Edge */

@@ -6,6 +6,26 @@ every change must pass are in `CLAUDE.md` (Front-end performance, Checks).
 
 ---
 
+## Breakpoints
+
+Defined once, in `styles/globals.css` (`@theme`): Tailwind's defaults minus `sm`, plus `3xl`. Use
+only these prefixes, and test a layout change at each tier's size.
+
+| Tier | Prefix | From | Test at | Typical screens |
+|---|---|---|---|---|
+| Phone | (none) | 0 | 390 × 844 | phones, portrait and landscape |
+| Tablet | `md:` | 768px | 820 × 1180 | iPad portrait, narrow windows |
+| Small laptop | `lg:` | 1024px | 1180 × 820 | iPad landscape, small laptops |
+| Laptop | `xl:` | 1280px | 1440 × 900 | 13–14" laptops |
+| Desktop | `2xl:` | 1536px | 1728 × 1117 | 15–16" laptops |
+| Large desktop | `3xl:` | 1920px | 2560 × 1440 | 24–27" monitors |
+
+`md` is the phone/desktop switch (sidebar, tab bar, drawer direction). `sm` is removed: nothing used
+it, and the phone layout runs to 767px. JavaScript mirrors `md` in one place, `ShowDrawer`'s
+`matchMedia('(min-width: 768px)')`; keep the two in step.
+
+---
+
 ## Browse architecture
 
 Design reasoning, and where the build departs from it: `docs/browse-redesign-spec.md`. What a

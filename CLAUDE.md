@@ -31,7 +31,7 @@ src/
   store/filters.ts      ← zustand filter store, synced to the URL
   lib/                  ← url.ts (canonical URL state), brush.ts (year-brush maths), motion.ts, cn.ts
   search/               ← searchIndex.ts (MiniSearch, field prefixes), facets.ts (filter, count, sort)
-styles/globals.css      ← Tailwind entry and global CSS (imported by main.tsx)
+styles/globals.css      ← Tailwind entry, global CSS and the breakpoints (imported by main.tsx)
 dist/                   ← BUILD OUTPUT — never commit this, CI owns it
 data-pipeline/          ← historical drive-scan scripts and CSVs (see Data pipeline)
 docs/
