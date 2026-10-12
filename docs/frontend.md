@@ -71,19 +71,20 @@ retired `view` and `type` params are dropped on parse; `view=artists` is honoure
 all synchronous `useMemo`s. `src/search/facets.ts` counts each facet against every *other* active
 filter, so an option's count is what selecting it yields; zero-count options are disabled, never
 hidden. An empty `Country` or `EventOrFestival` becomes the `NONE` sentinel (`'none'`, "Unknown
-location" / "No festival"). Undated records sort last both ways and are excluded from a year range
+location" / "No event"). Undated records sort last both ways and are excluded from a year range
 unless `undated=1`.
 
 **Controls** (`components/filters/`). `FilterBar` (`sticky top-0`, `data-filter-bar`): the search
 field (a pill like the controls beside it; `text-base` below md), **All artists** (a jump, so no
-chevron), a divider, then Years, Country and Festival — one row from lg, the search on its own
+chevron), a divider, then Years, Country and Event — one row from lg, the search on its own
 line below it, the controls scrolling sideways on a phone. Then removable chips and Clear all while
 anything is set, and — only while filtering — the result count and sort; the count's `aria-live`
 region is always mounted (visually hidden), since one inside a `display:none` row is silent.
 `FacetPopover` is a base-ui `Popover` — its `z-50` belongs on the `Positioner`; a text filter
 appears above 15 options. `minTotal` leaves out options with fewer shows in the whole collection
-(`listedOptions` in `facets.ts`; a selected one stays): Country lists only countries with 6+ shows
-(owner, 2026-10-13), and search still finds the rest by name. `YearRangePopover`: decade chips (decades with 5+ records), the
+(`listedOptions` in `facets.ts`; a selected one stays): Country and Event list only values with 6+
+shows (owner, 2026-10-13), and search still finds the rest by name. Event is the `festival` facet
+relabelled (most of it is TV programmes); its URL key stays `festival`. `YearRangePopover`: decade chips (decades with 5+ records), the
 `YearHistogram` brush, From/To inputs (the keyboard and screen-reader path) and "Include undated".
 Brush maths is pure, in `src/lib/brush.ts`; the store is written on pointer-up only.
 

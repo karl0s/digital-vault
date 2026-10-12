@@ -69,13 +69,13 @@ function facetValueOf(d: DerivedShow, facet: FacetKey): string {
  * showing "rock-am-ring", without needing a reverse slug table.
  *
  * The NONE sentinel is labelled per facet: the data meaning is identical
- * ("field is empty") but "Unknown location" and "No festival" say different
+ * ("field is empty") but "Unknown location" and "No event" say different
  * things to a reader.
  */
 function facetLabelOf(d: DerivedShow, facet: FacetKey): string {
   switch (facet) {
     case 'country': return d.show.Country?.trim() || 'Unknown location';
-    case 'festival': return d.show.EventOrFestival?.trim() || 'No festival';
+    case 'festival': return d.show.EventOrFestival?.trim() || 'No event';
   }
 }
 
@@ -201,7 +201,7 @@ export function listedOptions(options: FacetOption[], minTotal: number): FacetOp
 
 /**
  * Era and year read as ordered scales; everything else is ranked by count so the
- * useful options surface above a long tail (154 festivals, 91 of them singletons).
+ * useful options surface above a long tail (most events cover a single show).
  * NONE always sinks to the bottom — it is a fallback, not a headline.
  */
 function sortFacetOptions(_facet: FacetKey) {

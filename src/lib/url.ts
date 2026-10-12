@@ -34,7 +34,7 @@ export const LEGACY_VIEW_PARAM = 'view';
  * A show with no Country must stay reachable — dozens have none, and hundreds
  * have no festival. They get a real, selectable facet option rather than
  * silently dropping out of every filtered view. The UI labels it per facet
- * ("Unknown location" vs "No festival"); the data meaning is the same.
+ * ("Unknown location" vs "No event"); the data meaning is the same.
  */
 export const NONE = 'none';
 

@@ -26,11 +26,12 @@ import { YearRangePopover } from './YearRangePopover';
  */
 
 // Years are handled by their own range control, not as a multi-select facet.
-// Country lists only countries with 6+ shows (owner, 2026-10-13); the rest are
-// still found by searching their name.
+// Both list only values with 6+ shows (owner, 2026-10-13); the rest are still
+// found by searching their name. 'festival' is labelled Event because most of
+// it is TV programmes, but keeps its key, so old links still work.
 const FACETS: { key: FacetKey; label: string; minTotal?: number }[] = [
   { key: 'country', label: 'Country', minTotal: 6 },
-  { key: 'festival', label: 'Festival' },
+  { key: 'festival', label: 'Event', minTotal: 6 },
 ];
 
 const SORTS: { key: SortKey; label: string }[] = [
