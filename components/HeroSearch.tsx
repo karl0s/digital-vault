@@ -4,26 +4,30 @@ import { HalationLogo } from './logos/HalationLogo';
 interface HeroSearchProps {
   /** Collapses the block to zero height while a search or filter is active. */
   isSearching?: boolean;
+  /**
+   * Open or close without animating. Set for one render when App jumps to the
+   * artist list: a masthead growing over 0.28s would move the list while the
+   * page scrolls to it, and the jump would land short.
+   */
+  instant?: boolean;
 }
 
 /**
  * Landing masthead: wordmark and tagline, nothing else.
  *
- * This is the only place the brand appears — the header and sidebar were both
- * carrying it and that was duplicate chrome. The quick-search pills and the
- * "All artists" link that used to sit here are gone too: artist navigation
- * lives in the sidebar, and the Featured grid below is now the landing's
+ * This is the only place the brand appears. Search and "All artists" live in
+ * the filter bar directly below it, and the Featured grid is the landing's
  * entry point rather than a row of shortcuts competing with it.
  *
- * Always mounted, animating to zero height rather than unmounting, so the nav
- * search input never disappears mid-keystroke.
+ * Always mounted, animating to zero height rather than unmounting, so the
+ * search field in the bar below keeps its place and focus mid-keystroke.
  */
-export function HeroSearch({ isSearching = false }: HeroSearchProps) {
+export function HeroSearch({ isSearching = false, instant = false }: HeroSearchProps) {
   return (
     <motion.div
       style={{ overflow: 'hidden' }}
       animate={isSearching ? { opacity: 0, height: 0 } : { opacity: 1, height: 'auto' }}
-      transition={{
+      transition={instant ? { duration: 0 } : {
         opacity: { duration: 0.18, ease: 'easeOut' },
         height: { duration: 0.28, ease: [0.4, 0, 0.2, 1] },
       }}

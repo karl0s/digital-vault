@@ -19,17 +19,17 @@ public/
   images/temp-images/   ← staging for hand-taken stills (gitignored; empty after every task)
   fonts/                ← self-hosted woff2 (fonts/README.md)
 
-App.tsx                 ← root: views, search input, drawer state
+App.tsx                 ← root: the one page (Featured, artist list, results), search input, drawer state
 main.tsx                ← entry; DEV-only playground gate
-components/             ← cards, grids, ShowDrawer, ArtistsView, TopNav, HeroSearch, FeaturedRows
+components/             ← cards, grids, ShowDrawer, ArtistDirectory, HeroSearch, FeaturedRows
   CloseButton.tsx       ← shared close button — use this for ALL close buttons
-  shell/                ← AppShell, Sidebar, MobileTabBar
+  shell/                ← AppShell, MobileTabBar (no sidebar or top bar since 2026-10-13)
   filters/              ← FilterBar, FacetPopover, YearRangePopover, YearHistogram
   logos/                ← HalationLogo (the wordmark)
 src/
   hooks/                ← useShows (data + getNotes + getImageUrl), useBrowseResults, useSearchEngine, useDebounce
   store/filters.ts      ← zustand filter store, synced to the URL
-  lib/                  ← url.ts (canonical URL state), brush.ts (year-brush maths), motion.ts, cn.ts
+  lib/                  ← url.ts (canonical URL state), layout.ts (the one content width), brush.ts, motion.ts, cn.ts
   search/               ← searchIndex.ts (MiniSearch, field prefixes), facets.ts (filter, count, sort)
 styles/globals.css      ← Tailwind entry, global CSS and the breakpoints (imported by main.tsx)
 dist/                   ← BUILD OUTPUT — never commit this, CI owns it
@@ -125,7 +125,7 @@ Flat JSON array of show objects. Key fields:
 | `City` | string | |
 | `Country` | string | |
 | `RecordingType` | string | "Proshot", "Soundboard", "Audience": how it was **filmed**. Never "Documentary"; the health check rejects it |
-| `ContentType` | `"Documentary"` or absent | What the record **is**. Absent = a live show. Drives the sidebar's Live / Documentaries filter, the card badge and the drawer pill. See *Documentaries* below |
+| `ContentType` | `"Documentary"` or absent | What the record **is**. Absent = a live show. Drives the card badge and the drawer pill (the Live / Documentaries filter was removed, 2026-10-13). See *Documentaries* below |
 | `ChecksumSHA1` | 40-char hex string | SHA1 of the source file; used as image key |
 | `Notes` | string | **Public.** Only text pasted verbatim from the show's own sidecar files, each under `---- filename ----`. Shown in the drawer. See *Notes and PrivateNotes* |
 | `PrivateNotes` | string or absent | **Never on the site.** Everything Claude or Karl writes: provenance, corrections and their evidence, capture and identity notes. See *Notes and PrivateNotes* |

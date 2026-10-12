@@ -1,8 +1,6 @@
 
 import { useRef, useState, useEffect, useCallback } from 'react';
-import { flushSync } from 'react-dom';
-import { TopNav } from './components/TopNav';
-import { ArtistsView } from './components/ArtistsView';
+import { ArtistDirectory } from './components/ArtistDirectory';
 import { ShowDrawer } from './components/ShowDrawer';
 import { SearchResultsGrid } from './components/SearchResultsGrid';
 import { HeroSearch } from './components/HeroSearch';
@@ -10,12 +8,13 @@ import { FeaturedRows } from './components/FeaturedRows';
 import { AnimatePresence, motion, MotionConfig } from 'motion/react';
 import { useShows } from './src/hooks/useShows';
 import { useDebounce } from './src/hooks/useDebounce';
-import { scrollToTop } from './src/lib/motion';
+import { scrollToTop, scrollToY } from './src/lib/motion';
+import { CONTENT_WIDTH } from './src/lib/layout';
 import { AppShell } from './components/shell/AppShell';
 import { FilterBar } from './components/filters/FilterBar';
 import { ShowGrid } from './components/ShowGrid';
 import { useBrowseResults } from './src/hooks/useBrowseResults';
-import { isFiltered as computeIsFiltered } from './src/lib/url';
+import { isFiltered as computeIsFiltered, LEGACY_VIEW_PARAM } from './src/lib/url';
 import { useFilterStore, initFilterUrlSync, selectFilterState } from './src/store/filters';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -81,12 +80,9 @@ export default function App() {
   const [searchType, setSearchType] = useState<'artist' | 'general' | undefined>(undefined);
   const [pillTransitionKey, setPillTransitionKey] = useState(0);
   const [selectedShow, setSelectedShow] = useState<Show | null>(null);
-  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
-  const navSearchRef = useRef<HTMLInputElement>(null);
-  const mobileSearchRef = useRef<HTMLInputElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const directoryRef = useRef<HTMLElement>(null);
 
-  // Destination lives in the store so it is linkable; see src/lib/url.ts.
-  const view = useFilterStore(s => s.view);
   const storeQuery = useFilterStore(s => s.q);
   const setStoreQuery = useFilterStore(s => s.setQuery);
   const clearAllFilters = useFilterStore(s => s.clearAll);
@@ -99,25 +95,6 @@ export default function App() {
 
   // Back/forward -> store. Once, at the root.
   useEffect(() => initFilterUrlSync(), []);
-
-  /**
-   * Changing destination clears the search.
-   *
-   * The query outranks the view when picking what to render, so without this,
-   * clicking "Artists" in the sidebar while a search is live leaves you looking
-   * at results while the nav claims you are in the directory.
-   *
-   * The store already clears its own `q`; this mirrors it for App's local
-   * search state, which is still the source of truth until the query moves onto
-   * the store in a later slice. The ref skips the mount run so a fresh load
-   * does not scroll or wipe state it never set.
-   */
-  const viewMounted = useRef(false);
-  useEffect(() => {
-    if (!viewMounted.current) { viewMounted.current = true; return; }
-    setSearchQuery('');
-    scrollToTop();
-  }, [view]);
 
   const { shows, getImageUrl, getNotes, error } = useShows();
   const debouncedQuery = useDebounce(searchQuery, 150);
@@ -138,25 +115,25 @@ export default function App() {
 
   /**
    * The return trip: when the store's query changes from somewhere else — back
-   * button, Clear all, switching destination — pull it back into the input.
-   * Guarded against the value we just pushed, or the two would ping-pong.
+   * button, Clear all, All artists — pull it back into the input. Guarded
+   * against the value we just pushed, or the two would ping-pong.
    */
   useEffect(() => {
     if (storeQuery !== debouncedQuery) setSearchQuery(storeQuery);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storeQuery]);
 
-  const isSearching = debouncedQuery.trim().length > 0;
-
-  // Auto-focus the nav search bar on initial load
+  // Focus the search on load where there is a keyboard to type with. Not on a
+  // phone: there the field sits under the masthead and focus would raise the
+  // keyboard over the page before anyone asked for it.
   useEffect(() => {
-    navSearchRef.current?.focus();
+    if (window.matchMedia('(min-width: 48rem)').matches) searchInputRef.current?.focus({ preventScroll: true });
   }, []);
 
   // Escape clears the search
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && searchQuery) { setSearchQuery(''); navSearchRef.current?.focus(); }
+      if (e.key === 'Escape' && searchQuery) { setSearchQuery(''); searchInputRef.current?.focus(); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -180,37 +157,105 @@ export default function App() {
   }
 
   /**
-   * The tab bar's Search item. flushSync renders the field before focus() so
-   * both happen inside the tap — iOS ignores a focus() made any later and the
-   * keyboard never rises. Same pattern as TopNav's own search button.
+   * Picking from the artist list runs the exact-artist facet. The store gets
+   * the name at once rather than after the search debounce, so the results
+   * replace the list in the same frame as the click. Stable, because the
+   * memoised ArtistDirectory receives it.
    */
-  function handleMobileSearchClick() {
-    flushSync(() => setMobileSearchOpen(true));
-    mobileSearchRef.current?.focus();
-  }
+  const handleArtistSelect = useCallback((artist: string) => {
+    setSearchQuery(artist);
+    setSearchType('artist');
+    setPillTransitionKey(k => k + 1);
+    setStoreQuery(artist);
+    scrollToTop();
+  }, [setStoreQuery]);
+
+  /**
+   * "All artists", the phone's Artists tab, Back to all artists, and an old
+   * ?view=artists link: clear everything and jump to the A–Z list. The list
+   * only renders while nothing filters, so it clears first and scrolls once
+   * the list is on the page — and opens the masthead without its animation
+   * (`instantMasthead`), which would otherwise move the list mid-scroll.
+   */
+  const [instantMasthead, setInstantMasthead] = useState(false);
+  const [directoryJump, setDirectoryJump] = useState(0);
+  const goToDirectory = useCallback(() => {
+    setInstantMasthead(true);
+    setSearchQuery('');
+    setSearchType(undefined);
+    clearAllFilters();
+    setDirectoryJump(n => n + 1);
+  }, [clearAllFilters]);
+  useEffect(() => {
+    if (!directoryJump) return;
+    const raf = requestAnimationFrame(() => {
+      // The bar is measured now, not earlier: it is a row taller while
+      // filtering (count and sort) and only drops it in this render, so a
+      // margin taken before would land the list under it.
+      const list = directoryRef.current;
+      const bar = document.querySelector<HTMLElement>('[data-filter-bar]')?.offsetHeight ?? 0;
+      if (list) scrollToY(list.getBoundingClientRect().top + window.scrollY - bar);
+      setInstantMasthead(false);
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [directoryJump]);
+
+  // An old link to the Artists page lands on the list. Once, when the shows
+  // arrive; clearing writes the canonical URL, which drops the old param.
+  const legacyLink = useRef(new URLSearchParams(window.location.search).get(LEGACY_VIEW_PARAM) === 'artists');
+  useEffect(() => {
+    if (!legacyLink.current || shows.length === 0) return;
+    legacyLink.current = false;
+    goToDirectory();
+  }, [shows.length, goToDirectory]);
+
+  /**
+   * Whether the artist list fills the screen under the bar: lights "All
+   * artists" and the phone's Artists tab. Read on scroll, but React only
+   * re-renders when the answer flips.
+   */
+  const [directoryInView, setDirectoryInView] = useState(false);
+  useEffect(() => {
+    let raf = 0;
+    const check = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const list = directoryRef.current;
+        const bar = document.querySelector('[data-filter-bar]')?.getBoundingClientRect().bottom ?? 0;
+        const r = list?.getBoundingClientRect();
+        setDirectoryInView(Boolean(r) && r!.top <= bar + 2 && r!.bottom > bar + 120);
+      });
+    };
+    window.addEventListener('scroll', check, { passive: true });
+    window.addEventListener('resize', check, { passive: true });
+    check();
+    return () => {
+      window.removeEventListener('scroll', check);
+      window.removeEventListener('resize', check);
+      cancelAnimationFrame(raf);
+    };
+  }, [filtered, shows.length]);
+
+  // The phone tab bar. Search focuses the bar's field inside the tap — it is
+  // always mounted and sticky, so iOS raises the keyboard.
+  const handleBrowseTab = useCallback(() => {
+    if (filtered) { setSearchQuery(''); setSearchType(undefined); clearAllFilters(); }
+    scrollToTop();
+  }, [filtered, clearAllFilters]);
+  const handleSearchTab = useCallback(() => searchInputRef.current?.focus(), []);
 
   function handleCloseDrawer() { setSelectedShow(null); }
 
-  /**
-   * Selecting from the artist directory runs the exact-artist facet.
-   * viewMode stays 'artists' so clearing the search returns to the directory
-   * the user came from rather than dumping them on the homepage.
-   */
-  function handleArtistSelect(artist: string) {
-    handleSearchChange(artist, 'artist');
-    scrollToTop();
-  }
+  const hasQuery = filterState.q.trim().length > 0;
 
   /**
-   * Browse: masthead, sticky filter bar, then results.
+   * The one page: masthead, sticky filter bar, then content.
    *
-   * The Featured strip renders ONLY when nothing is filtering. A curated row
-   * sitting above filtered results ignores the filter the user just set, so it
-   * reads either as broken or as results that do not match.
-   *
-   * The grid below always shows `results` — the full catalogue when nothing is
-   * active, the filtered set otherwise — so the count in the bar always
-   * describes what is on screen.
+   * Nothing filtering: Featured shows, then every artist A–Z. A curated row
+   * above filtered results would ignore the filter just set, so it renders
+   * only here. Filtering: a query gets the titled results (its title, a
+   * Clear, and the song hint for names like Kiss); facets alone get the plain
+   * grid, whose count is in the bar.
    */
   const browseContent = (
     <motion.div
@@ -220,37 +265,58 @@ export default function App() {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <HeroSearch isSearching={filtered} />
+      <HeroSearch isSearching={filtered} instant={instantMasthead} />
 
-      <FilterBar counts={counts} histogram={histogram} resultCount={results.length} />
+      <FilterBar
+        counts={counts}
+        histogram={histogram}
+        resultCount={results.length}
+        filtered={filtered}
+        searchQuery={searchQuery}
+        onSearchChange={handleSearchChange}
+        searchInputRef={searchInputRef}
+        onAllArtists={goToDirectory}
+        allArtistsActive={directoryInView && !filtered}
+      />
 
-      {!filtered && (
-        <FeaturedRows shows={shows} onShowClick={handleShowClick} getImageUrl={getImageUrl} />
-      )}
-
-      <div className="mx-auto max-w-[1924px] px-4 pt-6 md:px-8">
-        {!filtered && (
-          <h2 className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
-            All shows
-          </h2>
-        )}
-        <ShowGrid
+      {!filtered ? (
+        <>
+          <FeaturedRows shows={shows} onShowClick={handleShowClick} getImageUrl={getImageUrl} />
+          <ArtistDirectory ref={directoryRef} shows={shows} onArtistSelect={handleArtistSelect} />
+        </>
+      ) : hasQuery ? (
+        <SearchResultsGrid
           shows={results}
+          query={filterState.q}
+          searchType={searchType}
+          transitionKey={pillTransitionKey}
+          songSuggestion={songSuggestion}
           onShowClick={handleShowClick}
+          // An artist picked from the list goes back to the list; a typed
+          // search clears in place and returns to the field.
+          onClear={searchType === 'artist'
+            ? goToDirectory
+            : () => { setSearchQuery(''); setStoreQuery(''); scrollToTop(); searchInputRef.current?.focus(); }}
+          clearLabel={searchType === 'artist' ? 'Back to all artists' : 'Clear search'}
+          onSearch={(q) => handleSearchChange(q, 'general')}
           getImageUrl={getImageUrl}
-          onClearFilters={clearAllFilters}
         />
-      </div>
+      ) : (
+        <div className={`${CONTENT_WIDTH} pt-6`}>
+          <ShowGrid
+            shows={results}
+            onShowClick={handleShowClick}
+            getImageUrl={getImageUrl}
+            onClearFilters={clearAllFilters}
+          />
+        </div>
+      )}
     </motion.div>
   );
 
-  // Outer AnimatePresence only switches between hero ↔ artists (not triggered by typing).
-  // Searching from the artist directory renders results in place, so clearing
-  // the query returns to the directory rather than the homepage.
   let mainContent: React.ReactNode;
   if (error) {
-    // Every view depends on shows.json, so the failure is handled once here
-    // rather than as an empty state in each of them.
+    // Everything depends on the show data, so the failure is handled once here.
     mainContent = (
       <motion.div
         key="error"
@@ -271,36 +337,6 @@ export default function App() {
           </button>
           <p className="text-gray-400 text-xs mt-6 font-mono">{error}</p>
         </div>
-      </motion.div>
-    );
-  } else if (view === 'artists' && !isSearching) {
-    mainContent = <ArtistsView shows={shows} onArtistSelect={handleArtistSelect} />;
-  } else if (view === 'artists' && isSearching) {
-    mainContent = (
-      <motion.div
-        key="search"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.2 }}
-        // Same gutter as the hero-mode results and ArtistsView. This used to
-        // come from a conditional class on <main>, which went away with the
-        // browse-mode cleanup.
-        className="px-4 md:px-8 pt-10"
-      >
-        <SearchResultsGrid
-          shows={results}
-          query={debouncedQuery}
-          searchType={searchType}
-          transitionKey={pillTransitionKey}
-          songSuggestion={songSuggestion}
-          onShowClick={handleShowClick}
-          onClear={() => { setSearchQuery(''); scrollToTop(); navSearchRef.current?.focus(); }}
-          // Clearing here returns to the artist directory, not to all shows.
-          clearLabel="Back to artists"
-          onSearch={(q) => handleSearchChange(q, 'general')}
-          getImageUrl={getImageUrl}
-        />
       </motion.div>
     );
   } else {
@@ -332,17 +368,10 @@ export default function App() {
 
       <div {...backgroundInert}>
         <AppShell
-          onMobileSearchClick={handleMobileSearchClick}
-          topBar={
-            <TopNav
-              searchQuery={searchQuery}
-              onSearchChange={handleSearchChange}
-              searchInputRef={navSearchRef}
-              mobileSearchOpen={mobileSearchOpen}
-              onMobileSearchOpenChange={setMobileSearchOpen}
-              mobileSearchInputRef={mobileSearchRef}
-            />
-          }
+          onBrowse={handleBrowseTab}
+          onArtists={goToDirectory}
+          onSearch={handleSearchTab}
+          activeTab={directoryInView && !filtered ? 'artists' : 'browse'}
         >
           {/* presenceAffectsLayout={false} is a performance guard. At its
               default, AnimatePresence hands every motion component beneath it

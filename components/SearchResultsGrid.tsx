@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Show } from '../App';
 import { ShowCard } from './ShowCard';
 import { GRID_COLS } from './FeaturedRows';
+import { CONTENT_WIDTH } from '../src/lib/layout';
 import type { SongSuggestion } from '../src/search/searchIndex';
 
 interface SearchResultsGridProps {
@@ -28,7 +29,7 @@ export function SearchResultsGrid({ shows, query, searchType, transitionKey, son
       : isSingleArtist ? 'artist' : 'search';
 
   return (
-    <div className="max-w-[1860px] mx-auto">
+    <div className={`${CONTENT_WIDTH} pt-8`}>
       {/* Results header */}
       <div className="mb-6">
         <h2 className="text-4xl font-bold text-white">“{query}”</h2>

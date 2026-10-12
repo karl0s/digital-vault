@@ -111,13 +111,10 @@ eq(
   parseFilters('?era=1990s&country=germany'),
 );
 
-console.log('\nview (destination, not a facet)');
-eq('default view is implied', serializeFilters(f({ view: 'browse' })), '');
-eq('non-default view is explicit', serializeFilters(f({ view: 'artists' })), '?view=artists');
-eq('view is emitted first', serializeFilters(f({ view: 'artists', from: 1990, q: 'x' })), '?view=artists&q=x&from=1990');
-eq('unknown view falls back', parseFilters('?view=bogus').view, 'browse');
-eq('view round-trips', serializeFilters(parseFilters('?view=artists&from=1990')), '?view=artists&from=1990');
-eq('isFiltered ignores view', isFiltered(f({ view: 'artists' })), false);
+console.log('\nretired params (one page since 2026-10-13; the type filter is gone)');
+eq('an old ?view= is dropped', serializeFilters(parseFilters('?view=artists&from=1990')), '?from=1990');
+eq('an old ?type= is dropped', serializeFilters(parseFilters('?type=documentary&country=germany')), '?country=germany');
+eq('an old ?type= does not filter', isFiltered(parseFilters('?type=documentary')), false);
 
 console.log('\nhelpers');
 eq('isFiltered false when empty', isFiltered(EMPTY_FILTERS), false);

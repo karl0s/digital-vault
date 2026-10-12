@@ -4,8 +4,15 @@ Branch: `feat/browse-redesign` (merged and deleted) · Base: `main @ 3795d17` ·
 live since 2026-10-05**
 
 This is the design as specified before the build. It is kept for its reasoning; where it and the
-code disagree, the code wins. The architecture as built is summarised in `CLAUDE.md` → Browse
+code disagree, the code wins. The architecture as built is in `docs/frontend.md` → Browse
 architecture.
+
+**Superseded on 2026-10-13 (owner):** the shell this spec describes — the persistent sidebar, the
+fixed top search bar, the separate Artists destination and the Live / Documentaries type facet —
+is gone. The site is one page: masthead, one sticky bar (search, All artists, Years, Country,
+Festival) on the content's edge, then Featured shows and every artist A–Z; filtering replaces both
+with results. The search sat over the sidebar, never in line with the shows, and the type filter
+read as navigation and went unused.
 
 ## Deviations from this spec
 

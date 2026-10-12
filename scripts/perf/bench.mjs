@@ -127,6 +127,15 @@ async function openBrowser(chromium, { throttle = 1, reducedMotion = false } = {
 
 const CARDS = `document.querySelectorAll('button[id^="show-"]')`;
 
+/**
+ * The page the timings and drawer checks load. Since 2026-10-13 the landing is
+ * Featured shows and the artist list, not the whole catalogue, so this asks
+ * for every year from 1900 with undated shows included: all ~1,200 cards in
+ * one grid, the heaviest thing the site renders and the case these budgets
+ * were set on.
+ */
+const GRID_QUERY = '?from=1900&undated=1';
+
 /** Navigate and wait for the grid to stop growing. Returns ms until it had its final card count. */
 async function loadBrowse(b, url) {
   const t0 = Date.now();
@@ -276,13 +285,14 @@ const median = xs => { const s = [...xs].sort((a, b) => a - b); return s[Math.fl
 async function main() {
   const chromium = findChromium();
   const server = URL_ARG ? { url: URL_ARG, close: () => {} } : await buildAndServe();
+  const gridUrl = `${server.url.replace(/\/?(\?.*)?$/, '/')}${GRID_QUERY}`;
   let failed = 0;
   try {
-    console.log(`Probing ${server.url}\nChromium: ${chromium}\n`);
+    console.log(`Probing ${gridUrl}\nChromium: ${chromium}\n`);
 
     console.log('Drawer correctness');
     for (const reduced of [false, true]) {
-      const r = await drawerChecks(chromium, server.url, reduced);
+      const r = await drawerChecks(chromium, gridUrl, reduced);
       const tag = reduced ? ' (reduced motion)' : '';
       const expect = {
         ...(reduced ? {} : { 'inert is not applied at the click': !r.inertAtClick }),
@@ -303,7 +313,7 @@ async function main() {
     for (const throttle of [1, 4]) {
       for (let i = 0; i < ROUNDS[throttle]; i++) {
         process.stdout.write(`\rTiming at ${throttle}x CPU, run ${i + 1}/${ROUNDS[throttle]}…   `);
-        runs[throttle].push(await timingRun(chromium, server.url, throttle));
+        runs[throttle].push(await timingRun(chromium, gridUrl, throttle));
       }
     }
     process.stdout.write('\r' + ' '.repeat(50) + '\r');

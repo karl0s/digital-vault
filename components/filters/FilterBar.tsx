@@ -1,5 +1,7 @@
-import { X } from 'lucide-react';
+import { Music2, Search, X } from 'lucide-react';
+import { RefObject } from 'react';
 import { cn } from '../../src/lib/cn';
+import { CONTENT_WIDTH } from '../../src/lib/layout';
 import { FacetKey, SortKey } from '../../src/lib/url';
 import { FacetCounts, YearHistogram } from '../../src/search/facets';
 import { useFilterStore } from '../../src/store/filters';
@@ -7,15 +9,20 @@ import { FacetPopover } from './FacetPopover';
 import { YearRangePopover } from './YearRangePopover';
 
 /**
- * Sticky refinement bar for the browse view.
+ * The page's one sticky bar (owner, 2026-10-13): search, "All artists", then
+ * the facets. It replaced the fixed top bar, whose search lined up with the
+ * old sidebar rather than the shows; it sits on the shared content width, so
+ * every control starts on the same edge as the cards below it.
  *
  * Three stacked pieces, two of them conditional:
- *   1. facet triggers        — always
- *   2. active filter chips   — only while something is selected
- *   3. result count + sort   — always
+ *   1. search, All artists, facet triggers — always
+ *   2. active filter chips                 — only while something is selected
+ *   3. result count + sort                 — only while filtering; until then
+ *      the page shows Featured shows and the artist list, which have no count
+ *      or order to set
  *
- * Browse only. The A–Z directory is a different kind of surface and refining it
- * by era would mean explaining what an artist's era is.
+ * data-filter-bar is how App finds it to measure: the jump to the artist list
+ * scrolls to just under it, whatever height it has wrapped to.
  */
 
 // Years are handled by their own range control, not as a multi-select facet.
@@ -34,9 +41,22 @@ interface FilterBarProps {
   counts: FacetCounts;
   histogram: YearHistogram;
   resultCount: number;
+  /** Anything filtering: shows the count and sort row. */
+  filtered: boolean;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+  searchInputRef: RefObject<HTMLInputElement>;
+  /** Clears everything and jumps to the artist list. */
+  onAllArtists: () => void;
+  /** The artist list is on screen under the bar. */
+  allArtistsActive: boolean;
 }
 
-export function FilterBar({ counts, histogram, resultCount }: FilterBarProps) {
+const PILL = 'flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm transition-colors duration-150';
+
+export function FilterBar({
+  counts, histogram, resultCount, filtered, searchQuery, onSearchChange, searchInputRef, onAllArtists, allArtistsActive,
+}: FilterBarProps) {
   const state = useFilterStore();
   const { toggleFacet, clearFacet, clearAll, setSort, setYearRange, toggleUndated } = state;
 
@@ -73,22 +93,64 @@ export function FilterBar({ counts, histogram, resultCount }: FilterBarProps) {
   }[];
 
   return (
-    // top-16 clears the fixed header. z-30 sits under the header (z-40) and the
-    // drawer (z-50) but above the grid.
-    <div className="sticky top-16 z-30 border-b border-white/6 bg-[#141414]/97 backdrop-blur-md">
-      <div className="mx-auto max-w-[1924px] px-4 md:px-8">
-        <div className="flex gap-2 overflow-x-auto py-3 scrollbar-hide">
-          <YearRangePopover histogram={histogram} />
-          {FACETS.map(({ key, label }) => (
-            <FacetPopover
-              key={key}
-              label={label}
-              options={counts[key]}
-              selectedCount={state[key].length}
-              onToggle={value => toggleFacet(key, value)}
-              onClear={() => clearFacet(key)}
+    // z-30: above the grid, under the phone tab bar (z-40) and the drawer (z-50).
+    <div data-filter-bar className="sticky top-0 z-30 border-b border-white/6 bg-[#141414]/97 backdrop-blur-md">
+      <div className={CONTENT_WIDTH}>
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-3 py-3">
+          {/* One of the pills: same height and roundness as the controls beside
+              it. text-base below md, or iOS zooms the page on focus. */}
+          <div className="relative w-full lg:w-auto lg:min-w-[260px] lg:max-w-md lg:flex-1">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500 md:h-3.5 md:w-3.5" aria-hidden="true" />
+            <input
+              ref={searchInputRef}
+              type="search"
+              placeholder="Artist, song, venue, year…"
+              aria-label="Search shows"
+              value={searchQuery}
+              onChange={e => onSearchChange(e.target.value)}
+              className="w-full rounded-full border border-white/10 bg-white/7 py-2 pl-10 pr-9 text-base text-white placeholder-gray-400 transition-colors focus:border-white/25 focus:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70 md:py-1.5 md:pl-9 md:text-sm [&::-webkit-search-cancel-button]:hidden"
             />
-          ))}
+            {searchQuery && (
+              <button
+                onClick={() => { onSearchChange(''); searchInputRef.current?.focus(); }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 transition-colors hover:text-white"
+                aria-label="Clear search"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+
+          {/* Scrolls sideways on a phone, so the next control peeks in. */}
+          <div className="-mx-4 flex w-full items-center gap-2 overflow-x-auto px-4 scrollbar-hide md:mx-0 md:px-0 lg:w-auto lg:overflow-visible">
+            {/* Beside the search: the other way to find someone. A jump, not a
+                filter, so it has no chevron; lit while the list is on screen. */}
+            <button
+              onClick={onAllArtists}
+              aria-current={allArtistsActive ? 'true' : undefined}
+              className={cn(
+                PILL,
+                allArtistsActive
+                  ? 'border-white/20 bg-white/10 text-white'
+                  : 'border-white/8 bg-white/5 text-gray-400 hover:border-white/20 hover:bg-white/10 hover:text-white',
+              )}
+            >
+              <Music2 className="h-3.5 w-3.5" aria-hidden="true" />
+              All artists
+            </button>
+            <span className="mx-1 h-6 w-px shrink-0 bg-white/10" aria-hidden="true" />
+            <YearRangePopover histogram={histogram} />
+            {FACETS.map(({ key, label }) => (
+              <FacetPopover
+                key={key}
+                label={label}
+                options={counts[key]}
+                selectedCount={state[key].length}
+                onToggle={value => toggleFacet(key, value)}
+                onClear={() => clearFacet(key)}
+              />
+            ))}
+          </div>
         </div>
 
         {active.length > 0 && (
@@ -113,10 +175,16 @@ export function FilterBar({ counts, histogram, resultCount }: FilterBarProps) {
           </div>
         )}
 
-        <div className="flex items-center justify-between gap-4 pb-3">
-          {/* aria-live so the count is announced when filters change — otherwise
-              a screen-reader user gets no feedback that anything happened. */}
-          <p className="text-sm text-gray-400" aria-live="polite">
+        {/* The count is announced when filters change — otherwise a screen-
+            reader user gets no feedback that anything happened. The live
+            region is always mounted and visually hidden: the visible row below
+            is display:none until something filters, and a region inside it
+            would be silent at the very moment it appears. */}
+        <p className="sr-only" aria-live="polite">
+          {filtered ? `${resultCount} ${resultCount === 1 ? 'show' : 'shows'}` : ''}
+        </p>
+        <div className={cn('items-center justify-between gap-4 pb-3', filtered ? 'flex' : 'hidden')}>
+          <p className="text-sm text-gray-400" aria-hidden="true">
             <span className="tabular-nums text-gray-200">{resultCount}</span>
             {resultCount === 1 ? ' show' : ' shows'}
           </p>

@@ -20,7 +20,7 @@ only these prefixes, and test a layout change at each tier's size.
 | Desktop | `2xl:` | 1536px | 1728 × 1117 | 15–16" laptops |
 | Large desktop | `3xl:` | 1920px | 2560 × 1440 | 24–27" monitors |
 
-`md` is the phone/desktop switch (sidebar, tab bar, drawer direction). `sm` is removed: nothing used
+`md` is the phone/desktop switch (tab bar, drawer direction). `sm` is removed: nothing used
 it, and the phone layout runs to 767px. JavaScript mirrors `md` in one place, `ShowDrawer`'s
 `matchMedia('(min-width: 768px)')`; keep the two in step.
 
@@ -31,55 +31,64 @@ it, and the phone layout runs to 767px. JavaScript mirrors `md` in one place, `S
 Design reasoning, and where the build departs from it: `docs/browse-redesign-spec.md`. What a
 change must not break:
 
-**Shell** (`components/shell/`). `AppShell` = fixed `TopNav` (search only, no wordmark) + `Sidebar`
-(md and up) + `<main>` + `MobileTabBar` (below md). The sidebar is a flex sibling, not an overlay,
-so content reflows. It is `expanded` (256px) or `rail` (72px, small label under each icon),
-toggled by its Collapse button and kept in `localStorage` under `vault:sidebar` (default
-expanded). Its top group sets the destination (Browse, Artists); its lower group toggles the
-`type` facet (Live shows, Documentaries). Below md the tab bar offers Browse · Artists · Search,
-padded by `env(safe-area-inset-bottom)`; `<main>` carries `pb-20` to clear it. No
-Live/Documentaries control on mobile.
+**One page** (owner, 2026-10-13). No sidebar, no top bar, no Artists destination, no type filter.
+`App.tsx` renders: the `HeroSearch` masthead (collapses to zero height while anything filters), the
+sticky `FilterBar`, then — while nothing filters — `FeaturedRows` and `ArtistDirectory` (every
+artist A–Z in CSS columns, no header or letter rail). Filtering replaces both: a query renders
+`SearchResultsGrid` (title, Found N, Clear, the song hint); facets alone render `ShowGrid`. A failed
+load renders one error state.
 
-**Views** (`App.tsx`). Browse (default): `HeroSearch` masthead (collapses to zero height while
-anything filters), sticky `FilterBar`, then — only when nothing filters — `FeaturedRows` and an
-"All shows" heading, then `ShowGrid` of `results`. Artists: `ArtistsView`, an A–Z directory with a
-sticky letter rail in CSS columns; picking an artist puts its name in the search and renders
-`SearchResultsGrid` in place, so clearing returns to the directory. A failed load renders one error
-state for every view.
+**Width.** Every block uses `CONTENT_WIDTH` (`src/lib/layout.ts`): the width the content had beside
+the old 256px sidebar, centred — from lg `min(1924px, 100vw − 16rem)`, full width below lg. The bar,
+Featured shows, the artist list and results share one left edge at every size.
 
-**State** (`src/store/filters.ts`, zustand): `view, q, from, to, undated, country, festival, type,
-sort`. Read the whole state only as `useFilterStore(useShallow(selectFilterState))` — without
-`useShallow`, zustand v5 re-renders until React throws ("getSnapshot should be cached"). Single
-fields take plain selectors. The search input is local to App; only its debounced value (150 ms)
-reaches the store.
+**Shell** (`components/shell/`). `AppShell` = `<main>` + `MobileTabBar` (below md, padded by
+`env(safe-area-inset-bottom)`; `<main>` carries `pb-20` to clear it). The tab bar's three items are
+jumps on the page: Browse (clear filters, top), Artists (the artist list, lit while it is on
+screen), Search (focuses the bar's field inside the tap).
+
+**The artist list.** "All artists" in the bar, the Artists tab, Clear after picking an artist and an
+old `?view=artists` link all call App's `goToDirectory`: clear every filter, open the masthead
+without animating (`HeroSearch instant`, or its 0.28s growth moves the list mid-scroll), then scroll
+to the list measured against the bar's height at that moment (the bar loses its count row in the
+same render). Picking an artist runs the exact-artist facet and writes the store at once, not after
+the search debounce. `directoryInView` (read on scroll, re-rendering only when it flips) lights All
+artists and the Artists tab.
+
+**State** (`src/store/filters.ts`, zustand): `q, from, to, undated, country, festival, sort`. Read
+the whole state only as `useFilterStore(useShallow(selectFilterState))` — without `useShallow`,
+zustand v5 re-renders until React throws ("getSnapshot should be cached"). Single fields take plain
+selectors. The search input is local to App; only its debounced value (150 ms) reaches the store.
 
 **URL** (`src/lib/url.ts`) is the store's canonical serialisation: keys in the fixed order above;
-facet values slugified, de-duplicated and sorted; defaults (`view=browse`, `sort=year-desc`,
-`undated` off) and empty values omitted. Query params on the root path, never path segments
-(GitHub Pages has no SPA fallback). Facet, query, range and sort changes `replaceState`; `setView`
-`pushState`s, so Back steps between destinations. `initFilterUrlSync` (once, in App) rehydrates on
-popstate. Every filter write passes through `commitFilterState` — the one seam reserved for
-analytics.
+facet values slugified, de-duplicated and sorted; defaults (`sort=year-desc`, `undated` off) and
+empty values omitted. Query params on the root path, never path segments (GitHub Pages has no SPA
+fallback). Every change `replaceState`s. `initFilterUrlSync` (once, in App) rehydrates on popstate.
+Every filter write passes through `commitFilterState` — the one seam reserved for analytics. The
+retired `view` and `type` params are dropped on parse; `view=artists` is honoured once by App.
 
 **Pipeline** (`src/hooks/useBrowseResults.ts`): text query → MiniSearch id set → facets → sort,
 all synchronous `useMemo`s. `src/search/facets.ts` counts each facet against every *other* active
 filter, so an option's count is what selecting it yields; zero-count options are disabled, never
 hidden. An empty `Country` or `EventOrFestival` becomes the `NONE` sentinel (`'none'`, "Unknown
-location" / "No festival"). `type` is `ContentType` slugified, `live` when absent. Undated records
-sort last both ways and are excluded from a year range unless `undated=1`.
+location" / "No festival"). Undated records sort last both ways and are excluded from a year range
+unless `undated=1`.
 
-**Controls** (`components/filters/`). `FilterBar`: Years, Country and Festival triggers; removable
-chips and Clear all while anything is set; the result count (`aria-live`) and sort. `FacetPopover`
-is a base-ui `Popover` — its `z-50` belongs on the `Positioner`; a text filter appears above 15
-options. `YearRangePopover`: decade chips (decades with 5+ records), the `YearHistogram` brush,
-From/To inputs (the keyboard and screen-reader path) and "Include undated". Brush maths is pure,
-in `src/lib/brush.ts`; the store is written on pointer-up only, never during a drag.
+**Controls** (`components/filters/`). `FilterBar` (`sticky top-0`, `data-filter-bar`): the search
+field (a pill like the controls beside it; `text-base` below md), **All artists** (a jump, so no
+chevron), a divider, then Years, Country and Festival — one row from lg, the search on its own
+line below it, the controls scrolling sideways on a phone. Then removable chips and Clear all while
+anything is set, and — only while filtering — the result count and sort; the count's `aria-live`
+region is always mounted (visually hidden), since one inside a `display:none` row is silent.
+`FacetPopover` is a base-ui `Popover` — its `z-50` belongs on the `Positioner`; a text filter
+appears above 15 options. `YearRangePopover`: decade chips (decades with 5+ records), the
+`YearHistogram` brush, From/To inputs (the keyboard and screen-reader path) and "Include undated".
+Brush maths is pure, in `src/lib/brush.ts`; the store is written on pointer-up only.
 
 **Grids.** `GRID_COLS` (exported by `FeaturedRows.tsx`) is the one column set for every grid:
-2 → md 4 → lg 5 → xl 6 → 2xl 7. `ShowGrid` (Browse) is memoised and deliberately unanimated;
-`SearchResultsGrid` (Artists-view search) has its own header and the "N more shows feature a song
-called …" suggestion. Browse content, `TopNav` and `FilterBar` sit in `max-w-[1924px] mx-auto`;
-`SearchResultsGrid` and `ArtistsView` use `max-w-[1860px]`.
+2 → md 4 → lg 5 → xl 6 → 2xl 7. `ShowGrid` is memoised and deliberately unanimated;
+`SearchResultsGrid` has its own header and the "N more shows feature a song called …" suggestion.
+`ArtistDirectory` is memoised; its `columns-[240px]` keeps every name untruncated.
 
 ---
 
@@ -107,15 +116,16 @@ onClick={() => {
 }}
 ```
 
-Both ways into the mobile search do this: `TopNav`'s search button, and the tab bar's Search item
-(`handleMobileSearchClick` in App, via TopNav's controlled `mobileSearchOpen` prop and
-`mobileSearchInputRef`). Mobile inputs use `font-size` 16px (`text-base`) or larger, or iOS zooms
-the page on focus.
+The search field no longer mounts on tap: it lives in the sticky `FilterBar`, always mounted, so
+the tab bar's Search item focuses it directly inside the tap (`handleSearchTab` in App) and needs
+no `flushSync`. Keep the pattern for any input that does mount on tap. Mobile inputs use
+`font-size` 16px (`text-base`) or larger, or iOS zooms the page on focus.
 
 ### Masthead (HeroSearch)
 Wordmark (`HalationLogo`) and tagline only — the one place the brand appears. Always mounted,
 animating to `height: 0 / opacity: 0` while filtering (`isSearching={filtered}` from App). It uses
-motion's `animate` prop, not `AnimatePresence`, so nothing above the grid unmounts mid-keystroke.
+motion's `animate` prop, not `AnimatePresence`, so the search field in the bar below keeps its
+place and focus mid-keystroke. `instant` skips the animation for the jump to the artist list.
 
 ### ShowDrawer — sizing and modal behaviour
 On mobile: full width, `h-dvh` (live dynamic viewport height, so it always fills the visible screen

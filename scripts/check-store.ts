@@ -96,20 +96,12 @@ console.log('\nactions');
   ok('clearAll clears undated', s.undated === false);
   ok('clearAll clears the query', s.q === '');
   ok('clearAll preserves sort (a view preference, not a filter)', s.sort === 'artist');
-
-  store.getState().setView('artists');
-  ok('setView changes destination', store.getState().view === 'artists');
-
-  store.getState().setQuery('pearl jam');
-  store.getState().setView('browse');
-  ok('setView clears the query so a destination is a destination', store.getState().q === '');
 }
 
 console.log('\nhydration');
 {
-  store.getState().hydrateFromUrl('?view=artists&from=1993&to=2011&undated=1&country=germany&sort=year-asc');
+  store.getState().hydrateFromUrl('?from=1993&to=2011&undated=1&country=germany&sort=year-asc');
   const s = store.getState();
-  ok('hydrate restores view', s.view === 'artists');
   ok('hydrate restores the range', s.from === 1993 && s.to === 2011);
   ok('hydrate restores undated', s.undated === true);
   ok('hydrate restores facets', s.country.join() === 'germany');

@@ -21,6 +21,11 @@ export function scrollToTop(): void {
   window.scrollTo({ top: 0, behavior: behavior() });
 }
 
+/** The page to a y position: the jump to the artist list uses it. */
+export function scrollToY(top: number): void {
+  window.scrollTo({ top, behavior: behavior() });
+}
+
 /** A scrolling element back to its top: the docked drawer header uses it. */
 export function scrollContainerToTop(el: Element | null | undefined): void {
   el?.scrollTo({ top: 0, behavior: behavior() });

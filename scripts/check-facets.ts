@@ -47,9 +47,6 @@ console.log('  eras:', [...eras.entries()].sort().map(([k, v]) => `${k}=${v}`).j
 ok('every show derives an era (NONE allowed)', derived.every(d => d.era.length > 0));
 ok('undated shows derive era NONE', derived.filter(d => !d.show.ShowDate).every(d => d.era === NONE));
 ok('empty country becomes NONE', derived.filter(d => !d.show.Country?.trim()).every(d => d.country === NONE));
-const docTotal = shows.filter(s => s.ContentType === 'Documentary').length;
-ok(`documentaries derive type (${docTotal})`,
-   docTotal > 0 && derived.filter(d => d.type === 'documentary').length === docTotal);
 
 console.log('\nno filters');
 ok('everything passes', applyFilters(derived, f(), null).length === shows.length);

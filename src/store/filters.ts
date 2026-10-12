@@ -5,7 +5,6 @@ import {
   FacetKey,
   FilterState,
   SortKey,
-  ViewKey,
   parseFilters,
   serializeFilters,
 } from '../lib/url';
@@ -27,8 +26,6 @@ interface FilterActions {
   /** Commit a year range. Nulls mean unbounded; call with (null, null) to clear. */
   setYearRange: (from: number | null, to: number | null) => void;
   toggleUndated: () => void;
-  /** Change destination. Pushes history rather than replacing — see below. */
-  setView: (view: ViewKey) => void;
   setSort: (sort: SortKey) => void;
   clearFacet: (facet: FacetKey) => void;
   clearAll: () => void;
@@ -51,7 +48,7 @@ function commitFilterState(next: FilterState): void {
   const url = `${window.location.pathname}${query}${window.location.hash}`;
 
   // replaceState, not pushState: ticking four checkboxes should not bury the
-  // back button under four entries. Destination changes push; refinement replaces.
+  // back button under four entries.
   window.history.replaceState(null, '', url);
 
   // GA seam — intentionally empty. Nothing else in the app may call gtag.
@@ -82,10 +79,7 @@ export const useFilterStore = create<FilterStore>((set, get) => {
     set(patch as Partial<FilterStore>);
     if (!applyingFromUrl) {
       const s = get();
-      commitFilterState({
-        view: s.view, q: s.q, from: s.from, to: s.to, undated: s.undated,
-        country: s.country, festival: s.festival, type: s.type, sort: s.sort,
-      });
+      commitFilterState(selectFilterState(s));
     }
   };
 
@@ -113,26 +107,6 @@ export const useFilterStore = create<FilterStore>((set, get) => {
 
     toggleUndated: () => apply({ undated: !get().undated }),
 
-    // Destination changes push a history entry; facet refinements replace one.
-    // Back should step between places you visited, not undo every checkbox.
-    setView: view => {
-      // Clearing the query is what makes a destination a destination. A live
-      // query outranks the view when rendering, so without this, clicking
-      // "Artists" while searching leaves you on results and the nav looks
-      // broken. Facets are left alone — they refine a view rather than
-      // replace it.
-      set({ view, q: '' });
-      const s = get();
-      const next: FilterState = {
-        view: s.view, q: s.q, from: s.from, to: s.to, undated: s.undated,
-        country: s.country, festival: s.festival, type: s.type, sort: s.sort,
-      };
-      if (typeof window !== 'undefined') {
-        const query = serializeFilters(next);
-        window.history.pushState(null, '', `${window.location.pathname}${query}${window.location.hash}`);
-      }
-    },
-
     setSort: sort => apply({ sort }),
 
     clearFacet: facet => apply({ [facet]: [] } as Partial<FilterState>),
@@ -140,7 +114,7 @@ export const useFilterStore = create<FilterStore>((set, get) => {
     // Sort deliberately survives "clear all" — it is a view preference, not a
     // filter, and resetting it would silently reorder results the user is reading.
     clearAll: () =>
-      apply({ q: '', from: null, to: null, undated: false, country: [], festival: [], type: [] }),
+      apply({ q: '', from: null, to: null, undated: false, country: [], festival: [] }),
 
     hydrateFromUrl: search => {
       applyingFromUrl = true;
@@ -169,10 +143,10 @@ export function initFilterUrlSync(): () => void {
 }
 
 /** Plain snapshot of the serializable state, without the actions. */
-export function selectFilterState(s: FilterStore): FilterState {
+export function selectFilterState(s: FilterState): FilterState {
   return {
-    view: s.view, q: s.q, from: s.from, to: s.to, undated: s.undated,
-    country: s.country, festival: s.festival, type: s.type, sort: s.sort,
+    q: s.q, from: s.from, to: s.to, undated: s.undated,
+    country: s.country, festival: s.festival, sort: s.sort,
   };
 }
 

@@ -21,7 +21,6 @@ export interface DerivedShow {
   year: number | null;
   country: string;    // slug | NONE
   festival: string;   // slug | NONE
-  type: string;       // slug, defaults to 'live'
   artist: string;
   /** Sortable date key; '' for undated, which always sorts last. */
   dateKey: string;
@@ -38,17 +37,6 @@ function deriveYear(showDate: string): number | null {
   return m ? Number.parseInt(m[1], 10) : null;
 }
 
-/**
- * ContentType says what a record is. It is set only where the record is not a
- * live show, so everything without it reads as 'live'. RecordingType says how
- * it was filmed and plays no part here.
- */
-function deriveType(show: Show): string {
-  const explicit = show.ContentType;
-  if (explicit && explicit.trim()) return slugify(explicit);
-  return 'live';
-}
-
 export function deriveShow(show: Show): DerivedShow {
   const date = (show.ShowDate || '').trim();
   return {
@@ -57,7 +45,6 @@ export function deriveShow(show: Show): DerivedShow {
     year: deriveYear(date),
     country: show.Country?.trim() ? slugify(show.Country) : NONE,
     festival: show.EventOrFestival?.trim() ? slugify(show.EventOrFestival) : NONE,
-    type: deriveType(show),
     artist: show.Artist,
     dateKey: /^\d{4}/.test(date) ? date : '',
   };
@@ -73,14 +60,8 @@ function facetValueOf(d: DerivedShow, facet: FacetKey): string {
   switch (facet) {
     case 'country': return d.country;
     case 'festival': return d.festival;
-    case 'type': return d.type;
   }
 }
-
-const TYPE_LABELS: Record<string, string> = {
-  live: 'Live shows',
-  documentary: 'Documentaries',
-};
 
 /**
  * Human label for an option. Values are slugs, so the label comes from the
@@ -95,7 +76,6 @@ function facetLabelOf(d: DerivedShow, facet: FacetKey): string {
   switch (facet) {
     case 'country': return d.show.Country?.trim() || 'Unknown location';
     case 'festival': return d.show.EventOrFestival?.trim() || 'No festival';
-    case 'type': return TYPE_LABELS[d.type] ?? d.type;
   }
 }
 

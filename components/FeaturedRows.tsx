@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { motion } from 'motion/react';
 import { Show } from '../App';
+import { CONTENT_WIDTH } from '../src/lib/layout';
 import { ShowCard } from './ShowCard';
 
 /**
@@ -56,18 +57,20 @@ function FeaturedSection({ title, shows, onShowClick, getImageUrl }: FeaturedSec
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
     >
-      <h2 className="mb-3 px-4 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400 md:px-8">
-        {title}
-      </h2>
-      <div className={`${GRID_COLS} px-4 md:px-8`}>
-        {shows.map(show => (
-          <ShowCard
-            key={show.ShowID}
-            show={show}
-            onSelect={onShowClick}
-            getImageUrl={getImageUrl}
-          />
-        ))}
+      <div className={CONTENT_WIDTH}>
+        <h2 className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+          {title}
+        </h2>
+        <div className={GRID_COLS}>
+          {shows.map(show => (
+            <ShowCard
+              key={show.ShowID}
+              show={show}
+              onSelect={onShowClick}
+              getImageUrl={getImageUrl}
+            />
+          ))}
+        </div>
       </div>
     </motion.section>
   );
@@ -127,7 +130,7 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
 
   if (!sections) {
     return (
-      <div className="mx-auto max-w-[1924px] px-4 py-8 md:px-8" role="status" aria-label="Loading shows">
+      <div className={`${CONTENT_WIDTH} py-8`} role="status" aria-label="Loading shows">
         <div className="animate-pulse">
           <div className="mb-4 h-3 w-32 rounded bg-white/5" />
           <div className={GRID_COLS}>
@@ -141,7 +144,7 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
   }
 
   return (
-    <div className="mx-auto max-w-[1924px] pb-16">
+    <div className="pt-6">
       <FeaturedSection
         title="Featured shows"
         shows={sections.featured}
