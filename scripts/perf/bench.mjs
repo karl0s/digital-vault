@@ -259,9 +259,11 @@ async function buildAndServe() {
   mkdirSync(outDir, { recursive: true });
   console.log('Building…');
   await build({ root: ROOT, logLevel: 'warn', build: { outDir, emptyOutDir: true, copyPublicDir: false } });
-  // public/ is ~300 MB of images. Link it in rather than copying.
+  // public/ is ~300 MB of images. Link it in rather than copying. Skip what
+  // the build already wrote: site-data writes its own shows.json (no private
+  // fields), and that is the copy the site serves.
   for (const e of readdirSync(join(ROOT, 'public'))) {
-    if (!e.startsWith('.')) symlinkSync(join(ROOT, 'public', e), join(outDir, e));
+    if (!e.startsWith('.') && !existsSync(join(outDir, e))) symlinkSync(join(ROOT, 'public', e), join(outDir, e));
   }
   const server = await preview({ root: ROOT, logLevel: 'warn', build: { outDir }, preview: { port: 4317 } });
   return { url: server.resolvedUrls.local[0], close: () => server.httpServer.close() };
