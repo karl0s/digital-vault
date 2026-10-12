@@ -81,7 +81,9 @@ line below it, the controls scrolling sideways on a phone. Then removable chips 
 anything is set, and — only while filtering — the result count and sort; the count's `aria-live`
 region is always mounted (visually hidden), since one inside a `display:none` row is silent.
 `FacetPopover` is a base-ui `Popover` — its `z-50` belongs on the `Positioner`; a text filter
-appears above 15 options. `YearRangePopover`: decade chips (decades with 5+ records), the
+appears above 15 options. `minTotal` leaves out options with fewer shows in the whole collection
+(`listedOptions` in `facets.ts`; a selected one stays): Country lists only countries with 6+ shows
+(owner, 2026-10-13), and search still finds the rest by name. `YearRangePopover`: decade chips (decades with 5+ records), the
 `YearHistogram` brush, From/To inputs (the keyboard and screen-reader path) and "Include undated".
 Brush maths is pure, in `src/lib/brush.ts`; the store is written on pointer-up only.
 

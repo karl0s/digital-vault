@@ -2,7 +2,7 @@ import { Popover } from '@base-ui/react/popover';
 import { Check, ChevronDown, Search } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { cn } from '../../src/lib/cn';
-import { FacetOption } from '../../src/search/facets';
+import { FacetOption, listedOptions } from '../../src/search/facets';
 
 /**
  * One facet: a trigger, and a popover of multi-select options with live counts.
@@ -19,6 +19,8 @@ interface FacetPopoverProps {
   onClear: () => void;
   /** Show the in-popover text filter above this many options. */
   searchThreshold?: number;
+  /** List only options with at least this many shows in the collection. */
+  minTotal?: number;
 }
 
 export function FacetPopover({
@@ -28,18 +30,20 @@ export function FacetPopover({
   onToggle,
   onClear,
   searchThreshold = 15,
+  minTotal = 0,
 }: FacetPopoverProps) {
   const [needle, setNeedle] = useState('');
 
-  const showSearch = options.length > searchThreshold;
+  const listed = useMemo(() => listedOptions(options, minTotal), [options, minTotal]);
+  const showSearch = listed.length > searchThreshold;
 
   const visible = useMemo(() => {
     const n = needle.trim().toLowerCase();
-    if (!n) return options;
+    if (!n) return listed;
     // Selected options always stay visible, or filtering the list would appear
     // to silently discard choices the user has already made.
-    return options.filter(o => o.selected || o.label.toLowerCase().includes(n));
-  }, [options, needle]);
+    return listed.filter(o => o.selected || o.label.toLowerCase().includes(n));
+  }, [listed, needle]);
 
   return (
     <Popover.Root>

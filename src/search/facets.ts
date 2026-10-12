@@ -127,6 +127,8 @@ export interface FacetOption {
   /** Display string — the record's original text, not the slug. */
   label: string;
   count: number;
+  /** Shows with this value in the whole collection, whatever is filtered. */
+  total: number;
   selected: boolean;
 }
 
@@ -154,12 +156,14 @@ export function computeFacetCounts(
 
   for (const facet of FACET_KEYS) {
     const tally = new Map<string, number>();
+    const totals = new Map<string, number>();
     const labels = new Map<string, string>();
 
     // Every value in the corpus starts at zero so options never disappear.
     for (const d of derived) {
       const value = facetValueOf(d, facet);
       tally.set(value, 0);
+      totals.set(value, (totals.get(value) ?? 0) + 1);
       if (!labels.has(value)) labels.set(value, facetLabelOf(d, facet));
     }
 
@@ -175,12 +179,24 @@ export function computeFacetCounts(
         value,
         label: labels.get(value) ?? value,
         count,
+        total: totals.get(value) ?? 0,
         selected: selected.has(value),
       }))
       .sort(sortFacetOptions(facet));
   }
 
   return counts;
+}
+
+/**
+ * The options a dropdown lists: those with at least `minTotal` shows in the
+ * whole collection, plus any already selected (a URL can select one).
+ *
+ * Judged on the collection, never the live count, so the list stays put while
+ * other filters change — the reason zero-count options are disabled, not hidden.
+ */
+export function listedOptions(options: FacetOption[], minTotal: number): FacetOption[] {
+  return minTotal > 0 ? options.filter(o => o.selected || o.total >= minTotal) : options;
 }
 
 /**

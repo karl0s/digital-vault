@@ -26,8 +26,10 @@ import { YearRangePopover } from './YearRangePopover';
  */
 
 // Years are handled by their own range control, not as a multi-select facet.
-const FACETS: { key: FacetKey; label: string }[] = [
-  { key: 'country', label: 'Country' },
+// Country lists only countries with 6+ shows (owner, 2026-10-13); the rest are
+// still found by searching their name.
+const FACETS: { key: FacetKey; label: string; minTotal?: number }[] = [
+  { key: 'country', label: 'Country', minTotal: 6 },
   { key: 'festival', label: 'Festival' },
 ];
 
@@ -140,11 +142,12 @@ export function FilterBar({
             </button>
             <span className="mx-1 h-6 w-px shrink-0 bg-white/10" aria-hidden="true" />
             <YearRangePopover histogram={histogram} />
-            {FACETS.map(({ key, label }) => (
+            {FACETS.map(({ key, label, minTotal }) => (
               <FacetPopover
                 key={key}
                 label={label}
                 options={counts[key]}
+                minTotal={minTotal}
                 selectedCount={state[key].length}
                 onToggle={value => toggleFacet(key, value)}
                 onClear={() => clearFacet(key)}

@@ -10,7 +10,7 @@
 import { readFileSync } from 'node:fs';
 import { Show } from '../App';
 import { EMPTY_FILTERS, FACET_KEYS, FacetKey, FilterState, NONE } from '../src/lib/url';
-import { applyFilters, computeFacetCounts, computeYearHistogram, deriveAll, sortShows } from '../src/search/facets';
+import { applyFilters, computeFacetCounts, computeYearHistogram, deriveAll, listedOptions, sortShows } from '../src/search/facets';
 
 const shows: Show[] = JSON.parse(readFileSync('public/shows.json', 'utf8'));
 const derived = deriveAll(shows);
@@ -153,6 +153,23 @@ console.log('\nzero-count options are returned, not dropped');
   const counts = computeFacetCounts(derived, f({ country: ['japan'] }), null);
   ok('festival options still present', counts.festival.length > 0);
   ok('some festival options are zero (disable, not hide)', counts.festival.some(o => o.count === 0));
+}
+
+console.log('\nthe Country list leaves out rare countries, judged on the collection');
+{
+  const all = computeFacetCounts(derived, f(), null).country;
+  ok('total is the unfiltered count', all.every(o => o.total === o.count));
+  const rare = all.find(o => o.total < 6 && o.value !== NONE);
+  ok('the collection has a country with 5 or fewer shows', rare !== undefined);
+  if (rare) {
+    ok(`${rare.label} (${rare.total}) is not listed`, !listedOptions(all, 6).includes(rare));
+    const picked = computeFacetCounts(derived, f({ country: [rare.value] }), null).country;
+    ok(`${rare.label} is listed once selected`, listedOptions(picked, 6).some(o => o.value === rare.value));
+  }
+  // Another filter shrinks the live counts, never the list.
+  const narrowed = computeFacetCounts(derived, f({ from: 1990, to: 1999 }), null).country;
+  ok('the list ignores other filters',
+    listedOptions(narrowed, 6).length === listedOptions(all, 6).length);
 }
 
 console.log('\nNONE keeps sparse records reachable');
