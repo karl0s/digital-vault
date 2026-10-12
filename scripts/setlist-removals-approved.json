@@ -1736,5 +1736,23 @@
       "Jolene (Encore)"
     ],
     "why": "Sidecar re-scan 2026-10-05: removed on the owner's choice (review page, option B) - lines the folder's own info file does not list as songs on this recording (header, credits, uploader text, or songs the disc does not carry)."
+  },
+  "9214db1ffe8d": {
+    "artist": "Blind Melon",
+    "show": "2 Meter Sessions 1993-11-10",
+    "entries": [
+      "Blind Melon",
+      "Bullet Sound Studios"
+    ],
+    "why": "Header lines of the folder's own info file (band name and studio), imported into Setlist as if they were songs. The studio is now in VenueName; the five songs are unchanged."
+  },
+  "44aa8504e89b": {
+    "artist": "Green Day",
+    "show": "VH1 Storytellers 2005-02-15",
+    "entries": [
+      "Green Day",
+      "Introduction"
+    ],
+    "why": "The info file's header line (band name) and the first item of its Contents list, a spoken introduction rather than a song; noted in PrivateNotes. The 13 songs are unchanged."
   }
 }
