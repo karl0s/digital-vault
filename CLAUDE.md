@@ -529,7 +529,7 @@ the health check and commit.
 ## Front-end performance
 
 Measured, not guessed: these rules took the drawer from 400–600 ms to open to ~30 ms. `npm run
-check:perf` (part of `npm run check`) enforces all but the last:
+check:perf` (part of `npm run check`) enforces every rule not marked (unchecked):
 
 - **No motion components inside `ShowCard`.** Its hover and focus layers are CSS (`group-hover`,
   `group-focus-visible`); ~1,200 cards × animated components re-render together. Use `motion` for
@@ -543,6 +543,11 @@ check:perf` (part of `npm run check`) enforces all but the last:
   the slide-out finishes (`drawerSettled` in App, `onSettled` in ShowDrawer). Toggling it restyles
   the whole page; inside the click it delayed the first frame. The backdrop covers the page and
   focus is trapped meanwhile.
+- **Scroll-linked drawer styles go to the DOM, never React state.** The docking header's scroll
+  listener writes `--p` onto the drawer (`style.setProperty`) and the `drawer-dock-*` rules in
+  `styles/globals.css` follow it; a state update per scroll frame would re-render the whole drawer.
+- **No layout reads in the drawer's opening frame** (unchecked). The docking header measures itself
+  two frames after the drawer opens; measuring in the click's frame added ~50 ms at 4× (116 → 166 ms).
 - **Card images use native `loading="lazy"`** in `LazyImage` — no per-image IntersectionObserver,
   no `translateZ(0)` or `will-change` (each pins a compositor layer per card).
 - **Cards load the build thumbnail**, with the original as `fallbackSrc`; anything shown large uses
@@ -573,9 +578,10 @@ headless from a sandboxed shell). Still open: virtualising Browse, only if a rea
 ## Front-end architecture and UI patterns
 
 **Read `docs/frontend.md` before changing anything in `components/`, `App.tsx`, `src/` or `styles/`.**
-It holds the Browse architecture (shell, views, filter state, canonical URL, results pipeline,
-controls, grids) and the UI patterns (close buttons, the iOS keyboard rule, the masthead, and the
-show drawer's sizing, modal behaviour, layout, screenshots and image viewer). Keep it current
+It holds the breakpoints (six tiers, one test size each, defined in `styles/globals.css`), the Browse
+architecture (shell, views, filter state, canonical URL, results pipeline, controls, grids) and the
+UI patterns (close buttons, the iOS keyboard rule, the masthead, and the show drawer's sizing per
+breakpoint, docking header, modal behaviour, layout, screenshots and image viewer). Keep it current
 when you change any of them.
 
 ### Checks

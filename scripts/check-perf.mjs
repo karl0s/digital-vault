@@ -69,6 +69,13 @@ ok('inert waits for the drawer animation, not the click',
   /drawerSettled\s*\?\s*\(\s*\{\s*inert/.test(app) && !/selectedShow\s*\?\s*\(\s*\{\s*inert/.test(app),
   'Toggling inert restyles the whole page (~24k elements). Keyed on selectedShow it delays the drawer by 100 ms+ (Mac) / 0.5 s (phone).');
 
+console.log('Drawer');
+const drawer = code('components/ShowDrawer.tsx');
+const onScroll = (drawer.match(/const onScroll = \(\) => \{([\s\S]*?)\n\s*\};/) || [])[1] || '';
+ok('the docking header writes scroll progress to the DOM, not React state',
+  /setProperty\('--p'/.test(onScroll) && !/(?<![.\w])set[A-Z]\w*\(/.test(onScroll),
+  'Its scroll listener sets --p on the drawer and styles/globals.css follows it. A state update per scroll frame re-renders the whole drawer.');
+
 console.log('Images');
 ok('cards load the build thumbnail, with the original as fallback',
   /getImageUrl\(show\.ChecksumSHA1, 1, 'thumb'\)/.test(card) && /src=\{thumbUrl\}/.test(card) && /fallbackSrc=\{imageUrl\}/.test(card),
