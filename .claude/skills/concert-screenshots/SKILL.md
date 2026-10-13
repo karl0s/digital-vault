@@ -934,6 +934,10 @@ acts, file the disc through `va-masters` (§10).
   assert len(set(ids)) == len(ids)
   assert all(u["Checksum"] == rec[u["ShowID"]]["ChecksumSHA1"] for u in state["shows"])
   ```
+- **A promoted show may be an artist's portrait** (`src/lib/portraits.ts`: ShowID + slot). Its
+  search tile then shows whatever image now sits in that slot, so tell the owner when a promoted
+  ShowID is in that file, and offer the picker (`python3 tools/artist-portraits/build.py`). After a
+  merge, delete or re-key, the health check warns about any pick that no longer resolves.
 - **A merge, delete, split or re-key orphans the old images** — `promote.py` cannot see it. List
   manifest entries no record references, and delete files and entry only once the checksum is
   provably unreferenced (plain `rm`, never `git rm`):

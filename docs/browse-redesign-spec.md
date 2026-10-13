@@ -9,9 +9,10 @@ architecture.
 
 **Superseded on 2026-10-13 (owner):** the shell this spec describes — the persistent sidebar, the
 fixed top search bar, the separate Artists destination and the Live / Documentaries type facet —
-is gone. The site is one page: masthead, one sticky bar (search, All artists, Years, Country,
-Festival) on the content's edge, then Featured shows and every artist A–Z; filtering replaces both
-with results. The search sat over the sidebar, never in line with the shows, and the type filter
+is gone. The site is one page: masthead, one sticky bar (search, Years, Country, Event) on the
+content's edge, then Featured shows and every artist A–Z; filtering replaces both with results. (The
+bar's All artists jump went later the same day; search results now group into artists, shows and
+songs — `docs/frontend.md`.) The search sat over the sidebar, never in line with the shows, and the type filter
 read as navigation and went unused.
 
 ## Deviations from this spec

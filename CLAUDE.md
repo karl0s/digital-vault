@@ -29,8 +29,8 @@ components/             ← cards, grids, ShowDrawer, ArtistDirectory, HeroSearc
 src/
   hooks/                ← useShows (data + getNotes + getImageUrl), useBrowseResults, useSearchEngine, useDebounce
   store/filters.ts      ← zustand filter store, synced to the URL
-  lib/                  ← url.ts (canonical URL state), layout.ts (the one content width), brush.ts, motion.ts, cn.ts
-  search/               ← searchIndex.ts (MiniSearch, field prefixes), facets.ts (filter, count, sort)
+  lib/                  ← url.ts (canonical URL state, EVENT_GROUPS), layout.ts (the one content width), portraits.ts (artist tile picks), brush.ts, motion.ts, cn.ts
+  search/               ← searchIndex.ts (MiniSearch, field prefixes; free text grouped artist/show/song, Did you mean), facets.ts (filter, count, sort)
 styles/globals.css      ← Tailwind entry, global CSS and the breakpoints (imported by main.tsx)
 dist/                   ← BUILD OUTPUT — never commit this, CI owns it
 data-pipeline/          ← historical drive-scan scripts and CSVs (see Data pipeline)
@@ -180,6 +180,11 @@ Maps `ChecksumSHA1 → [1, 2, 3, 4]` (available slot indices). Only listed slots
 - When adding or replacing: copy to `public/images/` with the right name, update
   `public/image-manifest.json` to the new set of indices, and **never** leave files in
   `public/images/temp-images/`.
+- **Artist portraits** — the round picture on an artist's tile in search results — are the owner's
+  picks in `src/lib/portraits.ts`: a ShowID and a slot per artist (109 of 304, 2026-10-13), else
+  the newest show's slot 1. Replacing that slot's image changes the tile; a merge, delete, hide or
+  re-key of the record drops it to the fallback (the health check warns). Re-pick on the page
+  `python3 tools/artist-portraits/build.py` renders; it starts from the picks in the code.
 
 ### Card thumbnails — build output, never committed
 Cards load a 640px-wide WebP of slot 1 (`dist/thumbs/{checksum}_01.webp`, made by
@@ -313,7 +318,7 @@ rename the image files, update the manifest key, clear the Note.
 - **Warns only:** checksums missing from the manifest, orphaned images, temp checksums, files left
   in `temp-images/`, records with no checksum, deprecated or garbage `EventOrFestival` values, a
   "N shows" figure in README or CLAUDE.md more than 2% off the data, uncommitted README/CLAUDE.md
-  edits.
+  edits, an artist portrait pick that no longer resolves.
 
 ### Commit message style
 Conventional commits: `feat(shows):` new record or image · `fix(shows):` metadata correction ·
@@ -594,7 +599,8 @@ when you change any of them.
 `npm run check` = `check:perf` (Front-end performance), `check:url` (canonical
 serialisation), `check:facets` (counts against the real `shows.json`), `check:store` (stable
 selector snapshots), `check:brush` (brush geometry), `check:search` (every artist view returns
-exactly that artist's shows, plus hand-checked search cases; `scripts/search-precision.ts`) and
+exactly that artist's shows, hand-checked search cases, and free-text grouping, literal matching and
+Did you mean cases; `scripts/search-precision.ts`) and
 `typecheck`. Run it after any code change; the deploy runs it too.
 
 ---

@@ -6,7 +6,7 @@ catalogue's displayed text needs another subset (checked 2026-10-02).
 
 | File | Font | Used for | Source |
 |---|---|---|---|
-| `bebas-neue-latin*.woff2` | Bebas Neue 400 | display headings (`--font-display`) | Google Fonts |
+| `bebas-neue-latin*.woff2` | Bebas Neue 400 | display headings (`--font-display`): the drawer's artist name, the A–Z letters | Google Fonts |
 | `dm-sans-latin*.woff2` | DM Sans, variable 300–700 + optical size | body text (`--font-body`) | Google Fonts, `dmsans/v17` |
 | `archivo-700-latin*.woff2` | Archivo 700 | the wordmark only (`HalationLogo.tsx`) | Google Fonts, `archivo/v25` |
 

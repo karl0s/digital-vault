@@ -278,6 +278,34 @@ if no_images:
 else:
     print('  All shows have a checksum — OK')
 
+# ── 10b. Artist portrait picks ───────────────────────────────────────────────
+#
+# src/lib/portraits.ts points each picked artist's search tile at a ShowID and
+# an image slot. A merge, delete, hide or re-key, or a slot dropped from the
+# manifest, silently drops that tile back to the newest show's slot 1 — so say so.
+
+section('Artist portrait picks')
+PORTRAITS_TS = os.path.join(ROOT, 'src', 'lib', 'portraits.ts')
+if os.path.exists(PORTRAITS_TS):
+    import re
+    src = open(PORTRAITS_TS, encoding='utf-8').read()
+    picks = re.findall(r"""(['"])((?:(?!\1)[^\\]|\\.)+)\1\s*:\s*\{\s*show:\s*'([0-9a-f]+)',\s*slot:\s*(\d)\s*\}""", src)
+    by_id = {s['ShowID']: s for s in shows}
+    broken = 0
+    for _, artist, sid, slot in picks:
+        artist = artist.replace("\\'", "'")
+        s = by_id.get(sid)
+        why = ('no such ShowID' if not s
+               else 'show is hidden' if s.get('Hidden') == 'Yes'
+               else f'show is now {s.get("Artist")!r}' if s.get('Artist') != artist
+               else f'slot {slot} not in the manifest' if int(slot) not in manifest.get(s.get('ChecksumSHA1') or '', [])
+               else None)
+        if why:
+            broken += 1
+            warn(f'  Portrait pick for {artist} ({sid}, slot {slot}): {why} — the tile falls back to the newest show')
+    if not broken:
+        print(f'  {len(picks)} picks, all resolve — OK')
+
 # ── 11. EventOrFestival consistency ─────────────────────────────────────────
 
 section('EventOrFestival consistency')
