@@ -34,8 +34,8 @@ change must not break:
 **One page** (owner, 2026-10-13). No sidebar, no top bar, no Artists destination, no type filter.
 `App.tsx` renders: the `HeroSearch` masthead (collapses to zero height while anything filters), the
 sticky `FilterBar`, then — while nothing filters — `FeaturedRows` and `ArtistDirectory` (every
-artist A–Z in CSS columns, no header or letter rail). Filtering replaces both: a query renders
-`SearchResultsGrid` (title, Found N, Clear, the song hint); facets alone render `ShowGrid`. A failed
+artist A–Z in CSS columns under a small "All artists 304" label, no page title or letter rail).
+Filtering replaces both: a query renders `SearchResultsGrid` (title, Found N, Clear search, the song hint); facets alone render `ShowGrid`. A failed
 load renders one error state.
 
 **Width.** Every block uses `CONTENT_WIDTH` (`src/lib/layout.ts`): the width the content had beside
@@ -47,13 +47,14 @@ Featured shows, the artist list and results share one left edge at every size.
 jumps on the page: Browse (clear filters, top), Artists (the artist list, lit while it is on
 screen), Search (focuses the bar's field inside the tap).
 
-**The artist list.** "All artists" in the bar, the Artists tab, Clear after picking an artist and an
-old `?view=artists` link all call App's `goToDirectory`: clear every filter, open the masthead
+**The artist list.** The Artists tab, **All artists** on an artist's results and an old
+`?view=artists` link all call App's `goToDirectory` (the bar's own All artists jump went, owner
+2026-10-13): clear every filter, open the masthead
 without animating (`HeroSearch instant`, or its 0.28s growth moves the list mid-scroll), then scroll
 to the list measured against the bar's height at that moment (the bar loses its count row in the
 same render). Picking an artist runs the exact-artist facet and writes the store at once, not after
-the search debounce. `directoryInView` (read on scroll, re-rendering only when it flips) lights All
-artists and the Artists tab.
+the search debounce. `directoryInView` (read on scroll, re-rendering only when it flips) lights the
+Artists tab.
 
 **State** (`src/store/filters.ts`, zustand): `q, from, to, undated, country, festival, sort`. Read
 the whole state only as `useFilterStore(useShallow(selectFilterState))` — without `useShallow`,
@@ -68,15 +69,26 @@ Every filter write passes through `commitFilterState` — the one seam reserved 
 retired `view` and `type` params are dropped on parse; `view=artists` is honoured once by App.
 
 **Pipeline** (`src/hooks/useBrowseResults.ts`): text query → MiniSearch id set → facets → sort,
-all synchronous `useMemo`s. `src/search/facets.ts` counts each facet against every *other* active
+all synchronous `useMemo`s.
+
+**Search** (`src/search/searchIndex.ts`, owner 2026-10-13). An exact artist name opens the artist
+view; `field:` prefixes filter one field; anything else is free text, and its results come back
+**grouped by why they matched** (`searchShows` → `groups` in the hook): **artist** (the query
+starts words of the name: "stone" → Stone Temple Pilots, Rolling Stones; from two letters), **show**
+(date, venue, city, country, event, recording type), **song** (only the setlist matched; the card
+names the song, matched letters lit). Content words match literally — **no fuzzy matching**
+("stone" found "stole"); only the last word, from four letters, is a prefix. Typos are offered,
+never run: when nothing matches, a **Did you mean** names artists a typo away (edit distance with
+swapped letters, `suggestArtists`), or failing that the query with a misspelt place or event
+corrected (`suggestQuery`). `npm run check:search` holds golden cases for all of it. `src/search/facets.ts` counts each facet against every *other* active
 filter, so an option's count is what selecting it yields; zero-count options are disabled, never
 hidden. An empty `Country` or `EventOrFestival` becomes the `NONE` sentinel (`'none'`, "Unknown
 location" / "No event"). Undated records sort last both ways and are excluded from a year range
 unless `undated=1`.
 
 **Controls** (`components/filters/`). `FilterBar` (`sticky top-0`, `data-filter-bar`): the search
-field (a pill like the controls beside it; `text-base` below md), **All artists** (a jump, so no
-chevron), a divider, then Years, Country and Event — one row from lg, the search on its own
+field (a pill like the controls beside it; `text-base` below md), then Years, Country and Event —
+one row from lg, the search on its own
 line below it, the controls scrolling sideways on a phone. Then removable chips and Clear all while
 anything is set, and — only while filtering — the result count and sort; the count's `aria-live`
 region is always mounted (visually hidden), since one inside a `display:none` row is silent.
@@ -84,14 +96,29 @@ region is always mounted (visually hidden), since one inside a `display:none` ro
 appears above 15 options. `minTotal` leaves out options with fewer shows in the whole collection
 (`listedOptions` in `facets.ts`; a selected one stays): Country and Event list only values with 6+
 shows (owner, 2026-10-13), and search still finds the rest by name. Event is the `festival` facet
-relabelled (most of it is TV programmes); its URL key stays `festival`. `YearRangePopover`: decade chips (decades with 5+ records), the
+relabelled (most of it is TV programmes); its URL key stays `festival`. `EVENT_GROUPS`
+(`src/lib/url.ts`) folds names that are one event into one option — Reading Festival, Leeds Festival
+and Reading and Leeds Festival are "Reading & Leeds" (owner, 2026-10-13) — while each record, the
+drawer and search keep the record's own name; an old link to a folded name lands on the group. `YearRangePopover`: decade chips (decades with 5+ records), the
 `YearHistogram` brush, From/To inputs (the keyboard and screen-reader path) and "Include undated".
 Brush maths is pure, in `src/lib/brush.ts`; the store is written on pointer-up only.
 
 **Grids.** `GRID_COLS` (exported by `FeaturedRows.tsx`) is the one column set for every grid:
 2 → md 4 → lg 5 → xl 6 → 2xl 7. `ShowGrid` is memoised and deliberately unanimated;
-`SearchResultsGrid` has its own header and the "N more shows feature a song called …" suggestion.
-`ArtistDirectory` is memoised; its `columns-[240px]` keeps every name untruncated.
+`SearchResultsGrid` has its own header and the "N more shows feature a song called …" suggestion;
+for free text it renders the groups in order — **Artists** as tiles (round portrait, name, count,
+chevron; each spans two `GRID_TRACKS` columns so its edges meet the cards'; six, then Show all),
+then **Shows** and **Songs** as card grids — or the Did you mean. A tile's portrait is the owner's
+pick in `ARTIST_PORTRAITS` (`src/lib/portraits.ts`), else the newest show's slot 1, whatever the
+filters or sort; picks are made on `tools/artist-portraits/build.py`'s page and pasted back. Under
+the title, the count and a **Clear search** pill (`bg-white/10`, 32px tall — a standalone control,
+so WCAG 2.5.8's 24px target applies; an artist opened from the list reads **All artists** with a
+back chevron instead). It is the results' one way out; the empty state only suggests what to try.
+`ArtistDirectory` is memoised; its `columns-[240px]` keeps every name untruncated. Its hierarchy
+(owner, 2026-10-13): letters in Bebas Neue 36px (`--font-display`); names on the letter's edge, the
+row's hover fill bleeding 12px past it (`-mx-3`); rows 32px from md, 36px on a phone; show counts
+at `text-white/17`, back to `gray-400` on the row's hover or focus. Tried and dropped: thumbnails per
+row, fading the other letters on hover, white names for 5+ show artists.
 
 ---
 

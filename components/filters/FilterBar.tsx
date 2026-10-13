@@ -1,4 +1,4 @@
-import { Music2, Search, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { RefObject } from 'react';
 import { cn } from '../../src/lib/cn';
 import { CONTENT_WIDTH } from '../../src/lib/layout';
@@ -9,13 +9,14 @@ import { FacetPopover } from './FacetPopover';
 import { YearRangePopover } from './YearRangePopover';
 
 /**
- * The page's one sticky bar (owner, 2026-10-13): search, "All artists", then
- * the facets. It replaced the fixed top bar, whose search lined up with the
+ * The page's one sticky bar (owner, 2026-10-13): search, then the facets. The
+ * "All artists" jump that sat between them went the same day (owner) — the
+ * list is under Featured shows, and the phone's Artists tab still jumps there. It replaced the fixed top bar, whose search lined up with the
  * old sidebar rather than the shows; it sits on the shared content width, so
  * every control starts on the same edge as the cards below it.
  *
  * Three stacked pieces, two of them conditional:
- *   1. search, All artists, facet triggers — always
+ *   1. search, facet triggers — always
  *   2. active filter chips                 — only while something is selected
  *   3. result count + sort                 — only while filtering; until then
  *      the page shows Featured shows and the artist list, which have no count
@@ -49,16 +50,10 @@ interface FilterBarProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   searchInputRef: RefObject<HTMLInputElement>;
-  /** Clears everything and jumps to the artist list. */
-  onAllArtists: () => void;
-  /** The artist list is on screen under the bar. */
-  allArtistsActive: boolean;
 }
 
-const PILL = 'flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm transition-colors duration-150';
-
 export function FilterBar({
-  counts, histogram, resultCount, filtered, searchQuery, onSearchChange, searchInputRef, onAllArtists, allArtistsActive,
+  counts, histogram, resultCount, filtered, searchQuery, onSearchChange, searchInputRef,
 }: FilterBarProps) {
   const state = useFilterStore();
   const { toggleFacet, clearFacet, clearAll, setSort, setYearRange, toggleUndated } = state;
@@ -126,22 +121,6 @@ export function FilterBar({
 
           {/* Scrolls sideways on a phone, so the next control peeks in. */}
           <div className="-mx-4 flex w-full items-center gap-2 overflow-x-auto px-4 scrollbar-hide md:mx-0 md:px-0 lg:w-auto lg:overflow-visible">
-            {/* Beside the search: the other way to find someone. A jump, not a
-                filter, so it has no chevron; lit while the list is on screen. */}
-            <button
-              onClick={onAllArtists}
-              aria-current={allArtistsActive ? 'true' : undefined}
-              className={cn(
-                PILL,
-                allArtistsActive
-                  ? 'border-white/20 bg-white/10 text-white'
-                  : 'border-white/8 bg-white/5 text-gray-400 hover:border-white/20 hover:bg-white/10 hover:text-white',
-              )}
-            >
-              <Music2 className="h-3.5 w-3.5" aria-hidden="true" />
-              All artists
-            </button>
-            <span className="mx-1 h-6 w-px shrink-0 bg-white/10" aria-hidden="true" />
             <YearRangePopover histogram={histogram} />
             {FACETS.map(({ key, label, minTotal }) => (
               <FacetPopover

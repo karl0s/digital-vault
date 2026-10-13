@@ -1,5 +1,5 @@
 import { Show } from '../../App';
-import { FACET_KEYS, FacetKey, FilterState, NONE, SortKey, slugify } from '../lib/url';
+import { EVENT_GROUPS, FACET_KEYS, FacetKey, FilterState, NONE, SortKey, slugify } from '../lib/url';
 
 /**
  * Faceted filtering, counting and sorting over the show catalogue.
@@ -37,6 +37,12 @@ function deriveYear(showDate: string): number | null {
   return m ? Number.parseInt(m[1], 10) : null;
 }
 
+/** The event as the filter knows it: the record's own name, or its group's. */
+function filterEvent(show: Show): string {
+  const event = show.EventOrFestival?.trim() || '';
+  return EVENT_GROUPS[event] ?? event;
+}
+
 export function deriveShow(show: Show): DerivedShow {
   const date = (show.ShowDate || '').trim();
   return {
@@ -44,7 +50,7 @@ export function deriveShow(show: Show): DerivedShow {
     era: deriveEra(date),
     year: deriveYear(date),
     country: show.Country?.trim() ? slugify(show.Country) : NONE,
-    festival: show.EventOrFestival?.trim() ? slugify(show.EventOrFestival) : NONE,
+    festival: filterEvent(show) ? slugify(filterEvent(show)) : NONE,
     artist: show.Artist,
     dateKey: /^\d{4}/.test(date) ? date : '',
   };
@@ -75,7 +81,7 @@ function facetValueOf(d: DerivedShow, facet: FacetKey): string {
 function facetLabelOf(d: DerivedShow, facet: FacetKey): string {
   switch (facet) {
     case 'country': return d.show.Country?.trim() || 'Unknown location';
-    case 'festival': return d.show.EventOrFestival?.trim() || 'No event';
+    case 'festival': return filterEvent(d.show) || 'No event';
   }
 }
 

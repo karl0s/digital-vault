@@ -40,6 +40,7 @@ docs/
 tools/
   add-temp-images.py    ← temp-images → slots + manifest, verified (see Temp images workflow)
   show-editor/          ← Karl's metadata editor; build.py renders index.html (gitignored)
+  artist-portraits/     ← picker for the artist tiles' pictures; build.py renders ~/VaultShots/reports/artist-portraits.html
 scripts/
   health-check.py       ← integrity validator (pre-push hook, and the deploy)
   audit-*.py            ← read-only audits: image geometry, aspect vs source, sidecar setlists
@@ -415,8 +416,9 @@ Always the full English name, consistently across duplicate recordings: `United 
 | MuchMusic (intimate) | `Much Music Intimate & Interactive` | `Chum City Building` | `Toronto` | `Canada` | `&` not `and` |
 | Nissan Live Sets | `Nissan Live Sets on Yahoo! Music` | _(blank)_ | _(varies)_ | `United States` | Full name always |
 | Farm Club | `Farm Club` | _(blank)_ | `Los Angeles` | `United States` | USA Network late-night music show (2000–2001) |
+| Reading Festival | `Reading Festival` | `Little John's Farm` | `Reading` | `United Kingdom` | The site since 1971 |
 | Leeds Festival | `Leeds Festival` | `Bramham Park` | `Leeds` | `United Kingdom` | 2003 onward |
-| Reading + Leeds, site unknown | `Reading and Leeds Festival` | _(blank)_ | _(blank)_ | `United Kingdom` | Only when the footage names neither site — check stage banners ("Carling Weekend Reading") first |
+| Reading + Leeds, site unknown | `Reading and Leeds Festival` | _(blank)_ | _(blank)_ | `United Kingdom` | Only when the footage names neither site — check stage banners ("Carling Weekend Reading") first. The Event filter shows all three Reading/Leeds names as one option, "Reading & Leeds" (`EVENT_GROUPS`, `src/lib/url.ts`) |
 
 ### EventOrFestival
 The festival or event name only — never dates, venue or city. Host-led talk shows use the host's

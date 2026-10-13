@@ -14,11 +14,11 @@
  * Run:  npm run check:search                      (part of npm run check and the deploy)
  *       node scripts/search-precision.ts --verbose   (list every false positive; Node 22.6+)
  *
- * Exits 1 on any false positive, false negative, or failed golden case.
+ * Exits 1 on any false positive, false negative, or failed golden or grouping case.
  */
 
 import fs from 'node:fs';
-import { createSearchIndex, runSearch, resolveArtist, getSongSuggestion } from '../src/search/searchIndex.ts';
+import { createSearchIndex, runSearch, resolveArtist, getSongSuggestion, searchShows } from '../src/search/searchIndex.ts';
 import type { Show } from '../App';
 
 const VERBOSE = process.argv.includes('--verbose');
@@ -185,9 +185,77 @@ for (const q of COLLISIONS) {
           : `  → no hint (no other setlist matches)`));
 }
 
+/**
+ * Free-text grouping (owner, 2026-10-13): artists above shows above songs,
+ * words matched literally (no "stole" for "stone"), every song card able to
+ * say which song, and a "Did you mean" for a misspelt artist — only when
+ * nothing matched.
+ */
 console.log('\n' + '='.repeat(66));
-const clean = goldFail === 0 && hintFail === 0 && totalFP === 0 && totalFN === 0;
-console.log(`  ${clean ? 'ALL CLEAN' : `${goldFail} golden failures, ${hintFail} hint failures, ${totalFP} false positives, ${totalFN} false negatives`}`);
+console.log('  FREE-TEXT GROUPING');
+console.log('='.repeat(66));
+
+const GROUPING: { query: string; artists?: string[]; didYouMean?: string[]; corrected?: string; note: string }[] = [
+  { query: 'stone', artists: ['Stone Temple Pilots', 'Queens of the Stone Age', 'Rolling Stones'], didYouMean: [],
+    note: 'artists offered first; no fuzzy "stole"' },
+  { query: 'creep', artists: [], didYouMean: [], note: 'no fuzzy "creed" / Creed' },
+  { query: 'black hole', artists: [], didYouMean: [], note: 'earlier words whole: no "blackbird"' },
+  { query: 'radiohead glastonbury', artists: [], didYouMean: [], note: 'artist + event across fields' },
+  { query: 'soundgredn', didYouMean: ['Soundgarden'], note: 'two swapped letters and a missing one' },
+  { query: 'soundgardn', didYouMean: ['Soundgarden'], note: 'was a silent fuzzy match' },
+  { query: 'radiohed', didYouMean: ['Radiohead'], note: 'missing letter' },
+  { query: 'chilli peppers', didYouMean: ['Red Hot Chili Peppers'], note: 'word by word' },
+  { query: 'foo figters', didYouMean: ['Foo Fighters'], note: 'typo in the second word' },
+  { query: 'pumkins', didYouMean: ['Smashing Pumpkins'], note: 'one word of a longer name' },
+  { query: 'glastonbry', didYouMean: [], corrected: 'glastonbury', note: 'a misspelt event is offered as a search' },
+  { query: 'foo fighters wembly', didYouMean: [], corrected: 'foo fighters wembley', note: 'only the misspelt word changes' },
+];
+
+const fold = (v: string) => v.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
+const wordsOf = (v: string) => fold(v).split(/[\n\r\p{Z}\p{P}]+/u).filter(Boolean);
+const searchable = (s: Show) => wordsOf([s.Artist, s.ShowDate.slice(0, 4), s.VenueName, s.City, s.Country,
+  s.EventOrFestival, s.RecordingType, s.ContentType, s.Setlist].filter(Boolean).join(' '));
+
+let groupFail = 0;
+for (const g of GROUPING) {
+  const { shows: found, grouped } = searchShows(shows, g.query, index);
+  const problems: string[] = [];
+  if (!grouped) problems.push('not grouped');
+  else {
+    if (g.artists && grouped.artists.join('|') !== g.artists.join('|')) {
+      problems.push(`artists [${grouped.artists.join(', ')}]`);
+    }
+    if (g.didYouMean && grouped.didYouMean.join('|') !== g.didYouMean.join('|')) {
+      problems.push(`did you mean [${grouped.didYouMean.join(', ')}]`);
+    }
+    if ((g.corrected ?? null) !== grouped.correctedQuery) problems.push(`corrected to ${grouped.correctedQuery}`);
+    // Every word literal; only the last, from four letters, may be a prefix.
+    const typed = wordsOf(g.query);
+    const last = typed[typed.length - 1];
+    const loose = found.filter(s => grouped.kind.get(s.ShowID) !== 'artist').filter(s => {
+      const words = searchable(s);
+      return !typed.slice(0, -1).every(t => words.includes(t)) ||
+        !words.some(w => (last.length >= 4 ? w.startsWith(last) : w === last));
+    });
+    if (loose.length) problems.push(`${loose.length} near-miss matches, e.g. ${loose[0].Artist} ${loose[0].ShowDate}`);
+    const silent = found.filter(s => grouped.kind.get(s.ShowID) === 'song' && !grouped.songs.get(s.ShowID)?.length);
+    if (silent.length) problems.push(`${silent.length} song matches with no song to show`);
+  }
+  if (problems.length) {
+    groupFail++;
+    console.log(`  FAIL  ${g.query.padEnd(22)} ${problems.join('; ')}`);
+    console.log(`        ${g.note}`);
+  } else {
+    const n = (k: string) => found.filter(s => grouped!.kind.get(s.ShowID) === k).length;
+    console.log(`  pass  ${g.query.padEnd(22)} ${grouped!.artists.length} artists / ${n('show')} shows / ${n('song')} songs` +
+      (grouped!.didYouMean.length ? `  → did you mean ${grouped!.didYouMean.join(', ')}` : '') +
+      (grouped!.correctedQuery ? `  → did you mean “${grouped!.correctedQuery}”` : ''));
+  }
+}
+
+console.log('\n' + '='.repeat(66));
+const clean = goldFail === 0 && hintFail === 0 && groupFail === 0 && totalFP === 0 && totalFN === 0;
+console.log(`  ${clean ? 'ALL CLEAN' : `${goldFail} golden failures, ${hintFail} hint failures, ${groupFail} grouping failures, ${totalFP} false positives, ${totalFN} false negatives`}`);
 console.log('='.repeat(66) + '\n');
 
 process.exit(clean ? 0 : 1);

@@ -15,7 +15,7 @@ interface HeroSearchProps {
 /**
  * Landing masthead: wordmark and tagline, nothing else.
  *
- * This is the only place the brand appears. Search and "All artists" live in
+ * This is the only place the brand appears. Search and the filters live in
  * the filter bar directly below it, and the Featured grid is the landing's
  * entry point rather than a row of shortcuts competing with it.
  *

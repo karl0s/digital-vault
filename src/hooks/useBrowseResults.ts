@@ -10,9 +10,10 @@ import {
   deriveAll,
   sortShows,
 } from '../search/facets';
-import { getSongSuggestion, resolveArtist, runSearch, SongSuggestion } from '../search/searchIndex';
+import { getSongSuggestion, resolveArtist, searchShows, SongHit, SongSuggestion } from '../search/searchIndex';
 import { useSearchEngine } from './useSearchEngine';
 import type { NotesGetter } from './useShows';
+import { Portrait, portraitsByArtist } from '../lib/portraits';
 
 /**
  * One pipeline for the browse view:
@@ -28,6 +29,32 @@ import type { NotesGetter } from './useShows';
  * records, which is why there is no debounce here.
  */
 
+/** An artist offered as a whole: their shows that pass the filters, in order. */
+export interface ArtistMatch {
+  name: string;
+  shows: Show[];
+  /** The tile's picture, best first (src/lib/portraits.ts). */
+  portraits: Portrait[];
+}
+
+const NO_PORTRAITS: Portrait[] = [];
+
+/**
+ * A free-text query's results, grouped by why they matched — artists first,
+ * then shows (date, place, event), then songs. Every group is already
+ * filtered and sorted; together they hold exactly `results`.
+ */
+export interface ResultGroups {
+  artists: ArtistMatch[];
+  shows: Show[];
+  songs: Show[];
+  songHits: Map<string, SongHit[]>;
+  /** Close spellings of an artist, when nothing matched. */
+  didYouMean: ArtistMatch[];
+  /** Otherwise, the query with a misspelt place or event corrected. */
+  correctedQuery: string | null;
+}
+
 export interface BrowseResults {
   /** Filtered and sorted, ready to render. */
   results: Show[];
@@ -38,6 +65,8 @@ export interface BrowseResults {
   /** Total before facets, after text search — for "38 of 240". */
   matchedByQuery: number;
   songSuggestion: SongSuggestion | null;
+  /** Null for an artist view, a decade alone, or a field filter other than song:. */
+  groups: ResultGroups | null;
 }
 
 export function useBrowseResults(shows: Show[], state: FilterState, getNotes?: NotesGetter): BrowseResults {
@@ -52,11 +81,12 @@ export function useBrowseResults(shows: Show[], state: FilterState, getNotes?: N
    * null means "no query", which is different from "a query that matched
    * nothing" — the latter is an empty Set and correctly filters everything out.
    */
-  const searchIds = useMemo(() => {
-    if (!query) return null;
-    return new Set(runSearch(shows, query, index, getNotes).map(s => s.ShowID));
-    // getNotes changes once, when Notes arrive, so a `note:` search fills in.
-  }, [shows, query, index, getNotes]);
+  // getNotes changes once, when Notes arrive, so a `note:` search fills in.
+  const search = useMemo(
+    () => (query ? searchShows(shows, query, index, getNotes) : null),
+    [shows, query, index, getNotes],
+  );
+  const searchIds = useMemo(() => (search ? new Set(search.shows.map(s => s.ShowID)) : null), [search]);
 
   const counts = useMemo(
     () => computeFacetCounts(derived, state, searchIds),
@@ -73,6 +103,44 @@ export function useBrowseResults(shows: Show[], state: FilterState, getNotes?: N
     [derived, state, searchIds],
   );
 
+  const portraits = useMemo(() => portraitsByArtist(shows), [shows]);
+
+  const groups = useMemo((): ResultGroups | null => {
+    const grouped = search?.grouped;
+    if (!grouped) return null;
+
+    const byArtist = new Map<string, Show[]>(grouped.artists.map(name => [name, []]));
+    const showMatches: Show[] = [];
+    const songMatches: Show[] = [];
+    for (const show of results) {
+      const kind = grouped.kind.get(show.ShowID);
+      if (kind === 'artist') byArtist.get(show.Artist)?.push(show);
+      else if (kind === 'show') showMatches.push(show);
+      else songMatches.push(show);
+    }
+
+    // A suggestion counts what following it would show under the current
+    // filters, and is dropped if that is nothing.
+    const didYouMean = grouped.didYouMean
+      .map(name => ({
+        name,
+        shows: sortShows(applyFilters(derived, state, new Set(shows.filter(s => s.Artist === name).map(s => s.ShowID))), state.sort),
+        portraits: portraits.get(name) ?? NO_PORTRAITS,
+      }))
+      .filter(a => a.shows.length > 0);
+
+    return {
+      artists: [...byArtist]
+        .map(([name, list]) => ({ name, shows: list, portraits: portraits.get(name) ?? NO_PORTRAITS }))
+        .filter(a => a.shows.length > 0),
+      shows: showMatches,
+      songs: songMatches,
+      songHits: grouped.songs,
+      didYouMean,
+      correctedQuery: grouped.correctedQuery,
+    };
+  }, [search, results, derived, state, shows, portraits]);
+
   const songSuggestion = useMemo(() => {
     // Field-scoped queries ("song:kiss") are already explicit; nothing to suggest.
     if (!query || /^\w+:/.test(query)) return null;
@@ -85,5 +153,6 @@ export function useBrowseResults(shows: Show[], state: FilterState, getNotes?: N
     histogram,
     matchedByQuery: searchIds ? searchIds.size : shows.length,
     songSuggestion,
+    groups,
   };
 }

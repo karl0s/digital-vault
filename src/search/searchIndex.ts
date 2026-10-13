@@ -1,4 +1,4 @@
-import MiniSearch from 'minisearch';
+import MiniSearch, { type SearchResult } from 'minisearch';
 import type { Show } from '../../App';
 
 /**
@@ -19,27 +19,41 @@ interface SearchDoc {
   country: string;
   type: string;
   event: string;
-  searchText: string;
+  songs: string;
 }
 
-const SEARCH_FIELDS = [
-  'artist', 'year', 'venue', 'city', 'country', 'type', 'event', 'searchText',
-] as const;
+/**
+ * Everything about the show itself — who, when, where, how it was filmed. A
+ * free-text match found here is a "show" match; one that needs `songs` to
+ * match is a "song" match. The split is what lets results group by why they
+ * matched (SearchResultsGrid).
+ */
+const SHOW_FIELDS = ['artist', 'year', 'venue', 'city', 'country', 'type', 'event'] as const;
+const SEARCH_FIELDS = [...SHOW_FIELDS, 'songs'] as const;
+
+/** Lower case without accents: "bjork" finds Björk, "nurnberg" Nürnberg. */
+function fold(value: string): string {
+  return value.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
+}
+
+/** MiniSearch's own tokeniser, kept so highlighting splits words the same way. */
+const WORD = /[^\n\r\p{Z}\p{P}]+/gu;
 
 /**
- * Prefix and fuzzy matching are applied PER TERM, not globally.
+ * Words match literally. Only the LAST word of a query, the one still being
+ * typed, matches as a prefix ("soundg" → Soundgarden), and only from four
+ * letters: "R.E.M." tokenises to r/e/m, and a one-letter prefix hits nearly
+ * every record. Earlier words are whole, so "black hole" never reaches
+ * "Blackbird" through a prefix on "black".
  *
- * Blanket `prefix: true` + `fuzzy: 0.15` turned short tokens into near
- * wildcards: "R.E.M." tokenises to r/e/m, and a 1-character prefix match hits
- * almost every document in the collection. Same for common-word artist names
- * like Who, Tool, Cake and Live.
- *
- * Long terms keep the forgiving behaviour that makes search feel good
- * ("radioh" → Radiohead, "soundgardn" → Soundgarden).
+ * No fuzzy matching on content (owner, 2026-10-13). It read "stone" as
+ * "stole" and "creep" as "creed": near-misses in setlists that nobody typing
+ * a word expects. Misspelt ARTIST names are still caught, as a "Did you mean"
+ * (suggestArtists), never silently mixed into the results.
  */
 const SEARCH_OPTIONS = {
-  prefix: (term: string) => term.length >= 4,
-  fuzzy: (term: string) => (term.length >= 5 ? 0.15 : false),
+  prefix: (term: string, i: number, terms: string[]) => i === terms.length - 1 && term.length >= 4,
+  fuzzy: false,
   boost: { artist: 4, type: 2, year: 2, event: 1.5 },
   combineWith: 'AND' as const,
 };
@@ -55,23 +69,13 @@ function toSearchDoc(show: Show): SearchDoc {
     country: show.Country,
     type: [show.RecordingType, show.ContentType].filter(Boolean).join(' '),
     event: show.EventOrFestival || '',
-    searchText: [
-      show.Artist,
-      year,
-      show.VenueName,
-      show.City,
-      show.Country,
-      show.EventOrFestival || '',
-      show.RecordingType || '',
-      show.ContentType || '',
-      // Setlist stays indexed so users can find shows by song.
-      //
-      // Notes is deliberately NOT indexed. It is largely data-pipeline exhaust
-      // (codec lines, lineage text, filenames) and name-drops other bands,
-      // which made it the single largest source of cross-artist contamination.
-      // It remains searchable via the explicit "note:" prefix.
-      show.Setlist,
-    ].join(' '),
+    // Setlist is indexed so shows can be found by song.
+    //
+    // Notes is deliberately NOT indexed. It is largely data-pipeline exhaust
+    // (codec lines, lineage text, filenames) and name-drops other bands,
+    // which made it the single largest source of cross-artist contamination.
+    // It remains searchable via the explicit "note:" prefix.
+    songs: show.Setlist || '',
   };
 }
 
@@ -79,26 +83,29 @@ interface SearchIndex {
   ms: MiniSearch<SearchDoc>;
   showById: Record<string, Show>;
   artistNames: string[];
+  /** Shows per artist, for ranking artist matches and suggestions. */
+  artistCounts: Map<string, number>;
 }
 
 export function createSearchIndex(shows: Show[]): SearchIndex {
   const ms = new MiniSearch<SearchDoc>({
     fields: [...SEARCH_FIELDS],
     storeFields: ['id'],
+    processTerm: fold,
     searchOptions: SEARCH_OPTIONS,
   });
 
   const showById: Record<string, Show> = {};
-  const seenArtists = new Set<string>();
+  const artistCounts = new Map<string, number>();
   const docs = shows.map(show => {
     showById[show.ShowID] = show;
-    seenArtists.add(show.Artist);
+    artistCounts.set(show.Artist, (artistCounts.get(show.Artist) ?? 0) + 1);
     return toSearchDoc(show);
   });
 
   if (docs.length > 0) ms.addAll(docs);
 
-  return { ms, showById, artistNames: [...seenArtists].sort() };
+  return { ms, showById, artistNames: [...artistCounts.keys()].sort(), artistCounts };
 }
 
 // ---------------------------------------------------------------------------
@@ -343,9 +350,274 @@ function runFieldFilter(shows: Show[], field: string, value: string, query: stri
   }).sort(sortChronological);
 }
 
+// ---------------------------------------------------------------------------
+// Why a show matched — grouped free-text results
+// ---------------------------------------------------------------------------
+
 /**
- * Resolve a query string to the exact list of shows it should display.
+ * Free-text results group by why they matched (owner, 2026-10-13):
+ *   artist — the query spells part of the artist's name ("stone" → Stone
+ *            Temple Pilots). Offered as the artist, above everything else.
+ *   show   — the date, place, event or recording type matched.
+ *   song   — only a song in the setlist did ("stone" → Like a Rolling Stone).
  */
+export type MatchKind = 'artist' | 'show' | 'song';
+
+/** A setlist entry that matched, and the matched letters as [start, end). */
+export interface SongHit {
+  title: string;
+  ranges: [number, number][];
+}
+
+export interface GroupedMatches {
+  kind: Map<string, MatchKind>;
+  /** Artists whose name matches the query, best first. */
+  artists: string[];
+  /** Per song match, the entries that matched, in setlist order. */
+  songs: Map<string, SongHit[]>;
+  /** Close spellings of an artist, offered only when nothing matched. */
+  didYouMean: string[];
+  /** Otherwise, the query with a misspelt place or event corrected. */
+  correctedQuery: string | null;
+}
+
+export interface SearchOutcome {
+  shows: Show[];
+  /** Null for an artist view, a decade alone, or a field filter other than song:. */
+  grouped: GroupedMatches | null;
+}
+
+/** A name or query as words: folded, "&" read as "and", no leading "The". */
+function nameWords(value: string): string[] {
+  const words = fold(value).replace(/&/g, ' and ').split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+  return words.length > 1 && words[0] === 'the' ? words.slice(1) : words;
+}
+
+/**
+ * Artists whose name the query starts: every typed word begins a word of the
+ * name ("stone" → Stone Temple Pilots, Queens of the Stone Age, Rolling
+ * Stones; "smash pump" → Smashing Pumpkins), or the query begins the name run
+ * together ("rem" → R.E.M., "acdc" → AC/DC). From two letters, so artists
+ * offer themselves while a name is still being typed. Names the query starts
+ * rank first, then the most shows.
+ */
+export function matchArtists(query: string, index: SearchIndex): string[] {
+  const typed = nameWords(query);
+  const joined = typed.join('');
+  if (joined.length < 2) return [];
+
+  const hits: { name: string; starts: boolean; count: number }[] = [];
+  for (const name of index.artistNames) {
+    const words = nameWords(name);
+    const starts = words.join('').startsWith(joined);
+    if (!starts && !typed.every(t => words.some(w => w.startsWith(t)))) continue;
+    hits.push({ name, starts, count: index.artistCounts.get(name) ?? 0 });
+  }
+  return hits
+    .sort((a, b) => Number(b.starts) - Number(a.starts) || b.count - a.count || a.name.localeCompare(b.name))
+    .map(h => h.name);
+}
+
+/**
+ * Optimal string alignment distance: Levenshtein, plus two swapped
+ * neighbours counting as one typo — "gredn" for "garden" is two.
+ */
+function editDistance(a: string, b: string): number {
+  if (!a.length) return b.length;
+  if (!b.length) return a.length;
+  let before: number[] = [];
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    for (let j = 1; j <= b.length; j++) {
+      let d = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d = Math.min(d, before[j - 2] + 1);
+      cur[j] = d;
+    }
+    before = prev;
+    prev = cur;
+  }
+  return prev[b.length];
+}
+
+/** Typos forgiven in a word this long: none under four letters, then 1, 2, 3. */
+function typoBudget(length: number): number {
+  return length < 4 ? 0 : length <= 5 ? 1 : length <= 8 ? 2 : 3;
+}
+
+/**
+ * From a typed word to a word of a name, or to its start when the name word
+ * is longer, so an unfinished word counts too ("soundgred" → Soundgarden).
+ */
+function distanceToWord(typed: string, word: string): number {
+  if (word.length <= typed.length) return editDistance(typed, word);
+  let best = Infinity;
+  for (let k = Math.max(1, typed.length - 1); k <= Math.min(word.length, typed.length + 1); k++) {
+    best = Math.min(best, editDistance(typed, word.slice(0, k)));
+  }
+  return best;
+}
+
+/**
+ * "Did you mean": artists a typo away from the query, for when nothing
+ * matched at all ("soundgredn" → Soundgarden, "chilli peppers" → Red Hot
+ * Chili Peppers, "foo figters" → Foo Fighters). Compared run together, which
+ * forgives a stray or missing space, then word by word. Only the closest
+ * spellings are offered, at most three, the artist with most shows first.
+ *
+ * Artist names only. Fuzzy matching on songs and notes was what made "stone"
+ * find "stole"; a name is a short list of known strings, where a near-miss is
+ * almost always a typo.
+ */
+export function suggestArtists(query: string, index: SearchIndex): string[] {
+  const typed = nameWords(query);
+  const joined = typed.join('');
+  if (joined.length < 4) return [];
+
+  const found: { name: string; distance: number; count: number }[] = [];
+  for (const name of index.artistNames) {
+    const words = nameWords(name);
+    let distance = distanceToWord(joined, words.join(''));
+    if (distance > typoBudget(joined.length)) {
+      distance = 0;
+      for (const t of typed) {
+        const best = Math.min(...words.map(w => distanceToWord(t, w)));
+        if (best > typoBudget(t.length)) { distance = Infinity; break; }
+        distance += best;
+      }
+    }
+    if (distance <= typoBudget(joined.length)) {
+      found.push({ name, distance, count: index.artistCounts.get(name) ?? 0 });
+    }
+  }
+  if (!found.length) return [];
+
+  const closest = Math.min(...found.map(f => f.distance));
+  return found
+    .filter(f => f.distance === closest)
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+    .slice(0, 3)
+    .map(f => f.name);
+}
+
+/** Where and what a show was: the words a misspelt place or event is corrected against. */
+const PLACE_FIELDS = ['venue', 'city', 'country', 'event'];
+
+/**
+ * "Did you mean" for a place or event, when nothing matched and no artist is
+ * close: each word that finds nothing is swapped for the nearest word among
+ * venues, cities, countries and events ("glastonbry" → glastonbury, "wembly"
+ * → wembley), and the corrected query is offered if it finds shows. Offered,
+ * never run: these were silent fuzzy matches before 2026-10-13.
+ */
+function suggestQuery(query: string, index: SearchIndex): string | null {
+  const words = query.toLowerCase().trim().split(/\s+/);
+  let changed = false;
+  const fixed = words.map(word => {
+    const budget = typoBudget(word.length);
+    if (!budget || index.ms.search(word, { prefix: word.length >= 4 }).length) return word;
+    const seen = new Map<string, number>();
+    for (const r of index.ms.search(word, { fields: PLACE_FIELDS, fuzzy: budget, prefix: false })) {
+      for (const term of r.terms) seen.set(term, (seen.get(term) ?? 0) + 1);
+    }
+    const target = fold(word);
+    const best = [...seen]
+      .map(([term, count]) => ({ term, count, distance: editDistance(target, term) }))
+      .filter(c => c.distance <= budget)
+      .sort((a, b) => a.distance - b.distance || b.count - a.count)[0];
+    if (!best) return word;
+    changed = true;
+    return best.term;
+  });
+  if (!changed) return null;
+  const corrected = fixed.join(' ');
+  return index.ms.search(corrected).length ? corrected : null;
+}
+
+/**
+ * The setlist entries a song match came from. A multi-word query can match
+ * across songs ("black" in one, "hole" in another); the entries answering the
+ * most query words win, so "black hole" shows Black Hole Sun alone.
+ */
+function songHits(setlist: string, result: SearchResult): SongHit[] {
+  // Each index word that matched in the setlist, with the typed word it answers.
+  const answers = new Map<string, string>();
+  for (const [term, fields] of Object.entries(result.match)) {
+    if (!fields.includes('songs')) continue;
+    const typed = result.queryTerms.filter(q => term.startsWith(q)).sort((a, b) => b.length - a.length)[0];
+    answers.set(term, typed ?? term);
+  }
+
+  const entries = (setlist || '').split(';').map(t => t.trim()).filter(Boolean).map(title => {
+    const ranges: [number, number][] = [];
+    const answered = new Set<string>();
+    for (const m of title.matchAll(WORD)) {
+      const typed = answers.get(fold(m[0]));
+      if (typed === undefined) continue;
+      answered.add(typed);
+      // Light only the letters typed: "Stone" in "Stoned".
+      ranges.push([m.index!, m.index! + Math.min(typed.length, m[0].length)]);
+    }
+    return { title, ranges, score: answered.size };
+  });
+
+  const best = Math.max(0, ...entries.map(e => e.score));
+  return best === 0 ? [] : entries.filter(e => e.score === best).slice(0, 3).map(({ title, ranges }) => ({ title, ranges }));
+}
+
+/** song: is a plain substring filter, so its hits are substrings too. */
+function songHitsBySubstring(setlist: string, needle: string): SongHit[] {
+  return (setlist || '').split(';').map(t => t.trim()).filter(Boolean).flatMap(title => {
+    const at = title.toLowerCase().indexOf(needle);
+    return at < 0 ? [] : [{ title, ranges: [[at, at + needle.length]] as [number, number][] }];
+  }).slice(0, 3);
+}
+
+/**
+ * Free text over a pool of shows (every show, or a decade's): artist matches
+ * by name, then MiniSearch, each result tagged with why it matched.
+ */
+function textSearch(pool: Show[], query: string, index: SearchIndex): SearchOutcome {
+  const artists = matchArtists(query, index);
+  const byArtist = new Set(artists);
+  const inPool = new Set(pool.map(s => s.ShowID));
+  const kind = new Map<string, MatchKind>();
+  const songs = new Map<string, SongHit[]>();
+  const found: Show[] = [];
+
+  for (const show of pool) {
+    if (!byArtist.has(show.Artist)) continue;
+    kind.set(show.ShowID, 'artist');
+    found.push(show);
+  }
+
+  const onShowFields = new Set(index.ms.search(query, { fields: [...SHOW_FIELDS] }).map(r => r.id));
+  for (const result of index.ms.search(query)) {
+    const show = index.showById[result.id];
+    if (!show || !inPool.has(show.ShowID) || kind.has(show.ShowID)) continue;
+    found.push(show);
+    if (onShowFields.has(show.ShowID)) {
+      kind.set(show.ShowID, 'show');
+    } else {
+      kind.set(show.ShowID, 'song');
+      songs.set(show.ShowID, songHits(show.Setlist, result));
+    }
+  }
+
+  const didYouMean = found.length ? [] : suggestArtists(query, index);
+  return {
+    shows: found.sort(sortChronological),
+    grouped: {
+      kind, artists, songs, didYouMean,
+      correctedQuery: found.length || didYouMean.length ? null : suggestQuery(query, index),
+    },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Query execution
+// ---------------------------------------------------------------------------
+
 /**
  * Notes are not on the site's show objects (they load separately), so the
  * two paths that search them take a lookup. The default reads the record,
@@ -354,23 +626,40 @@ function runFieldFilter(shows: Show[], field: string, value: string, query: stri
 type NotesOf = (show: Show) => string;
 const notesOnRecord: NotesOf = show => show.Notes ?? '';
 
+/** The shows a query displays. */
 export function runSearch(shows: Show[], searchQuery: string, index: SearchIndex, getNotes: NotesOf = notesOnRecord): Show[] {
-  if (!searchQuery) return shows;
+  return searchShows(shows, searchQuery, index, getNotes).shows;
+}
 
-  const { ms, showById } = index;
+/** The shows a query displays, and — for free text and song: — why each matched. */
+export function searchShows(shows: Show[], searchQuery: string, index: SearchIndex, getNotes: NotesOf = notesOnRecord): SearchOutcome {
+  if (!searchQuery) return { shows, grouped: null };
+
   const query = searchQuery.toLowerCase().trim();
 
   // Field-specific filters: "artist:pearl jam", "type:soundboard", etc.
   const fieldMatch = query.match(/^(\w+):(.+)$/);
   if (fieldMatch) {
     const [, field, value] = fieldMatch;
-    return runFieldFilter(shows, field, value, query, getNotes);
+    const found = runFieldFilter(shows, field, value, query, getNotes);
+    if (field !== 'song') return { shows: found, grouped: null };
+    const needle = value.trim();
+    return {
+      shows: found,
+      grouped: {
+        kind: new Map(found.map(s => [s.ShowID, 'song' as const])),
+        artists: [],
+        songs: new Map(found.map(s => [s.ShowID, songHitsBySubstring(s.Setlist, needle)])),
+        didYouMean: [],
+        correctedQuery: null,
+      },
+    };
   }
 
   // Artist view — an exact artist name is a facet, never a text search.
   // Checked before decade/general search so an artist name always wins.
   const artist = resolveArtist(query, index.artistNames);
-  if (artist) return getArtistShows(shows, artist);
+  if (artist) return { shows: getArtistShows(shows, artist), grouped: null };
 
   // Decade search — detect decade keyword anywhere in the query
   const words = query.split(/\s+/);
@@ -382,17 +671,11 @@ export function runSearch(shows: Show[], searchQuery: string, index: SearchIndex
       return year >= start && year <= end;
     });
 
-    // If there are other words alongside the decade, run them through
-    // MiniSearch on the decade-filtered subset
+    // Other words alongside the decade search within it.
     const remainingWords = words.filter(w => w !== decadeWord).join(' ').trim();
-    if (!remainingWords) return [...decadeFiltered].sort(sortChronological);
-
-    const remainingResults = ms.search(remainingWords);
-    const matchingIds = new Set(remainingResults.map(r => r.id));
-    return decadeFiltered.filter(show => matchingIds.has(show.ShowID)).sort(sortChronological);
+    if (!remainingWords) return { shows: [...decadeFiltered].sort(sortChronological), grouped: null };
+    return textSearch(decadeFiltered, remainingWords, index);
   }
 
-  // General search — MiniSearch with prefix + fuzzy matching
-  const results = ms.search(searchQuery);
-  return (results.map(r => showById[r.id]).filter(Boolean) as Show[]).sort(sortChronological);
+  return textSearch(shows, searchQuery, index);
 }

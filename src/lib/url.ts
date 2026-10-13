@@ -109,6 +109,25 @@ export function slugify(value: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
+/**
+ * Event names that are one option in the Event filter (owner, 2026-10-13).
+ * Reading and Leeds is one festival on two sites with one line-up; the
+ * records keep their own names (Reading Festival, Leeds Festival, and Reading
+ * and Leeds Festival where the footage names neither site — CLAUDE.md), so
+ * the drawer and search still say which. Here, not in facets.ts, so an old
+ * link to any of the three still lands on the group.
+ */
+export const EVENT_GROUPS: Record<string, string> = {
+  'Reading Festival': 'Reading & Leeds',
+  'Leeds Festival': 'Reading & Leeds',
+  'Reading and Leeds Festival': 'Reading & Leeds',
+};
+
+/** A grouped name's old slug -> its group's slug. */
+const GROUPED_FESTIVAL_SLUGS: Record<string, string> = Object.fromEntries(
+  Object.entries(EVENT_GROUPS).map(([name, group]) => [slugify(name), slugify(group)]),
+);
+
 function uniqueSorted(values: string[]): string[] {
   return [...new Set(values.filter(Boolean))].sort();
 }
@@ -176,7 +195,7 @@ export function parseFilters(search: string): FilterState {
     to,
     undated: params.get('undated') === '1',
     country: readList(params, 'country'),
-    festival: readList(params, 'festival'),
+    festival: uniqueSorted(readList(params, 'festival').map(v => GROUPED_FESTIVAL_SLUGS[v] ?? v)),
     sort: rawSort && SORT_KEYS.includes(rawSort) ? rawSort : DEFAULT_SORT,
   };
 }

@@ -100,7 +100,7 @@ export default function App() {
   const debouncedQuery = useDebounce(searchQuery, 150);
 
   // One pipeline: text query -> facets -> sort, plus the counts the bar needs.
-  const { results, counts, histogram, songSuggestion } = useBrowseResults(shows, filterState, getNotes);
+  const { results, counts, histogram, songSuggestion, groups } = useBrowseResults(shows, filterState, getNotes);
   const filtered = computeIsFiltered(filterState);
 
   /**
@@ -171,7 +171,7 @@ export default function App() {
   }, [setStoreQuery]);
 
   /**
-   * "All artists", the phone's Artists tab, Back to all artists, and an old
+   * The phone's Artists tab, All artists on an artist's results, and an old
    * ?view=artists link: clear everything and jump to the A–Z list. The list
    * only renders while nothing filters, so it clears first and scrolls once
    * the list is on the page — and opens the masthead without its animation
@@ -275,8 +275,6 @@ export default function App() {
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
         searchInputRef={searchInputRef}
-        onAllArtists={goToDirectory}
-        allArtistsActive={directoryInView && !filtered}
       />
 
       {!filtered ? (
@@ -291,13 +289,14 @@ export default function App() {
           searchType={searchType}
           transitionKey={pillTransitionKey}
           songSuggestion={songSuggestion}
+          groups={groups}
           onShowClick={handleShowClick}
+          onArtistSelect={handleArtistSelect}
           // An artist picked from the list goes back to the list; a typed
           // search clears in place and returns to the field.
           onClear={searchType === 'artist'
             ? goToDirectory
             : () => { setSearchQuery(''); setStoreQuery(''); scrollToTop(); searchInputRef.current?.focus(); }}
-          clearLabel={searchType === 'artist' ? 'Back to all artists' : 'Clear search'}
           onSearch={(q) => handleSearchChange(q, 'general')}
           getImageUrl={getImageUrl}
         />

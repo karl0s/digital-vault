@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artist portraits</title>
+<style>
+  @font-face { font-family: 'DM Sans'; src: url('file://__REPO__/public/fonts/dm-sans-latin.woff2') format('woff2'); font-weight: 100 1000; }
+  @font-face { font-family: 'DM Sans'; src: url('file://__REPO__/public/fonts/dm-sans-latin-ext.woff2') format('woff2'); font-weight: 100 1000; unicode-range: U+0100-024F, U+1E00-1EFF; }
+  :root { color-scheme: dark; --bg: #141414; --line: rgba(255,255,255,.06); --line2: rgba(255,255,255,.12); --fill: rgba(255,255,255,.04); --fill2: rgba(255,255,255,.08); --g300: #d1d5db; --g400: #9ca3af; --g500: #6b7280; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: #fff; font: 14px/1.4 'DM Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  img { display: block; }
+
+  header { position: sticky; top: 0; z-index: 10; background: rgba(20,20,20,.97); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .bar { max-width: 1680px; margin: 0 auto; padding: 14px 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+  h1 { font-size: 18px; margin: 0 8px 0 0; font-weight: 700; }
+  .find { flex: 1 1 220px; max-width: 340px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.07); color: #fff; border-radius: 999px; padding: 7px 14px; font: inherit; outline: none; }
+  .find:focus { border-color: rgba(255,255,255,.25); background: rgba(255,255,255,.1); }
+  .toggle { display: flex; align-items: center; gap: 6px; color: var(--g400); user-select: none; }
+  .count { color: var(--g400); margin-left: auto; }
+  .count b { color: #fff; font-variant-numeric: tabular-nums; }
+  .copy { border: 0; border-radius: 999px; background: #fff; color: #111; font-weight: 600; padding: 8px 16px; }
+  .copy:hover { background: #e5e5e5; }
+  .help { max-width: 1680px; margin: 0 auto; padding: 16px 24px 4px; color: var(--g400); }
+  .help b { color: var(--g300); font-weight: 500; }
+
+  main { max-width: 1680px; margin: 0 auto; padding: 16px 24px 40px; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); grid-auto-flow: row dense; gap: 16px; }
+  .card[hidden] { display: none; }
+  .card { background: var(--fill); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+  .card.open { border-color: rgba(255,255,255,.45); }
+  .card.picked { border-color: rgba(167,139,250,.45); }
+  .frame { aspect-ratio: 4/3; background: #1d1d1d; position: relative; }
+  .frame img { width: 100%; height: 100%; object-fit: cover; }
+  .frame .none { position: absolute; inset: 0; display: grid; place-items: center; color: rgba(255,255,255,.25); font-size: 32px; font-weight: 700; }
+  /* A replica of the site's artist tile, at its real size. */
+  .tile { margin: 10px; display: flex; align-items: center; gap: 12px; padding: 8px 14px 8px 8px; border-radius: 12px; border: 1px solid var(--line); background: var(--fill); }
+  .circle { width: 56px; height: 56px; border-radius: 50%; overflow: hidden; flex: none; background: #262626; display: grid; place-items: center; color: rgba(255,255,255,.4); font-weight: 600; font-size: 13px; }
+  .circle img { width: 100%; height: 100%; object-fit: cover; }
+  .tname { min-width: 0; flex: 1; }
+  .tname b { display: block; font-size: 15px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tname small { color: var(--g400); font-size: 12px; }
+  .chev { color: var(--g500); }
+  .meta { padding: 0 12px; color: var(--g400); font-size: 12px; min-height: 34px; }
+  .badge { display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; margin-right: 6px; background: rgba(255,255,255,.08); color: var(--g300); }
+  .badge.pick { background: rgba(167,139,250,.18); color: #c4b5fd; }
+  .choose { margin: 10px 12px 12px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.07); border-radius: 8px; padding: 7px 12px; display: flex; justify-content: space-between; align-items: center; }
+  .choose:hover { background: rgba(255,255,255,.12); }
+  .choose[disabled] { opacity: .4; cursor: default; }
+
+  .panel { grid-column: 1 / -1; background: #1a1a1a; border: 1px solid rgba(255,255,255,.45); border-radius: 12px; padding: 16px; }
+  .phead { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-bottom: 14px; }
+  .phead h2 { font-size: 16px; margin: 0; }
+  .phead span { color: var(--g400); }
+  .phead .sp { flex: 1; }
+  .ghost { border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.07); border-radius: 999px; padding: 6px 14px; }
+  .ghost:hover { background: rgba(255,255,255,.14); }
+  .x { width: 34px; height: 34px; border-radius: 50%; border: 0; background: rgba(255,255,255,.1); font-size: 18px; line-height: 1; }
+  .x:hover { background: rgba(255,255,255,.2); }
+  .shows { display: flex; flex-wrap: wrap; gap: 18px 22px; max-height: 70vh; overflow: auto; padding-right: 4px; }
+  .show { display: flex; flex-direction: column; gap: 6px; }
+  .slabel { color: var(--g400); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 620px; }
+  .slabel b { color: var(--g300); font-weight: 500; }
+  .imgs { display: flex; gap: 6px; }
+  .cand { position: relative; padding: 0; border: 0; background: #222; border-radius: 6px; overflow: hidden; width: 150px; aspect-ratio: 4/3; outline: 2px solid transparent; outline-offset: 2px; }
+  .cand img { width: 100%; height: 100%; object-fit: cover; transition: transform .2s; }
+  .cand:hover img { transform: scale(1.04); }
+  .cand:focus-visible { outline-color: rgba(255,255,255,.7); }
+  .cand.sel { outline-color: #a78bfa; }
+  .cand .tag { position: absolute; left: 4px; top: 4px; font-size: 9px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; background: rgba(0,0,0,.75); padding: 2px 5px; border-radius: 3px; }
+  .cand.sel .tag.s { background: #7c3aed; }
+  .cand .num { position: absolute; right: 4px; bottom: 4px; font-size: 10px; background: rgba(0,0,0,.7); padding: 1px 5px; border-radius: 3px; color: var(--g300); }
+  .empty { color: var(--g400); padding: 40px 0; grid-column: 1 / -1; text-align: center; }
+
+  #export { max-width: 1680px; margin: 0 auto; padding: 0 24px 60px; }
+  #export h2 { font-size: 13px; letter-spacing: .2em; text-transform: uppercase; color: var(--g400); }
+  #export textarea { width: 100%; min-height: 140px; background: #0e0e0e; color: var(--g300); border: 1px solid var(--line2); border-radius: 8px; padding: 12px; font: 12px/1.5 ui-monospace, Menlo, monospace; }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); opacity: 0; background: #fff; color: #111; padding: 10px 18px; border-radius: 999px; font-weight: 600; transition: .25s; pointer-events: none; z-index: 20; }
+  .toast.on { opacity: 1; transform: translateX(-50%); }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <h1>Artist portraits</h1>
+    <input class="find" id="find" type="search" placeholder="Find an artist  ( / )" autocomplete="off">
+    <label class="toggle"><input type="checkbox" id="pickedOnly"> Picked only</label>
+    <span class="count"><b id="nPicked">0</b> picked · <span id="nShown"></span></span>
+    <button class="copy" id="copy">Copy for Claude Code</button>
+  </div>
+</header>
+<p class="help">
+  Each card shows the picture an artist's tile uses in search results, with the tile itself at its real size underneath.
+  Unpicked artists show the <b>default: the newest show's hero image</b>. <b>Choose image ▾</b> opens every image from every show,
+  newest first; click one to pick it. Picking the default again removes a pick. Your picks save in this browser as you go.
+  When you're done, press <b>Copy for Claude Code</b> and paste it into the chat.
+</p>
+<main id="grid"></main>
+<section id="export">
+  <h2>Your picks</h2>
+  <textarea id="out" readonly></textarea>
+</section>
+<div class="toast" id="toast"></div>
+
+<script>
+const DATA = __DATA__;
+const IMG = (c, s) => `file://__REPO__/public/images/${c}_0${s}.jpg`;
+const KEY = 'vault-artist-portraits';
+const byName = new Map(DATA.artists.map(a => [a.n, a]));
+
+// Saved picks, else the ones already on the site. A pick whose image is gone is dropped.
+let picks = {};
+try { picks = JSON.parse(localStorage.getItem(KEY)) || DATA.seed; } catch { picks = DATA.seed; }
+for (const [n, p] of Object.entries(picks)) {
+  const a = byName.get(n);
+  if (!a || !a.cands.some(c => c.id === p.show && c.s === p.slot)) delete picks[n];
+}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(picks)); } catch {} };
+
+const esc = s => String(s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+const initials = n => n.split(' ').map(w => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
+const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+
+function chosen(a) {
+  const p = picks[a.n];
+  if (p) {
+    const i = a.cands.findIndex(c => c.id === p.show && c.s === p.slot);
+    if (i >= 0) return { cand: a.cands[i], picked: true };
+  }
+  return { cand: a.def == null ? null : a.cands[a.def], picked: false };
+}
+const describe = c => `${c.d ? c.d.slice(0, 4) : 'Undated'} · ${esc(c.p || 'Unknown')} · image ${c.s}`;
+
+function cardHTML(a) {
+  const { cand, picked } = chosen(a);
+  const img = cand ? `<img src="${IMG(cand.c, cand.s)}" loading="lazy" alt="">` : '';
+  return `
+    <div class="frame">${img || `<div class="none">${esc(initials(a.n))}</div>`}</div>
+    <div class="tile">
+      <div class="circle">${img || esc(initials(a.n))}</div>
+      <div class="tname"><b>${esc(a.n)}</b><small>${plural(a.k, 'show')}</small></div>
+      <span class="chev">›</span>
+    </div>
+    <div class="meta">${cand
+      ? `<span class="badge ${picked ? 'pick' : ''}">${picked ? 'Picked' : 'Default'}</span>${describe(cand)}`
+      : 'No images for this artist yet'}</div>
+    <button class="choose" ${a.cands.length ? '' : 'disabled'}><span>Choose image</span><span>${a.cands.length} ▾</span></button>`;
+}
+
+const grid = document.getElementById('grid');
+const cards = new Map();
+for (const a of DATA.artists) {
+  const el = document.createElement('article');
+  el.className = 'card';
+  el.dataset.name = a.n;
+  el.innerHTML = cardHTML(a);
+  cards.set(a.n, el);
+  grid.append(el);
+}
+
+function refresh(name) {
+  const el = cards.get(name);
+  el.innerHTML = cardHTML(byName.get(name));
+  el.classList.toggle('picked', Boolean(picks[name]));
+  update();
+}
+
+// One panel at a time, placed after its card; the dense grid backfills that row.
+let panel = null, openName = null;
+function closePanel(focus = true) {
+  if (!panel) return;
+  panel.remove(); panel = null;
+  const el = cards.get(openName);
+  el?.classList.remove('open');
+  if (focus) el?.querySelector('.choose')?.focus();
+  openName = null;
+}
+function openPanel(name) {
+  if (openName === name) return closePanel();
+  closePanel(false);
+  const a = byName.get(name);
+  const { cand: cur } = chosen(a);
+  const def = a.def == null ? null : a.cands[a.def];
+  const groups = [];
+  for (const c of a.cands) {
+    const g = groups[groups.length - 1];
+    if (g && g.id === c.id) g.cands.push(c); else groups.push({ id: c.id, cands: [c] });
+  }
+  panel = document.createElement('section');
+  panel.className = 'panel';
+  panel.innerHTML = `
+    <div class="phead">
+      <h2>${esc(a.n)}</h2><span>${plural(a.cands.length, 'image')} from ${plural(groups.length, 'show')} · newest first</span>
+      <span class="sp"></span>
+      ${picks[name] ? '<button class="ghost" data-act="default">Use default</button>' : ''}
+      <button class="x" data-act="close" aria-label="Close">×</button>
+    </div>
+    <div class="shows">${groups.map(g => {
+      const c0 = g.cands[0];
+      return `<div class="show">
+        <div class="slabel"><b>${c0.d || 'Undated'}</b> · ${esc(c0.p || 'Unknown')}${c0.z ? ` · ${esc(c0.z)}` : ''}</div>
+        <div class="imgs">${g.cands.map(c => {
+          const isSel = cur && c.id === cur.id && c.s === cur.s;
+          const isDef = def && c.id === def.id && c.s === def.s;
+          return `<button class="cand ${isSel ? 'sel' : ''}" data-id="${c.id}" data-s="${c.s}" title="${esc(describe(c))}">
+            <img src="${IMG(c.c, c.s)}" loading="lazy" alt="">
+            ${isSel ? '<span class="tag s">Showing</span>' : isDef ? '<span class="tag">Default</span>' : ''}
+            <span class="num">${c.s}</span></button>`;
+        }).join('')}</div></div>`;
+    }).join('')}</div>`;
+  const el = cards.get(name);
+  el.after(panel);
+  el.classList.add('open');
+  openName = name;
+  panel.addEventListener('click', e => {
+    const act = e.target.closest('[data-act]')?.dataset.act;
+    if (act === 'close') return closePanel();
+    if (act === 'default') { delete picks[name]; save(); closePanel(); refresh(name); return toast(`${name}: default`); }
+    const b = e.target.closest('.cand');
+    if (!b) return;
+    const id = b.dataset.id, s = Number(b.dataset.s);
+    if (def && id === def.id && s === def.s) delete picks[name]; else picks[name] = { show: id, slot: s };
+    save(); closePanel(); refresh(name);
+    toast(picks[name] ? `${name}: picked` : `${name}: default`);
+  });
+  panel.querySelector('.cand.sel, .cand')?.focus({ preventScroll: true });
+  panel.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+grid.addEventListener('click', e => {
+  const b = e.target.closest('.choose');
+  if (b && !b.disabled) openPanel(b.closest('.card').dataset.name);
+});
+
+const find = document.getElementById('find'), pickedOnly = document.getElementById('pickedOnly');
+const fold = v => v.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
+function update() {
+  const q = fold(find.value.trim());
+  let shown = 0;
+  for (const [n, el] of cards) {
+    const vis = (!q || fold(n).includes(q)) && (!pickedOnly.checked || picks[n]);
+    el.hidden = !vis;
+    if (vis) shown++;
+  }
+  if (panel && cards.get(openName).hidden) closePanel(false);
+  document.getElementById('nPicked').textContent = Object.keys(picks).length;
+  document.getElementById('nShown').textContent = `${shown} of ${cards.size} artists shown`;
+  document.getElementById('out').value = exportText();
+}
+find.addEventListener('input', update);
+pickedOnly.addEventListener('change', update);
+
+function exportText() {
+  const names = Object.keys(picks).sort((a, b) => fold(a).localeCompare(fold(b)));
+  if (!names.length) return 'ARTIST PORTRAITS — no picks yet (every artist keeps the default: newest show, image 1)';
+  return [`ARTIST PORTRAITS — ${plural(names.length, 'pick')} (artist-portraits.html). Every other artist keeps the default.`,
+    ...names.map(n => {
+      const p = picks[n], c = byName.get(n).cands.find(x => x.id === p.show && x.s === p.slot);
+      return `${n} → show ${p.show}, image ${p.slot} (${c.d || 'undated'} · ${c.p || 'unknown'})`;
+    })].join('\n');
+}
+let tt;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 1600);
+}
+document.getElementById('copy').addEventListener('click', async () => {
+  const text = exportText();
+  try { await navigator.clipboard.writeText(text); toast('Copied — paste it into Claude Code'); }
+  catch { const o = document.getElementById('out'); o.focus(); o.select(); document.execCommand('copy'); toast('Copied'); }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && panel) closePanel();
+  if (e.key === '/' && document.activeElement !== find) { e.preventDefault(); find.focus(); }
+});
+for (const n of Object.keys(picks)) cards.get(n)?.classList.add('picked');
+update();
+</script>
+</body>
+</html>

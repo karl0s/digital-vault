@@ -172,6 +172,19 @@ console.log('\nthe Country list leaves out rare countries, judged on the collect
     listedOptions(narrowed, 6).length === listedOptions(all, 6).length);
 }
 
+console.log('\nReading and Leeds is one Event option (owner, 2026-10-13)');
+{
+  const options = computeFacetCounts(derived, f(), null).festival;
+  const group = options.find(o => o.value === 'reading-leeds');
+  const expected = shows.filter(s => ['Reading Festival', 'Leeds Festival', 'Reading and Leeds Festival']
+    .includes(s.EventOrFestival?.trim() ?? '')).length;
+  ok(`"Reading & Leeds" holds all ${expected} Reading, Leeds and Reading-and-Leeds shows`,
+    group?.label === 'Reading & Leeds' && group.total === expected);
+  ok('no separate Reading, Leeds or Reading-and-Leeds option',
+    !options.some(o => ['reading-festival', 'leeds-festival', 'reading-and-leeds-festival'].includes(o.value)));
+  ok('selecting it yields them all', applyFilters(derived, f({ festival: ['reading-leeds'] }), null).length === expected);
+}
+
 console.log('\nNONE keeps sparse records reachable');
 {
   const noCountry = applyFilters(derived, f({ country: [NONE] }), null).length;

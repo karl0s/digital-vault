@@ -1,7 +1,9 @@
-import { memo, useRef } from 'react';
+import { Fragment, memo, useRef } from 'react';
+import { Music2 } from 'lucide-react';
 import { Show } from '../App';
 import { LazyImage } from './LazyImage';
 import type { ImageUrlGetter } from '../src/hooks/useShows';
+import type { SongHit } from '../src/search/searchIndex';
 
 interface ShowCardProps {
   show: Show;
@@ -12,6 +14,25 @@ interface ShowCardProps {
   onSelect: (show: Show) => void;
   getImageUrl?: ImageUrlGetter;
   searchMode?: 'artist' | 'search';
+  /**
+   * Set when a search found this show by a song: the songs that matched, said
+   * on the card so it is clear why the show is there. From the search's
+   * memoised result, so the same array on every render.
+   */
+  songHits?: SongHit[];
+}
+
+/** Text with the matched letters lit. */
+function Marked({ text, ranges }: { text: string; ranges: [number, number][] }) {
+  const parts: React.ReactNode[] = [];
+  let at = 0;
+  for (const [start, end] of ranges) {
+    if (start > at) parts.push(text.slice(at, start));
+    parts.push(<mark key={start} className="bg-transparent font-semibold text-white">{text.slice(start, end)}</mark>);
+    at = end;
+  }
+  if (at < text.length) parts.push(text.slice(at));
+  return <>{parts}</>;
 }
 
 const getColorFromString = (str: string): string => {
@@ -40,7 +61,7 @@ const getRecordingBadgeStyle = (_type: string): string => {
  * Memoised: with stable props (see `onSelect`, and `getImageUrl` in useShows)
  * opening the drawer or touching a filter no longer re-renders every card.
  */
-export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, searchMode }: ShowCardProps) {
+export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, searchMode, songHits }: ShowCardProps) {
   const year = show.ShowDate ? show.ShowDate.split('-')[0] : '';
   const durationMin = Math.floor(parseInt(show.DurationSec || '0') / 60);
   const hours = Math.floor(durationMin / 60);
@@ -188,6 +209,19 @@ export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, se
             <span className="text-[11px] text-gray-400 shrink-0 tabular-nums">{year}</span>
           )}
         </div>
+        {songHits && songHits.length > 0 && (
+          <p className="mt-0.5 flex items-center gap-1 text-xs leading-snug text-gray-300">
+            <Music2 className="h-3 w-3 shrink-0 text-gray-500" aria-hidden="true" />
+            <span className="truncate">
+              {songHits.map((hit, i) => (
+                <Fragment key={i}>
+                  {i > 0 && <span className="text-gray-500"> · </span>}
+                  <Marked text={hit.title} ranges={hit.ranges} />
+                </Fragment>
+              ))}
+            </span>
+          </p>
+        )}
         {line2 && (
           <p className="text-[11px] text-gray-400 truncate mt-0.5 leading-snug">{line2}</p>
         )}

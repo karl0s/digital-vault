@@ -20,10 +20,11 @@ import { ShowCard } from './ShowCard';
 /**
  * Shared with SearchResultsGrid — if these diverge the landing stops matching
  * the results again. 7 columns at 2xl is why the Featured set is exactly 7:
- * it fills one clean row on a wide screen.
+ * it fills one clean row on a wide screen. GRID_TRACKS is the columns alone,
+ * for the artist tiles above search results, which span two of them.
  */
-export const GRID_COLS =
-  'grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-x-3 gap-y-6';
+export const GRID_TRACKS = 'grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7';
+export const GRID_COLS = `${GRID_TRACKS} gap-x-3 gap-y-6`;
 
 /**
  * Fisher–Yates. Deliberately not `sort(() => Math.random() - 0.5)`, which this

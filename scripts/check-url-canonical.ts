@@ -117,6 +117,8 @@ eq('an old ?type= is dropped', serializeFilters(parseFilters('?type=documentary&
 eq('an old ?type= does not filter', isFiltered(parseFilters('?type=documentary')), false);
 
 console.log('\nhelpers');
+eq('an old link to a grouped event lands on its group',
+  serializeFilters(parseFilters('?festival=reading-festival,leeds-festival')), '?festival=reading-leeds');
 eq('isFiltered false when empty', isFiltered(EMPTY_FILTERS), false);
 eq('isFiltered true on a facet', isFiltered(f({ country: ['germany'] })), true);
 eq('isFiltered true on a query', isFiltered(f({ q: 'nirvana' })), true);
