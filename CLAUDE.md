@@ -41,6 +41,7 @@ tools/
   add-temp-images.py    ← temp-images → slots + manifest, verified (see Temp images workflow)
   show-editor/          ← Karl's metadata editor; build.py renders index.html (gitignored)
   artist-portraits/     ← picker for the artist tiles' pictures; build.py renders ~/VaultShots/reports/artist-portraits.html
+  missing-setlists/     ← every show with no setlist + twins that have one; build.py renders ~/VaultShots/reports/missing-setlists.html
 scripts/
   health-check.py       ← integrity validator (pre-push hook, and the deploy)
   audit-*.py            ← read-only audits: image geometry, aspect vs source, sidecar setlists
@@ -459,9 +460,15 @@ Song One; Song Two; Song Three; Encore break; Song Four; Song Five
   Billboard, Pitchfork, local press) · YouTube full-show videos with confirmed date/venue · fan
   forums or Dime A Dozen NFOs with eyewitness accounts. With one source, or a conflict, leave it
   blank and note the conflict. Never reconstruct a setlist from tour averages or nearby shows.
+- **Another recording of the same show** lends its setlist once the owner confirms they are one
+  show (2026-10-14): copy it, align the five identity fields (Duplicate recordings), and note
+  `SETLIST (date): copied from <ShowID>`. Not when the copy is a much shorter cut — it cannot hold
+  every song; note `Setlist NOT copied` and ask which. A "different shows" answer is noted as
+  `not the same show as <ShowID>`; the review page reads these notes and never asks twice.
 
 ```bash
 python3 scripts/audit-sidecar-setlists.py --artist "Bush"   # read-only: sidecar songs missing from records
+python3 tools/missing-setlists/build.py                     # every missing setlist + twins with one → review page
 ```
 
 ### Setlists that are populated but wrong

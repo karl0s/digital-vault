@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Missing setlists</title>
+<style>
+  @font-face { font-family: 'DM Sans'; src: url('file://__REPO__/public/fonts/dm-sans-latin.woff2') format('woff2'); font-weight: 100 1000; }
+  @font-face { font-family: 'DM Sans'; src: url('file://__REPO__/public/fonts/dm-sans-latin-ext.woff2') format('woff2'); font-weight: 100 1000; unicode-range: U+0100-024F, U+1E00-1EFF; }
+  :root { color-scheme: dark; --g200:#e5e7eb; --g300:#d1d5db; --g400:#9ca3af; --g500:#6b7280; --line: rgba(255,255,255,.08); }
+  * { box-sizing: border-box; } body { margin: 0; background: #141414; color: #fff; font: 14px/1.45 'DM Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  header { position: sticky; top: 0; z-index: 10; background: rgba(20,20,20,.97); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .bar { max-width: 1480px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  h1 { font-size: 18px; margin: 0 8px 0 0; }
+  .bar a { color: var(--g400); text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.06); }
+  .bar a:hover { background: rgba(255,255,255,.12); color: #fff; }
+  .sp { flex: 1; }
+  .copy { border: 0; border-radius: 999px; background: #fff; color: #111; font-weight: 600; padding: 8px 16px; font-size: 13px; }
+  main { max-width: 1480px; margin: 0 auto; padding: 8px 24px 80px; }
+  h2 { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--g400); margin: 40px 0 6px; font-weight: 600; scroll-margin-top: 70px; }
+  h2 span { letter-spacing: 0; text-transform: none; font-weight: 400; color: var(--g500); margin-left: 8px; }
+  .lead { color: var(--g400); margin: 0 0 14px; max-width: 900px; } .lead b { color: var(--g200); font-weight: 500; }
+
+  .funnel { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin-top: 20px; }
+  .stat { border: 1px solid var(--line); background: rgba(255,255,255,.03); border-radius: 12px; padding: 14px 16px; }
+  .stat b { display: block; font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .stat span { color: var(--g400); font-size: 13px; }
+  .stat.hi { border-color: rgba(167,139,250,.5); background: rgba(167,139,250,.08); }
+  .stat.hi b { color: #c4b5fd; }
+
+  table { width: 100%; border-collapse: collapse; }
+  th { position: sticky; top: 57px; z-index: 5; background: #181818; text-align: left; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--g500); font-weight: 600; padding: 10px 10px; border-bottom: 1px solid var(--line); }
+  td { padding: 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:hover td { background: rgba(255,255,255,.02); }
+  .n { color: var(--g500); font-variant-numeric: tabular-nums; width: 40px; }
+  .th { width: 132px; } .th .im { width: 120px; aspect-ratio: 4/3; border-radius: 6px; overflow: hidden; background: #222; }
+  .th img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .art { font-weight: 600; } .sub { color: var(--g400); font-size: 13px; } .mono { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--g500); }
+  .tag { display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,.08); color: var(--g300); margin: 3px 4px 0 0; }
+  .num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  /* pairs */
+  .pair td { padding: 14px 10px; }
+  .side { display: grid; grid-template-columns: 120px 1fr; gap: 12px; }
+  .songs { color: var(--g300); font-size: 12.5px; margin-top: 6px; }
+  .str { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 3px 7px; border-radius: 4px; }
+  .str.strong { background: rgba(52,211,153,.15); color: #6ee7b7; } .str.possible { background: rgba(251,191,36,.12); color: #fcd34d; }
+  .why { color: var(--g400); font-size: 12.5px; margin-top: 6px; }
+  .more { color: var(--g500); font-size: 12px; margin-top: 6px; }
+  .ch { display: flex; flex-direction: column; gap: 6px; width: 190px; }
+  .opt { text-align: left; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.04); border-radius: 8px; padding: 7px 10px; font-size: 13px; display: flex; gap: 8px; align-items: center; }
+  .opt:hover { background: rgba(255,255,255,.08); }
+  .opt .k { width: 20px; height: 20px; flex: none; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700; background: rgba(255,255,255,.1); }
+  .opt.on { border-color: #a78bfa; background: rgba(167,139,250,.14); } .opt.on .k { background: #a78bfa; color: #111; }
+  .arrow { color: var(--g500); font-size: 18px; padding-top: 40px !important; text-align: center; width: 28px; }
+
+  .tools { display: flex; gap: 10px; align-items: center; margin: 4px 0 10px; flex-wrap: wrap; }
+  .find { border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.07); color: #fff; border-radius: 999px; padding: 7px 14px; font: inherit; min-width: 280px; outline: none; }
+  .tools .c { color: var(--g400); font-size: 13px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 14px; }
+  .chip { border: 0; border-radius: 999px; background: rgba(255,255,255,.06); color: var(--g300); padding: 4px 10px; font-size: 12px; }
+  .chip b { color: var(--g500); font-weight: 400; margin-left: 4px; } .chip.on { background: #fafafa; color: #111; } .chip.on b { color: #666; }
+  details { margin-top: 14px; border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; }
+  summary { cursor: pointer; color: var(--g300); }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(16px); opacity: 0; background: #fff; color: #111; padding: 9px 16px; border-radius: 999px; font-weight: 600; transition: .2s; pointer-events: none; z-index: 20; }
+  .toast.on { opacity: 1; transform: translateX(-50%); }
+  textarea { width: 100%; min-height: 120px; background: #0e0e0e; color: var(--g300); border: 1px solid var(--line); border-radius: 8px; padding: 12px; font: 12px/1.5 ui-monospace, Menlo, monospace; }
+</style></head><body>
+<header><div class="bar">
+  <h1>Missing setlists</h1>
+  <a href="#pairs">Possible same show</a><a href="#final">Final list</a><a href="#design">No setlist by design</a>
+  <span class="sp"></span><span class="c" id="answered" style="color:#9ca3af;font-size:13px"></span>
+  <button class="copy" id="copy">Copy for Claude Code</button>
+</div></header>
+<main>
+  <div class="funnel" id="funnel"></div>
+
+  <h2 id="pairs">Possible same show — another version has a setlist <span id="pairsN"></span></h2>
+  <p class="lead" id="earlier"></p>
+  <p class="lead">For each show with no setlist, I looked for another record of <b>the same artist</b> that does have one: <b>strong</b> = same day, same event or place, running times within 25%; <b>possible</b> = everything else that overlaps (a different cut of the same day, a month- or year-only date, an undated copy). Pick A or B per row; nothing changes until you paste your answers back. A different cut can hold different songs, so a B on a <b>possible</b> row copies only what the footage supports.</p>
+  <table><thead><tr><th class="n">#</th><th>No setlist</th><th></th><th>Has a setlist</th><th>Match</th><th>Same show?</th></tr></thead><tbody id="pairRows"></tbody></table>
+
+  <h2 id="final">Final list — no setlist, and no other version with one <span id="finalN"></span></h2>
+  <p class="lead">Every live show still without a setlist once the possible matches above are set aside, one per row, A–Z by artist then date. <b>Cut from</b> marks a single act cut from a longer festival or TV broadcast. The same list is in <span class="mono">missing-setlists.csv</span> beside this page.</p>
+  <div class="tools"><input class="find" id="find" type="search" placeholder="Filter by artist, event, venue, year…"><span class="c" id="shown"></span></div>
+  <div class="chips" id="chips"></div>
+  <table><thead><tr><th class="n">#</th><th class="th">Still</th><th>Artist</th><th>Date</th><th>Event / venue</th><th>Place</th><th>Type</th><th>Length</th><th>Notes</th></tr></thead><tbody id="finalRows"></tbody></table>
+
+  <h2 id="design">No setlist by design <span>— not counted as missing</span></h2>
+  <details><summary id="docsSum"></summary><table><tbody id="docRows"></tbody></table></details>
+  <details><summary id="mastSum"></summary><table><tbody id="mastRows"></tbody></table></details>
+
+  <h2>Your answers</h2><textarea id="out" readonly></textarea>
+</main>
+<div class="toast" id="toast"></div>
+<script>
+const D = __DATA__;
+const S = D.summary;
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const thumb = r => `<div class="im">${r.img ? `<img src="${r.img}" loading="lazy" alt="">` : ''}</div>`;
+const where = r => [r.event, r.venue].filter(Boolean).filter((v, i, a) => a.indexOf(v) === i).join(' · ') || '<span class="sub">—</span>';
+const KEY = 'vault-missing-setlists-' + D.key;
+let picks = {}; try { picks = JSON.parse(localStorage.getItem(KEY)) || {}; } catch {}
+
+document.getElementById('funnel').innerHTML = [
+  [S.site.toLocaleString(), 'shows on the site'],
+  [S.none, 'with no setlist'],
+  [S.docs + S.masters, `no setlist by design (${S.docs} documentaries, ${S.masters} multi-act masters)`],
+  [S.live, 'live shows missing a setlist'],
+  [S.pairs, `may share one with another version (${S.strong} strong, ${S.pairs - S.strong} possible)`],
+  [S.final, 'final list: nothing to copy from', 'hi'],
+].map(([b, t, c]) => `<div class="stat ${c || ''}"><b>${b}</b><span>${t}</span></div>`).join('');
+
+function sideHTML(r, withSongs) {
+  return `<div class="side"><div class="th">${thumb(r)}</div><div>
+    <div class="art">${esc(r.artist)}</div>
+    <div class="sub">${esc(r.date || 'Undated')} · ${where(r)}</div>
+    <div class="sub">${esc(r.place)}${r.place ? ' · ' : ''}<span class="num">${r.mins} min</span>${r.type ? ' · ' + esc(r.type) : ''}</div>
+    ${r.cut ? `<div class="tag">${esc(r.cut)}</div>` : ''}
+    ${withSongs ? `<div class="songs"><b>${r.songs.length}</b> song${r.songs.length === 1 ? '' : 's'}: ${esc(r.songs.slice(0, 6).join('; '))}${r.songs.length > 6 ? ' …' : ''}</div>` : ''}
+    <div class="mono">${esc(r.id)} · ${esc(r.folder)}</div></div></div>`;
+}
+function renderPairs() {
+  document.getElementById('pairsN').textContent = `${S.pairs} shows`;
+  document.getElementById('pairRows').innerHTML = D.pairs.map((p, i) => {
+    const c = p.cands[0];
+    return `<tr class="pair" data-id="${p.miss.id}"><td class="n">${i + 1}</td><td>${sideHTML(p.miss, false)}</td><td class="arrow">→</td>
+      <td>${sideHTML(c, true)}${p.cands.length > 1 ? `<div class="more">+${p.cands.length - 1} more: ${p.cands.slice(1).map(x => esc(x.date || 'undated') + ' (' + x.mins + ' min, ' + x.songs.length + ' songs)').join('; ')}</div>` : ''}</td>
+      <td style="width:230px"><span class="str ${c.strength}">${c.strength}</span><div class="why">${esc(c.reason)}</div></td>
+      <td><div class="ch">
+        <button class="opt ${picks[p.miss.id] === 'A' ? 'on' : ''}" data-c="A"><span class="k">A</span>Different shows</button>
+        <button class="opt ${picks[p.miss.id] === 'B' ? 'on' : ''}" data-c="B"><span class="k">B</span>Same show — use its setlist</button>
+      </div></td></tr>`;
+  }).join('');
+  document.getElementById('answered').textContent = `${Object.keys(picks).length} of ${S.pairs} answered`;
+  document.getElementById('out').value = exportText();
+}
+document.getElementById('pairRows').addEventListener('click', e => {
+  const b = e.target.closest('.opt'); if (!b) return;
+  picks[b.closest('tr').dataset.id] = b.dataset.c;
+  try { localStorage.setItem(KEY, JSON.stringify(picks)); } catch {}
+  renderPairs();
+});
+
+let artistFilter = null;
+function renderFinal() {
+  const q = document.getElementById('find').value.trim().toLowerCase();
+  const rows = D.final.filter(r => (!artistFilter || r.artist === artistFilter) &&
+    (!q || [r.artist, r.date, r.event, r.venue, r.place, r.folder, r.id].join(' ').toLowerCase().includes(q)));
+  document.getElementById('finalN').textContent = `${S.final} shows`;
+  document.getElementById('shown').textContent = rows.length === S.final ? `${S.final} shows` : `${rows.length} of ${S.final} shown`;
+  document.getElementById('finalRows').innerHTML = rows.map((r, i) => `<tr>
+    <td class="n">${i + 1}</td><td class="th">${thumb(r)}</td>
+    <td><div class="art">${esc(r.artist)}</div><div class="mono">${esc(r.id)}</div></td>
+    <td class="num">${esc(r.date || 'Undated')}</td><td>${where(r)}</td><td class="sub">${esc(r.place)}</td>
+    <td class="sub">${esc(r.type)}</td><td class="num">${r.mins} min</td>
+    <td>${r.pending ? '<span class="tag" style="background:rgba(251,191,36,.14);color:#fcd34d">same show as one with a setlist — songs to confirm</span>' : ''}${r.cut ? `<span class="tag">${esc(r.cut)}</span>` : ''}${!r.date ? '<span class="tag">undated</span>' : ''}<div class="mono">${esc(r.folder)}</div></td></tr>`).join('');
+}
+document.getElementById('chips').innerHTML = `<button class="chip on" data-a="">All<b>${S.final}</b></button>` +
+  S.byArtist.filter(([, n]) => n >= 2).map(([a, n]) => `<button class="chip" data-a="${esc(a)}">${esc(a)}<b>${n}</b></button>`).join('') +
+  `<span class="c" style="color:#6b7280;font-size:12px;align-self:center;margin-left:4px">+ ${S.byArtist.filter(([, n]) => n === 1).length} artists with one show each — use the filter box</span>`;
+document.getElementById('chips').addEventListener('click', e => {
+  const b = e.target.closest('.chip'); if (!b) return;
+  artistFilter = b.dataset.a || null;
+  for (const c of document.querySelectorAll('.chip')) c.classList.toggle('on', c === b);
+  renderFinal();
+});
+document.getElementById('find').addEventListener('input', renderFinal);
+
+const simpleRows = rs => rs.map((r, i) => `<tr><td class="n">${i + 1}</td><td><div class="art">${esc(r.artist)}</div><div class="mono">${esc(r.id)}</div></td><td class="num">${esc(r.date || 'Undated')}</td><td>${where(r)}</td><td class="num">${r.mins} min</td></tr>`).join('');
+document.getElementById('docsSum').textContent = `${S.docs} documentaries — half or more talking or narration, so no setlist`;
+document.getElementById('docRows').innerHTML = simpleRows(D.docs);
+document.getElementById('mastSum').textContent = `${S.masters} multi-act masters — each act's songs are on its own linked record`;
+document.getElementById('mastRows').innerHTML = simpleRows(D.masters);
+
+function exportText() {
+  const lines = D.pairs.filter(p => picks[p.miss.id]).map(p => {
+    const c = p.cands[0];
+    return `${p.miss.id} (${p.miss.artist} ${p.miss.date || 'undated'}) ↔ ${c.id} (${c.date || 'undated'}): ${picks[p.miss.id] === 'B' ? 'B same show — use its setlist' : 'A different shows'}`;
+  });
+  return [`MISSING SETLISTS (missing-setlists.html): ${lines.length} of ${S.pairs} answered`, ...lines].join('\n');
+}
+let tt; function toast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 1500); }
+document.getElementById('copy').addEventListener('click', async () => {
+  const text = exportText();
+  try { await navigator.clipboard.writeText(text); toast('Copied — paste it into Claude Code'); }
+  catch { const o = document.getElementById('out'); o.focus(); o.select(); document.execCommand('copy'); toast('Copied'); }
+});
+document.getElementById('earlier').innerHTML = S.answered
+  ? `<b>${S.answered} earlier answers</b> are noted on the records and not asked again: a <b>same show</b> copied the setlist across, a <b>different shows</b> rules the pair out.`
+  : '';
+renderPairs(); renderFinal();
+</script></body></html>
