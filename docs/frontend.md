@@ -34,7 +34,7 @@ change must not break:
 **One page** (owner, 2026-10-13). No sidebar, no top bar, no Artists destination, no type filter.
 `App.tsx` renders: the `HeroSearch` masthead (collapses to zero height while anything filters), the
 sticky `FilterBar`, then — while nothing filters — `FeaturedRows` and `ArtistDirectory` (every
-artist A–Z in CSS columns under a small "All artists 304" label, no page title or letter rail).
+artist A–Z in CSS columns under a small "All artists" label with the count, no page title or letter rail).
 Filtering replaces both: a query renders `SearchResultsGrid` (title, Found N, Clear search, the song hint); facets alone render `ShowGrid`. A failed
 load renders one error state.
 

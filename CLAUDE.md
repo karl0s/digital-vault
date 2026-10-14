@@ -181,7 +181,7 @@ Maps `ChecksumSHA1 → [1, 2, 3, 4]` (available slot indices). Only listed slots
   `public/image-manifest.json` to the new set of indices, and **never** leave files in
   `public/images/temp-images/`.
 - **Artist portraits** — the round picture on an artist's tile in search results — are the owner's
-  picks in `src/lib/portraits.ts`: a ShowID and a slot per artist (109 of 304, 2026-10-13), else
+  picks in `src/lib/portraits.ts`: a ShowID and a slot per artist (109 artists, 2026-10-13), else
   the newest show's slot 1. Replacing that slot's image changes the tile; a merge, delete, hide or
   re-key of the record drops it to the fallback (the health check warns). Re-pick on the page
   `python3 tools/artist-portraits/build.py` renders; it starts from the picks in the code.

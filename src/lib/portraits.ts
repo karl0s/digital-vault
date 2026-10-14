@@ -5,7 +5,7 @@ import type { Show } from '../../App';
  * (2026-10-13) on ~/VaultShots/reports/artist-portraits.html, whose "Copy for
  * Claude Code" export is pasted in here. Keyed by the exact Artist string;
  * `show` is a ShowID and `slot` its image, 1–4; the comment names the show.
- * 109 of 304 artists picked (2026-10-13).
+ * 109 artists picked (2026-10-13).
  *
  * An artist not listed here, or whose pick no longer exists (show deleted,
  * slot gone from the manifest), shows the newest show's slot 1.
