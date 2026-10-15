@@ -104,7 +104,8 @@ drawer and search keep the record's own name; an old link to a folded name lands
 Brush maths is pure, in `src/lib/brush.ts`; the store is written on pointer-up only.
 
 **Grids.** `GRID_COLS` (exported by `FeaturedRows.tsx`) is the one column set for every grid:
-2 → md 4 → lg 5 → xl 6 → 2xl 7. `ShowGrid` is memoised and deliberately unanimated;
+2 → md 4 → lg 5 → xl 6, six at most (owner, 2026-10-15), with a 14px row gap since a card carries no
+caption below it. `ShowGrid` is memoised and deliberately unanimated;
 `SearchResultsGrid` has its own header and the "N more shows feature a song called …" suggestion;
 for free text it renders the groups in order — **Artists** as tiles (round portrait, name, count,
 chevron; each spans two `GRID_TRACKS` columns so its edges meet the cards'; six, then Show all),
@@ -123,6 +124,26 @@ row, fading the other letters on hover, white names for 5+ show artists.
 ---
 
 ## UI patterns
+
+### Show card (ShowCard)
+"Cinematic" (owner, 2026-10-15; designed as direction 02 on
+`~/VaultShots/reports/show-card-directions.html`). The 4:3 still is the card (`rounded-[10px]`):
+- On a bottom gradient (`from-black/90 via-black/55 via-30% to-transparent to-62%`): the title,
+  then `event · year`. The title is the artist, or on an artist's page (`searchMode="artist"`) the
+  event, since the artist is the same on every card. In the line under it the name truncates and the
+  year never does; undated reads "Undated".
+- Top-right: the length (`1h 42m`, `24 min`). Top-left: a badge only when the record is not a plain
+  live show: Documentary (`ContentType`) or Excerpt (`ParentShowID`). How it was filmed gets none:
+  Pro-shot, Audience and HD badges were dropped (owner, 2026-10-15).
+- A song match in search (`songHits`) adds a ♪ line under the title, matched letters lit, and the
+  gradient reaches higher (`to-72%`).
+- Hover and keyboard focus crossfade to the show's second still (in 600ms, out 400ms); the text never
+  moves. The second still is an original (only slot 1 has a thumbnail): it mounts on the first hover or
+  focus (the drawer prefetch has already asked for it) and its hover class applies only once loaded,
+  so the first hover fades. Tailwind's `hover:` applies on hover-capable devices only, so a tap never
+  triggers it. Focus ring: `ring-2 ring-white/85 ring-offset-2`. Title 14px, 15px from 2xl.
+- Tried and dropped on the way (2026-10-14/15): text revealed on hover (place, song count), a
+  colour-graded gig-poster style, face-detected art direction of the crop.
 
 ### Close buttons
 All close buttons use `components/CloseButton.tsx` (`bg-white/10 hover:bg-white/20 rounded-full`,

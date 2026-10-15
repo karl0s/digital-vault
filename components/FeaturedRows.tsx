@@ -19,12 +19,14 @@ import { ShowCard } from './ShowCard';
 
 /**
  * Shared with SearchResultsGrid — if these diverge the landing stops matching
- * the results again. 7 columns at 2xl is why the Featured set is exactly 7:
- * it fills one clean row on a wide screen. GRID_TRACKS is the columns alone,
- * for the artist tiles above search results, which span two of them.
+ * the results again. Six columns at most (owner, 2026-10-15): the Cinematic
+ * card carries its text on the picture, so it wants to be wide. The row gap
+ * is tight for the same reason — there is no caption under a card. GRID_TRACKS
+ * is the columns alone, for the artist tiles above search results, which span
+ * two of them.
  */
-export const GRID_TRACKS = 'grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7';
-export const GRID_COLS = `${GRID_TRACKS} gap-x-3 gap-y-6`;
+export const GRID_TRACKS = 'grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6';
+export const GRID_COLS = `${GRID_TRACKS} gap-x-3 gap-y-3.5`;
 
 /**
  * Fisher–Yates. Deliberately not `sort(() => Math.random() - 0.5)`, which this
@@ -78,13 +80,12 @@ function FeaturedSection({ title, shows, onShowClick, getImageUrl }: FeaturedSec
 }
 
 /**
- * Hand-picked landing set, in display order. A multiple of 7 so it fills whole
- * rows at 2xl — currently 14, i.e. two rows. Where the archive holds several
- * copies of a show, the ID here is the chosen copy, noted where it is not
- * simply the largest.
+ * Hand-picked landing set: 12, two full rows of six (owner, 2026-10-15, after
+ * dropping Strokes and Supergrass), shuffled into a new order on every visit.
+ * Where the archive holds several copies of a show, the ID here is the chosen
+ * copy, noted where it is not simply the largest.
  */
 const FEATURED_IDS = [
-  // Row 1
   // 539 MB copy, chosen deliberately over the three larger ones (up to 3.24 GB).
   'ccd7ed3c2fa4', // Stone Temple Pilots — MTV Unplugged, 1993-11-17
   '6b3751fea69f', // Jane's Addiction — Brixton Academy, 2003-09-30 (3.60 GB, dated copy)
@@ -93,13 +94,9 @@ const FEATURED_IDS = [
   '6cd303bce708', // Rage Against the Machine — Rock am Ring, 1996-05-24
   '730be7647294', // Red Hot Chili Peppers — Madison Square Gardens, 1996-02-09
   'a939ab1baf17', // Radiohead — New York, 1997-12-19
-
-  // Row 2
   '761b022efa1e', // Beastie Boys — SECC Glasgow, 1999-05-03 (3.15 GB, of four Glasgow copies)
   '4dba0c8ff6ae', // Nirvana — MTV Live & Loud, Pier 48 Seattle, 1993-12-13 (the 38-min broadcast)
   'bfac3916a5f1', // Smashing Pumpkins — Belfort, 1997-07-04 (4.34 GB; EventOrFestival blank)
-  '14f712b69dd7', // Strokes — San Francisco, 2001 (999.94 MB)
-  '19e3ce93b3d2', // Supergrass — MTV Five Night Stand, 1999-05-13
   'b3adea22181d', // Blur — Glastonbury Festival, 2009-06-28
   'd6f2b50df44c', // Foo Fighters — Melbourne, 2000-02-01 (1.61 GB, the 2000 copy)
 ];
@@ -136,7 +133,7 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
           <div className="mb-4 h-3 w-32 rounded bg-white/5" />
           <div className={GRID_COLS}>
             {Array.from({ length: FEATURED_IDS.length }, (_, j) => (
-              <div key={j} className="aspect-4/3 rounded-md bg-white/5" />
+              <div key={j} className="aspect-4/3 rounded-[10px] bg-white/5" />
             ))}
           </div>
         </div>

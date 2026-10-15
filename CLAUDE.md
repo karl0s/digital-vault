@@ -569,7 +569,8 @@ check:perf` (part of `npm run check`) enforces every rule not marked (unchecked)
 - **Card images use native `loading="lazy"`** in `LazyImage` — no per-image IntersectionObserver,
   no `translateZ(0)` or `will-change` (each pins a compositor layer per card).
 - **Cards load the build thumbnail**, with the original as `fallbackSrc`; anything shown large uses
-  the original (the drawer header fades it in over the thumbnail).
+  the original (the drawer header fades it in over the thumbnail). The hover crossfade's second still
+  (an original) mounts only on a card's first hover or focus, never with the grid.
 - **The first load is the trimmed show list**, not `shows.json`. Notes arrive afterwards in their
   own lookup, never merged into the show objects (that would re-render every memoised card).
 - **Fonts are self-hosted** (`public/fonts/README.md`), DM Sans preloaded. Never add a Google
@@ -613,8 +614,8 @@ Did you mean cases; `scripts/search-precision.ts`) and
 ---
 
 ## Featured shows
-`components/FeaturedRows.tsx` → `FEATURED_IDS`: 14 hand-picked ShowIDs (a multiple of 7, filling
-whole rows at 2xl), shuffled once per load, shown on Browse only while nothing filters. A missing ID
+`components/FeaturedRows.tsx` → `FEATURED_IDS`: 12 hand-picked ShowIDs (two full rows at six
+columns; owner, 2026-10-15), shuffled once per load, shown on Browse only while nothing filters. A missing ID
 drops out silently. The comment beside each ID says why that copy was chosen — keep doing that.
 
 ---
