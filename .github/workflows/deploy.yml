@@ -47,7 +47,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: node_modules/.cache/vault-thumbs
-          key: thumbs-${{ hashFiles('public/images/*_01.jpg', 'scripts/thumbs.mjs') }}
+          key: thumbs-${{ hashFiles('public/images/*_01.jpg', 'public/images/*_02.jpg', 'scripts/thumbs.mjs') }}
           restore-keys: thumbs-
 
       - name: Build
