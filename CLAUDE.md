@@ -29,7 +29,7 @@ components/             ← cards, grids, ShowDrawer, ArtistDirectory, HeroSearc
 src/
   hooks/                ← useShows (data + getNotes + getImageUrl), useBrowseResults, useSearchEngine, useDebounce
   store/filters.ts      ← zustand filter store, synced to the URL
-  lib/                  ← url.ts (canonical URL state, EVENT_GROUPS), layout.ts (the one content width), portraits.ts (artist tile picks), brush.ts, motion.ts, cn.ts
+  lib/                  ← url.ts (canonical URL state, EVENT_GROUPS), layout.ts (the one content width), portraits.ts (artist tile picks), hoverPreload.ts (cards' hover stills), brush.ts, motion.ts, cn.ts
   search/               ← searchIndex.ts (MiniSearch, field prefixes; free text grouped artist/show/song, Did you mean), facets.ts (filter, count, sort)
 styles/globals.css      ← Tailwind entry, global CSS and the breakpoints (imported by main.tsx)
 dist/                   ← BUILD OUTPUT — never commit this, CI owns it
@@ -574,6 +574,11 @@ check:perf` (part of `npm run check`) enforces every rule not marked (unchecked)
   (slot 2's WebP) mounts only on a card's first hover or focus, never with the grid, and loads first
   and alone at high priority; the drawer's prefetch of the originals waits until it lands (or 300ms),
   at low priority. Started together, they shared the line and the still took ~0.8 s to appear.
+- **Hover stills are preloaded ahead of the hover** (`src/lib/hoverPreload.ts`, started once in App):
+  mouse devices only, never with save-data; only the cards on screen (±¼ screen) once scrolling has
+  rested 250ms, or once new cards stop arriving, nearest the pointer first, two at a time at low
+  priority, each once. One listener for the page, reading positions at rest — no per-card observer.
+  Costs ~36 KB per card someone stops on (the benchmark's full scroll: 36 → 38 MB); phones fetch none.
 - **The first load is the trimmed show list**, not `shows.json`. Notes arrive afterwards in their
   own lookup, never merged into the show objects (that would re-render every memoised card).
 - **Fonts are self-hosted** (`public/fonts/README.md`), DM Sans preloaded. Never add a Google

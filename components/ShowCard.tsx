@@ -81,7 +81,9 @@ function exceptions(show: Show): { label: string; tone: string; title?: string }
  * re-renders) and fades in once loaded, so a page of cards never loads twice
  * the images. It is the build's WebP of slot 2, asked for first and alone;
  * the drawer's prefetch waits until it has landed (2026-10-16: hover to fully
- * shown went from ~0.8 s to ~0.3 s on a 20 Mbit/s line).
+ * shown went from ~0.8 s to ~0.3 s on a 20 Mbit/s line). On a mouse device
+ * src/lib/hoverPreload.ts has usually fetched it already, from
+ * `data-hover-src`, so the first hover finds it in the cache.
  *
  * Memoised: with stable props (see `onSelect`, and `getImageUrl` in useShows)
  * opening the drawer or touching a filter no longer re-renders every card.
@@ -153,6 +155,8 @@ export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, se
       type="button"
       id={`show-${show.ShowID}`}
       data-show-year={year}
+      // What src/lib/hoverPreload.ts fetches ahead of a hover.
+      data-hover-src={secondThumb || secondOriginal || undefined}
       className="group relative z-0 block w-full cursor-pointer text-left focus-visible:outline-none"
       onClick={() => onSelect(show)}
       onMouseEnter={warm}
@@ -184,7 +188,9 @@ export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, se
             alt=""
             decoding="async"
             {...{ fetchpriority: 'high' }}
-            onLoad={() => { setSecondReady(true); prefetchDrawer(); }}
+            // Two frames later, so the still is drawn once at opacity 0 and the
+            // fade runs even when it came straight from the preload cache.
+            onLoad={() => { requestAnimationFrame(() => requestAnimationFrame(() => setSecondReady(true))); prefetchDrawer(); }}
             onError={() => { if (secondSrc !== secondOriginal && secondOriginal) setSecondSrc(secondOriginal); }}
             className={`absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-300 ease-out motion-reduce:transition-none ${
               secondReady ? 'group-hover:opacity-100 group-hover:duration-200 group-focus-visible:opacity-100 group-focus-visible:duration-200' : ''

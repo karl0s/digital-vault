@@ -16,6 +16,7 @@ import { ShowGrid } from './components/ShowGrid';
 import { useBrowseResults } from './src/hooks/useBrowseResults';
 import { isFiltered as computeIsFiltered, LEGACY_VIEW_PARAM } from './src/lib/url';
 import { useFilterStore, initFilterUrlSync, selectFilterState } from './src/store/filters';
+import { startHoverPreload } from './src/lib/hoverPreload';
 import { useShallow } from 'zustand/react/shallow';
 
 export interface Show {
@@ -95,6 +96,8 @@ export default function App() {
 
   // Back/forward -> store. Once, at the root.
   useEffect(() => initFilterUrlSync(), []);
+  // Cards' hover stills fetched before the hover, on mouse devices only.
+  useEffect(() => startHoverPreload(), []);
 
   const { shows, getImageUrl, getNotes, error } = useShows();
   const debouncedQuery = useDebounce(searchQuery, 150);

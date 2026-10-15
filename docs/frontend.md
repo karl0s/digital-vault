@@ -141,8 +141,11 @@ row, fading the other letters on hover, white names for 5+ show artists.
   starts at once); the text never moves. The second still is slot 2's build WebP (the original if the
   WebP is missing): it mounts on the first hover or focus, alone and at high priority, and the drawer's
   prefetch of the four originals follows once it has loaded (or after 300ms), at low priority. Its
-  hover class applies only once loaded, so the first hover fades. Measured 2026-10-16 at 20 Mbit/s:
-  hover to fully shown ~0.25 s, down from ~0.7 s when it was the original sharing the line. Tailwind's `hover:` applies on hover-capable devices only, so a tap never
+  hover class applies only once loaded (two frames later, so a cached still still fades rather than
+  snapping). On a mouse device `src/lib/hoverPreload.ts` has usually fetched it already from the
+  card's `data-hover-src` — the cards on screen, once scrolling rests — so the first hover finds it in
+  the cache: first visible ~70ms, fully shown at the end of the 200ms fade (2026-10-16, 20 Mbit/s;
+  ~0.45–0.65 s on the live site before preloading, ~1 s before the WebP). Tailwind's `hover:` applies on hover-capable devices only, so a tap never
   triggers it. Focus ring: `ring-2 ring-white/85 ring-offset-2`. Title 14px, 15px from 2xl.
 - Tried and dropped on the way (2026-10-14/15): text revealed on hover (place, song count), a
   colour-graded gig-poster style, face-detected art direction of the crop.
