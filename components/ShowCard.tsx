@@ -77,9 +77,11 @@ function exceptions(show: Show): { label: string; tone: string; title?: string }
  *
  * The hover is plain CSS (`group-hover`, `group-focus-visible`), never motion
  * components: ~1,200 cards re-rendering together was the drawer's old cost.
- * The one piece of state is whether the second still has been asked for: it
- * mounts on first hover or focus (that card alone re-renders) and only fades
- * in once loaded, so a page of cards never loads twice the images.
+ * The second still mounts on a card's first hover or focus (that card alone
+ * re-renders) and fades in once loaded, so a page of cards never loads twice
+ * the images. It is the build's WebP of slot 2, asked for first and alone;
+ * the drawer's prefetch waits until it has landed (2026-10-16: hover to fully
+ * shown went from ~0.8 s to ~0.3 s on a 20 Mbit/s line).
  *
  * Memoised: with stable props (see `onSelect`, and `getImageUrl` in useShows)
  * opening the drawer or touching a filter no longer re-renders every card.
@@ -96,9 +98,10 @@ export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, se
   // more pixels than a card ever shows, a fraction of the bytes and decode
   // memory. The original stays as the fallback.
   const thumbUrl = show.ChecksumSHA1 && getImageUrl ? getImageUrl(show.ChecksumSHA1, 1, 'thumb') : imageUrl;
-  // The second still, for the hover crossfade: the original (only slot 1 has a
-  // thumbnail), the same file the drawer prefetch below asks for.
-  const secondUrl = show.ChecksumSHA1 && getImageUrl ? getImageUrl(show.ChecksumSHA1, 2) : null;
+  // The second still, for the hover crossfade: the build's WebP of slot 2,
+  // with the original as the fallback.
+  const secondThumb = show.ChecksumSHA1 && getImageUrl ? getImageUrl(show.ChecksumSHA1, 2, 'thumb') : null;
+  const secondOriginal = show.ChecksumSHA1 && getImageUrl ? getImageUrl(show.ChecksumSHA1, 2) : null;
 
   // Title and line under it. On an artist's page the artist is on every card,
   // so the event leads; everywhere else, the artist.
@@ -118,18 +121,29 @@ export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, se
     .join('')
     .toUpperCase();
 
-  const [second, setSecond] = useState<'idle' | 'mounted' | 'ready'>('idle');
-  // Warm the drawer's images on first hover or focus. A ref, not state:
+  const [secondSrc, setSecondSrc] = useState<string | null>(null);
+  const [secondReady, setSecondReady] = useState(false);
+
+  // Warm the drawer's originals, once, at low priority. A ref, not state:
   // remembering that it has already happened must not re-render the card.
   const prefetched = useRef(false);
-  const warm = () => {
-    if (second === 'idle' && secondUrl) setSecond('mounted');
+  const prefetchDrawer = () => {
     if (prefetched.current || !show.ChecksumSHA1) return;
     prefetched.current = true;
     [1, 2, 3, 4].forEach(i => {
       const url = getImageUrl ? getImageUrl(show.ChecksumSHA1!, i) : `/images/${show.ChecksumSHA1}_0${i}.jpg`;
-      if (url) new Image().src = url;
+      if (!url) return;
+      const img = new Image();
+      img.fetchPriority = 'low';
+      img.src = url;
     });
+  };
+  // First hover or focus: the hover still goes first and alone. The drawer's
+  // four originals used to start at the same moment and share the line with
+  // it; now they follow once it lands, or after 300ms at the latest.
+  const warm = () => {
+    if (!secondSrc && (secondThumb || secondOriginal)) setSecondSrc(secondThumb || secondOriginal);
+    if (!prefetched.current) setTimeout(prefetchDrawer, 300);
   };
 
   return (
@@ -159,18 +173,21 @@ export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, se
           </div>
         )}
 
-        {/* The second still, faded in over 600ms and out over 400ms. The
-            hover classes apply only once it has loaded, so the first hover
-            fades rather than snapping. Tailwind's hover: is hover-capable
+        {/* The second still, faded in over 200ms and out over 300ms, both
+            ease-out so the change starts at once. The hover classes apply
+            only once it has loaded, so the first hover fades rather than
+            snapping. Tailwind's hover: is hover-capable
             devices only, so a tap on a phone never triggers it. */}
-        {secondUrl && second !== 'idle' && (
+        {secondSrc && (
           <img
-            src={secondUrl}
+            src={secondSrc}
             alt=""
             decoding="async"
-            onLoad={() => setSecond('ready')}
-            className={`absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-[400ms] ease-[cubic-bezier(.4,0,.2,1)] motion-reduce:transition-none ${
-              second === 'ready' ? 'group-hover:opacity-100 group-hover:duration-[600ms] group-focus-visible:opacity-100 group-focus-visible:duration-[600ms]' : ''
+            {...{ fetchpriority: 'high' }}
+            onLoad={() => { setSecondReady(true); prefetchDrawer(); }}
+            onError={() => { if (secondSrc !== secondOriginal && secondOriginal) setSecondSrc(secondOriginal); }}
+            className={`absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-300 ease-out motion-reduce:transition-none ${
+              secondReady ? 'group-hover:opacity-100 group-hover:duration-200 group-focus-visible:opacity-100 group-focus-visible:duration-200' : ''
             }`}
           />
         )}

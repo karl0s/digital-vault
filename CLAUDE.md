@@ -188,13 +188,14 @@ Maps `ChecksumSHA1 → [1, 2, 3, 4]` (available slot indices). Only listed slots
   `python3 tools/artist-portraits/build.py` renders; it starts from the picks in the code.
 
 ### Card thumbnails — build output, never committed
-Cards load a 640px-wide WebP of slot 1 (`dist/thumbs/{checksum}_01.webp`, made by
+Cards load a 640px-wide WebP of slot 1, and of slot 2 for the hover crossfade
+(`dist/thumbs/{checksum}_01.webp`, `_02.webp`, made by
 `scripts/thumbs.mjs` at WebP quality 90 with sharp-YUV chroma); originals serve the drawer header
 and the image viewer. Thumbnails regenerate from `public/images/` by content hash on every build
 or `npm run dev`, so **there is nothing to do when images change**. They live in
 `node_modules/.cache/vault-thumbs/` (and the deploy's Actions cache) — never commit them or put
 them in `public/`. A missing thumbnail is not an error: the card falls back to the original.
-`getImageUrl(checksum, 1, 'thumb')` gives the URL; only slot 1 has one.
+`getImageUrl(checksum, 1 or 2, 'thumb')` gives the URL; only slots 1 and 2 have one.
 
 ### Image geometry — display shape, not stored shape
 DVD and broadcast pixels are not square: an image written at the source's raw `Width`×`Height` is
@@ -570,7 +571,9 @@ check:perf` (part of `npm run check`) enforces every rule not marked (unchecked)
   no `translateZ(0)` or `will-change` (each pins a compositor layer per card).
 - **Cards load the build thumbnail**, with the original as `fallbackSrc`; anything shown large uses
   the original (the drawer header fades it in over the thumbnail). The hover crossfade's second still
-  (an original) mounts only on a card's first hover or focus, never with the grid.
+  (slot 2's WebP) mounts only on a card's first hover or focus, never with the grid, and loads first
+  and alone at high priority; the drawer's prefetch of the originals waits until it lands (or 300ms),
+  at low priority. Started together, they shared the line and the still took ~0.8 s to appear.
 - **The first load is the trimmed show list**, not `shows.json`. Notes arrive afterwards in their
   own lookup, never merged into the show objects (that would re-render every memoised card).
 - **Fonts are self-hosted** (`public/fonts/README.md`), DM Sans preloaded. Never add a Google

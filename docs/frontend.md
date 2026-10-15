@@ -137,10 +137,12 @@ row, fading the other letters on hover, white names for 5+ show artists.
   Pro-shot, Audience and HD badges were dropped (owner, 2026-10-15).
 - A song match in search (`songHits`) adds a ♪ line under the title, matched letters lit, and the
   gradient reaches higher (`to-72%`).
-- Hover and keyboard focus crossfade to the show's second still (in 600ms, out 400ms); the text never
-  moves. The second still is an original (only slot 1 has a thumbnail): it mounts on the first hover or
-  focus (the drawer prefetch has already asked for it) and its hover class applies only once loaded,
-  so the first hover fades. Tailwind's `hover:` applies on hover-capable devices only, so a tap never
+- Hover and keyboard focus crossfade to the show's second still (in 200ms, out 300ms, ease-out, so it
+  starts at once); the text never moves. The second still is slot 2's build WebP (the original if the
+  WebP is missing): it mounts on the first hover or focus, alone and at high priority, and the drawer's
+  prefetch of the four originals follows once it has loaded (or after 300ms), at low priority. Its
+  hover class applies only once loaded, so the first hover fades. Measured 2026-10-16 at 20 Mbit/s:
+  hover to fully shown ~0.25 s, down from ~0.7 s when it was the original sharing the line. Tailwind's `hover:` applies on hover-capable devices only, so a tap never
   triggers it. Focus ring: `ring-2 ring-white/85 ring-offset-2`. Title 14px, 15px from 2xl.
 - Tried and dropped on the way (2026-10-14/15): text revealed on hover (place, song count), a
   colour-graded gig-poster style, face-detected art direction of the crop.

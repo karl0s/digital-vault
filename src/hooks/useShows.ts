@@ -95,8 +95,9 @@ export function useShows() {
    * Returns a URL for the given checksum+index, or null if that slot is not
    * present in the image manifest (i.e. the file doesn't exist on disk).
    *
-   * `size: 'thumb'` gives the 640px WebP the build makes of slot 1 for cards
-   * (scripts/thumbs.mjs). Only slot 1 has one; any other slot gets the
+   * `size: 'thumb'` gives the 640px WebP the build makes of slots 1 and 2 for
+   * cards (scripts/thumbs.mjs): the card, and the still it crossfades to on
+   * hover. Only those two slots have one; any other slot gets the
    * original. Anything shown large — the drawer header, the viewer — uses
    * the original.
    *
@@ -112,7 +113,7 @@ export function useShows() {
       if (!available || !available.includes(index)) return null;
     }
 
-    if (size === 'thumb' && index === 1) return `${base}thumbs/${checksum}_01.webp`;
+    if (size === 'thumb' && (index === 1 || index === 2)) return `${base}thumbs/${checksum}_0${index}.webp`;
     return `${base}images/${checksum}_0${index}.jpg`;
   }, [imageManifest, hasManifest]);
 

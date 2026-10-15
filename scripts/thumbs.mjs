@@ -1,5 +1,8 @@
 /**
- * Card thumbnails — a 640px-wide WebP of every show's slot-1 image.
+ * Card thumbnails — a 640px-wide WebP of every show's slot-1 and slot-2 image:
+ * slot 1 is the card, slot 2 the still it crossfades to on hover (2026-10-16).
+ * The hover still was the original, three times the bytes and in the queue
+ * behind the drawer's prefetch: ~0.8 s to appear on a 20 Mbit/s line.
  *
  *   node scripts/thumbs.mjs      (normally run for you: see vite-plugin-thumbs.mjs)
  *
@@ -28,7 +31,7 @@ import sharp from 'sharp';
 export const THUMB = { width: 640, quality: 90, effort: 6, smartSubsample: true };
 export const CACHE_DIR = 'node_modules/.cache/vault-thumbs';
 
-const SOURCE = /^(.+)_01\.jpg$/;
+const SOURCE = /^(.+)_0[12]\.jpg$/;
 
 /** Bring the thumbnail cache in line with public/images. Returns counts and the cache dir. */
 export async function generateThumbs(root, log = console.log) {
