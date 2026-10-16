@@ -67,9 +67,9 @@
 - [ ] **Alongside the rest: real traders.** Everything left is predicted, not seen. Send the link
   with three tasks from [04-test-plan.md](04-test-plan.md) to two or three traders you already
   email; their answers re-score the list
-- [ ] **1. Date precision: your review page** (`~/VaultShots/reports/date-precision.html`): 144
-  shows dated the 1st of a month — real date or month only? The site already shows partial dates
-  honestly once marked *(F7)*
+- [ ] **1. Date precision: your review page** (`~/VaultShots/reports/date-precision.html`): 11
+  real dates confirmed; 132 shows dated the 1st of a month still open — 8 suggested month only,
+  2 New Year's Day, 122 with no evidence *(F7)*
 - [ ] **2. The 432 missing setlists**, in their own review
 - [ ] **3. Drive scan** — frame rate, bitrate, chapters, the show's own size, broadcaster *(needs
   Live Music mounted)*
@@ -91,7 +91,7 @@ be contrast-checked automatically (F13).
 | [F4](#f4--pointing-at-one-exact-recording-is-hard) | Pointing at one exact recording | ✅ | Batch C: a Share pill (share sheet on phones, "Copy link" elsewhere): the link alone as plain text (pastes into an address bar or chat), and as rich text `Artist · date · event · quality · length` linked to the show (pastes into an email by name) | — |
 | [F5](#f5--escape-erases-the-search-behind-an-open-show) | Escape erases the search | ✅ | Batch A: Escape closes only the show; the results stay, so the next copy is one click away | — |
 | [F6](#f6--search-doesnt-match-how-traders-type) | Search misses how traders type | ✅ | Batch B: dates in every common format (and two-digit years); artist initials (RATM, FNM, KOL, 30STM…), no wrong "Did you mean"; countries, cities and events by other names (uk, brasil, koln, titp…); tech terms (hd, 1080, pal, pro shot, lpcm…); several field filters at once, quoted values; search tips in the empty state; 43 new search tests. Batch H: plural field names and `festival:` (`songs:creep`) | Tips appear when a search finds nothing, not under the field |
-| [F7](#f7--placeholder-dates-look-like-real-dates) | Placeholder dates look real | 🟡 | Batch D: cards show a year-only date (`YYYY-01-01`) as the year; then the drawer, share line and tab title too. 2026-10-17: a `DatePrecision` field ("month", "day") the site and health check read: "May 2001 (day unknown)", "2001 (date unknown)" in the drawer, partial ISO dates in the CSV; a review page for the 144 shows dated the 1st of a month (`tools/date-precision`) | Your picks on the review page: 11 suggested real, 8 suggested month only, 2 New Year's Day and 122 with no evidence for your call |
+| [F7](#f7--placeholder-dates-look-like-real-dates) | Placeholder dates look real | 🟡 | Batch D: cards show a year-only date (`YYYY-01-01`) as the year; then the drawer, share line and tab title too. 2026-10-17: a `DatePrecision` field ("month", "day") the site and health check read: "May 2001 (day unknown)", "2001 (date unknown)" in the drawer, partial ISO dates in the CSV; a review page for the 144 shows dated the 1st of a month (`tools/date-precision`) | 11 shows (13 records) confirmed real dates, 2026-10-17. Left on the review page: 8 suggested month only, 2 New Year's Day, 122 with no evidence |
 | [F8](#f8--empty-results-blame-spelling-when-a-filter-is-the-cause) | Empty results blame spelling | ✅ | Batch B: names the filters that hide the results and offers "Show N without the filter" | — |
 | [F9](#f9--the-drawer-hides-venue-and-city-for-festival-and-tv-shows) | Venue and city hidden | ✅ | Batch A: `Date · Event · Venue · City, Country` under the name for every show | — |
 | [F10](#f10--no-dense-list-export-or-useful-sort-for-reconciling-a-trading-list) | No list view or export | ✅ | Batch F (2026-10-16): a Grid / List toggle kept in the link; the list a dense table (date, artist, event, venue, place, source, quality, PAL/NTSC, length, size, songs); **CSV** of the results on screen and **Download the full list** (21 columns, opens in Excel with accents intact, a link per show); sort by length; prints black on white | — |

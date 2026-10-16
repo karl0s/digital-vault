@@ -9028,13 +9028,14 @@
     "DuplicateOf": "",
     "Setlist": "Stacked Actors; Learn To Fly; My Hero; Monkey Wrench; Generator; This Is A Call",
     "Notes": "---- info.txt ----\nCOLD LIVE AT THE CHAPEL 2000\n------------------------------------------------------------------------------------------------\n\nFOO FIGHTERS\nFebruary 1st, 2000\nThe Chapel (Cold Live At The Chapel)\nMelbourne, NSW\nAustralia\n\nTaper: Unknown\nAuthorer: Unknown\n\nLineage: TV > VHS(1) > DVDR \n\nVideo: MPEG-2, PAL, 25fps, 8300Kbits/sec, 720x576, 4:3\nAudio: MP2, 48KHz, Stereo, 224Kbits/sec\n\nPRO\nVideo rating: A\nAudio rating: A\n\nSetlist:\n\n01 - Stacked Actors\n02 - Learn To Fly\n03 - My Hero\n04 - Monkey Wrench\n05 - Generator\n06 - This Is A Call\n\nRunning time: 25 min 28 sec\n\nArtwork: No\nMenu/Chapters: Yes/Yes\n\nNotes:\n- Incomplete show. It was webcast but that version isn't circulating yet.",
-    "PrivateNotes": "---- SIDECAR RE-SCAN (2026-10-05) ----\n- EventOrFestival blank -> 'Cold Live at the Chapel'. info.txt: 'The Chapel (Cold Live At The Chapel)'\n- VenueName blank -> 'The Chapel'. info.txt: 'The Chapel (Cold Live At The Chapel), Melbourne'",
+    "PrivateNotes": "---- SIDECAR RE-SCAN (2026-10-05) ----\n- EventOrFestival blank -> 'Cold Live at the Chapel'. info.txt: 'The Chapel (Cold Live At The Chapel)'\n- VenueName blank -> 'The Chapel'. info.txt: 'The Chapel (Cold Live At The Chapel), Melbourne'\n\nDATE PRECISION (2026-10-17): the day is real (DatePrecision day), the owner's call on the date-precision review (tools/date-precision).",
     "LastScannedAt": "2025-11-06 09:23:55",
     "ExtractionWarnings": "loc:comma",
     "SourceCatalog": "Seagate",
     "DuplicateKey": "a481cd115a47ba63bba951fffa27fb835ef2d4bd",
     "IsPrimary": "Yes",
-    "PrimaryCatalog": "Seagate"
+    "PrimaryCatalog": "Seagate",
+    "DatePrecision": "day"
   },
   {
     "ShowID": "7c860a05fcce",
@@ -9980,13 +9981,14 @@
     "DuplicateOf": "",
     "Setlist": "All My Life; Generator; My Hero; Have It All; Disenchanted Lullaby; Enough Space; Aurora; Stacked Actors; Low; Monkey Wrench; Everlong (incomplete)",
     "Notes": "---- info.txt ----\nFOO FIGHTERS \nSeptember 12th, 2002 & May 1st, 2003\nThe Liquid Room / Black Cat\nTokyo, Japan / Washington, DC\n\nGENERATION: DVB > DVDR & TV > VHS(1) > DVDR (NTSC)\nSOURCE: PRO #1a & PRO#1\nLENGTH: 76:25 minutes\n\nVIDEO INFORMATION: 6.5Mbps VBR \nAUDIO INFORMATION: 384kbps AC-3 (Stereo)\n\nSCREENSHOTS:\n\nSETLIST:\n• All My Life\n• Breakout\n• Times Like These\n• Learn to Fly\n• Everlong\n\n• All My Life\n• Generator\n• My Hero\n• Have It All\n• Disenchanted Lullabye\n• Enough Space\n• Aurora\n• Stacked Actors\n• Low\n• Monkey Wrench\n• Everlong\n\n(First five tracks are 2002/09/12, track 6 onwards is 2003/05/01)\n\nREVIEW:\nThis DVD contains broadcasts of two different shows from Japanese TV. The first is a direct DVB recording of the September 12th 2002 show in Tokyo, Japan. Only five songs are featured but the recording is very high quality, a high bitrate DVB broadcast captured directly with a standalone recorder. The picture is sharp and clear with no macroblocking or other artifacts. Audio is also clear and crisp, making for a very nice pro-shot video. \n\nThe second broadcast is again from Japan but of a show in the US, at the Black Cat in May, 2003. Some songs from the acoustic portion of this show is featured on the Everywhere But Home but this broadcast features songs from the electric set. This is a VHS recording rather than a direct digital copy but is still of quite good quality, with only a little fuzzyness in the picture. The audio is well mixed and again nice and clear.",
-    "PrivateNotes": "---- SPLIT (2026-10-06) ----\nThis disc holds two broadcasts, and this record's ChecksumSHA1 is the exact SHA1 of VTS_02's three VOBs (recomputed 2026-10-06), so this record IS the Black Cat show. It previously carried the Tokyo 2002-09-12 date, venue and five-song setlist read off the top of info.txt. VTS_02 = Black Cat, Washington, D.C., 2003-05-01, 55:56 by the DVD's IFO. The recording's own on-screen credits read \"Taped @ The Black Cat, Washington DC on 5.01.03 ... Courtesy of AOL(tm) Music ... Recorded by Sheffield Audio Video ... Directed by Paul N. Young\"; the Space Shower TV bug is visible throughout (a Japanese rebroadcast, per info.txt). Setlist from info.txt (track 6 onwards); the sidecar spells 'Disenchanted Lullabye'. Marked (incomplete) because the broadcast carries the electric set only - info.txt says acoustic songs from this show are on Everywhere But Home. The Tokyo show (VTS_01) is now its own record, b5a1eec3c24b. TotalSizeBytes, FileCount and DurationSec now describe VTS_02 alone (previously the whole folder: 4015546838 bytes, 16 files, 3360 s).\n\n---- ASPECT (2026-10-06) ----\nThe disc flags this broadcast 4:3 and the picture has no bars; as a post-2000 source it was put to the owner at both shapes (aspect_ab.py), who confirmed 4:3.",
+    "PrivateNotes": "---- SPLIT (2026-10-06) ----\nThis disc holds two broadcasts, and this record's ChecksumSHA1 is the exact SHA1 of VTS_02's three VOBs (recomputed 2026-10-06), so this record IS the Black Cat show. It previously carried the Tokyo 2002-09-12 date, venue and five-song setlist read off the top of info.txt. VTS_02 = Black Cat, Washington, D.C., 2003-05-01, 55:56 by the DVD's IFO. The recording's own on-screen credits read \"Taped @ The Black Cat, Washington DC on 5.01.03 ... Courtesy of AOL(tm) Music ... Recorded by Sheffield Audio Video ... Directed by Paul N. Young\"; the Space Shower TV bug is visible throughout (a Japanese rebroadcast, per info.txt). Setlist from info.txt (track 6 onwards); the sidecar spells 'Disenchanted Lullabye'. Marked (incomplete) because the broadcast carries the electric set only - info.txt says acoustic songs from this show are on Everywhere But Home. The Tokyo show (VTS_01) is now its own record, b5a1eec3c24b. TotalSizeBytes, FileCount and DurationSec now describe VTS_02 alone (previously the whole folder: 4015546838 bytes, 16 files, 3360 s).\n\n---- ASPECT (2026-10-06) ----\nThe disc flags this broadcast 4:3 and the picture has no bars; as a post-2000 source it was put to the owner at both shapes (aspect_ab.py), who confirmed 4:3.\n\nDATE PRECISION (2026-10-17): the day is real (DatePrecision day), the owner's call on the date-precision review (tools/date-precision).",
     "LastScannedAt": "2025-11-06 09:24:04",
     "ExtractionWarnings": "loc:comma",
     "SourceCatalog": "Seagate",
     "DuplicateKey": "e6365afa116acd8fa4f0ce4fbd720cf54e8e97a2",
     "IsPrimary": "Yes",
-    "PrimaryCatalog": "Seagate"
+    "PrimaryCatalog": "Seagate",
+    "DatePrecision": "day"
   },
   {
     "ShowID": "b5a1eec3c24b",
@@ -20354,13 +20356,14 @@
     "DuplicateOf": "",
     "Setlist": "Found That Soul; You Stole The Sun; Motorcycle Emptiness; Ocean Spray; Everything Must Go; Tsunami; Masses Against The Classes; Ready For Drowning; So Why So Sad; Motown Junk; Faster; Let Robeson Sing; A Design For Life; You Love Us; If You Tolerate This Your Children Will Be Next",
     "Notes": "---- EXTRAS_TS/the text of manicstreetpreachers2001-06-01dvd.txt ----\n\nI apologize if I missed to include some Rory mafia member...\n\nfeaturing the German Music-MULE-&-Bluesrock-Junkies, Rock main division:\n\nManic Street Preachers:\n\nVideo Source: WDR Rockpalast German TV broadcast(on 10th June 2001)\nVideo Bitrate: 8956 to 9016 kb/s\nFrame rate: VBR at 25.000 frames\nPictures: 4:3\nDVD Author: AODPPSS ~ himself\nDVD format: PAL\nRegion: 0, playable worldwide, if not it´s up to your equipment\n\nAudio Source: WDR Rockpalast German TV broadcast(see above)\nAudio Codec: AC3\nAudio bitrate: 0xbd[0x80]:48000Hz  256 kb/s tot , stereo (2/0)\n\nLineage: WDR Rockpalast German TV broadcast(see above) > Nokia satellite bowl > Pace satellite TV receiver > via Scart cable > Akai VCR(SP mode) > BASF 240min master VHS > playback on LG VCR > via Scart cable > Panasonic stand alone DVD recorder(1h XP mode) > Sony DVD- > HD (YOU)\nDVD with menue and scattered chapters\nFile size: 3.68GB\nLength: 55:58min\nNo artwork...\n\nRock Am Ring Festival, Nürburgring, Eifel, Germany, 01st June 2001\n01) Found That Soul\n02) You Stole The Sun\n03) Motorcycle Emptiness\n04) Ocean Spray\n05) Everything Must Go\n06) Tsunami\n07) Masses Against The Classes\n08) Ready For Drowning\n09) So Why So Sad\n10) Motown Junk\n11) Faster\n12) Let Robeson Sing\n13) A Design For Life\n14) You Love Us\n15) If You Tolerate This Your Children Will Be Next\nLength: 55:58min\nPersonal:\nJames Dean Bradfield: Vocals, Guitar\nNick Magsmith: Keyboards\nNicky Wire: Bass\nSeam Moore: Drums\n\n\"Why do people with the worst ratios do 90% of the Bitching\"\n\nalso support (and record) live music,\nI Do... ...as well\nfor those of you who download this and seed it for others to enjoy ~ many thanks!\nfor those of you who download this and run ~ blow it out your kazoo!\n\nMOST Important Note: please use this show for trading ~ never sell it (you may go to hell ~ which is not confirmed)\n\nEnjoy this great band,\nP&L\n\n(Source: WDR Rockpalast German TV broadcast)\n\nMD5 lets Robeson sing.\n\n8ec6cf4d290c9935eb817c8073a24df2 *VIDEO_TS\\VIDEO_TS.BUP\n8ec6cf4d290c9935eb817c8073a24df2 *VIDEO_TS\\VIDEO_TS.IFO\n00b8eb410c8c3a80e922b6ee7c944595 *VIDEO_TS\\VIDEO_TS.VOB\n52199b745e40a3a9537b7204aa8cd8f3 *VIDEO_TS\\VTS_01_0.BUP\n52199b745e40a3a9537b7204aa8cd8f3 *VIDEO_TS\\VTS_01_0.IFO\n950c77548e9e6022024c9f46e443adc0 *VIDEO_TS\\VTS_01_1.VOB\nac44c8dd607dffc7fffeba86574e5743 *VIDEO_TS\\VTS_01_2.VOB\na080b06b7f9175f1c00d67d5e59124ea *VIDEO_TS\\VTS_01_3.VOB\n0dc20c0490d6ca5ba050f72272cd0d93 *VIDEO_TS\\VTS_01_4.VOB\n\nNo errors occured. (Trader´s Little Helper Said That.)\nAttached MD5 was created with MD5summer.",
-    "PrivateNotes": "Setlist, event and venue from the disc's own sidecar (EXTRAS_TS): WDR Rockpalast broadcast of Rock am Ring, Nürburgring, 2001-06-01, aired 2001-06-10, 15 numbered tracks, 55:58. The record previously held the uploader's home town (Friesland) as City and the sidecar's list of torrent-tracker credits as Setlist. DurationSec measured by demuxing all four VOBs (the scan's 25 s timed a fragment).",
+    "PrivateNotes": "Setlist, event and venue from the disc's own sidecar (EXTRAS_TS): WDR Rockpalast broadcast of Rock am Ring, Nürburgring, 2001-06-01, aired 2001-06-10, 15 numbered tracks, 55:58. The record previously held the uploader's home town (Friesland) as City and the sidecar's list of torrent-tracker credits as Setlist. DurationSec measured by demuxing all four VOBs (the scan's 25 s timed a fragment).\n\nDATE PRECISION (2026-10-17): the day is real (DatePrecision day), the owner's call on the date-precision review (tools/date-precision).",
     "LastScannedAt": "2025-11-06 09:25:19",
     "ExtractionWarnings": "loc:comma",
     "SourceCatalog": "Seagate",
     "DuplicateKey": "8864ae1d14e7fb0d5b676049cb9dc02152a3c2f6",
     "IsPrimary": "Yes",
-    "PrimaryCatalog": "Seagate"
+    "PrimaryCatalog": "Seagate",
+    "DatePrecision": "day"
   },
   {
     "ShowID": "63d8f4bd1abb",
@@ -20653,13 +20656,14 @@
     "DuplicateOf": "",
     "Setlist": "",
     "Notes": "",
-    "PrivateNotes": "Identified 2026-09-30 from the footage: TVNZ One's Good Morning show - the same studio set and 'good morning' logo as the band's 2008-11-14 appearance (13cc22485f09), two songs and a couch interview. The folder carries no sidecar; the date is the folder's.",
+    "PrivateNotes": "Identified 2026-09-30 from the footage: TVNZ One's Good Morning show - the same studio set and 'good morning' logo as the band's 2008-11-14 appearance (13cc22485f09), two songs and a couch interview. The folder carries no sidecar; the date is the folder's.\n\nDATE PRECISION (2026-10-17): the day is real (DatePrecision day), the owner's call on the date-precision review (tools/date-precision).",
     "LastScannedAt": "2025-11-06 09:25:22",
     "ExtractionWarnings": "loc:folder",
     "SourceCatalog": "Seagate",
     "DuplicateKey": "152a4be8004825e173478babcadc8ce18a09a629",
     "IsPrimary": "Yes",
-    "PrimaryCatalog": "Seagate"
+    "PrimaryCatalog": "Seagate",
+    "DatePrecision": "day"
   },
   {
     "ShowID": "13cc22485f09",
@@ -28961,13 +28965,14 @@
     "DuplicateOf": "",
     "Setlist": "We Will Rock You (Fast); Let Me Entertain You; Play the Game; Somebody to Love; I'm in Love with My Car; Get Down, Make Love; Need Your Loving Tonight; Save Me; Now I'm Here; Dragon Attack; Fat Bottomed Girls; Love of My Life; Keep Yourself Alive; Drum Solo; Guitar Solo; Flash; The Hero; Crazy Little Thing Called Love; Bohemian Rhapsody; Tie Your Mother Down; Another One Bites the Dust; Sheer Heart Attack; We Will Rock You; We Are the Champions; God Save the Queen",
     "Notes": "---- Queen Live In Argentina March 1st, 1981 DVD.txt ----\nQueen.\n\nLive in Argentina at Velez Stadium on March 1st, 1981 DVD.\n\nPro-shot TV Broadcast Canal 9 Buenos Aires Argentina\nencoded by crime crow label.\n\nvery good video and audio quality.\n\n\nSet list:\n\n01 we will rock you (fast)\n02 let me entertain you\n03 play the game\n04 somebody to love\n05 i'm in love with my car\n06 get down make love\n07 need your loving tonight\n08 save me\n09 now i'm here\n10 dragon attack\n11 fat bottomed girls\n12 love of my life\n13 keep yourself alive - drums solo - guitar solo\n14 flash - the hero\n15 crazy little thing called love\n16 bohemian rhapsody\n17 tie your mother down\n18 another one bites the dust\n19 sheer heart attack\n20 we will rock you\n21 we are the champions\n22 god save the queen\n\nDVD cover included.\n\nExtraordinary Show very close to the set list and performance in Monterrey, México on October 9th, 1981 where Freddie was wearin' the same way -white trouses with a black leather jacket-. We will rock you and We are the champions were performed as the same as the late seventies, simply \"glorious\".\n\nEnjoy it!",
-    "PrivateNotes": "Setlist from the sidecar 'Queen Live In Argentina March 1st, 1981 DVD.txt' (Canal 9 Buenos Aires broadcast, Velez Stadium).",
+    "PrivateNotes": "Setlist from the sidecar 'Queen Live In Argentina March 1st, 1981 DVD.txt' (Canal 9 Buenos Aires broadcast, Velez Stadium).\n\nDATE PRECISION (2026-10-17): the day is real (DatePrecision day), the owner's call on the date-precision review (tools/date-precision).",
     "LastScannedAt": "2025-11-06 09:25:58",
     "ExtractionWarnings": "loc:folder; evt:eventline",
     "SourceCatalog": "Seagate",
     "DuplicateKey": "9604211677806bbf09205a0dcec44fc1b6fa6ca0",
     "IsPrimary": "Yes",
-    "PrimaryCatalog": "Seagate"
+    "PrimaryCatalog": "Seagate",
+    "DatePrecision": "day"
   },
   {
     "ShowID": "29130db263ac",
@@ -29089,13 +29094,14 @@
     "DuplicateOf": "",
     "Setlist": "Era Vulgaris; Sick, Sick, Sick; Go With the Flow; Do It Again; Misfit Love; Burn the Witch; Turnin' on the Screw; Monsters in the Parasol; You Can't Quit Me Baby; You Think I Ain't Worth a Dollar, but I Feel Like a Millionaire; Little Sister; Make It Wit Chu; No One Knows",
     "Notes": "---- info.txt ----\nQUEENS OF THE STONE AGE\nJune 1, 2008\nMegaland\nLandgraaf, Netherlands (Pinkpop 2008 festival)\n\nTRACKS:\n\nSick, Sick, Sick / Go With the Flow / Do It Again / Misfit Love / Burn the Witch / Turnin' on the Screw / Monsters in the Parasol / You Think I Ain't Worth a Dollar, but I Feel Like a Millionaire / Little Sister / Make It Wit Chu / No One Knows\n\nLENGTH: 48:34\n\nTRANSFER: Cultura 24 broadcast > Humax HD PVR > TS file > PC > TMPGEnc Authoring Works 4 > DVD\nRECORDED & EDITED BY: dION1983",
-    "PrivateNotes": "---- correction 2026-08-25 ----\nNotes was empty even though this sidecar sits in the folder; added. RecordingType was blank and is set to Proshot.\nThe record's Setlist holds 13 songs where the sidecar lists 11, the extras being 'Era Vulgaris' and \"You Can't Quit Me Baby\". Left as it stands: the record is a superset and nothing in it conflicts with the sidecar.\nThe drive folder is DOUBLED - the VOBs sit at '<folder>/<same folder name>/VIDEO_TS/'. The outer shell holds no media, so capture must target the inner directory.",
+    "PrivateNotes": "---- correction 2026-08-25 ----\nNotes was empty even though this sidecar sits in the folder; added. RecordingType was blank and is set to Proshot.\nThe record's Setlist holds 13 songs where the sidecar lists 11, the extras being 'Era Vulgaris' and \"You Can't Quit Me Baby\". Left as it stands: the record is a superset and nothing in it conflicts with the sidecar.\nThe drive folder is DOUBLED - the VOBs sit at '<folder>/<same folder name>/VIDEO_TS/'. The outer shell holds no media, so capture must target the inner directory.\n\nDATE PRECISION (2026-10-17): the day is real (DatePrecision day), the owner's call on the date-precision review (tools/date-precision).",
     "LastScannedAt": "2025-11-05 16:25:03",
     "ExtractionWarnings": "loc:folder",
     "SourceCatalog": "BigDaddy",
     "DuplicateKey": "aea2a86c74a7ac3e919c49a669b8cfe2c5fbd22e",
     "IsPrimary": "Yes",
-    "PrimaryCatalog": "BigDaddy"
+    "PrimaryCatalog": "BigDaddy",
+    "DatePrecision": "day"
   },
   {
     "ShowID": "8e8d56e0a5f7",
@@ -29175,13 +29181,14 @@
     "DuplicateOf": "",
     "Setlist": "The Lost Art of Keeping a Secret; I Think I Lost my Headache; Leg of lamb; In my Head; Broken Box; Little Sister; Burn the Witch; Long Slow Goodbye; Tangled up in Plaid; A Song for the Dead; I Never Came; No One Knows",
     "Notes": "---- qotsa-2005-july-01-dvd.txt ----\n2005/07/01 - Eurockéennes, Belfort, France - source 2\n\nSource: Satellite receiver (Europe 2 TV) => DVD recorder (Toshiba D-R1, Video 7000kpbs, audio PCM) => TMPGenc (basic menu and index)\n\nSetlist:\n1.The Lost Part of Keeping a Secret\n2.I Think I Lost my Headache\n3.Leg of lamb\n4.In my Head\n5.Broken Box\n6.Little Sister\n7.Burn the Witch\n8.Long Slow Goodbye\n9.Tangled up in Plaid\n10.A Song for the Dead\n11.I Never Came\n12.No One Knows\n\nThe first song (\"go with the flow\", and not \"you would know\" as we can see at the end credits) was not broadcasted.\notherwise this is the complete unedited show.",
-    "PrivateNotes": "---- correction 2026-08-25 ----\nVenueName set to the collection's canonical venue for this festival. Setlist track 1 read 'The Lost Part of Keeping a Secret' - the sidecar's own typo for 'The Lost Art of Keeping a Secret'.\nAspectRatio: 4:3 frame (SAR 16:15) with a letterboxed picture and the Europe 2 TV logo burned into the upper black bar. Measured over 602 frames on columns 60-560, clear of the logo, the picture runs rows 72-503 = 432 rows, which at SAR 16:15 displays as exactly 16:9. Capture crops 720:432:0:72 (data/overrides.json).\nThe sidecar notes the opening song 'Go With The Flow' was not broadcast; otherwise this is the complete unedited show.",
+    "PrivateNotes": "---- correction 2026-08-25 ----\nVenueName set to the collection's canonical venue for this festival. Setlist track 1 read 'The Lost Part of Keeping a Secret' - the sidecar's own typo for 'The Lost Art of Keeping a Secret'.\nAspectRatio: 4:3 frame (SAR 16:15) with a letterboxed picture and the Europe 2 TV logo burned into the upper black bar. Measured over 602 frames on columns 60-560, clear of the logo, the picture runs rows 72-503 = 432 rows, which at SAR 16:15 displays as exactly 16:9. Capture crops 720:432:0:72 (data/overrides.json).\nThe sidecar notes the opening song 'Go With The Flow' was not broadcast; otherwise this is the complete unedited show.\n\nDATE PRECISION (2026-10-17): the day is real (DatePrecision day), the owner's call on the date-precision review (tools/date-precision).",
     "LastScannedAt": "2025-11-06 09:25:56",
     "ExtractionWarnings": "loc:folder",
     "SourceCatalog": "Seagate",
     "DuplicateKey": "2883cefc1541da09806d09ebee9a74f1ffbe9e6d",
     "IsPrimary": "Yes",
-    "PrimaryCatalog": "Seagate"
+    "PrimaryCatalog": "Seagate",
+    "DatePrecision": "day"
   },
   {
     "ShowID": "cdd7abcd3d24",
@@ -35555,13 +35562,14 @@
     "DuplicateOf": "",
     "Setlist": "Vasoline; Trippin' On A Hole In A Paper Heart; Interstate Love Song",
     "Notes": "",
-    "PrivateNotes": "Re-filed 2026-09-26 from Scott Weiland to Stone Temple Pilots at Karl's request: every stream in 'Scott Weiland - Jimmy Kimmel Live AUD+PRO (aH)' is STP's 2008-05-01 Kimmel set (Weiland with Dean DeLeo and Eric Kretz on stage) - there is no Weiland solo footage in the folder. This record's checksum is the pro-shot 'HD MASTER' .mpg (identical in length to PRO.mpv; PRO-cut/Part_1/Part_2 are edits of it). The broadcast runs ~6:20 (three songs, Interstate Love Song cut by the credits, as the COMPILED record's sidecar says) and is followed by ~4 min of the Jackhole Industries card; stills come from 0:00-6:30. The audience shoot in the same folder is a72381a2f5ac; the ABC analog-cable capture is b08fc47250b9.\n\n---- SIDECAR RE-SCAN (2026-10-05) ----\n- DurationSec 605 -> 390 (0:06:30). Time window of this record within its disc",
+    "PrivateNotes": "Re-filed 2026-09-26 from Scott Weiland to Stone Temple Pilots at Karl's request: every stream in 'Scott Weiland - Jimmy Kimmel Live AUD+PRO (aH)' is STP's 2008-05-01 Kimmel set (Weiland with Dean DeLeo and Eric Kretz on stage) - there is no Weiland solo footage in the folder. This record's checksum is the pro-shot 'HD MASTER' .mpg (identical in length to PRO.mpv; PRO-cut/Part_1/Part_2 are edits of it). The broadcast runs ~6:20 (three songs, Interstate Love Song cut by the credits, as the COMPILED record's sidecar says) and is followed by ~4 min of the Jackhole Industries card; stills come from 0:00-6:30. The audience shoot in the same folder is a72381a2f5ac; the ABC analog-cable capture is b08fc47250b9.\n\n---- SIDECAR RE-SCAN (2026-10-05) ----\n- DurationSec 605 -> 390 (0:06:30). Time window of this record within its disc\n\nDATE PRECISION (2026-10-17): the day is real (DatePrecision day), the owner's call on the date-precision review (tools/date-precision).",
     "LastScannedAt": "2025-11-05 18:56:52",
     "ExtractionWarnings": "",
     "SourceCatalog": "BigDaddy",
     "DuplicateKey": "e70c1542d75a67822353501789ef1e5a91c06a9b",
     "IsPrimary": "Yes",
-    "PrimaryCatalog": "BigDaddy"
+    "PrimaryCatalog": "BigDaddy",
+    "DatePrecision": "day"
   },
   {
     "ShowID": "9e74eb2b7353",
@@ -39925,7 +39933,9 @@
     "SourceCatalog": "Seagate",
     "DuplicateKey": "6fe6f53e03621c1481267bee602a2a0a7d88d520",
     "IsPrimary": "Yes",
-    "PrimaryCatalog": "Seagate"
+    "PrimaryCatalog": "Seagate",
+    "DatePrecision": "day",
+    "PrivateNotes": "DATE PRECISION (2026-10-17): the day is real (DatePrecision day), the owner's call on the date-precision review (tools/date-precision)."
   },
   {
     "ShowID": "c71f9a91e51f",
@@ -44095,13 +44105,14 @@
     "DuplicateOf": "",
     "Setlist": "Vasoline; Trippin' On A Hole In A Paper Heart; Interstate Love Song",
     "Notes": "---- Stone Temple Pilots 2008-05-01.txt ----\nStone Temple Pilots\n2008-05-01\n\"Vasoline\"\n\"Trippin' On A Hole In A Paper Heart\"\n\"Interstate Love Song\" (cut)\n\nJimmy Kimmel Live\nEl Capitan Entertainment Center\n6840 Hollywood Blvd\nHollywood, California\n\n\n\"Vasoline\" = 2:40\n\"Trippin' On A Hole In A Paper Heart\" = 3:04\n\"Interstate Love Song\" = 0:44 (cut during outro credits)\n\nClip Length = 8:01\n\n\nABC Analog Cable > Dell Angel USB TV Tuner > Windows XP Media Center > DVR-MS > Nero Vision > MPEG-2\n\n\n--GSpot Codec Info--\n\nVideo format:\nNTSC\nMPEG-2\nAspect Ratio: 4:3\nResolution: 720 x 480\nVideo Bitrate: 7446\nFrame rate: 29.97",
-    "PrivateNotes": "Audio format: LPCM 2026-09-26: City set to Los Angeles (the collection's canonical Jimmy Kimmel values). Two more sources of this broadcast: 65650ccaa690 (pro-shot HD master) and a72381a2f5ac (audience shoot).",
+    "PrivateNotes": "Audio format: LPCM 2026-09-26: City set to Los Angeles (the collection's canonical Jimmy Kimmel values). Two more sources of this broadcast: 65650ccaa690 (pro-shot HD master) and a72381a2f5ac (audience shoot).\n\nDATE PRECISION (2026-10-17): the day is real (DatePrecision day), the owner's call on the date-precision review (tools/date-precision).",
     "LastScannedAt": "2025-11-05 21:52:49",
     "ExtractionWarnings": "",
     "SourceCatalog": "BigDaddy",
     "DuplicateKey": "4b047affd677a2223f3defcd8642e1c2e13d370b",
     "IsPrimary": "Yes",
-    "PrimaryCatalog": "BigDaddy"
+    "PrimaryCatalog": "BigDaddy",
+    "DatePrecision": "day"
   },
   {
     "ShowID": "5267dc887fd7",
@@ -48563,13 +48574,14 @@
     "DuplicateOf": "",
     "Setlist": "My Doorbell; Effect And Cause; Hotel Yorba; Jolene; Cannon / John The Revelator; Ball And Biscuit (Reprise); 300 mph Torrential Outpour Blues; Wasting My Time; We're Going To Be Friends; I Think I Smell A Rat; Little Cream Soda; Blue Orchid; I Just Don't Know What To Do With Myself; Apple Blossom; I'm Slowly Turning Into You; Seven Nation Army",
     "Notes": "---- Info.txt ----\nTHE WHITE STRIPES\n\nROCK AM RING\nFreitag, 01. Juni 2007\nNürburgring, Eifel\n\nDVD PAL\nproshot\n\nChapters\n01. My Doorbell\n02. Effect And Cause\n03. Hotel Yorba\n04. Jolene\n05. Cannon / John The Revelator\n06. Ball And Biscuit (Reprise)\n07. 300 mph Torrential Outpour Blues\n08. Wasting My Time\n09. We're Going To Be Friends\n10. I Think I Smell A Rat\n11. Little Cream Soda\n12. Blue Orchid\n13. I Just Don't Know What To Do With Myself\n14. Apple Blossom\n15. I'm Slowly Turning Into You\n16. Seven Nation Army\n17. THE KOOKS - You Don't Love Me\ntotal running time 58 min.\n\nVideo: 720x576, PAL, 16:9\nAudio: DTS 2.0, 384 kb/s\nQuality: Audio and Video very good\n\nCable TV > Panasonic DVD Recorder > DVD-RW > TMPGEnc DVD Author 1.6 > DVD > You",
-    "PrivateNotes": "---- SIDECAR RE-SCAN (2026-10-05) ----\n- Setlist 'My Doorbell; Effect And Cause; Hotel Yorba; Jolene; Cannon /...' -> see field. Info.txt chapters: song 15 is I'm Slowly Turning Into You; the record has Black Math and a second Jolene there instead, which the disc does not list\n- DurationSec 3483 -> 3320 (0:55:20). Time window of this record within its disc",
+    "PrivateNotes": "---- SIDECAR RE-SCAN (2026-10-05) ----\n- Setlist 'My Doorbell; Effect And Cause; Hotel Yorba; Jolene; Cannon /...' -> see field. Info.txt chapters: song 15 is I'm Slowly Turning Into You; the record has Black Math and a second Jolene there instead, which the disc does not list\n- DurationSec 3483 -> 3320 (0:55:20). Time window of this record within its disc\n\nDATE PRECISION (2026-10-17): the day is real (DatePrecision day), the owner's call on the date-precision review (tools/date-precision).",
     "LastScannedAt": "2025-11-06 01:24:23",
     "ExtractionWarnings": "loc:folder",
     "SourceCatalog": "BigDaddy",
     "DuplicateKey": "256a8336ba5a02c9b35cf774675589e792da822e",
     "IsPrimary": "Yes",
-    "PrimaryCatalog": "BigDaddy"
+    "PrimaryCatalog": "BigDaddy",
+    "DatePrecision": "day"
   },
   {
     "ShowID": "149b5245f6b9",
@@ -51322,13 +51334,14 @@
     "DuplicateOf": "",
     "Setlist": "",
     "Notes": "",
-    "PrivateNotes": "VTS_03 of 'Disc 2' in the Intimate & Interactive folder; a separate programme from the I&I broadcast that fills VTS_01-02 (ShowID 61ace843b328). Identified from the frames: the Late Night with Conan O'Brien title card opens it and Conan crosses to shake hands at 4:20. The red 'The New VR' bug is the Canadian channel this copy was taped off, not the programme. Aired 1997-05-01 - TheTVDB gives season 4 episode 104, 'Lisa Kudrow / Erik Estrada / Silverchair', and IMDb lists the same episode. ChecksumSHA1 is a REAL content hash of VTS_03_1.VOB, the same convention as its siblings. Setlist left empty: several uploads name the song as 'Freak' but there is no caption on this copy and it has not been confirmed from the frames.",
+    "PrivateNotes": "VTS_03 of 'Disc 2' in the Intimate & Interactive folder; a separate programme from the I&I broadcast that fills VTS_01-02 (ShowID 61ace843b328). Identified from the frames: the Late Night with Conan O'Brien title card opens it and Conan crosses to shake hands at 4:20. The red 'The New VR' bug is the Canadian channel this copy was taped off, not the programme. Aired 1997-05-01 - TheTVDB gives season 4 episode 104, 'Lisa Kudrow / Erik Estrada / Silverchair', and IMDb lists the same episode. ChecksumSHA1 is a REAL content hash of VTS_03_1.VOB, the same convention as its siblings. Setlist left empty: several uploads name the song as 'Freak' but there is no caption on this copy and it has not been confirmed from the frames.\n\nDATE PRECISION (2026-10-17): the day is real (DatePrecision day), the owner's call on the date-precision review (tools/date-precision).",
     "LastScannedAt": "2025-11-05 19:11:39",
     "ExtractionWarnings": "",
     "SourceCatalog": "BigDaddy",
     "DuplicateKey": "518f60a452435290629afea5174c97389af86555",
     "IsPrimary": "Yes",
-    "PrimaryCatalog": "BigDaddy"
+    "PrimaryCatalog": "BigDaddy",
+    "DatePrecision": "day"
   },
   {
     "ShowID": "b7807f75a4f3",
@@ -52660,13 +52673,14 @@
     "DuplicateOf": "",
     "Setlist": "Vasoline; Trippin' On A Hole In A Paper Heart; Interstate Love Song",
     "Notes": "",
-    "PrivateNotes": "Created 2026-09-26 at Karl's request, split out of 'Scott Weiland - Jimmy Kimmel Live AUD+PRO (aH)': an audience-shot video of STP's 2008-05-01 Kimmel set (AUD.m2v, 720x576 25fps, 13:52, with its audio in AUD.mp2; JKL-Merged-FULL_3_songs.mpg in Original/ is a 640x480 re-encode of it). Checksum is sha1(AUD.m2v). Setlist is the broadcast's three songs, which the merged file's name also counts. Pro-shot sources of the same set: 65650ccaa690 (HD master) and b08fc47250b9 (ABC cable).",
+    "PrivateNotes": "Created 2026-09-26 at Karl's request, split out of 'Scott Weiland - Jimmy Kimmel Live AUD+PRO (aH)': an audience-shot video of STP's 2008-05-01 Kimmel set (AUD.m2v, 720x576 25fps, 13:52, with its audio in AUD.mp2; JKL-Merged-FULL_3_songs.mpg in Original/ is a 640x480 re-encode of it). Checksum is sha1(AUD.m2v). Setlist is the broadcast's three songs, which the merged file's name also counts. Pro-shot sources of the same set: 65650ccaa690 (HD master) and b08fc47250b9 (ABC cable).\n\nDATE PRECISION (2026-10-17): the day is real (DatePrecision day), the owner's call on the date-precision review (tools/date-precision).",
     "LastScannedAt": "",
     "ExtractionWarnings": "",
     "SourceCatalog": "LiveMusic",
     "DuplicateKey": "e17e4461604796fa50db1b3f9125a4e4bd6d4d7d",
     "IsPrimary": "Yes",
-    "PrimaryCatalog": "LiveMusic"
+    "PrimaryCatalog": "LiveMusic",
+    "DatePrecision": "day"
   },
   {
     "ShowID": "79ce68375392",
