@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence, useIsPresent } from 'motion/react';
-import { Clock, Music, ChevronLeft, ChevronRight, ChevronDown, Layers } from 'lucide-react';
+import { Clock, Music, ChevronLeft, ChevronRight, ChevronDown, Layers, Link2, Share2, Check } from 'lucide-react';
 import { Show } from '../App';
 import { CloseButton } from './CloseButton';
 import type { ImageUrlGetter } from '../src/hooks/useShows';
 import { scrollContainerToTop } from '../src/lib/motion';
+import { showLink } from '../src/lib/url';
 import { quality, videoName, audioName, containerName, channelsName, aspectName, sampleRateName } from '../src/lib/specs';
 
 interface ShowDrawerProps {
@@ -302,6 +303,38 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
     folder           && { label: 'Folder',      value: folder,                                mono: false },
   ].filter((row): row is TechRow => Boolean(row));
   const lineage = lineageChains(show.Lineage);
+
+  /**
+   * Share one exact recording (F4): its link, with a line that says which copy
+   * — a trader replying to the owner's email names the recording, not just the
+   * show. The share sheet on touch devices; elsewhere the line and the link go
+   * to the clipboard.
+   */
+  const reference = [
+    show.Artist,
+    show.ShowDate || 'undated',
+    show.EventOrFestival || show.VenueName,
+    q?.label,
+    durationSec > 0 ? (hours > 0 ? `${hours}h ${String(minutes).padStart(2, '0')}m` : `${minutes} min`) : null,
+  ].filter(Boolean).join(' · ');
+  const shareSheet = typeof navigator !== 'undefined' && typeof navigator.share === 'function'
+    && typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+  const [copied, setCopied] = useState(false);
+  useEffect(() => setCopied(false), [show.ShowID]);
+  async function share(e: React.MouseEvent) {
+    // The docked header scrolls to the top on a click; this click is the button's.
+    e.stopPropagation();
+    const url = showLink(show.ShowID);
+    if (shareSheet) {
+      try { await navigator.share({ title: reference, text: reference, url }); } catch { /* dismissed */ }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(`${reference}\n${url}`);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch { /* no clipboard access: nothing to report */ }
+  }
   const techId = `drawer-tech-${show.ShowID}`;
 
   const artistInitials = show.Artist
@@ -566,6 +599,16 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                     {show.TVStandard}
                   </span>
                 )}
+                {/* An action among facts, so a pill, not a badge (F4). */}
+                <button
+                  type="button"
+                  onClick={share}
+                  className="inline-flex cursor-pointer items-center gap-1 rounded-full border border-white/15 bg-white/10 px-2.5 py-0.5 text-xs font-medium text-gray-100 transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+                >
+                  {copied ? <Check className="h-3 w-3" aria-hidden="true" /> : shareSheet ? <Share2 className="h-3 w-3" aria-hidden="true" /> : <Link2 className="h-3 w-3" aria-hidden="true" />}
+                  {copied ? 'Copied' : shareSheet ? 'Share' : 'Copy link'}
+                </button>
+                <span className="sr-only" aria-live="polite">{copied ? 'Link copied' : ''}</span>
               </div>
             </div>
           </div>

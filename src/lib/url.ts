@@ -133,6 +133,33 @@ function uniqueSorted(values: string[]): string[] {
 }
 
 /**
+ * The show open in the drawer travels in its own param, after the filters
+ * (owner, 2026-10-16; docs/ux-research F3): a link to one recording, and the
+ * history entry the back button pops to close it. Not part of FilterState —
+ * opening a show is not a filter, and a shared link opens the show over the
+ * whole collection. ShowIDs are 12 hex characters; anything else is ignored.
+ */
+export const SHOW_PARAM = 'show';
+const SHOW_ID = /^[0-9a-f]{12}$/;
+
+export function readShowParam(search: string): string | null {
+  const id = new URLSearchParams(search).get(SHOW_PARAM);
+  return id && SHOW_ID.test(id) ? id : null;
+}
+
+/** A query string ("" or "?…") with the show set, or removed when null. Filter params keep their order; show goes last. */
+export function withShowParam(query: string, showId: string | null): string {
+  const params = query.replace(/^\?/, '').split('&').filter(p => p && !p.startsWith(`${SHOW_PARAM}=`));
+  if (showId) params.push(`${SHOW_PARAM}=${showId}`);
+  return params.length ? `?${params.join('&')}` : '';
+}
+
+/** The link to send someone for one recording: the show alone, no search or filters. */
+export function showLink(showId: string): string {
+  return `${window.location.origin}${window.location.pathname}?${SHOW_PARAM}=${showId}`;
+}
+
+/**
  * FilterState -> canonical query string, including the leading "?".
  * Returns "" when nothing is active, so the bare URL stays clean.
  */

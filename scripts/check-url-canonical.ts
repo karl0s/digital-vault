@@ -15,8 +15,10 @@ import {
   activeFilterCount,
   isFiltered,
   parseFilters,
+  readShowParam,
   serializeFilters,
   slugify,
+  withShowParam,
 } from '../src/lib/url';
 
 let failures = 0;
@@ -124,6 +126,18 @@ eq('isFiltered true on a facet', isFiltered(f({ country: ['germany'] })), true);
 eq('isFiltered true on a query', isFiltered(f({ q: 'nirvana' })), true);
 eq('isFiltered ignores sort', isFiltered(f({ sort: 'artist' })), false);
 eq('activeFilterCount sums facets and q', activeFilterCount(f({ country: ['germany', 'japan'], q: 'x' })), 3);
+
+console.log('\nthe open show (?show=, F3)');
+eq('reads a show ID', readShowParam('?q=nirvana&show=4dba0c8ff6ae'), '4dba0c8ff6ae');
+eq('ignores anything that is not a ShowID', readShowParam('?show=../../etc'), null);
+eq('no show, no ID', readShowParam('?q=nirvana'), null);
+eq('adds the show after the filters', withShowParam('?q=nirvana&country=germany', '4dba0c8ff6ae'), '?q=nirvana&country=germany&show=4dba0c8ff6ae');
+eq('replaces a show already there', withShowParam('?q=x&show=aaaaaaaaaaaa', 'bbbbbbbbbbbb'), '?q=x&show=bbbbbbbbbbbb');
+eq('removes the show, keeps the filters', withShowParam('?q=x&show=aaaaaaaaaaaa', null), '?q=x');
+eq('removes the last param to a bare URL', withShowParam('?show=aaaaaaaaaaaa', null), '');
+eq('a show alone', withShowParam('', 'aaaaaaaaaaaa'), '?show=aaaaaaaaaaaa');
+eq('the show is not a filter', isFiltered(parseFilters('?show=aaaaaaaaaaaa')), false);
+eq('filters still serialize without it', serializeFilters(parseFilters('?country=germany&show=aaaaaaaaaaaa')), '?country=germany');
 
 console.log(`\n${checks - failures}/${checks} passed`);
 if (failures > 0) {

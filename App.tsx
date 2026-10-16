@@ -14,7 +14,7 @@ import { AppShell } from './components/shell/AppShell';
 import { FilterBar } from './components/filters/FilterBar';
 import { ShowGrid } from './components/ShowGrid';
 import { useBrowseResults } from './src/hooks/useBrowseResults';
-import { isFiltered as computeIsFiltered, LEGACY_VIEW_PARAM } from './src/lib/url';
+import { isFiltered as computeIsFiltered, LEGACY_VIEW_PARAM, readShowParam, withShowParam } from './src/lib/url';
 import { useFilterStore, initFilterUrlSync, selectFilterState } from './src/store/filters';
 import { startHoverPreload } from './src/lib/hoverPreload';
 import { useShallow } from 'zustand/react/shallow';
@@ -75,6 +75,10 @@ export interface Show {
   LastScannedAt?: string;
   ExtractionWarnings?: string;
 }
+
+/** The current URL with the open show set, or removed when null. */
+const urlWithShow = (id: string | null) =>
+  `${window.location.pathname}${withShowParam(window.location.search, id)}${window.location.hash}`;
 
 export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -161,6 +165,16 @@ export default function App() {
     return () => window.removeEventListener('keydown', onKey);
   }, [searchQuery, selectedShow]);
 
+  /**
+   * The open show lives in the URL (`?show=ID`, F3), so it can be linked and
+   * the back button closes it. Opening from the page adds a history entry,
+   * marked so closing can step back over it; moving to a linked show inside
+   * the drawer replaces it, so Back still closes the drawer rather than
+   * walking through every show seen. A ref, not state: the callbacks below
+   * stay stable for the memoised cards.
+   */
+  const openShowRef = useRef<string | null>(null);
+
   // Stable, because every memoised ShowCard receives it as `onSelect`.
   const handleShowClick = useCallback((show: Show) => {
     if (show.ChecksumSHA1) {
@@ -169,6 +183,11 @@ export default function App() {
         if (url) { const img = new Image(); img.src = url; }
       });
     }
+    // Every show opened passes here: the analytics seam for recordings, as
+    // commitFilterState (src/store/filters.ts) is for filters.
+    if (openShowRef.current) window.history.replaceState(window.history.state, '', urlWithShow(show.ShowID));
+    else window.history.pushState({ vaultShow: true }, '', urlWithShow(show.ShowID));
+    openShowRef.current = show.ShowID;
     setSelectedShow(show);
   }, [getImageUrl]);
 
@@ -266,7 +285,49 @@ export default function App() {
   }, [filtered, clearAllFilters]);
   const handleSearchTab = useCallback(() => searchInputRef.current?.focus(), []);
 
-  function handleCloseDrawer() { setSelectedShow(null); }
+  // Closing steps back over the entry opening added, so Back afterwards goes
+  // where it went before; a show that arrived in a link has no entry of ours,
+  // so its param is simply removed.
+  function handleCloseDrawer() {
+    openShowRef.current = null;
+    setSelectedShow(null);
+    if (window.history.state?.vaultShow) window.history.back();
+    else window.history.replaceState(window.history.state, '', urlWithShow(null));
+  }
+
+  // Back and Forward: the URL says which show, if any, is open.
+  const showById = useRef(new Map<string, Show>());
+  useEffect(() => { showById.current = new Map(shows.map(s => [s.ShowID, s])); }, [shows]);
+  useEffect(() => {
+    const onPopState = () => {
+      const id = readShowParam(window.location.search);
+      if (id === openShowRef.current) return;
+      const show = id ? showById.current.get(id) : undefined;
+      openShowRef.current = show ? id : null;
+      setSelectedShow(show ?? null);
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
+  // A link to one show opens it once the shows arrive. An ID that names no
+  // show is dropped from the URL rather than left to confuse a later share.
+  const linkedShow = useRef(readShowParam(window.location.search));
+  useEffect(() => {
+    if (!linkedShow.current || shows.length === 0) return;
+    const show = shows.find(s => s.ShowID === linkedShow.current);
+    linkedShow.current = null;
+    if (show) { openShowRef.current = show.ShowID; setSelectedShow(show); }
+    else window.history.replaceState(window.history.state, '', urlWithShow(null));
+  }, [shows]);
+
+  // The tab and the browser history name the show while it is open.
+  useEffect(() => {
+    const base = 'The Vault — Live Concert Archive';
+    document.title = selectedShow
+      ? `${selectedShow.Artist} · ${[selectedShow.ShowDate, selectedShow.EventOrFestival || selectedShow.VenueName].filter(Boolean).join(' · ')} — The Vault`
+      : base;
+  }, [selectedShow]);
 
   const hasQuery = filterState.q.trim().length > 0;
 

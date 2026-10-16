@@ -6,7 +6,9 @@ import {
   FilterState,
   SortKey,
   parseFilters,
+  readShowParam,
   serializeFilters,
+  withShowParam,
 } from '../lib/url';
 
 /**
@@ -46,12 +48,15 @@ export type FilterStore = FilterState & FilterActions;
 function commitFilterState(next: FilterState): void {
   if (typeof window === 'undefined') return;
 
-  const query = serializeFilters(next);
+  // The open show's param rides along, and so does the history entry's state:
+  // a search typed just before a show opened must not drop the show from the
+  // URL, nor the marker that lets closing it step back (App).
+  const query = withShowParam(serializeFilters(next), readShowParam(window.location.search));
   const url = `${window.location.pathname}${query}${window.location.hash}`;
 
   // replaceState, not pushState: ticking four checkboxes should not bury the
   // back button under four entries.
-  window.history.replaceState(null, '', url);
+  window.history.replaceState(window.history.state, '', url);
 
   // GA seam — intentionally empty. Nothing else in the app may call gtag.
   // trackFilterView(query)
@@ -139,8 +144,14 @@ export const useFilterStore = create<FilterStore>((set, get) => {
 export function initFilterUrlSync(): () => void {
   if (typeof window === 'undefined') return () => {};
 
+  // Opening and closing a show moves through history too (App, ?show=). Those
+  // steps leave the filters as they were, so they are skipped here: hydrating
+  // would hand every subscriber new arrays and recompute the results in the
+  // frame the drawer is closing.
   const onPopState = () => {
-    useFilterStore.getState().hydrateFromUrl(window.location.search);
+    const store = useFilterStore.getState();
+    if (serializeFilters(parseFilters(window.location.search)) === serializeFilters(selectFilterState(store))) return;
+    store.hydrateFromUrl(window.location.search);
   };
 
   window.addEventListener('popstate', onPopState);

@@ -68,6 +68,21 @@ fallback). Every change `replaceState`s. `initFilterUrlSync` (once, in App) rehy
 Every filter write passes through `commitFilterState` — the one seam reserved for analytics. The
 retired `view` and `type` params are dropped on parse; `view=artists` is honoured once by App.
 
+**The open show is in the URL** (owner, 2026-10-16; docs/ux-research F3, F4): `?show=<ShowID>`,
+after the filter params and outside `FilterState` (`SHOW_PARAM`, `readShowParam`, `withShowParam`
+in `src/lib/url.ts`; `commitFilterState` keeps it, and the history entry's state, when filters
+change). Opening a show from the page `pushState`s an entry marked `{ vaultShow: true }`, so the
+browser's Back and the phone's back gesture close the drawer instead of leaving the site; a show
+opened inside the drawer ("Part of", "On this recording") `replaceState`s, so one Back still closes
+it. Closing with × or Escape steps back over our entry (`history.back()`), or, for a show that
+arrived in a link, removes the param. A link opens its show once the data loads; an ID that names
+no show is dropped. App's popstate listener follows the URL both ways (Forward reopens), and
+`initFilterUrlSync` skips a popstate that leaves the filters unchanged, so closing a show does not
+recompute the results in its first frame. The tab title names the open show. `handleShowClick` is
+the analytics seam for recordings, as `commitFilterState` is for filters. Link previews come from
+the page description and Open Graph tags in `index.html` — one card for the site, since crawlers
+don't run the app.
+
 **Pipeline** (`src/hooks/useBrowseResults.ts`): text query → MiniSearch id set → facets → sort,
 all synchronous `useMemo`s.
 
@@ -227,7 +242,11 @@ festival and TV shows too (owner, 2026-10-16; it was hidden on ~700). Badge pill
 `ContentType` (violet), `RecordingType`, Duration (Clock icon + formatted `DurationSec`), the
 quality label (`quality()` in `src/lib/specs.ts`: HD 1080, HD 720, SD 576, SD 480, Low-res; the
 resolution as its `title`), and `TVStandard` for SD and low-res copies only — on HD records the
-field is unreliable — each only when set.
+field is unreliable — each only when set. Last, a **Share** pill (an action, so rounded-full and
+lighter than the badges; F4): the share sheet on touch devices with `navigator.share`, otherwise
+"Copy link", which copies a one-line reference — `Artist · date · event · quality · length` — and
+`showLink()` (the show alone, no search or filters), then reads "Copied" for two seconds. Its click
+stops propagation, since a click on the docked bar scrolls to the top.
 
 The header is a **minimum** height — `min-h-56` (224px) on phones, `21.5vh` from md (owner,
 2026-10-12) — not a fixed one. The title block sits in the flow at its foot (`flex flex-col
