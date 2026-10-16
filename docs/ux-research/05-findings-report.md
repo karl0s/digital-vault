@@ -15,14 +15,21 @@
 
 ## Progress tracker
 
-*Updated with every change that touches a finding. Last update: 2026-10-16 (batch E).*
+*Updated with every change that touches a finding. Last update: 2026-10-17 (batch G, What's new).*
 
-### At a glance
+### Where it stands
 
-> **Batches A–E are live** (pushed 2026-10-16, `8268bdbe`) and were re-checked on the live site
-> the same day: [the traders' jobs, then and now](#the-traders-jobs-then-and-now).
+| | Done | Partly | To do | |
+|---|---|---|---|---|
+| **The 8 trader jobs** (scripted run) | **8 pass** | — | — | At the review: 1 pass, 4 partial, 3 fail |
+| **The 18 findings** (F1–F18) | **11** ✅ | **5** 🟡 | **2** ⬜ | F1, F3, F7, F12, F15 partly; F16, F18 to do |
+| **The 24 scored fixes** | **18** ✅ | **2** 🟡 | **4** ⬜ | Left: Source review, setlists, phone header, first-visit line, date precision, drive scan |
+| **Source on blank records** | **54** | — | **275** | Of 329; your review page |
 
-**Done**
+**Live on the site:** everything up to the list view and CSV (pushed 2026-10-16, `8efb09b0`).
+**Committed, not yet live:** What's new, and the "1 file" fix. They go out with the next push.
+
+### Done
 
 - [x] **Taper redaction** — lineage and generation shown without tapers' names, contacts or links
 - [x] **A. The drawer's facts** — HD / SD quality label, codecs in traders' words, venue and city
@@ -35,34 +42,40 @@
   compared side by side in the drawer, one format for lengths *(F2, F17)*
 - [x] **E. Readability** — every text passes the contrast minimum; nothing smaller than 12px but
   the card badges; holds at 200% zoom *(F13)*
+- [x] **Quick fix** — a year-only date reads as the year in the drawer, share line and tab title,
+  as on the cards *(F7 part)*
+- [x] **F. More filters** — quality, PAL / NTSC, length, has setlist, with live counts *(F12 part)*
+- [x] **F. List view and CSV** — Grid / List toggle, CSV of the results, the full collection as a
+  CSV, a length sort, a printable list *(F10)*
+- [x] **G. What's new** — from 2026-10-16 by your choice: an added date on every new record
+  (enforced), a "Recently added" row, New / Better copy / New copy badges, a sort, a CSV column
+  *(F11; not yet live)*
+- [x] **Source, first 54** — from another copy of the same show *(data)*
 
-**Still to do, in this order** *(re-scored 2026-10-16; the working is in [Fix these first](#fix-these-first--and-why-in-this-order))*
+### Still to do, in this order
 
-- [ ] **Now, alongside the rest: real traders.** A–E are live, so this is the moment the report
-  set for it. Send the link with three tasks from [04-test-plan.md](04-test-plan.md) to two or
-  three traders you already email. Everything still to do is predicted, not seen; their answers
-  re-score it
-- [x] **1. Year-only dates read as the year in the drawer too** — and in the share line and the
-  tab title, as on the cards *(F7, part)*
-- [ ] **2. Source on the blank records** — 329 records (27%) didn't say Pro-shot or Audience. A
-  review page with two stills per record (`~/VaultShots/reports/source-review.html`): **54 done**
-  (2026-10-16, from another copy of the same show); 275 to go *(data)*
-- [x] **3. F. More filters** — quality (HD / SD / low-res), PAL / NTSC, length, has setlist, with
-  live counts; source joins once step 2 is done *(F12)*
-- [x] **4. F. List view and CSV download** — a Grid / List toggle, CSV of the results on screen,
-  the full collection as a CSV, a length sort, and a printable list *(F10)*
-- [x] **5. G. What's new** — your call: start from today. Every new record gets an added date
-  (the health check enforces it); a "Recently added" row, New / Better copy / New copy badges, a
-  sort and a CSV column. Empty until you add shows *(F11)*
-- [ ] **6. H. Polish** — the searched song highlighted in the setlist, and setlist clean-up *(F15)*;
-  the phone header shrinks on scroll *(F18)*; one line saying what the site is *(F16)*;
-  `songs:` as well as `song:`
-- [ ] **7. A page per show**, so a link pasted into WhatsApp or a forum previews that show, not
-  the site *(F3)*
-- [ ] **8. Date precision** ("2001, exact date unknown") and the 432 missing setlists, in their
-  own reviews *(F7, data)*
-- [ ] **9. Drive scan** — frame rate, bitrate, chapters, the show's own size *(needs Live Music
-  mounted)*
+*Re-scored 2026-10-16; the working is in [Fix these first](#fix-these-first--and-why-in-this-order).*
+
+- [ ] **Alongside the rest: real traders.** Everything left is predicted, not seen. Send the link
+  with three tasks from [04-test-plan.md](04-test-plan.md) to two or three traders you already
+  email; their answers re-score the list
+- [ ] **1. Source on the 275 blank records** — your review page, two stills per record
+  (`~/VaultShots/reports/source-review.html`). Then a **Source filter** joins More filters
+  *(data, then F12)*
+- [ ] **2. H. Polish** — the searched song highlighted in the setlist and 32 non-song setlist
+  entries cleaned *(F15)*; the phone header shrinks on scroll *(F18)*; one line saying what the
+  site is *(F16)*; `songs:` as well as `song:` *(F6)*
+- [ ] **3. A page per show**, so a link pasted into WhatsApp or a forum previews that show, not the
+  site *(F3)*
+- [ ] **4. Data reviews** — date precision ("2001, exact date unknown") *(F7)*; the 432 missing
+  setlists, in their own review
+- [ ] **5. Drive scan** — frame rate, bitrate, chapters, the show's own size, broadcaster *(needs
+  Live Music mounted)*
+
+**Small leftovers from finished items** (not scheduled; say if one matters):
+search tips under the field, not only when nothing is found (F6) · small events such as Fuji Rock
+in the Event filter, today search-only (J5) · RSS for What's new (F11) · text over stills can't
+be contrast-checked automatically (F13).
 
 ### In detail
 
@@ -70,7 +83,7 @@
 
 | # | Finding | Status | Done so far | Still to do |
 |---|---|---|---|---|
-| [F1](#f1--which-copy-is-better-cant-be-answered) | Which copy is better | 🟡 | Generation and Lineage in the drawer (`1cffc551`), cleaned of tapers first (`0b538a57`). Batch A: quality badge (HD 1080 / HD 720 / SD 576 / SD 480 / Low-res), Resolution row, PAL/NTSC on SD only, codecs and containers in traders' words, size and file count as one "Folder" row | Source on the 329 blank records; frame rate, bitrate, chapters (drive scan) |
+| [F1](#f1--which-copy-is-better-cant-be-answered) | Which copy is better | 🟡 | Generation and Lineage in the drawer (`1cffc551`), cleaned of tapers first (`0b538a57`). Batch A: quality badge (HD 1080 / HD 720 / SD 576 / SD 480 / Low-res), Resolution row, PAL/NTSC on SD only, codecs and containers in traders' words, size and file count as one "Folder" row. Source on 54 more records | Source on the 275 still blank; frame rate, bitrate, chapters (drive scan) |
 | [F2](#f2--recordings-of-the-same-show-arent-grouped-and-their-cards-are-identical) | Copies of one show not grouped | ✅ | Batch D: cards carry a quiet spec line, the full date and the quality (`2010-06-05 · HD 1080`), and an "N copies" badge when the show is held more than once (131 shows, 311 records); the drawer lists "N recordings of this show", longest first, with quality, length, source, codecs, container, audio, PAL/NTSC, size and song count, one click to each | — |
 | [F3](#f3--nothing-can-be-linked-and-back-leaves-the-site) | No show links; Back leaves the site | 🟡 | Batch C: every show has a link (`?show=`); Back and the phone's back gesture close the show, Forward reopens it; a pasted link opens the show; the tab names it; page description and preview image for pasted links; an analytics seam for show views | A page per show, so a pasted show link previews that show (needs a build step) |
 | [F4](#f4--pointing-at-one-exact-recording-is-hard) | Pointing at one exact recording | ✅ | Batch C: a Share pill (share sheet on phones, "Copy link" elsewhere): the link alone as plain text (pastes into an address bar or chat), and as rich text `Artist · date · event · quality · length` linked to the show (pastes into an email by name) | — |
@@ -90,7 +103,7 @@
 | [F18](#low) | Phone header height | ⬜ | | Hide the count/sort row while scrolling down |
 | — | [Taper redaction](#publishing-lineage-and-generation-without-exposing-tapers) | ✅ | Names, contacts and links captured to `private/`, then removed from `shows.json`; pipeline archives out of git; the site stops publishing folder names; health-check guard (`e2d03953`, `0b538a57`) | Old text stays in git history (accepted) |
 | — | [Drive scan](#planned-a-drive-scan-for-the-missing-specs) | 📅 | Plan agreed (2026-10-16) | Frame rate, bitrate, menus and chapters, show size: with Live Music mounted. Broadcaster can start now |
-| — | [Data quality](#data-quality--the-metadata-is-the-product) | ⬜ | | Source on 329 records, 432 setlists, venue and city, date precision |
+| — | [Data quality](#data-quality--the-metadata-is-the-product) | 🟡 | Source on 54 records, from another copy of the same show (2026-10-16) | Source on 275 more (review page); 432 setlists; date precision |
 
 ### The traders' jobs, then and now
 
@@ -179,7 +192,13 @@ come for, J1 and J2, now pass.
 
 ## Bottom line
 
-The Vault is **fast, handsome and better at song search than most trading lists**. The stills are
+**Now (2026-10-17).** All eight trader jobs pass in the scripted run. A trader can find a show
+however they type it, see which copy is better and why, compare the copies side by side, take the
+list away as a spreadsheet, send a link to one exact recording, and see what's been added. What's
+left is mostly **data** (Source on 275 records, date precision, missing setlists, the drive scan)
+and **polish**, and none of it has been tried by a real trader yet.
+
+**At the review (2026-10-16):** The Vault is **fast, handsome and better at song search than most trading lists**. The stills are
 real frames with the channel logos intact, which is exactly the evidence traders use.
 
 But traders come with three questions: **do you have it, is it better than mine, and how do I get
@@ -191,16 +210,18 @@ copies of one show is the HD one) couldn't be made from anything on screen.
 
 ### Predicted task success (from the walkthrough)
 
-| Journey | Result | The blocker |
-|---|---|---|
-| J1 Do you have it? | 🟡 Partial | Dates and abbreviations don't search |
-| J2 Is yours better? | 🔴 Fail | No resolution; versions not grouped; Escape wipes the results |
-| J3 Artist audit | 🟡 Partial | Year-only cards; no list view or export |
-| J4 Song hunt | 🟢 Pass | (Song not highlighted in the setlist) |
-| J5 Event dig | 🟡 Partial | Empty results blame spelling when a filter is the cause |
-| J6 Share and request | 🔴 Fail | No per-show link; Back leaves the site |
-| J7 What's new | 🔴 Fail | Nothing marks what's new |
-| J8 Evidence check | 🟡 Partial | Stills can't be viewed at native size |
+| Journey | At the review | The blocker then | Now | What removed it |
+|---|---|---|---|---|
+| J1 Do you have it? | 🟡 Partial | Dates and abbreviations don't search | 🟢 Pass | Batch B: dates, initials, other names; batch A: venue and city |
+| J2 Is yours better? | 🔴 Fail | No resolution; versions not grouped; Escape wipes the results | 🟢 Pass | Batch A: quality and codecs; D: copies side by side; A: Escape |
+| J3 Artist audit | 🟡 Partial | Year-only cards; no list view or export | 🟢 Pass | Batch D: full dates; F: list view and CSV |
+| J4 Song hunt | 🟢 Pass | (Song not highlighted in the setlist) | 🟢 Pass | Highlight still to come (H) |
+| J5 Event dig | 🟡 Partial | Empty results blame spelling when a filter is the cause | 🟢 Pass | Batch B: empty results name the filter; F: More filters |
+| J6 Share and request | 🔴 Fail | No per-show link; Back leaves the site | 🟢 Pass | Batch C: links, Back, Copy link |
+| J7 What's new | 🔴 Fail | Nothing marks what's new | 🟢 Pass | Batch G: Recently added (fills as shows are added) |
+| J8 Evidence check | 🟡 Partial | Stills can't be viewed at native size | 🟢 Pass | Batch A: Open full size |
+
+Still the scripted run's verdict, not real people's: [04-test-plan.md](04-test-plan.md) confirms it.
 
 ---
 
@@ -241,7 +262,7 @@ use. The highest score goes first. Where two items touch the same code they are 
 | 17 | "More filters" (agreed) | [F12](#f12--filters-dont-cover-what-traders-decide-by) | 2 | 2 | 0.8 | 2 | **1.6** | Predicted; search covers part of it today. A source filter waits for #20: with 27% blank it would hide shows | ✅ (source to come) |
 | 18 | Drive scan: frame rate, bitrate, chapters, show size | [Plan](#planned-a-drive-scan-for-the-missing-specs) | 2 | 3 | 1.0 | 4 | **1.5** | Needs Live Music mounted | 📅 |
 | 19 | Date precision ("2001, exact date unknown") | [F7](#f7--placeholder-dates-look-like-real-dates) | 2 | 2 | 1.0 | 4 | **1.0** | 257 records; mostly data work | ⬜ |
-| 20 | Fill in Source on 329 records | [Data](#data-quality--the-metadata-is-the-product) | 2 | 2 | 1.0 | 2 | **2.0** | Re-scored 2026-10-16: 126 of the 329 have a clue in their own notes or event, so a review page settles them quickly (Effort 4 → 2); the other ~200 need their stills looked at | ⬜ |
+| 20 | Fill in Source on 329 records | [Data](#data-quality--the-metadata-is-the-product) | 2 | 2 | 1.0 | 2 | **2.0** | Re-scored 2026-10-16: 126 of the 329 have a clue in their own notes or event, so a review page settles them quickly (Effort 4 → 2); the other ~200 need their stills looked at | 🟡 54 of 329 |
 | 21 | Setlists: 32 non-song entries; encore as a divider; highlight the searched song | [F15](#f15--setlists-non-songs-counted-as-songs-the-searched-song-isnt-highlighted) | 1 | 1 | 1.0 | 1 | **1.0** | Small | 🟡 |
 | 22 | Phone header shrinks while scrolling | [F18](#low) | 1 | 1 | 0.8 | 1 | **0.8** | Polish | ⬜ |
 | 23 | One line saying what the site is | [F16](#f16--a-first-visit-doesnt-say-what-this-is) | 1 | 1 | 0.5 | 1 | **0.5** | Your email already introduces the site | ⬜ |
@@ -262,11 +283,11 @@ A batch's place comes from its best score.
 | **C. Links and sharing** ✅ | 4, 7 | Show links, Back, previews; then Share | Share needs the links |
 | **D. Cards and copies** ✅ | 8, 9, 13 | Full date and spec line; other recordings; formats | Cards are the most performance-sensitive part of the site |
 | **E. Readability** ✅ | 10 | Contrast and sizes | Touches every screen; best after D settles the cards |
-| Quick fix | 24 | Year-only dates read as the year in the drawer | Highest score left; minutes |
-| Source | 20 | Source on the blank records: the 126 with a clue first, on a review page | Scores above F once re-estimated, and F's source filter needs it |
-| **F. Narrow and list** | 17, 15 | "More filters" (quality, standard, length, has setlist, then source); then a Grid / List toggle and CSV download | Both live in the results header and share the same facets; a list needs the trader columns the filters add |
-| **G. What's new** | 16 | An added-on date per record, a "Recently added" row and sort | Ties with F; waits for your call on what counts as new |
-| **H. Polish** | 21, 22, 23 | Setlist non-songs and the encore as a divider, the searched song highlighted; phone header shrinks on scroll; one line saying what the site is | Small, independent |
+| Quick fix ✅ | 24 | Year-only dates read as the year in the drawer | Highest score left; minutes |
+| Source 🟡 | 20 | Source on the blank records, on a review page: 54 done, 275 to go | Scores above F once re-estimated, and F's source filter needs it |
+| **F. Narrow and list** ✅ | 17, 15 | "More filters" (quality, standard, length, has setlist, then source); then a Grid / List toggle and CSV download | Both live in the results header and share the same facets; a list needs the trader columns the filters add |
+| **G. What's new** ✅ | 16 | An added-on date per record, a "Recently added" row and sort | Ties with F; your call: start from today |
+| **H. Polish** ← next | 21, 22, 23 | Setlist non-songs and the encore as a divider, the searched song highlighted; phone header shrinks on scroll; one line saying what the site is | Small, independent |
 | Page per show | F3 leftover | A link to one show previews that show in chats and forums | Needs a build step; matters once traders share links among themselves |
 | Data | 19 | Date precision; the missing setlists | Your review pages, record by record |
 | Drive | 18 | Frame rate, bitrate, chapters, show size | When Live Music is mounted |
