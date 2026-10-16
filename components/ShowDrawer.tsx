@@ -8,6 +8,7 @@ import { scrollContainerToTop } from '../src/lib/motion';
 import { showLink } from '../src/lib/url';
 import { quality, videoName, audioName, containerName, channelsName, aspectName, sampleRateName, lengthName, sourceName, dateName, songCount } from '../src/lib/specs';
 import { copiesOf } from '../src/lib/copies';
+import { ADDED_LABEL, addedKind } from '../src/lib/added';
 
 interface ShowDrawerProps {
   show: Show;
@@ -295,6 +296,8 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
     channelsName(show.AudioChannels) && { label: 'Channels', value: channelsName(show.AudioChannels), mono: false },
     sampleRateName(show.AudioSampleRate) && { label: 'Sample rate', value: sampleRateName(show.AudioSampleRate), mono: false },
     folder           && { label: 'Folder',      value: folder,                                mono: false },
+    // When it joined the collection, and whether it was an upgrade (F11).
+    show.AddedOn     && { label: 'Added',       value: `${show.AddedOn}${addedKind(show) === 'new' ? '' : ` · ${ADDED_LABEL[addedKind(show)].toLowerCase()}`}`, mono: false },
   ].filter((row): row is TechRow => Boolean(row));
   const lineage = lineageChains(show.Lineage);
 

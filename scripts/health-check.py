@@ -153,6 +153,38 @@ if len(ERRORS) == _ct_before:
     _docs = sum(1 for s in shows if s.get('ContentType') == 'Documentary')
     print(f'  {_docs} documentaries, every ContentType valid — OK')
 
+# ── 4c2. Added date (What's new) ─────────────────────────────────────────────
+# AddedOn (YYYY-MM-DD) dates when a recording joined the collection; the site's
+# "Recently added" row and badge read it (src/lib/added.ts). The owner started
+# it on 2026-10-16: the records then are the collection at launch, listed in
+# scripts/collection-at-launch.json, and carry none. Every other record needs
+# one, or it never shows as new. A record split or re-filed from one already
+# in the collection is not new: its ShowID joins the launch list instead.
+
+section('Added date (AddedOn)')
+LAUNCH_JSON = os.path.join(ROOT, 'scripts', 'collection-at-launch.json')
+_launch = json.load(open(LAUNCH_JSON, encoding='utf-8'))
+_launch_ids, _launch_date = set(_launch['ShowIDs']), _launch['date']
+_added_before = len(ERRORS)
+for s in shows:
+    sid, added = s.get('ShowID'), s.get('AddedOn')
+    if added is not None:
+        try:
+            _ok = bool(re.fullmatch(r'\d{4}-\d{2}-\d{2}', added)) and _launch_date <= added <= _date.today().isoformat() \
+                and _date.fromisoformat(added) is not None
+        except ValueError:
+            _ok = False
+        if not _ok:
+            error(f'  {sid}: AddedOn {added!r} must be a real YYYY-MM-DD from {_launch_date} to today')
+        elif sid in _launch_ids:
+            warn(f'  {sid}: in the collection at launch but has AddedOn {added!r} - it will show as new')
+    elif sid not in _launch_ids:
+        error(f'  {sid} ({s.get("Artist")}): a new record needs AddedOn (today, YYYY-MM-DD). If it splits or '
+              f're-files a recording already in the collection, add its ShowID to scripts/collection-at-launch.json instead')
+if len(ERRORS) == _added_before:
+    _dated = sum(1 for s in shows if s.get('AddedOn'))
+    print(f'  {len(_launch_ids)} at launch, {_dated} added since {_launch_date} — OK')
+
 # ── 4d. Artist name variants ─────────────────────────────────────────────────
 # The artist view and the A–Z directory group on the exact Artist string, so one
 # band under two spellings shows half its records in each. On 2026-10-04 four

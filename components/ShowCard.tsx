@@ -6,6 +6,7 @@ import type { ImageUrlGetter } from '../src/hooks/useShows';
 import type { SongHit } from '../src/search/searchIndex';
 import { quality, lengthName, dateName } from '../src/lib/specs';
 import { copyCount } from '../src/lib/copies';
+import { ADDED_LABEL, BADGE_DAYS, addedKind, addedWithin } from '../src/lib/added';
 
 interface ShowCardProps {
   show: Show;
@@ -52,13 +53,16 @@ const getColorFromString = (str: string): string => {
 
 /**
  * Badges for what the record is, when it is not a plain live show:
- * Documentary, or Excerpt (cut from a longer broadcast) — and, quieter, when
+ * New (added in the last month), Documentary, or Excerpt (cut from a longer
+ * broadcast) — and, quieter, when
  * the collection holds the show more than once ("3 copies", F2), so look-alike
  * cards say why they look alike. How it was filmed gets no badge (owner,
  * 2026-10-15); quality is in the line under the title instead.
  */
 function exceptions(show: Show): { label: string; tone: string; title?: string }[] {
   const out: { label: string; tone: string; title?: string }[] = [];
+  // Added in the last month (F11): New, or a Better / New copy of a show already held.
+  if (addedWithin(show, BADGE_DAYS)) out.push({ label: ADDED_LABEL[addedKind(show)], tone: 'bg-emerald-300 text-[#052e1c]', title: `Added ${show.AddedOn}` });
   if (show.ContentType === 'Documentary') out.push({ label: 'Documentary', tone: 'bg-violet-400/95 text-[#160c2e]' });
   if (show.ParentShowID) out.push({ label: 'Excerpt', tone: 'bg-white/90 text-[#111]', title: 'Cut from a longer broadcast' });
   const copies = copyCount(show);

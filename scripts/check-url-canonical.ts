@@ -143,6 +143,7 @@ eq('grid is the default and never spelled out', serializeFilters(f({ layout: 'gr
 eq('list goes last, after sort', serializeFilters(f({ q: 'pearl jam', sort: 'length', layout: 'list' })), '?q=pearl%20jam&sort=length&layout=list');
 eq('an unknown layout is the grid', parseFilters('?layout=table').layout, 'grid');
 eq('length is a sort', parseFilters('?sort=length').sort, 'length');
+eq('recently added is a sort', parseFilters('?sort=added').sort, 'added');
 eq('the layout is not a filter', isFiltered(f({ layout: 'list' })), false);
 
 console.log('\nthe open show (?show=, F3)');

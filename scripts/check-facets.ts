@@ -11,6 +11,8 @@ import { readFileSync } from 'node:fs';
 import { Show } from '../App';
 import { EMPTY_FILTERS, FACET_KEYS, FacetKey, FilterState, NONE } from '../src/lib/url';
 import { applyFilters, computeFacetCounts, computeYearHistogram, deriveAll, listedOptions, sortShows } from '../src/search/facets';
+import { indexCopies } from '../src/lib/copies';
+import { addedKind, addedWithin } from '../src/lib/added';
 
 const shows: Show[] = JSON.parse(readFileSync('public/shows.json', 'utf8'));
 const derived = deriveAll(shows);
@@ -223,6 +225,29 @@ console.log('\nMore filters match the data (F12), counted independently');
   ok(`the length bands cover every show with a length (${bands})`, bands === shows.filter(s => minutes(s) > 0).length);
   ok('HD and PAL together find nothing: HD has no standard',
     applyFilters(derived, f({ quality: ['hd-1080', 'hd-720'], standard: ['pal', 'ntsc'] }), null).length === 0);
+}
+
+console.log("\nWhat's new (F11): AddedOn, labels and the sort, on copies of real records");
+{
+  // A show held twice in SD, then three additions dated 2026-11-01: an HD copy
+  // of it, an SD copy of it, and a show the collection didn't have.
+  const sd = shows.find(s => parseInt(s.Height, 10) === 576 && s.ShowDate && s.EventOrFestival)!;
+  const sdTwin: Show = { ...sd, ShowID: 'aaaaaaaaaa01' };
+  const hdCopy: Show = { ...sd, ShowID: 'aaaaaaaaaa02', Width: '1920', Height: '1080', AddedOn: '2026-11-01' };
+  const sdCopy: Show = { ...sd, ShowID: 'aaaaaaaaaa03', AddedOn: '2026-11-01' };
+  const fresh: Show = { ...sd, ShowID: 'aaaaaaaaaa04', Artist: 'Nobody Yet', AddedOn: '2026-11-01' };
+  const all = [sd, sdTwin, hdCopy, sdCopy, fresh];
+  indexCopies(all);
+  ok('a show not held before is New', addedKind(fresh) === 'new');
+  ok('an HD copy of an SD show is a Better copy', addedKind(hdCopy) === 'better-copy');
+  ok('another SD copy is a New copy', addedKind(sdCopy) === 'new-copy');
+  const now = Date.parse('2026-11-20T12:00:00Z');
+  ok('inside 30 days it is recent', addedWithin(fresh, 30, now));
+  ok('after 30 days it is not', !addedWithin(fresh, 30, Date.parse('2026-12-05T00:00:00Z')));
+  ok('the collection at launch is never recent', !addedWithin(sd, 30, now));
+  const order = sortShows(all, 'added').map(s => s.ShowID);
+  ok('recently added sorts the additions first', order.slice(0, 3).every(id => ['aaaaaaaaaa02', 'aaaaaaaaaa03', 'aaaaaaaaaa04'].includes(id)));
+  indexCopies(shows);
 }
 
 console.log('\nmulti-select is OR within a facet, AND across facets');

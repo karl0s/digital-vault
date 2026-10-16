@@ -86,6 +86,10 @@ set `status: proposed`, render, open. **The owner decides which acts get records
   own spelling, "Person & the Band" under the person. All 23 "The X" artists the collection
   ever had came from this step copying a caption, and four of them split an artist in two
   (`The Prodigy` beside `Prodigy`). Put the billing as captioned in `PrivateNotes`.
+- **Set `AddedOn` (today, `YYYY-MM-DD`) on every record new to the site** (CLAUDE.md → AddedOn). A
+  record carved from one already on the site — a linked record cut from an existing master, a
+  split, a re-key — is not new: add its ShowID to `scripts/collection-at-launch.json` instead. The
+  health check blocks a new record with neither.
 - **Set `ContentType` on every new record, master and linked alike** (CLAUDE.md → Documentaries):
   `"Documentary"` when half or more of that record's runtime is people talking or narration over
   footage — an interview segment, a making-of, a behind-the-scenes piece — otherwise absent. A

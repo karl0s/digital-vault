@@ -36,6 +36,7 @@ const COLUMNS: [string, (s: Show) => string | number][] = [
   ['Lineage', s => s.Lineage || ''],
   ['Songs', s => songCount(s.Setlist) || ''],
   ['Setlist', s => s.Setlist || ''],
+  ['Added', s => s.AddedOn || ''],
   ['Link', s => showLink(s.ShowID)],
 ];
 

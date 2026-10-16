@@ -29,7 +29,7 @@ components/             ← cards, grids, ShowList (the list layout), ShowDrawer
 src/
   hooks/                ← useShows (data + getNotes + getImageUrl), useBrowseResults, useSearchEngine, useDebounce
   store/filters.ts      ← zustand filter store, synced to the URL
-  lib/                  ← url.ts (canonical URL state, EVENT_GROUPS), specs.ts (specs in traders' words: quality, codecs, lengths, dates), specFilters.ts (More filters' options), csv.ts (the results as a spreadsheet), copies.ts (a show's other recordings), layout.ts (the one content width), portraits.ts (artist tile picks), hoverPreload.ts (cards' hover stills), brush.ts, motion.ts, cn.ts
+  lib/                  ← url.ts (canonical URL state, EVENT_GROUPS), specs.ts (specs in traders' words: quality, codecs, lengths, dates), specFilters.ts (More filters' options), csv.ts (the results as a spreadsheet), added.ts (what's new), copies.ts (a show's other recordings), layout.ts (the one content width), portraits.ts (artist tile picks), hoverPreload.ts (cards' hover stills), brush.ts, motion.ts, cn.ts
   search/               ← searchIndex.ts (MiniSearch, field prefixes; free text grouped artist/show/song, Did you mean), facets.ts (filter, count, sort)
 styles/globals.css      ← Tailwind entry, global CSS and the breakpoints (imported by main.tsx)
 dist/                   ← BUILD OUTPUT — never commit this, CI owns it
@@ -54,6 +54,7 @@ scripts/
   site-data.mjs         ← shows-lite.json + show-notes.json, derived from shows.json at build
   vite-plugin-*.mjs     ← wire thumbs.mjs and site-data.mjs into vite.config.ts
   setlist-removals-approved.json ← deliberate setlist removals the health check accepts
+  collection-at-launch.json ← the ShowIDs before "Recently added" began (2026-10-16): no AddedOn needed
   check-taper.mjs       ← blocks tapers' names, contacts, links and tracker names in shows.json (run by the health check)
   taper-names.sha1.json ← hashes of known handles, for check-taper.mjs (the names themselves stay in private/)
 private/                ← Karl's own records, gitignored, never committed: taper contacts captured before redaction
@@ -139,6 +140,7 @@ Flat JSON array of show objects. Key fields:
 | `Hidden` | `"Yes"` or absent | Keeps the record in `shows.json` but off the site (filtered in `src/hooks/useShows.ts`). For two records of one recording where only one should show: set `DuplicateOf` to the shown record and say why in `PrivateNotes`. `DuplicateOf` alone does **not** hide (Jay-Z and Jack White carry it and are meant to show) |
 | `ParentShowID` | ShowID or absent | Set on a record cut from a multi-artist **master** recording (festival broadcast, talk-show compilation). The drawer links to the master ("Part of …"); the master's drawer lists its records under "On this recording". One level only; the master must not be hidden. Checked by the health check |
 | `SegmentStart` / `SegmentEnd` | `H:MM:SS` | Where that linked record sits on the master's timeline. Always set together with `ParentShowID` |
+| `AddedOn` | `YYYY-MM-DD` or absent | When the recording joined the site; drives "Recently added". **Set on every new record** — see *AddedOn* below |
 
 ### Notes and PrivateNotes
 **The owner's rule (2026-10-07): `Notes` is public and holds only sidecar text; everything else
@@ -173,6 +175,16 @@ Lineage and Generation are published; the people in them are not.
   tracked file, a code comment or a commit message. Write `[taper]`.
 - Exempt: `FolderName`, `FolderPath`, `RepVideoFiles` — the tools find folders on the drive by
   them — and never published on the site (`PRIVATE` in `scripts/site-data.mjs`).
+
+### AddedOn — what's new
+**The owner's rule (2026-10-16): "Recently added" starts from that day.** The 1,214 records then
+are the collection at launch, listed in `scripts/collection-at-launch.json`, and carry no
+`AddedOn`; git history can't date them (most records first seen in October 2026 were splits and
+re-filings). Every record created since gets `AddedOn` = the day it was added, the screenshot and
+VA-master procedures included. A record carved from one already on the site — a split, a re-key, a
+linked record cut from an existing master — is not new: add its ShowID to the launch list instead.
+The health check blocks a record with neither. The site works out the rest (`src/lib/added.ts`):
+**New**, or **Better copy** / **New copy** when the show was already held, from its other copies.
 
 ### Documentaries — `ContentType`
 **The owner's rule: a record is a Documentary when half or more of its runtime is people talking
@@ -340,7 +352,9 @@ rename the image files, update the manifest key, clear the Note.
   `Artist`; duplicate ShowIDs; a `ParentShowID` that is not a record, is a hidden master of a shown
   record, is itself linked, or lacks `SegmentStart` < `SegmentEnd` (`H:MM:SS`); a `ContentType`
   other than `Documentary`, or "Documentary" in `RecordingType`; one artist under two names, or a
-  name starting with "The"; a manifest slot whose file is missing; **setlist loss**; a taper's
+  name starting with "The"; a manifest slot whose file is missing; a new record with no `AddedOn`
+  (and not on the launch list), or an `AddedOn` that isn't a real date since 2026-10-16;
+  **setlist loss**; a taper's
   name, contact, link or tracker name in `shows.json` (*Tapers are never named*).
 - **Setlist loss** — a song gone from a `Setlist`. Songs that moved to a record which gained them
   (a split) pass; a deliberate removal needs an entry in `scripts/setlist-removals-approved.json`

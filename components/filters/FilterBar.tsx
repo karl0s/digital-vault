@@ -41,6 +41,7 @@ const SORTS: { key: SortKey; label: string }[] = [
   { key: 'year-asc', label: 'Year — oldest first' },
   { key: 'artist', label: 'Artist A–Z' },
   { key: 'length', label: 'Length — longest first' },
+  { key: 'added', label: 'Recently added' },
 ];
 
 interface FilterBarProps {

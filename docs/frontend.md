@@ -147,8 +147,16 @@ drawer and search keep the record's own name; an old link to a folded name lands
 Brush maths is pure, in `src/lib/brush.ts`; the store is written on pointer-up only.
 
 **The results row** (while filtering): the count, then **Grid / List** (`layout`; `layout=list`
-in the URL, after `sort`), **CSV** (from md) and the sort — newest, oldest, artist A–Z, or
-**length, longest first**.
+in the URL, after `sort`), **CSV** (from md) and the sort — newest, oldest, artist A–Z, **length,
+longest first**, or **recently added** (`AddedOn`, the collection at launch after).
+
+**What's new** (`src/lib/added.ts`, docs/ux-research F11; owner 2026-10-16, "start from today"):
+records added since carry `AddedOn` (CLAUDE.md → AddedOn). Above Featured shows, **Recently
+added** lists those added in the last 60 days, newest first, two rows at most, and is absent
+while there are none. A card carries a badge for 30 days: **New** when the show wasn't held,
+**Better copy** when its picture (HD, SD, low-res, then lines) beats every copy held before it,
+otherwise **New copy** — worked out from `copiesOf`, never stored. The drawer's Technical panel
+gives the date ("Added 2026-10-20 · better copy"), and the CSV an Added column.
 
 **List layout** (`components/ShowList.tsx`, docs/ux-research F10): the same results in the same
 order as a dense table, for scanning an artist's run or reconciling a spreadsheet. A real `<table>`
@@ -230,8 +238,9 @@ Traders are mostly 40–60 (docs/ux-research). The floor, everywhere:
 - The button's `title` holds the whole name, place and spec line, for what a narrow card cuts short.
 - One row across the top: badges left, the length right (`lengthName`: `1h 42m`, `24 min`, the one
   length format on the site); badges wrap under each other rather than run beneath the length. A
-  badge only when the record is not a plain live show: Documentary (`ContentType`) or Excerpt
-  (`ParentShowID`) — and, dark and quieter, **N copies** when the collection holds the show more
+  badge only when the record is not a plain live show: **New**, **Better copy** or **New copy**
+  (emerald) for 30 days after its `AddedOn` (`src/lib/added.ts`), Documentary (`ContentType`) or
+  Excerpt (`ParentShowID`) — and, dark and quieter, **N copies** when the collection holds the show more
   than once (`copyCount` in `src/lib/copies.ts`, below), so look-alike cards say why. How it was
   filmed gets none: Pro-shot, Audience and HD badges were dropped (owner, 2026-10-15).
 - A song match in search (`songHits`) adds a ♪ line under the title, matched letters lit, and the

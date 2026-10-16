@@ -3,6 +3,8 @@ import { motion } from 'motion/react';
 import { Show } from '../App';
 import { CONTENT_WIDTH } from '../src/lib/layout';
 import { ShowCard } from './ShowCard';
+import { RECENT_DAYS, addedWithin } from '../src/lib/added';
+import { sortShows } from '../src/search/facets';
 
 /**
  * Landing sections.
@@ -123,7 +125,11 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
       FEATURED_IDS.map(id => byId.get(id)).filter(Boolean) as Show[],
     );
 
-    return { featured };
+    // What's new (F11): the latest additions, newest first, two rows at most.
+    // Absent until something has been added in the last RECENT_DAYS.
+    const recent = sortShows(shows.filter(s => addedWithin(s, RECENT_DAYS)), 'added').slice(0, 12);
+
+    return { featured, recent };
   }, [shows]);
 
   if (!sections) {
@@ -143,6 +149,12 @@ export function FeaturedRows({ shows, onShowClick, getImageUrl }: FeaturedRowsPr
 
   return (
     <div className="pt-6">
+      <FeaturedSection
+        title="Recently added"
+        shows={sections.recent}
+        onShowClick={onShowClick}
+        getImageUrl={getImageUrl}
+      />
       <FeaturedSection
         title="Featured shows"
         shows={sections.featured}

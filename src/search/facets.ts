@@ -1,6 +1,7 @@
 import { Show } from '../../App';
 import { EVENT_GROUPS, FACET_KEYS, FacetKey, FilterState, NONE, SortKey, slugify } from '../lib/url';
 import { SPEC_FACET_KEYS, SpecFacetKey, specLabel, specValue } from '../lib/specFilters';
+import { compareAdded } from '../lib/added';
 
 /**
  * Faceted filtering, counting and sorting over the show catalogue.
@@ -308,6 +309,14 @@ export function applyFilters(
  */
 export function sortShows(shows: Show[], sort: SortKey): Show[] {
   const out = [...shows];
+
+  // Recently added first (F11); the collection at launch after, newest show first.
+  if (sort === 'added') {
+    return out.sort((a, b) =>
+      compareAdded(a, b) ||
+      (b.ShowDate || '').localeCompare(a.ShowDate || '') ||
+      a.ShowID.localeCompare(b.ShowID));
+  }
 
   // Longest first (F10): a full set before the TV spots. Ties newest first.
   if (sort === 'length') {

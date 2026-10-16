@@ -974,6 +974,9 @@ separable at file level").
 - Take `Width`/`Height`/`AspectRatio`/`TVStandard`/`DurationSec` from **that titleset's** ffprobe.
 - Each record gets **its own stills from its own titleset** — never shared.
 - `Artist` is the stored spelling, no leading "The" (§17 step 0).
+- Set `AddedOn` to today (`YYYY-MM-DD`): the site's "Recently added" reads it (CLAUDE.md → AddedOn).
+  A record split or re-keyed from one already on the site is not new: its ShowID goes in
+  `scripts/collection-at-launch.json` instead. The health check blocks a new record with neither.
 - Set `ContentType`: `"Documentary"` when half or more of **that titleset's** runtime is people talking
   or narration over footage (interviews, making-of, behind-the-scenes, Cribs-style tours,
   rockumentaries, TV biographies), otherwise absent. Storytellers, Unplugged and concert films with
@@ -1213,7 +1216,7 @@ ChecksumSHA1 = sha1(concatenated representative media, in order).hexdigest()
 Technical fields from `ffprobe` (container, codecs, width, height, duration, `AspectRatio` as
 `"<DAR> (native)"`, `TVStandard` from frame rate), `FileCount` and `TotalSizeBytes` from the filesystem.
 `Setlist` only from the folder's own sidecar (pasted into `Notes`, named in `PrivateNotes`); uncertainty goes in `PrivateNotes`;
-`YYYY-01-01` when only the year is known. `Artist` and `ContentType` exactly as §10b step 5. **Validate
+`YYYY-01-01` when only the year is known. `Artist`, `AddedOn` and `ContentType` exactly as §10b step 5. **Validate
 before writing:** ShowID and checksum unique, `ShowDate` empty or exactly `YYYY-MM-DD`, and the record
 count up by exactly the number added. Split bills get a derived checksum for the second act (§2).
 
@@ -1330,7 +1333,8 @@ geometry, override or deinterlacer change, re-capture with `--fresh`** (scoped t
 - [ ] Loose media files at the drive root checked for missing records
 - [ ] New records: unique ShowID, unique checksum, valid date format, `Artist` the stored
       spelling (no leading "The"), `ContentType` set — `Documentary` when half or more is
-      talking or narration, otherwise absent (§10b step 5)
+      talking or narration, otherwise absent; `AddedOn` today, or a split's ShowID in
+      `scripts/collection-at-launch.json` (§10b step 5)
 - [ ] Split bills: one record per band per tape, the second keyed by a derived checksum
       documented in PrivateNotes (§2); every multi-act disc, split bills included, filed through
       `va-masters` with a master — never as a standalone record made by a capture run (§10)

@@ -19,7 +19,7 @@
 
 import { SPEC_FACETS, SPEC_FACET_KEYS } from './specFilters';
 
-export type SortKey = 'year-desc' | 'year-asc' | 'artist' | 'length';
+export type SortKey = 'year-desc' | 'year-asc' | 'artist' | 'length' | 'added';
 
 export const DEFAULT_SORT: SortKey = 'year-desc';
 
@@ -111,7 +111,7 @@ function parseYear(raw: string | null): number | null {
   return Number.isFinite(n) && n >= YEAR_FLOOR && n <= YEAR_CEILING ? n : null;
 }
 
-const SORT_KEYS: readonly SortKey[] = ['year-desc', 'year-asc', 'artist', 'length'];
+const SORT_KEYS: readonly SortKey[] = ['year-desc', 'year-asc', 'artist', 'length', 'added'];
 
 /**
  * Lowercase, strip accents, collapse anything non-alphanumeric to single dashes.
