@@ -44,9 +44,9 @@
   re-score it
 - [x] **1. Year-only dates read as the year in the drawer too** — and in the share line and the
   tab title, as on the cards *(F7, part)*
-- [ ] **2. Source on the blank records** — 329 records (27%) don't say Pro-shot or Audience; 126
-  have a clue in their own notes or event (TV shows, broadcasters). A review page for those first,
-  then the rest by their stills *(data)*
+- [ ] **2. Source on the blank records** — 329 records (27%) didn't say Pro-shot or Audience. A
+  review page with two stills per record (`~/VaultShots/reports/source-review.html`): **54 done**
+  (2026-10-16, from another copy of the same show); 275 to go *(data)*
 - [ ] **3. F. More filters** — quality (HD / SD / low-res), PAL / NTSC, length, has setlist, and
   source once step 2 is done *(F12)*
 - [ ] **4. F. List view and CSV download** — the last thing between J3 and a pass *(F10)*
