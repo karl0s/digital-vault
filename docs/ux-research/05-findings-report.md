@@ -15,7 +15,7 @@
 
 ## Progress tracker
 
-*Updated with every change that touches a finding. Last update: 2026-10-16 (batch D).*
+*Updated with every change that touches a finding. Last update: 2026-10-16 (batch E).*
 
 ✅ done · 🟡 partly done · ⬜ to do · 📅 planned (needs the drive mounted)
 
@@ -33,7 +33,7 @@
 | [F10](#f10--no-dense-list-export-or-useful-sort-for-reconciling-a-trading-list) | No list view or export | ⬜ | | Grid / List toggle, CSV download, more sorts, print |
 | [F11](#f11--returning-traders-cant-see-whats-new) | No "what's new" | ⬜ | | `AddedOn` field, "Recently added" row, sort, RSS |
 | [F12](#f12--filters-dont-cover-what-traders-decide-by) | Filters miss trader dimensions | ⬜ | "More filters" control agreed (2026-10-16) | Source, quality, standard, length, has setlist |
-| [F13](#f13--too-faint-and-too-small-for-eyes-aged-4060) | Too faint, too small | ⬜ | | Contrast and sizes |
+| [F13](#f13--too-faint-and-too-small-for-eyes-aged-4060) | Too faint, too small | ✅ | Batch E: every text passes 4.5:1, measured on the rendered page in 12 views (A–Z counts 1.7 → 5.3:1, heading counts 2.3/3.8 → 5.3:1, "No setlist yet" 3.8 → 6.8:1); nothing under 12px but the cards' badges (9.5 → 11px); the drawer's section labels 10 → 12px; Notes 12 → 13px; tab bar and year axis 10 → 12px; layout holds at 150% and 200% zoom | Text over the stills (cards, drawer header) is protected by the gradients but can't be measured automatically |
 | [F14](#f14--stills-cant-be-inspected-closely) | Stills can't be inspected | ✅ | Batch A: "Open full size" in the screenshot viewer (the original, at 100%, in a new tab) | — |
 | [F15](#f15--setlists-non-songs-counted-as-songs-the-searched-song-isnt-highlighted) | Setlist quality | 🟡 | One credit line removed from a Setlist (`0b538a57`) | 32 non-song entries; encore as a divider; highlight the searched song |
 | [F16](#f16--a-first-visit-doesnt-say-what-this-is) | First visit doesn't say what this is | ⬜ | Lower priority: your email introduces the site | One plain line under the tagline |
@@ -112,7 +112,7 @@ use. The highest score goes first. Where two items touch the same code they are 
 | 7 | Share button with a one-line reference | [F4](#f4--pointing-at-one-exact-recording-is-hard) | 2 | 2 | 0.8 | 1 | **3.2** | Waits for #4 | ✅ batch C |
 | 8 | Full date and a quiet spec line on cards (agreed) | [F2](#f2--recordings-of-the-same-show-arent-grouped-and-their-cards-are-identical) | 2 | 3 | 1.0 | 2 | **3.0** | 375 look-alike cards; a card change needs performance runs | ✅ batch D |
 | 9 | "Other recordings of this show" table | [F2](#f2--recordings-of-the-same-show-arent-grouped-and-their-cards-are-identical) | 3 | 2 | 1.0 | 2 | **3.0** | The heart of J2, but only 118 shows (288 records) have several copies | ✅ batch D |
-| 10 | Contrast and text sizes | [F13](#f13--too-faint-and-too-small-for-eyes-aged-4060) | 1 | 3 | 1.0 | 1 | **3.0** | Every visit, but it slows people rather than stopping them | ⬜ |
+| 10 | Contrast and text sizes | [F13](#f13--too-faint-and-too-small-for-eyes-aged-4060) | 1 | 3 | 1.0 | 1 | **3.0** | Every visit, but it slows people rather than stopping them | ✅ batch E |
 | 11 | Empty results name the active filters | [F8](#f8--empty-results-blame-spelling-when-a-filter-is-the-cause) | 2 | 1 | 1.0 | 1 | **2.0** | A wrong conclusion, but only with a filter and a search together | ✅ batch B |
 | 12 | View a still at full size | [F14](#f14--stills-cant-be-inspected-closely) | 1 | 2 | 1.0 | 1 | **2.0** | Helps judge an encode; the stills already show logos | ✅ batch A |
 | 13 | One format for durations and labels; tooltips on cut-off text | [F17](#low) | 1 | 2 | 1.0 | 1 | **2.0** | Polish | ✅ batch D |
@@ -141,8 +141,12 @@ A batch's place comes from its best score.
 | **B. Search** ✅ | 2, 6, 11, then 14 | Dates; abbreviations; empty results; then synonyms and tips | All in the search index and results page, with one set of search tests |
 | **C. Links and sharing** ✅ | 4, 7 | Show links, Back, previews; then Share | Share needs the links |
 | **D. Cards and copies** ✅ | 8, 9, 13 | Full date and spec line; other recordings; formats | Cards are the most performance-sensitive part of the site |
-| **E. Readability** | 10 | Contrast and sizes | Touches every screen; best after D settles the cards |
-| Later | 15–23 | List view and CSV, recently added, more filters, data work, the drive scan, polish | Lower scores, or waiting on data or the drive |
+| **E. Readability** ✅ | 10 | Contrast and sizes | Touches every screen; best after D settles the cards |
+| **F. Narrow and list** | 17, 15 | "More filters" (source, quality, standard, length, has setlist); then a Grid / List toggle and CSV download | Both live in the results header and share the same facets; a list needs the trader columns the filters add |
+| **G. What's new** | 16 | An added-on date per record (from the git history of `shows.json`), a "Recently added" row and sort | Needs a new field first; returning visitors |
+| **H. Polish** | 21, 22, 23 | Setlist non-songs and the encore as a divider, the searched song highlighted; phone header shrinks on scroll; one line saying what the site is | Small, independent |
+| Data | 19, 20 | Date precision; Source on 329 records | Your review pages, record by record |
+| Drive | 18 | Frame rate, bitrate, chapters, show size | When Live Music is mounted |
 
 ### What would change the order
 
@@ -715,7 +719,8 @@ case for revisiting them is the trader's job.
 
 The order of work is set by the scores in [Fix these first](#fix-these-first--and-why-in-this-order):
 batch A (the drawer's facts), B (search), C (links and sharing), D (cards and copies),
-E (readability), then the lower-scoring items, the data work and the drive scan. Progress is in the
+E (readability), then F (more filters and a list view), G (what's new), H (polish), the data work
+and the drive scan. Progress is in the
 [tracker](#progress-tracker). Once a few batches are live, run the sessions in
 [04-test-plan.md](04-test-plan.md) with real traders and re-score.
 

@@ -26,6 +26,11 @@
   --breakpoint-xl: 80rem;    /* 1280px  laptop */
   --breakpoint-2xl: 96rem;   /* 1536px  desktop */
   --breakpoint-3xl: 120rem;  /* 1920px  large desktop, 24–27" monitor */
+
+  /* The smallest text on the site (11px), for the cards' badges only: the
+     floor for eyes aged 40–60 (docs/ux-research, F13). In rem, like
+     Tailwind's own sizes, so it follows the browser's font-size setting. */
+  --text-2xs: 0.6875rem;
 }
 
 /* Custom scrollbar styles */

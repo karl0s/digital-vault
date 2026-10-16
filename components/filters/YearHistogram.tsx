@@ -198,7 +198,7 @@ export function YearHistogram({
         </div>
       )}
 
-      <div className="mt-1 flex justify-between text-[10px] tabular-nums text-gray-400">
+      <div className="mt-1 flex justify-between text-xs tabular-nums text-gray-400">
         <span>{minYear}</span>
         <span>{maxYear}</span>
       </div>

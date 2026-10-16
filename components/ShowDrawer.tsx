@@ -665,7 +665,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
             {/* Screenshots */}
             {images.length > 0 && (
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400 mb-3">
                   Screenshots
                 </p>
                 <div className="flex gap-2 overflow-x-auto scrollbar-hide md:grid md:grid-cols-4 md:overflow-visible">
@@ -699,7 +699,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
             {/* Master: every act cut from this recording, in running order */}
             {segments.length > 0 && (
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-3 flex items-center gap-1.5">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400 mb-3 flex items-center gap-1.5">
                   <Layers className="w-3 h-3" /> On this recording
                 </p>
                 <ol className="divide-y divide-white/5 border-y border-white/5">
@@ -730,7 +730,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
             {/* Every recording of this show, when there is more than one */}
             {copies.length > 1 && (
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-3 flex items-center gap-1.5">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400 mb-3 flex items-center gap-1.5">
                   <Copy className="w-3 h-3" /> {copies.length} recordings of this show
                 </p>
                 <ol className="divide-y divide-white/5 border-y border-white/5">
@@ -743,7 +743,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                         <span className="w-[4.5rem] shrink-0 text-sm font-medium text-white tabular-nums">{cq?.label ?? '—'}</span>
                         <span className="w-16 shrink-0 text-sm text-gray-200 tabular-nums">{lengthName(c.DurationSec) || '—'}</span>
                         <span className="min-w-0 flex-1 text-xs leading-snug text-gray-400">{copySpecs(c)}</span>
-                        {n > 0 && <span className="hidden sm:inline shrink-0 text-xs text-gray-400">{n} {n === 1 ? 'song' : 'songs'}</span>}
+                        {n > 0 && <span className="hidden md:inline shrink-0 text-xs text-gray-400">{n} {n === 1 ? 'song' : 'songs'}</span>}
                       </>
                     );
                     return (
@@ -751,7 +751,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                         {current ? (
                           <div className="flex items-baseline gap-3 py-2.5 px-2 -mx-2 rounded bg-white/6" aria-current="true">
                             {row}
-                            <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.12em] text-gray-300">This copy</span>
+                            <span className="shrink-0 text-xs font-semibold uppercase tracking-[0.12em] text-gray-300">This copy</span>
                           </div>
                         ) : (
                           <button
@@ -779,7 +779,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
 
               {/* Setlist */}
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4 flex items-center gap-1.5">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4 flex items-center gap-1.5">
                   <Music className="w-3 h-3" /> Setlist
                 </p>
                 {setlistItems.length > 0 ? (
@@ -794,18 +794,18 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                     ))}
                   </ol>
                 ) : (
-                  <p className="text-sm italic text-gray-500">{emptySetlistText}</p>
+                  <p className="text-sm italic text-gray-400">{emptySetlistText}</p>
                 )}
               </div>
 
               {/* Notes */}
               {notes && (
                 <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4">
                     Notes
                   </p>
                   {/* In full (owner, 2026-10-12): no clamp, no More. */}
-                  <p className="text-xs text-gray-400 whitespace-pre-wrap wrap-break-word font-mono leading-relaxed">
+                  <p className="text-[0.8125rem] text-gray-400 whitespace-pre-wrap wrap-break-word font-mono leading-relaxed">
                     {notes}
                   </p>
                 </div>
@@ -821,12 +821,12 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                     onClick={() => setTechOpen(open => !open)}
                     aria-expanded={techOpen}
                     aria-controls={techId}
-                    className="md:hidden w-full flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 hover:text-gray-300 transition-colors"
+                    className="md:hidden w-full flex items-center justify-between text-xs font-semibold uppercase tracking-[0.2em] text-gray-400 hover:text-gray-300 transition-colors"
                   >
                     Technical details
                     <ChevronDown className={`w-3 h-3 transition-transform ${techOpen ? 'rotate-180' : ''}`} />
                   </button>
-                  <p className="hidden md:block text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4">
+                  <p className="hidden md:block text-xs font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4">
                     Technical
                   </p>
                   <div id={techId} className={`${techOpen ? 'block' : 'hidden'} md:block space-y-2 mt-4 md:mt-0`}>

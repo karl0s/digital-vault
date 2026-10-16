@@ -32,7 +32,7 @@ interface SearchResultsGridProps {
 const ARTIST_PREVIEW = 6;
 
 const SECTION_LABEL = 'mb-3 flex items-baseline gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400';
-const SECTION_COUNT = 'font-normal normal-case tracking-normal tabular-nums text-gray-500';
+const SECTION_COUNT = 'font-normal normal-case tracking-normal tabular-nums text-white/50';
 
 const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
@@ -73,7 +73,7 @@ export function SearchResultsGrid({ shows, query, searchType, transitionKey, son
             onClick={() => onSearch(songSuggestion.query)}
             className="cursor-pointer group mt-3 flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-200 transition-colors duration-200"
           >
-            <span aria-hidden="true" className="text-gray-500 group-hover:text-gray-300 transition-colors">↳</span>
+            <span aria-hidden="true" className="text-gray-400 group-hover:text-gray-300 transition-colors">↳</span>
             <span>
               <span className="text-gray-200 tabular-nums">{songSuggestion.count}</span>
               {' '}more {songSuggestion.count === 1 ? 'show features' : 'shows feature'} a song called

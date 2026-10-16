@@ -62,7 +62,7 @@ export function MobileTabBar({ onBrowse, onArtists, onSearch, active }: MobileTa
               >
                 <Icon className="h-5 w-5" />
                 {/* Labels stay visible: an icon-only tab bar fails recognition. */}
-                <span className="text-[10px] leading-none">{label}</span>
+                <span className="text-xs leading-none">{label}</span>
               </button>
             </li>
           );

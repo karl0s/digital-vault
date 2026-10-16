@@ -159,12 +159,26 @@ back chevron instead). It is the results' one way out; the empty state only sugg
 `ArtistDirectory` is memoised; its `columns-[240px]` keeps every name untruncated. Its hierarchy
 (owner, 2026-10-13): letters in Bebas Neue 36px (`--font-display`); names on the letter's edge, the
 row's hover fill bleeding 12px past it (`-mx-3`); rows 32px from md, 36px on a phone; show counts
-at `text-white/17`, back to `gray-400` on the row's hover or focus. Tried and dropped: thumbnails per
+at `text-white/50`, the quietest legible level (5.3:1), brightening to `gray-300` on the row's hover
+or focus (the owner's "Ghost" `white/17`, 1.7:1, failed WCAG AA and was lifted with F13, 2026-10-16). Tried and dropped: thumbnails per
 row, fading the other letters on hover, white names for 5+ show artists.
 
 ---
 
 ## UI patterns
+
+### Readability (F13, 2026-10-16)
+Traders are mostly 40–60 (docs/ux-research). The floor, everywhere:
+- **Text contrast at least 4.5:1** against `#141414` (WCAG 2.2 AA). The quietest text is `text-white/50`
+  (5.3:1: counts beside headings, the A–Z counts); secondary text is `gray-400` (≈6.8:1).
+  `gray-500` is for icons and chevrons only (3.8:1 passes the 3:1 for non-text), and `gray-600`
+  for disabled options only (exempt).
+- **Text 12px (`text-xs`) or more.** Labels, counts, the tab bar, the year axis. The one exception
+  is the cards' badges at 11px, `text-2xs` (a theme token in `styles/globals.css`, in rem).
+- **Sizes in rem**, Tailwind's scale or rem values, so text follows the browser's font-size
+  setting; avoid new `text-[Npx]`.
+- Layout holds at 150% and 200% browser zoom: no sideways scroll (the drawer's screenshot strip
+  swipes by design).
 
 ### Show card (ShowCard)
 "Cinematic" (owner, 2026-10-15; designed as direction 02 on
@@ -288,7 +302,7 @@ Drive/folder/file metadata is not shown.
 **Recordings of this show** (F2, 2026-10-16) — when `copiesOf(show)` holds more than one: a row
 per copy, longest first, giving quality, length, and the specs that tell copies apart (source,
 video, container, audio and channels, PAL/NTSC for SD, folder size, "excerpt"), with the song
-count from sm. The open copy is a plain row marked "This copy" (`aria-current`); the others are
+count from md. The open copy is a plain row marked "This copy" (`aria-current`); the others are
 buttons that swap the drawer to that copy, as the links above do. `src/lib/copies.ts` groups the
 visible shows once per catalogue load (useShows) on CLAUDE.md's duplicate rule — artist, date,
 event, venue, city and country — plus `ContentType`, so a backstage documentary from the night is
@@ -303,7 +317,8 @@ records have no copies. Module state, not a prop, so the memoised cards keep the
 - **The Setlist heading always renders** (owner, 2026-10-06), so nothing else takes the place
   people read as the setlist. With no songs it says `No setlist yet`, `Documentary, no setlist`
   (`ContentType`), or on a master `Each act's songs are on its own page, under On this recording`.
-- Column labels: `text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400`.
+- Column labels: `text-xs font-semibold uppercase tracking-[0.2em] text-gray-400` — the page's section
+  labels (Featured shows, All artists, Shows) in the same style.
 - Setlist: numbered `<ol>` from the semicolon-split `Setlist`; `Encore break` is an ordinary
   numbered item (the "On this recording" song counts leave it out).
 - Technical: `techRows` of `{ label, value, mono }` — Video, Resolution, Aspect, Standard (SD
@@ -319,7 +334,7 @@ records have no copies. Module state, not a prop, so the memoised cards keep the
   with a dot per step, source first; a second chain sits `mt-3` below the first. A lineage without
   arrows is one step. `shows.json` names no taper (CLAUDE.md → *Tapers are never named*), so the
   drawer shows the field as it is.
-- Notes: from `getNotes` — public sidecar text only; `PrivateNotes` never ships (CLAUDE.md); `whitespace-pre-wrap wrap-break-word font-mono text-xs text-gray-400`
+- Notes: from `getNotes` — public sidecar text only; `PrivateNotes` never ships (CLAUDE.md); `whitespace-pre-wrap wrap-break-word font-mono text-[0.8125rem] text-gray-400` (13px: long reading)
   (`wrap-break-word` stops long unbroken strings overflowing on mobile). Always shown in full
   (owner, 2026-10-12): no clamp, no More / Less.
 

@@ -53,7 +53,7 @@ export const ArtistDirectory = memo(forwardRef<HTMLElement, ArtistDirectoryProps
         {/* Labelled like Featured shows above it: what the section is, and how many. */}
         <h2 id="all-artists" className="mb-3 flex items-baseline gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
           All artists
-          <span className="font-normal tracking-normal tabular-nums text-white/26">{artistCount}</span>
+          <span className="font-normal tracking-normal tabular-nums text-white/50">{artistCount}</span>
         </h2>
         {/*
           column-width (not column-count) so the browser fits as many columns as
@@ -88,9 +88,11 @@ export const ArtistDirectory = memo(forwardRef<HTMLElement, ArtistDirectoryProps
                     <span className="truncate text-sm text-gray-300 transition-colors group-hover:text-white group-focus-visible:text-white">
                       {name}
                     </span>
-                    {/* Barely there (1.7:1) until the row is pointed at: the
-                        number is for when you look for it, not for scanning. */}
-                    <span className="shrink-0 text-xs tabular-nums text-white/17 transition-colors group-hover:text-gray-400 group-focus-visible:text-gray-400">
+                    {/* Quiet until the row is pointed at: the number is for
+                        when you look for it, not for scanning. White/50 is the
+                        quietest that is still legible (5.3:1, AA); the owner's
+                        "Ghost" 1.7:1 (2026-10-13) failed it (F13, 2026-10-16). */}
+                    <span className="shrink-0 text-xs tabular-nums text-white/50 transition-colors group-hover:text-gray-300 group-focus-visible:text-gray-300">
                       {count}
                     </span>
                   </button>

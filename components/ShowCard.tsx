@@ -219,13 +219,13 @@ export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, se
           <div className="pointer-events-none absolute inset-x-2 top-2 flex items-start gap-1">
             <div className="flex min-w-0 flex-wrap gap-1">
               {badges.map(b => (
-                <span key={b.label} title={b.title} className={`rounded-[3px] px-[5px] pt-1 pb-[3px] text-[9.5px] font-bold uppercase leading-none tracking-[0.08em] ${b.tone}`}>
+                <span key={b.label} title={b.title} className={`rounded-[3px] px-[5px] pt-1 pb-[3px] text-2xs font-bold uppercase leading-none tracking-[0.08em] ${b.tone}`}>
                   {b.label}
                 </span>
               ))}
             </div>
             {length && (
-              <span className="ml-auto shrink-0 rounded bg-black/75 px-1.5 py-1 text-[11px] font-semibold leading-none tabular-nums text-white">
+              <span className="ml-auto shrink-0 rounded bg-black/75 px-1.5 py-1 text-xs font-semibold leading-none tabular-nums text-white">
                 {length}
               </span>
             )}
