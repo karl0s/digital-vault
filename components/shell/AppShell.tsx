@@ -20,7 +20,7 @@ interface AppShellProps {
 
 export function AppShell({ children, onBrowse, onArtists, onSearch, activeTab }: AppShellProps) {
   return (
-    <div className="min-h-dvh bg-[#141414] text-white">
+    <div className="min-h-dvh bg-[#141414] text-white print:bg-white print:text-black">
       {/*
         pb-20 on mobile clears the fixed tab bar so the last row of cards is
         not hidden behind it. overflow-x-clip, not hidden: hidden would make

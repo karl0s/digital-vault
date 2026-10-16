@@ -1,7 +1,10 @@
 import { forwardRef, memo, useMemo } from 'react';
 import { Show } from '../App';
 import { getArtistDirectory } from '../src/search/searchIndex';
+import { Download } from 'lucide-react';
 import { CONTENT_WIDTH } from '../src/lib/layout';
+import { downloadCsv } from '../src/lib/csv';
+import { sortShows } from '../src/search/facets';
 
 interface ArtistDirectoryProps {
   shows: Show[];
@@ -51,10 +54,23 @@ export const ArtistDirectory = memo(forwardRef<HTMLElement, ArtistDirectoryProps
     <section ref={ref} aria-labelledby="all-artists" className="pt-2">
       <div className={CONTENT_WIDTH}>
         {/* Labelled like Featured shows above it: what the section is, and how many. */}
-        <h2 id="all-artists" className="mb-3 flex items-baseline gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
-          All artists
-          <span className="font-normal tracking-normal tabular-nums text-white/50">{artistCount}</span>
-        </h2>
+        <div className="mb-3 flex items-baseline justify-between gap-4">
+          <h2 id="all-artists" className="flex items-baseline gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
+            All artists
+            <span className="font-normal tracking-normal tabular-nums text-white/50">{artistCount}</span>
+          </h2>
+          {/* The whole collection as one spreadsheet, A–Z (F10): a trader's
+              trading list, without searching for anything first. */}
+          <button
+            type="button"
+            onClick={() => downloadCsv(sortShows(shows, 'artist'), 'full list')}
+            title={`All ${shows.length} shows as a spreadsheet (CSV)`}
+            className="flex shrink-0 cursor-pointer items-center gap-1.5 text-sm text-gray-400 transition-colors duration-150 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+          >
+            <Download className="h-4 w-4" aria-hidden="true" />
+            Download the full list
+          </button>
+        </div>
         {/*
           column-width (not column-count) so the browser fits as many columns as
           the viewport allows. Every resulting column lands at 244–286px.

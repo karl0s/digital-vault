@@ -101,6 +101,10 @@ export function lengthName(durationSec?: string): string {
   return hours ? `${hours}h ${String(total % 60).padStart(2, '0')}m` : `${total} min`;
 }
 
+/** Songs in a setlist, "Encore break" not counted. */
+export const songCount = (setlist?: string): number =>
+  setlist ? setlist.split(';').map(s => s.trim()).filter(s => s && s !== 'Encore break').length : 0;
+
 /** How the record was filmed, as traders write it: "Pro-shot", "Audience". */
 export const sourceName = (type?: string) => (type === 'Proshot' ? 'Pro-shot' : type || '');
 

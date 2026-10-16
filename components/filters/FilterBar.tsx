@@ -1,4 +1,4 @@
-import { Search, X } from 'lucide-react';
+import { Download, LayoutGrid, List, Search, X } from 'lucide-react';
 import { RefObject } from 'react';
 import { cn } from '../../src/lib/cn';
 import { CONTENT_WIDTH } from '../../src/lib/layout';
@@ -40,6 +40,7 @@ const SORTS: { key: SortKey; label: string }[] = [
   { key: 'year-desc', label: 'Year — newest first' },
   { key: 'year-asc', label: 'Year — oldest first' },
   { key: 'artist', label: 'Artist A–Z' },
+  { key: 'length', label: 'Length — longest first' },
 ];
 
 interface FilterBarProps {
@@ -51,13 +52,15 @@ interface FilterBarProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   searchInputRef: RefObject<HTMLInputElement>;
+  /** Downloads the results on screen as a CSV (F10). */
+  onDownloadCsv: () => void;
 }
 
 export function FilterBar({
-  counts, histogram, resultCount, filtered, searchQuery, onSearchChange, searchInputRef,
+  counts, histogram, resultCount, filtered, searchQuery, onSearchChange, searchInputRef, onDownloadCsv,
 }: FilterBarProps) {
   const state = useFilterStore();
-  const { toggleFacet, clearFacet, clearAll, setSort, setYearRange, toggleUndated } = state;
+  const { toggleFacet, clearFacet, clearAll, setSort, setLayout, setYearRange, toggleUndated } = state;
 
   // A chip per selected value, Country and Event first, then "More filters".
   const facetChips = FACET_KEYS.flatMap(key =>
@@ -94,7 +97,7 @@ export function FilterBar({
 
   return (
     // z-30: above the grid, under the phone tab bar (z-40) and the drawer (z-50).
-    <div data-filter-bar className="sticky top-0 z-30 border-b border-white/6 bg-[#141414]/97 backdrop-blur-md">
+    <div data-filter-bar className="sticky top-0 z-30 border-b border-white/6 bg-[#141414]/97 backdrop-blur-md print:hidden">
       <div className={CONTENT_WIDTH}>
         <div className="flex flex-wrap items-center gap-x-2 gap-y-3 py-3">
           {/* One of the pills: same height and roundness as the controls beside
@@ -170,18 +173,51 @@ export function FilterBar({
           {filtered ? `${resultCount} ${resultCount === 1 ? 'show' : 'shows'}` : ''}
         </p>
         <div className={cn('items-center justify-between gap-4 pb-3', filtered ? 'flex' : 'hidden')}>
-          <p className="text-sm text-gray-400" aria-hidden="true">
+          <p className="whitespace-nowrap text-sm text-gray-400" aria-hidden="true">
             <span className="tabular-nums text-gray-200">{resultCount}</span>
             {resultCount === 1 ? ' show' : ' shows'}
           </p>
 
-          <label className="flex shrink-0 items-center gap-2 text-sm text-gray-400">
-            <span className="sr-only md:not-sr-only">Sort</span>
+          <div className="flex min-w-0 items-center gap-2">
+          {/* Grid or list (F10), then the list as a spreadsheet. */}
+          <div role="group" aria-label="Layout" className="flex shrink-0 rounded-lg border border-white/10 bg-white/5 p-0.5">
+            {([['grid', 'Grid', LayoutGrid], ['list', 'List', List]] as const).map(([value, label, Icon]) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setLayout(value)}
+                aria-pressed={state.layout === value}
+                title={label}
+                className={cn(
+                  'flex h-7 cursor-pointer items-center gap-1.5 rounded-md px-2 text-sm transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-white/70',
+                  state.layout === value ? 'bg-white/15 text-white' : 'text-gray-400 hover:text-white',
+                )}
+              >
+                <Icon className="h-4 w-4" aria-hidden="true" />
+                <span className="sr-only lg:not-sr-only">{label}</span>
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={onDownloadCsv}
+            disabled={resultCount === 0}
+            title={`Download these ${resultCount} shows as a spreadsheet (CSV)`}
+            // From md: a spreadsheet is a desk task, and a phone's row has no room.
+            className="hidden h-8 shrink-0 cursor-pointer items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 text-sm text-gray-300 md:flex transition-colors duration-150 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <Download className="h-4 w-4" aria-hidden="true" />
+            CSV
+          </button>
+
+          <label className="flex min-w-0 shrink items-center gap-2 text-sm text-gray-400">
+            <span className="sr-only xl:not-sr-only">Sort</span>
             <select
               value={state.sort}
               onChange={e => setSort(e.target.value as SortKey)}
               className={cn(
-                'cursor-pointer rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-white',
+                // Capped on a phone, where the count and layout share the row.
+                'min-w-0 max-w-[12rem] cursor-pointer rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-white md:max-w-none',
                 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70',
               )}
             >
@@ -192,6 +228,7 @@ export function FilterBar({
               ))}
             </select>
           </label>
+          </div>
         </div>
       </div>
     </div>

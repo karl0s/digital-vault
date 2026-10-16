@@ -6,7 +6,7 @@ import { CloseButton } from './CloseButton';
 import type { ImageUrlGetter } from '../src/hooks/useShows';
 import { scrollContainerToTop } from '../src/lib/motion';
 import { showLink } from '../src/lib/url';
-import { quality, videoName, audioName, containerName, channelsName, aspectName, sampleRateName, lengthName, sourceName, dateName } from '../src/lib/specs';
+import { quality, videoName, audioName, containerName, channelsName, aspectName, sampleRateName, lengthName, sourceName, dateName, songCount } from '../src/lib/specs';
 import { copiesOf } from '../src/lib/copies';
 
 interface ShowDrawerProps {
@@ -32,9 +32,6 @@ const shortTime = (t?: string): string => {
   const [h, m, s] = t.split(':');
   return h && h !== '0' && h !== '00' ? `${parseInt(h)}:${m}:${s}` : `${parseInt(m)}:${s}`;
 };
-
-const songCount = (setlist?: string): number =>
-  setlist ? setlist.split(';').map(s => s.trim()).filter(s => s && s !== 'Encore break').length : 0;
 
 /** How a master is named in a linked record's "Part of" label. */
 const masterTitle = (m: Show): string =>

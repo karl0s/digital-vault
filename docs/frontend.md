@@ -57,7 +57,8 @@ the search debounce. `directoryInView` (read on scroll, re-rendering only when i
 Artists tab.
 
 **State** (`src/store/filters.ts`, zustand): `q, from, to, undated, country, festival, quality,
-standard, length, setlist, sort`. Read
+standard, length, setlist, sort, layout`. Sort and layout are view preferences: Clear all keeps
+them, and neither counts as filtering. Read
 the whole state only as `useFilterStore(useShallow(selectFilterState))` — without `useShallow`,
 zustand v5 re-renders until React throws ("getSnapshot should be cached"). Single fields take plain
 selectors. The search input is local to App; only its debounced value (150 ms) reaches the store.
@@ -144,6 +145,29 @@ and Reading and Leeds Festival are "Reading & Leeds" (owner, 2026-10-13) — whi
 drawer and search keep the record's own name; an old link to a folded name lands on the group. `YearRangePopover`: decade chips (decades with 5+ records), the
 `YearHistogram` brush, From/To inputs (the keyboard and screen-reader path) and "Include undated".
 Brush maths is pure, in `src/lib/brush.ts`; the store is written on pointer-up only.
+
+**The results row** (while filtering): the count, then **Grid / List** (`layout`; `layout=list`
+in the URL, after `sort`), **CSV** (from md) and the sort — newest, oldest, artist A–Z, or
+**length, longest first**.
+
+**List layout** (`components/ShowList.tsx`, docs/ux-research F10): the same results in the same
+order as a dense table, for scanning an artist's run or reconciling a spreadsheet. A real `<table>`
+whose columns join as the screen widens — on a phone date, artist (event and city under it) and
+quality (length under it); from md event, place, length; from lg venue, PAL/NTSC, songs; from xl
+source and folder size. With a free-text query it is one table of every result, not the groups.
+Clicking anywhere on a row opens the show; the artist is the row's button, so the keyboard reaches
+every row, and the row click focuses it first so the drawer hands focus back there. Memoised, and
+mounted only in list layout. **Printing** is for the list: the bar, masthead, tab bar and Clear
+pill are `print:hidden`, the shell and table go black on white, every column prints.
+
+**CSV** (`src/lib/csv.ts`): the results on screen, in their order, generated in the browser and
+named for the search and filters (`the-vault-pearl-jam-2026-10-16.csv`); **Download the full list**
+beside All artists gives the whole collection, A–Z. Columns: Artist, Date (`dateName`), Event,
+Venue, City, Country, Type (Live, Excerpt, Documentary), Source, Quality, Resolution, Standard
+(SD only), Video, Audio, Container, Length (min, a number), Folder size, Generation, Lineage,
+Songs, Setlist, Link (`showLink`). UTF-8 with a BOM and CRLF, so Excel reads the accents; a cell
+starting with `= + - @` is prefixed with `'`. Only published fields — never one in `DROPPED` or
+`PRIVATE`.
 
 **More filters** (`MoreFiltersPopover`; owner-agreed 2026-10-16, docs/ux-research F12): the specs
 traders decide by, in one popover after Event — **Quality** (HD 1080, HD 720, SD, Low-res, from

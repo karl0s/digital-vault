@@ -13,6 +13,8 @@ import { CONTENT_WIDTH } from './src/lib/layout';
 import { AppShell } from './components/shell/AppShell';
 import { FilterBar } from './components/filters/FilterBar';
 import { ShowGrid } from './components/ShowGrid';
+import { ShowList } from './components/ShowList';
+import { downloadCsv } from './src/lib/csv';
 import { useBrowseResults } from './src/hooks/useBrowseResults';
 import { FACET_KEYS, isFiltered as computeIsFiltered, LEGACY_VIEW_PARAM, readShowParam, withShowParam } from './src/lib/url';
 import { useFilterStore, initFilterUrlSync, selectFilterState } from './src/store/filters';
@@ -126,6 +128,9 @@ export default function App() {
   const withoutFilters = filterLabels.length
     ? { count: matchedByQuery, labels: filterLabels, onClear: clearFilters }
     : null;
+
+  // The results on screen as a spreadsheet (F10), named for the search and filters.
+  const downloadResults = () => downloadCsv(results, [filterState.q, ...filterLabels].join(' '));
 
   /**
    * The input stays local for responsiveness; only the debounced value reaches
@@ -358,6 +363,7 @@ export default function App() {
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
         searchInputRef={searchInputRef}
+        onDownloadCsv={downloadResults}
       />
 
       {!filtered ? (
@@ -383,15 +389,20 @@ export default function App() {
           onSearch={(q) => handleSearchChange(q, 'general')}
           withoutFilters={withoutFilters}
           getImageUrl={getImageUrl}
+          layout={filterState.layout}
         />
       ) : (
         <div className={`${CONTENT_WIDTH} pt-6`}>
-          <ShowGrid
-            shows={results}
-            onShowClick={handleShowClick}
-            getImageUrl={getImageUrl}
-            onClearFilters={clearAllFilters}
-          />
+          {filterState.layout === 'list' && results.length > 0 ? (
+            <ShowList shows={results} onShowClick={handleShowClick} />
+          ) : (
+            <ShowGrid
+              shows={results}
+              onShowClick={handleShowClick}
+              getImageUrl={getImageUrl}
+              onClearFilters={clearAllFilters}
+            />
+          )}
         </div>
       )}
     </motion.div>

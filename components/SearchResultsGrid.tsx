@@ -3,12 +3,14 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, ChevronRight, Search, X } from 'lucide-react';
 import { Show } from '../App';
 import { ShowCard } from './ShowCard';
+import { ShowList } from './ShowList';
 import { LazyImage } from './LazyImage';
 import { GRID_COLS, GRID_TRACKS } from './FeaturedRows';
 import { CONTENT_WIDTH } from '../src/lib/layout';
 import type { SongSuggestion } from '../src/search/searchIndex';
 import type { ArtistMatch, ResultGroups } from '../src/hooks/useBrowseResults';
 import type { ImageUrlGetter } from '../src/hooks/useShows';
+import type { Layout } from '../src/lib/url';
 
 interface SearchResultsGridProps {
   shows: Show[];
@@ -26,6 +28,8 @@ interface SearchResultsGridProps {
   /** Set while filters narrow the results: their labels, and what the search finds without them. */
   withoutFilters?: { count: number; labels: string[]; onClear: () => void } | null;
   getImageUrl: ImageUrlGetter;
+  /** 'list': one dense table of every result instead of the grouped cards (F10). */
+  layout?: Layout;
 }
 
 /** Artist tiles shown before "Show all": two rows from xl, three on a tablet. */
@@ -36,7 +40,7 @@ const SECTION_COUNT = 'font-normal normal-case tracking-normal tabular-nums text
 
 const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
-export function SearchResultsGrid({ shows, query, searchType, transitionKey, songSuggestion, groups, onShowClick, onArtistSelect, onClear, onSearch, withoutFilters, getImageUrl }: SearchResultsGridProps) {
+export function SearchResultsGrid({ shows, query, searchType, transitionKey, songSuggestion, groups, onShowClick, onArtistSelect, onClear, onSearch, withoutFilters, getImageUrl, layout = 'grid' }: SearchResultsGridProps) {
   // Explicit type from the call site wins; fall back to inferring from results for free-text searches
   const isSingleArtist = shows.length > 0 && shows.every(s => s.Artist === shows[0].Artist);
   const cardMode: 'artist' | 'search' = searchType === 'artist'
@@ -54,14 +58,14 @@ export function SearchResultsGrid({ shows, query, searchType, transitionKey, son
     <div className={`${CONTENT_WIDTH} pt-8`}>
       {/* Results header */}
       <div className="mb-6">
-        <h2 className="text-4xl font-bold text-white">“{query}”</h2>
+        <h2 className="text-4xl font-bold text-white print:text-2xl print:text-black">“{query}”</h2>
         {/* The summary row: what was found, and the way out of it, side by
             side — the control sits beside the thing it clears. */}
         <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
-          <p className="text-gray-400 text-sm">
+          <p className="text-gray-400 text-sm print:text-black">
             {shows.length === 0
               ? 'No shows match'
-              : <>Found <span className="text-gray-200 tabular-nums">{shows.length}</span> {shows.length === 1 ? 'show' : 'shows'}</>}
+              : <>Found <span className="text-gray-200 tabular-nums print:text-black">{shows.length}</span> {shows.length === 1 ? 'show' : 'shows'}</>}
           </p>
           <ClearButton onClick={onClear} back={searchType === 'artist'} />
         </div>
@@ -71,7 +75,7 @@ export function SearchResultsGrid({ shows, query, searchType, transitionKey, son
         {songSuggestion && onSearch && (
           <button
             onClick={() => onSearch(songSuggestion.query)}
-            className="cursor-pointer group mt-3 flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-200 transition-colors duration-200"
+            className="print:hidden cursor-pointer group mt-3 flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-200 transition-colors duration-200"
           >
             <span aria-hidden="true" className="text-gray-400 group-hover:text-gray-300 transition-colors">↳</span>
             <span>
@@ -134,6 +138,11 @@ export function SearchResultsGrid({ shows, query, searchType, transitionKey, son
             Or search one field: <span className="font-mono text-[13px] text-gray-300">song:creep · venue:brixton · event:pinkpop · year:1997</span>
           </p>
         </div>
+      ) : layout === 'list' ? (
+        // The list is for scanning and reconciling, so it is one table of
+        // every result in the chosen order, not the groups: the artist column
+        // says what the artist tiles did.
+        <ShowList shows={shows} onShowClick={onShowClick} />
       ) : (
         // presenceAffectsLayout={false}: see the matching comment in App.tsx.
         <AnimatePresence mode="wait" presenceAffectsLayout={false}>
@@ -235,7 +244,7 @@ function ClearButton({ onClick, back }: { onClick: () => void; back: boolean }) 
     <button
       type="button"
       onClick={onClick}
-      className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-full bg-white/10 pl-2.5 pr-3.5 text-sm text-gray-200 transition-colors duration-150 hover:bg-white/20 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+      className="print:hidden inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-full bg-white/10 pl-2.5 pr-3.5 text-sm text-gray-200 transition-colors duration-150 hover:bg-white/20 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
     >
       <Icon className="h-3.5 w-3.5" aria-hidden="true" />
       {back ? 'All artists' : 'Clear search'}

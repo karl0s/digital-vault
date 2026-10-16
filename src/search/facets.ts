@@ -309,6 +309,15 @@ export function applyFilters(
 export function sortShows(shows: Show[], sort: SortKey): Show[] {
   const out = [...shows];
 
+  // Longest first (F10): a full set before the TV spots. Ties newest first.
+  if (sort === 'length') {
+    const secs = (s: Show) => parseInt(s.DurationSec, 10) || 0;
+    return out.sort((a, b) =>
+      secs(b) - secs(a) ||
+      (b.ShowDate || '').localeCompare(a.ShowDate || '') ||
+      a.ShowID.localeCompare(b.ShowID));
+  }
+
   if (sort === 'artist') {
     return out.sort(
       (a, b) =>

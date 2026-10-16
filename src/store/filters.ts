@@ -5,6 +5,7 @@ import {
   FACET_KEYS,
   FacetKey,
   FilterState,
+  Layout,
   SortKey,
   parseFilters,
   readShowParam,
@@ -30,6 +31,7 @@ interface FilterActions {
   setYearRange: (from: number | null, to: number | null) => void;
   toggleUndated: () => void;
   setSort: (sort: SortKey) => void;
+  setLayout: (layout: Layout) => void;
   clearFacet: (facet: FacetKey) => void;
   clearAll: () => void;
   /** Every filter off, the search kept: the way out of an empty result. */
@@ -120,10 +122,12 @@ export const useFilterStore = create<FilterStore>((set, get) => {
 
     setSort: sort => apply({ sort }),
 
+    setLayout: layout => apply({ layout }),
+
     clearFacet: facet => apply({ [facet]: [] } as Partial<FilterState>),
 
-    // Sort deliberately survives "clear all" — it is a view preference, not a
-    // filter, and resetting it would silently reorder results the user is reading.
+    // Sort and layout deliberately survive "clear all" — view preferences, not
+    // filters: resetting them would reorder or redraw results the user is reading.
     clearAll: () =>
       apply({ q: '', from: null, to: null, undated: false, ...NO_FACETS }),
 
@@ -168,7 +172,7 @@ export function selectFilterState(s: FilterState): FilterState {
     q: s.q, from: s.from, to: s.to, undated: s.undated,
     country: s.country, festival: s.festival,
     quality: s.quality, standard: s.standard, length: s.length, setlist: s.setlist,
-    sort: s.sort,
+    sort: s.sort, layout: s.layout,
   };
 }
 

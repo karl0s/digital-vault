@@ -138,6 +138,13 @@ eq('values a filter does not have are dropped', parseFilters('?quality=4k,hd-108
 eq('a More filter counts as filtering', isFiltered(f({ setlist: ['yes'] })), true);
 eq('each value counts once', activeFilterCount(f({ quality: ['sd', 'low-res'], setlist: ['no'] })), 3);
 
+console.log('\nList layout and the length sort (F10)');
+eq('grid is the default and never spelled out', serializeFilters(f({ layout: 'grid' })), '');
+eq('list goes last, after sort', serializeFilters(f({ q: 'pearl jam', sort: 'length', layout: 'list' })), '?q=pearl%20jam&sort=length&layout=list');
+eq('an unknown layout is the grid', parseFilters('?layout=table').layout, 'grid');
+eq('length is a sort', parseFilters('?sort=length').sort, 'length');
+eq('the layout is not a filter', isFiltered(f({ layout: 'list' })), false);
+
 console.log('\nthe open show (?show=, F3)');
 eq('reads a show ID', readShowParam('?q=nirvana&show=4dba0c8ff6ae'), '4dba0c8ff6ae');
 eq('ignores anything that is not a ShowID', readShowParam('?show=../../etc'), null);

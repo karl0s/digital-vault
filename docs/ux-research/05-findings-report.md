@@ -49,7 +49,8 @@
   (2026-10-16, from another copy of the same show); 275 to go *(data)*
 - [x] **3. F. More filters** — quality (HD / SD / low-res), PAL / NTSC, length, has setlist, with
   live counts; source joins once step 2 is done *(F12)*
-- [ ] **4. F. List view and CSV download** — the last thing between J3 and a pass *(F10)*
+- [x] **4. F. List view and CSV download** — a Grid / List toggle, CSV of the results on screen,
+  the full collection as a CSV, a length sort, and a printable list *(F10)*
 - [ ] **5. G. What's new** — the one job still failing (J7). **Needs your call first:** what
   counts as new? Git history can't tell — 244 records first appear in October, most of them
   splits and re-filings, not new recordings *(F11)*
@@ -78,7 +79,7 @@
 | [F7](#f7--placeholder-dates-look-like-real-dates) | Placeholder dates look real | 🟡 | Batch D: cards show a year-only date (`YYYY-01-01`) as the year; then the drawer, share line and tab title too | A `DatePrecision` field, for month-only dates and real 1 January shows; backfill |
 | [F8](#f8--empty-results-blame-spelling-when-a-filter-is-the-cause) | Empty results blame spelling | ✅ | Batch B: names the filters that hide the results and offers "Show N without the filter" | — |
 | [F9](#f9--the-drawer-hides-venue-and-city-for-festival-and-tv-shows) | Venue and city hidden | ✅ | Batch A: `Date · Event · Venue · City, Country` under the name for every show | — |
-| [F10](#f10--no-dense-list-export-or-useful-sort-for-reconciling-a-trading-list) | No list view or export | ⬜ | | Grid / List toggle, CSV download, more sorts, print |
+| [F10](#f10--no-dense-list-export-or-useful-sort-for-reconciling-a-trading-list) | No list view or export | ✅ | Batch F (2026-10-16): a Grid / List toggle kept in the link; the list a dense table (date, artist, event, venue, place, source, quality, PAL/NTSC, length, size, songs); **CSV** of the results on screen and **Download the full list** (21 columns, opens in Excel with accents intact, a link per show); sort by length; prints black on white | Sort by date added (needs F11) |
 | [F11](#f11--returning-traders-cant-see-whats-new) | No "what's new" | ⬜ | | `AddedOn` field, "Recently added" row, sort, RSS |
 | [F12](#f12--filters-dont-cover-what-traders-decide-by) | Filters miss trader dimensions | 🟡 | "More filters" beside Event (2026-10-16): Quality (HD 1080, HD 720, SD, Low-res), Standard (PAL, NTSC), Length (five bands), Setlist (has one, none yet), with live counts, chips and links | Source, once the blank records are filled in (step 2) |
 | [F13](#f13--too-faint-and-too-small-for-eyes-aged-4060) | Too faint, too small | ✅ | Batch E: every text passes 4.5:1, measured on the rendered page in 12 views (A–Z counts 1.7 → 5.3:1, heading counts 2.3/3.8 → 5.3:1, "No setlist yet" 3.8 → 6.8:1); nothing under 12px but the cards' badges (9.5 → 11px); the drawer's section labels 10 → 12px; Notes 12 → 13px; tab bar and year axis 10 → 12px; layout holds at 150% and 200% zoom | Text over the stills (cards, drawer header) is protected by the gradients but can't be measured automatically |
@@ -100,14 +101,14 @@ The review's walkthrough tasks, run again on the live site after batches A–E w
 |---|---|---|---|
 | J1 Do you have it? | 🟡 Partial | 🟢 **Pass** | — (a year-only date now reads as the year everywhere) |
 | J2 Is yours better? | 🔴 Fail | 🟢 **Pass** | Source blank on 27% of records; no broadcaster; frame rate and bitrate (drive scan) |
-| J3 Artist audit | 🟡 Partial | 🟡 Partial | List view, CSV download, more sorts |
+| J3 Artist audit | 🟡 Partial | 🟢 **Pass** | Sort by date added (with "What's new") |
 | J4 Song hunt | 🟢 Pass | 🟢 Pass | The song isn't highlighted in the setlist; `songs:` returns nothing |
 | J5 Event dig | 🟡 Partial | 🟢 **Pass** | A source filter (after the Source review); small events (Fuji Rock) only by search |
 | J6 Share and request | 🔴 Fail | 🟢 **Pass** | A pasted link previews the site, not the show |
 | J7 What's new | 🔴 Fail | 🔴 Fail | Everything: nothing marks what's new |
 | J8 Evidence check | 🟡 Partial | 🟢 **Pass** | Frame rate and bitrate (drive scan) |
 
-**At the review: 1 pass, 4 partial, 3 fail. Now: 6 pass, 1 partial, 1 fail.** Both jobs traders
+**At the review: 1 pass, 4 partial, 3 fail. Now: 7 pass, 1 fail** (J3 passed with the list view and CSV, 2026-10-16). Both jobs traders
 come for, J1 and J2, now pass.
 
 <details>
@@ -137,10 +138,10 @@ come for, J1 and J2, now pass.
 **J3 — What do you have that I don't?**
 - [x] The A–Z show counts readable (1.7 → 5.3:1)
 - [x] Date and quality on every card
-- [ ] A dense list view to scan a run of shows
-- [ ] CSV download to reconcile with a spreadsheet
-- [ ] Sort by length, size or quality (today: year and artist)
-- [ ] A printable list
+- [x] A dense list view to scan a run of shows (Grid / List, kept in the link)
+- [x] CSV download of the results, or of the whole collection
+- [x] Sort by length (size isn't the show's own: it waits for the drive scan)
+- [x] A printable list
 
 **J4 — Where was this song played?**
 - [x] `creep` finds 37 recordings, grouped as songs (already worked)
@@ -234,7 +235,7 @@ use. The highest score goes first. Where two items touch the same code they are 
 | 12 | View a still at full size | [F14](#f14--stills-cant-be-inspected-closely) | 1 | 2 | 1.0 | 1 | **2.0** | Helps judge an encode; the stills already show logos | ✅ batch A |
 | 13 | One format for durations and labels; tooltips on cut-off text | [F17](#low) | 1 | 2 | 1.0 | 1 | **2.0** | Polish | ✅ batch D |
 | 14 | Country, city and event synonyms; tech terms; search tips | [F6](#f6--search-doesnt-match-how-traders-type) | 2 | 2 | 1.0 | 2 | **2.0** | Fewer misses, more work than dates | ✅ batch B |
-| 15 | List view and CSV download | [F10](#f10--no-dense-list-export-or-useful-sort-for-reconciling-a-trading-list) | 2 | 2 | 0.8 | 2 | **1.6** | Predicted from how traders keep lists; not yet seen | ⬜ |
+| 15 | List view and CSV download | [F10](#f10--no-dense-list-export-or-useful-sort-for-reconciling-a-trading-list) | 2 | 2 | 0.8 | 2 | **1.6** | Predicted from how traders keep lists; not yet seen | ✅ batch F |
 | 16 | "Recently added" | [F11](#f11--returning-traders-cant-see-whats-new) | 2 | 2 | 0.8 | 2 | **1.6** | Returning visitors; predicted. Needs your call on what counts as new: git history can't tell (244 records first appear in October, mostly splits and re-filings) | ⬜ |
 | 17 | "More filters" (agreed) | [F12](#f12--filters-dont-cover-what-traders-decide-by) | 2 | 2 | 0.8 | 2 | **1.6** | Predicted; search covers part of it today. A source filter waits for #20: with 27% blank it would hide shows | ✅ (source to come) |
 | 18 | Drive scan: frame rate, bitrate, chapters, show size | [Plan](#planned-a-drive-scan-for-the-missing-specs) | 2 | 3 | 1.0 | 4 | **1.5** | Needs Live Music mounted | 📅 |

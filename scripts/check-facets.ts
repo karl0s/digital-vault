@@ -249,6 +249,10 @@ console.log('\nsorting');
   ok('year-asc: undated STILL last, not first', undatedAscIdx === -1 || datedAfterAsc === 0);
 
   ok('year-desc newest first', (sorted[0].ShowDate || '') >= (sorted[1].ShowDate || ''));
+
+  const secs = (s: Show) => parseInt(s.DurationSec, 10) || 0;
+  const longest = sortShows(shows, 'length');
+  ok('length: longest first, all the way down', longest.every((s, i) => i === 0 || secs(longest[i - 1]) >= secs(s)));
   ok('year-asc oldest first', (asc[0].ShowDate || '') <= (asc[1].ShowDate || ''));
 
   const byArtist = sortShows(shows, 'artist');

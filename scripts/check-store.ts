@@ -101,6 +101,10 @@ console.log('\nactions');
   ok('clearAll clears undated', s.undated === false);
   ok('clearAll clears the query', s.q === '');
   ok('clearAll preserves sort (a view preference, not a filter)', s.sort === 'artist');
+  store.getState().setLayout('list');
+  store.getState().clearAll();
+  ok('clearAll preserves the layout too', store.getState().layout === 'list');
+  store.getState().setLayout('grid');
 }
 
 console.log('\nhydration');

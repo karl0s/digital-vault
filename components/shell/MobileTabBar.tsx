@@ -45,7 +45,7 @@ export function MobileTabBar({ onBrowse, onArtists, onSearch, active }: MobileTa
       aria-label="Main"
       // pb-[env(safe-area-inset-bottom)]: without it the bar sits under the iOS
       // home indicator and the bottom few pixels stop responding to taps.
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-white/6 bg-[#141414]/97 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-white/6 bg-[#141414]/97 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden print:hidden"
     >
       <ul className="flex h-14 items-stretch">
         {TABS.map(({ key, label, icon: Icon }) => {

@@ -19,9 +19,16 @@
 
 import { SPEC_FACETS, SPEC_FACET_KEYS } from './specFilters';
 
-export type SortKey = 'year-desc' | 'year-asc' | 'artist';
+export type SortKey = 'year-desc' | 'year-asc' | 'artist' | 'length';
 
 export const DEFAULT_SORT: SortKey = 'year-desc';
+
+/**
+ * Results as cards, or as a dense list to reconcile against a spreadsheet
+ * (docs/ux-research F10). A view preference like sort: in the URL, so a link
+ * keeps it, and never a filter.
+ */
+export type Layout = 'grid' | 'list';
 
 /**
  * There is one page (2026-10-13): the Artists destination became the A–Z list
@@ -63,6 +70,7 @@ export interface FilterState {
   length: string[];
   setlist: string[];
   sort: SortKey;
+  layout: Layout;
 }
 
 export const EMPTY_FILTERS: FilterState = {
@@ -77,6 +85,7 @@ export const EMPTY_FILTERS: FilterState = {
   length: [],
   setlist: [],
   sort: DEFAULT_SORT,
+  layout: 'grid',
 };
 
 /**
@@ -89,7 +98,7 @@ export type FacetKey = (typeof FACET_KEYS)[number];
 
 /** Rule 1. Emission order is fixed here and nowhere else. */
 const PARAM_ORDER = [
-  'q', 'from', 'to', 'undated', 'country', 'festival', 'quality', 'standard', 'length', 'setlist', 'sort',
+  'q', 'from', 'to', 'undated', 'country', 'festival', 'quality', 'standard', 'length', 'setlist', 'sort', 'layout',
 ] as const;
 
 /** Rejects nonsense years from a hand-edited URL without pinning the data span. */
@@ -102,7 +111,7 @@ function parseYear(raw: string | null): number | null {
   return Number.isFinite(n) && n >= YEAR_FLOOR && n <= YEAR_CEILING ? n : null;
 }
 
-const SORT_KEYS: readonly SortKey[] = ['year-desc', 'year-asc', 'artist'];
+const SORT_KEYS: readonly SortKey[] = ['year-desc', 'year-asc', 'artist', 'length'];
 
 /**
  * Lowercase, strip accents, collapse anything non-alphanumeric to single dashes.
@@ -191,6 +200,11 @@ export function serializeFilters(state: FilterState): string {
       continue;
     }
 
+    if (key === 'layout') {
+      if (state.layout === 'list') parts.push('layout=list');
+      continue;
+    }
+
     if (key === 'from' || key === 'to') {
       const value = state[key];
       if (value !== null) parts.push(`${key}=${value}`);
@@ -246,6 +260,7 @@ export function parseFilters(search: string): FilterState {
     length: readSpec(params, 'length'),
     setlist: readSpec(params, 'setlist'),
     sort: rawSort && SORT_KEYS.includes(rawSort) ? rawSort : DEFAULT_SORT,
+    layout: params.get('layout') === 'list' ? 'list' : 'grid',
   };
 }
 

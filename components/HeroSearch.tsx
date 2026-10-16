@@ -26,6 +26,8 @@ export function HeroSearch({ isSearching = false, instant = false }: HeroSearchP
   return (
     <motion.div
       style={{ overflow: 'hidden' }}
+      // Printing is for the list (F10): no masthead on paper.
+      className="print:hidden"
       animate={isSearching ? { opacity: 0, height: 0 } : { opacity: 1, height: 'auto' }}
       transition={instant ? { duration: 0 } : {
         opacity: { duration: 0.18, ease: 'easeOut' },
