@@ -1,0 +1,668 @@
+# The Vault — UX findings for archive traders
+
+> **2026-10-16 · live site at `5ab10603`.** Method: an expert review against industry practice,
+> plus a scripted walkthrough of eight trader profiles on the live site at their own screen sizes,
+> 89 trader-style searches, and an analysis of `public/shows.json`.
+> **No real traders have used the site yet**, so everything marked *observed* is what the site
+> did, not how a person reacted. [04-test-plan.md](04-test-plan.md) is how to confirm it with
+> people.
+>
+> Background: [persona](01-persona-archive-trader.md) · [participants](02-participants.md) ·
+> [journeys and pain points](03-jobs-journeys-pain-points.md) · evidence screenshots in
+> [`evidence/`](evidence/).
+
+---
+
+## Bottom line
+
+The Vault is **fast, handsome and better at song search than most trading lists**. The stills are
+real frames with the channel logos intact, which is exactly the evidence traders use.
+
+But traders come with three questions: **do you have it, is it better than mine, and how do I get
+it?** The site answers the first only if they type the way it expects. It can't answer the second,
+because the fields that rank one recording against another are hidden, missing or mislabelled. The
+third is answered by your email, but a trader replying to it still has to name the exact recording,
+and today there's no link to give. In the walkthrough, the decisive comparison (which of four
+copies of one show is the HD one) couldn't be made from anything on screen.
+
+### Predicted task success (from the walkthrough)
+
+| Journey | Result | The blocker |
+|---|---|---|
+| J1 Do you have it? | 🟡 Partial | Dates and abbreviations don't search |
+| J2 Is yours better? | 🔴 Fail | No resolution; versions not grouped; Escape wipes the results |
+| J3 Artist audit | 🟡 Partial | Year-only cards; no list view or export |
+| J4 Song hunt | 🟢 Pass | (Song not highlighted in the setlist) |
+| J5 Event dig | 🟡 Partial | Empty results blame spelling when a filter is the cause |
+| J6 Share and request | 🔴 Fail | No per-show link; Back leaves the site |
+| J7 What's new | 🔴 Fail | Nothing marks what's new |
+| J8 Evidence check | 🟡 Partial | Stills can't be viewed at native size |
+
+---
+
+## Fix these first
+
+Ranked by impact on the traders' core jobs, then by effort (S = under half a day, M = 1–3 days,
+L = a week or more, or data work).
+
+| # | Fix | Finding | Effort |
+|---|---|---|---|
+| 1 | Stop Escape erasing the search while a show is open | [F5](#f5--escape-erases-the-search-behind-an-open-show) | S |
+| 2 | Show resolution and an HD / SD / low-res label; trader names for codecs | [F1](#f1--which-copy-is-better-cant-be-answered) | S |
+| 3 | Give every show a link (`?show=<ShowID>`); Back closes the show | [F3](#f3--nothing-can-be-linked-and-back-leaves-the-site) | M |
+| 4 | Group recordings of the same show; full date on cards; compare | [F2](#f2--recordings-of-the-same-show-arent-grouped-and-their-cards-are-identical) | M |
+| 5 | A Share button on each show: copies its link and a one-line reference (after #3) | [F4](#f4--pointing-at-one-exact-recording-is-hard) | S |
+| 6 | Search: dates, abbreviations (auto-initials), country and city synonyms, tech terms | [F6](#f6--search-doesnt-match-how-traders-type) | M |
+| 7 | Show venue and city in the drawer for festival and TV shows | [F9](#f9--the-drawer-hides-venue-and-city-for-festival-and-tv-shows) | S |
+| 8 | Empty results name the active filters and offer to drop them | [F8](#f8--empty-results-blame-spelling-when-a-filter-is-the-cause) | S |
+| 9 | Publish source, lineage and generation through the taper redaction (also cleans Notes, which leak today) | [Redaction](#publishing-lineage-and-generation-without-exposing-tapers) | M |
+| 10 | Stop placeholder dates posing as real dates | [F7](#f7--placeholder-dates-look-like-real-dates) | M (data) |
+
+---
+
+## What works — keep it
+
+- **Speed.** About 1 MB and 21 requests to a usable phone page; the drawer opens in about 30 ms.
+  Traders open dozens of shows a session, so this matters.
+- **Stills as evidence.** Uncropped frames with logos (Channel V, Multishow, VH2, MTV) let a
+  trader identify the broadcast at a glance ([e07](evidence/e07-phone-drawer-setlist-junk.jpg),
+  [e09](evidence/e09-placeholder-date-2001-01-01.jpg), [e11](evidence/e11-viewer-capped-at-drawer-width.jpg)).
+- **Song search.** "creep" returns 37 recordings across Stone Temple Pilots, Radiohead and a Korn
+  cover, grouped under Songs with the song named on each card
+  ([e12](evidence/e12-song-search-creep.jpg)). Few trading resources do this.
+- **Forgiving in places:** accents ignored (`nurburgring` → 54), "Did you mean" for typos, RHCP,
+  STP and QOTSA aliases, `glasto`.
+- **Notes verbatim.** The sidecar NFO is the document traders trust most; showing it untouched is
+  right.
+- **ISO dates** (`2010-06-05`) are unambiguous across Europe, the Americas and Japan.
+- **Filters done properly:** counts per option, chips, Clear all, state in the URL, a year
+  histogram, typed From/To.
+- **Phone basics:** tab bar, 16px inputs (no iOS zoom), full-screen show sheet, readable filter
+  lists ([e13](evidence/e13-phone-country-filter.jpg)).
+- **Excerpt and "Part of…" links** model multi-artist broadcasts the way traders think about them.
+- **Keyboard and screen-reader groundwork:** focus trap, focus return, real buttons, live result
+  count.
+
+---
+
+## Findings
+
+Severity: **Critical** = blocks a core trader job (J1, J2, J6) · **High** = leads to wrong
+conclusions or big detours · **Medium** = slows people down; a workaround exists · **Low** = polish.
+
+### Critical
+
+#### F1 — "Which copy is better?" can't be answered
+
+*J2, J8 · all participants, P1, P4 and P5 most*
+
+**What we saw.** Thirty Seconds to Mars at Rock am Ring 2010 exists as four recordings. Two are
+720×576 PAL DVDs; two are **1920×1080**. Nothing on screen says so. The drawer of one 1080 copy
+reads `43m · NTSC · mpeg2video · .ts · 5.65 GB`, and the other reads `PAL · h264 · .mkv`. A trader
+would have to infer HD from the container and file size. Only one of the four is marked "Proshot".
+
+![The 1080 copy: labelled NTSC, no resolution](evidence/e04-hd-copy-labelled-ntsc-no-resolution.jpg)
+
+Across the collection:
+- **Resolution is never shown**, although `Width` and `Height` exist on 100% of records. They're
+  in `DROPPED` in `scripts/site-data.mjs:32`.
+- **124 HD records are never called HD**; 85 of them display "NTSC", 36 "PAL". For HD, PAL/NTSC
+  says nothing useful.
+- **43 low-resolution records** (352 px wide or less, e.g. the Glastonbury 2003 masters at
+  352×288) carry no warning. To a trader that is the first thing to know.
+- **Source** (`RecordingType`) is blank on 329 records (27%).
+- **Lineage** (247 records) and **Generation** (85) exist but are dropped from the site.
+- **Size and Files describe the whole folder**, not the show: Aerosmith 2002-02-02 shows
+  `4 min · 2.70 GB · 16 files`. A trader reads that as a broken bitrate.
+- Codec names are ffprobe internals (`mpeg2video`, `pcm_dvd`, `ac3`, `.vob`) and the aspect
+  carries the internal word "(native)".
+- No broadcaster, bitrate, frame rate, DVD5/DVD9, or menus and chapters.
+
+**Why it matters.** Ranking recordings *is* the trader's job (the "better" ladder in the
+[persona](01-persona-archive-trader.md#what-makes-one-recording-better-typical-order)). Without
+source, resolution and lineage the site is a list of titles, which is the thing traders already
+have too many of.
+
+**Best practice.** The Internet Archive's Live Music Archive and the Dime A Dozen info-file norms
+make source, lineage and transferer first-class fields. Product pages present specs in the
+buyer's vocabulary with units (Nielsen heuristic 2, *match between system and the real world*).
+MediaInfo, the tool traders use, says "MPEG-2 Video, 720×576, 25 fps, AC-3 2.0, 448 kb/s".
+
+**Fix.**
+1. Add a **Resolution** row (`1920 × 1080`) and a badge **HD 1080 / HD 720 / SD 576 / SD 480 /
+   Low-res 288**. Show the PAL/NTSC badge only for SD. Remove `Width` and `Height` from `DROPPED`.
+   Cost: about 7 KB gzipped, together with lineage and generation.
+2. Trader labels in `techRows` (`components/ShowDrawer.tsx:272`): MPEG-2, H.264/AVC, HEVC · Dolby
+   Digital (AC-3), LPCM, MPEG audio (MP2), AAC · DVD-Video (VOB), MPEG-TS, MKV. Drop "(native)".
+3. A **Source** block above Technical: Source (Pro-shot / Audience / Unknown) · Generation ·
+   Lineage, published through the taper redaction (see
+   [Publishing lineage and generation without exposing tapers](#publishing-lineage-and-generation-without-exposing-tapers)).
+4. Label size honestly: "Folder size (may include other content)", or show it only when the
+   folder holds this one show.
+5. Data: backfill `RecordingType` on the 329 blanks. Later, scan frame rate, bitrate,
+   menus/chapters and broadcaster into the pipeline.
+
+**Effort.** 1–2: S. 3: S. 4: S. 5: L.
+
+#### F2 — Recordings of the same show aren't grouped, and their cards are identical
+
+*J2, J3 · P2, P5, P6*
+
+**What we saw.** 118 shows have two or more recordings, and none link to each other. In an
+artist view, **375 cards fall into 155 groups with identical captions**: four "Rock am Ring ·
+Nürburgring · 2010" cards, three "Pinkpop · Megaland · 2000" (Pearl Jam), two "VH1 Storytellers ·
+The Avalon · 2006" (both 44 min). Cards show the **year only**, so two shows in one year also look
+alike.
+
+![Four identical Rock am Ring 2010 cards](evidence/e03-four-identical-rock-am-ring-cards.jpg)
+
+**Why it matters.** The only way to compare is to open each card in turn and remember the specs.
+That is the job a table should do.
+
+**Best practice.** Discogs groups every pressing of an album under one *master release* with a
+versions table (format, country, year, label), and every version has its own page. Shopping sites
+show the decisive attribute on every list item and offer a compare view for products that are
+chosen on specs (Baymard Institute research on product lists and comparison).
+
+**Fix.**
+1. In the drawer: **"Other recordings of this show (3)"**, matched on Artist + ShowDate (ignoring
+   linked excerpts), as a small table: Length · Source · Resolution · Standard · Video · Audio ·
+   Size · Songs. Each row opens that recording.
+2. On cards in an artist view: the **full date** instead of the year, and a quiet spec line in the
+   same type as the date: `2010-06-05 · HD 1080`. Plus a "3 recordings" marker where a show has
+   several. (This brings back some of what was removed on 2026-10-15; see *Earlier decisions*
+   below.)
+3. Measure the card change with `npm run perf` (CLAUDE.md, *Front-end performance*).
+
+**Effort.** M.
+
+#### F3 — Nothing can be linked, and Back leaves the site
+
+*J6, all · P6, P3, P8*
+
+**What we saw.** With Foo Fighters at Big Day Out 2000 open, the address bar reads
+`/?q=big%20day%20out`. Pasted into a new tab, it opens 35 search results, not the show
+([e08](evidence/e08-shared-link-lands-on-search.jpg)). Pressing browser **Back** while a show is
+open leaves the site entirely (opening a show adds no history entry; the URL is only ever
+`replaceState`d). The page has no meta description and no Open Graph image, so links pasted into
+WhatsApp, Discord or forums show no preview. `robots.txt` and `sitemap.xml` return 404, so Google
+can index only the home page.
+
+**Why it matters.** Traders work by sending links: "this one?" in a thread. A recording that
+can't be linked can't be talked about. On Android and iOS the back gesture is how people close
+things; leaving the site mid-session is the worst outcome.
+
+**Best practice.** Every item that can be discussed gets a stable URL (setlist.fm, Discogs,
+archive.org; NN/g on deep linking). An overlay that represents content should be in the browser
+history so Back closes it.
+
+**Fix.**
+1. Opening a show `pushState`s `?show=<ShowID>` (beside the filter params in `src/lib/url.ts`);
+   `popstate` closes it; loading a URL with `show=` opens it once the data is in. pushState doesn't
+   touch layout, so the ~30 ms open time is safe; measure it anyway.
+2. Site-level `<meta name="description">` and `og:image` in `index.html`.
+3. Later: generate a static page per show at build (`dist/show/<id>/index.html`, as the
+   thumbnails are generated) carrying that show's title, date and still in Open Graph tags, plus a
+   `sitemap.xml`. GitHub Pages serves a folder's `index.html` without any SPA fallback, so it works
+   on the current host. Searching "Pearl Jam Pinkpop 2000 video" would then find The Vault.
+
+**Analytics.** A per-show URL also gives analytics something to count: which recordings get
+opened, and from which search or filter. Filter changes already pass through one seam
+(`commitFilterState` in `src/store/filters.ts`); opening a show would be the second.
+
+**Effort.** 1–2: M. 3: L.
+
+#### F4 — Pointing at one exact recording is hard
+
+*J6 · P6, P3, all*
+
+**Your answer (2026-10-16).** The site exists for trading. Traders arrive from your direct email,
+so they already know whose collection it is and how to reach you. **No contact details on the
+site.**
+
+**What still matters.** A trader replying to your email, or telling a friend, has to name the
+exact recording. With 118 shows in several copies and identical cards, "Rock am Ring 2010" isn't
+enough, and there's no link to paste (F3).
+
+**Fix.** A **Share** button in each show: the phone's share sheet on mobile, "Copy link" on
+desktop. It copies the show's link (F3) with a one-line reference, e.g.
+`30 Seconds to Mars · 2010-06-05 · Rock am Ring · HD 1080 · 43 min — <link>`, ready to paste into
+the email thread.
+
+**Effort.** S, once F3 exists.
+
+### High
+
+#### F5 — Escape erases the search behind an open show
+
+*J2, J3 · P5 (any keyboard user)*
+
+**What we saw.** Search "30 Seconds to Mars" → open a show → press **Escape**. The search clears,
+the results behind are replaced by the home page, and the show **stays open**. A second Escape
+closes it. Then the trader has to search again to reach copy 2. The × button behaves correctly.
+
+![Escape cleared the search; the show is still open](evidence/e05-escape-wipes-search.jpg)
+
+**Cause.** Two window-level Escape listeners both fire: App's "Escape clears the search"
+(`App.tsx:137–143`) doesn't know a show is open.
+
+**Fix.** In App's handler, return early while a show is open (`if (selectedShow) return;`), or
+skip any Escape the drawer has already handled. Add the case to the drawer checks.
+
+**Effort.** S.
+
+#### F6 — Search doesn't match how traders type
+
+*J1, J4, J5 · P1, P3, P7, P8*
+
+**What we saw** (full battery in [04 §9](04-test-plan.md#search-batteries-desktop-89-queries--the-ones-that-matter)):
+
+| Traders type | Result |
+|---|---|
+| `1996-05-24`, `24.05.1996`, `24/05/1996`, `May 24 1996`, `1996-05` | **0 in every format**, even the form the drawer displays |
+| `Rock am Ring 97`, `'97` | 0 |
+| `RATM` / `FNM` / `30STM` / `KOL` | 0. **`RATM` suggests "Rammstein"** ([e02](evidence/e02-ratm-suggests-rammstein.jpg)) |
+| `SP` | 5 unrelated results, not Smashing Pumpkins |
+| `uk`, `deutschland`, `brasil`, `usa` | 0, 0, 2 (not 16), 4 (word matches, not 381 US shows) |
+| `koln` | 0, suggests "**Korn**" (`cologne` finds 24) |
+| `pal`, `ntsc`, `hd`, `1080i`, `sbd`, `dvd9` | 0 or stray song hits; `soundboard` suggests "**Soundgarden**" |
+| `TITP`, `R&L` | 0 |
+| `artist:pearl year:2000`, `venue:"brixton academy"` | 0 (each prefix works alone; combined or quoted they don't) |
+
+Field prefixes (`artist:`, `venue:`, `event:`, `year:`, `country:`, `type:`, `song:`, `note:`)
+exist but appear nowhere on the site.
+
+**Why it matters.** A date is the trader's primary key, and abbreviations are how they talk. A
+wrong "Did you mean" is worse than none: it suggests the collection lacks what it has.
+
+**Best practice.** Search should accept users' abbreviations, synonyms and formats, not just the
+catalogue's spelling (Baymard Institute on-site search research). "Did you mean" should
+outrank fuzzy guesses with exact alias matches.
+
+**Fix.**
+1. **Auto-generate initials** for every artist (RATM, FNM, 30STM, KOL, QOTSA, SOAD…) into
+   `ARTIST_ALIASES` (`src/search/searchIndex.ts:175`, five hand-written entries today); drop
+   collisions and keep hand-written overrides. An exact alias hit must suppress fuzzy "Did you
+   mean".
+2. **Index dates** in several forms: `1996-05-24`, `24.05.1996`, `24/05/1996`, `05/24/1996`,
+   `1996-05`, `may 1996`, `96` / `'96`.
+3. **Synonyms**: countries (uk/england/britain → United Kingdom; usa/us/america; brasil;
+   deutschland; holland/nederland; españa…), cities (Köln, München, Nürnberg, Wien, Lisboa…),
+   events (TITP, R&L, RaR, RiP, BDO, ACL), tech terms (pal, ntsc, hd, 1080, sd, aud, sbd, pro-shot).
+4. Support **quoted phrases** and **several prefixes** at once.
+5. A **"Search tips"** line under the field: `artist:` `song:` `venue:` `event:` `year:`
+   `country:` `type:` `note:`.
+6. Add every case above to `npm run check:search`.
+
+**Effort.** M.
+
+#### F7 — Placeholder dates look like real dates
+
+*J1 · P3, P7*
+
+**What we saw.** Foo Fighters at Rock in Rio shows **`2001-01-01`**
+([e09](evidence/e09-placeholder-date-2001-01-01.jpg)). By the data convention, "year known only"
+is stored as `YYYY-01-01` and "month known" as `YYYY-MM-01`, with no flag. Up to **257 records**
+(104 and 153) may be showing invented precision; some first-of-month dates are real, but the site
+can't tell which.
+
+**Why it matters.** Traders know when shows happened. A wrong-looking date makes them distrust
+the rest of the record.
+
+**Fix.** Add `DatePrecision: "year" | "month"` (the health check and site read it) and display
+"2001 · exact date unknown" or "May 2001". Backfill from `PrivateNotes` and the folder names, then
+check the remainder by hand. Until then, at least render `YYYY-01-01` as the year alone.
+
+**Effort.** M (mostly data).
+
+#### F8 — Empty results blame spelling when a filter is the cause
+
+*J5 · P7*
+
+**What we saw.** With the Pinkpop filter on, typing "neil young" shows **"No shows found for
+'neil young'. Check the spelling, or try an artist, song, venue or year."** The collection has a
+Neil Young show; the filter hides it. A careful reader like P7 believes the page and leaves.
+
+![The filter chip is visible, but the message blames spelling](evidence/e06-empty-state-ignores-filter.jpg)
+
+**Best practice.** A no-results page should name the filters in force and offer to remove them
+(Baymard Institute's no-results research).
+
+**Fix.** In `components/SearchResultsGrid.tsx:108–109`: when filters are active, count the query
+alone. Say "No Neil Young shows at Pinkpop" and offer "**1 Neil Young show without this filter →**".
+Reserve "check the spelling" for when the query alone finds nothing.
+
+**Effort.** S.
+
+#### F9 — The drawer hides venue and city for festival and TV shows
+
+*J1, J2 · P1, P5, P7*
+
+**What we saw.** The drawer's subtitle is `Date · Event · Country` whenever an event is set
+(`components/ShowDrawer.tsx:495–503`). **699 records never show their venue, and 843 never show
+their city.** Rock am Ring 1996 doesn't say Nürburgring; Bizarre Festival 1997 (Butzweilerhof,
+Cologne) and Bizarre 2002 (Flughafen Niederrhein) can't be told apart by place.
+
+**Fix.** Always show the place: `2010-06-05 · Rock am Ring` / `Nürburgring, Nürburg, Germany`, as a
+second line or a "Where" row.
+
+**Effort.** S.
+
+#### F10 — No dense list, export or useful sort for reconciling a trading list
+
+*J3 · P2, P5*
+
+**What we saw.** Results are image cards only (2–6 per row). Sorts: year newest or oldest, artist
+A–Z. Nothing can be copied or downloaded; printing gives the gallery.
+
+**Why it matters.** Every trader keeps a spreadsheet. Reconciling 21 Pearl Jam recordings means
+opening 21 drawers and typing.
+
+**Best practice.** Collections chosen on specs offer a list view beside the grid (Baymard). Discogs
+exports a collection as CSV; trading lists have been TXT, XLS or HTML tables for decades.
+
+**Fix.** A **Grid / List** toggle (in the URL), with list rows: Date · Artist · Event · Venue ·
+City · Country · Source · Length · Resolution · Standard · Size. A **"Download CSV"** of the
+current results, generated in the browser. Sorts by length, size and date added. A print
+stylesheet for the list.
+
+**Effort.** M.
+
+#### F11 — Returning traders can't see what's new
+
+*J7 · P5, P2*
+
+**What we saw.** The landing page shows 12 shuffled Featured picks and the A–Z list. No record
+carries an "added" or "updated" date (`LastScannedAt` is a drive-scan date and isn't published).
+
+**Fix.** An `AddedOn` field, backfilled from git history (the first commit of `public/shows.json`
+that contains each ShowID) and set on every new record; a **"Recently added"** row above Featured;
+a "Date added" sort; optionally an RSS/Atom feed built at deploy.
+
+**Effort.** M.
+
+### Medium
+
+#### F12 — Filters don't cover what traders decide by
+
+*J5, J2 · P1, P5*
+
+Today: Years, Country (6+ shows), Event (6+ shows). Missing: **Source** (Pro-shot / Audience /
+Unknown), **Quality** (HD / SD / Low-res), **Standard** (PAL / NTSC), **Length** (under 20 min /
+20–60 / 60+, which separates TV spots from full sets: 393 records run under 20 minutes), **Has
+setlist**, **Live / Documentary**. Events with fewer than 6 recordings (Fuji Rock, Hurricane…) are
+reachable only by search. **Fix:** one "More filters" control to keep the bar to a single row, and
+smaller events under "More events" rather than hidden. **Effort:** M.
+
+#### F13 — Too faint and too small for eyes aged 40–60
+
+*All · P2, P7, P4*
+
+| Text | Measured | WCAG 2.2 AA |
+|---|---|---|
+| A–Z show counts (`text-white/17`, `ArtistDirectory.tsx:93`) | **≈1.7:1** at 12px | Fails 4.5:1 ([e10](evidence/e10-ipad-a-z-faint-counts.jpg)) |
+| Secondary hints and counts in `gray-500` ("Check the spelling…", "in 37 shows") | ≈3.8:1 at 12–14px | Fails 4.5:1 |
+| Labels and body in `gray-400` | ≈7:1 | Passes |
+| Section labels (SETLIST, TECHNICAL…) | 10px uppercase | Readable only up close |
+| Card badges (EXCERPT, DOCUMENTARY) | 9.5px | Too small |
+| Notes (NFO text) | 12px monospace | Small for long reading |
+
+**Fix:** counts and hints to `gray-400` or lighter; section labels 11–12px; badges 11px; Notes
+13–14px. Re-check at 150% browser zoom. (The A–Z "Ghost" level was a deliberate choice on
+2026-10-13; it still fails the 4.5:1 minimum for text that carries information.) **Effort:** S.
+
+#### F14 — Stills can't be inspected closely
+
+*J8 · P4, P1*
+
+The viewer stays inside the drawer: on a 16" MacBook a 768×576 still is shown at 671×503 CSS
+pixels, with no 1:1 view and no link to the original
+([e11](evidence/e11-viewer-capped-at-drawer-width.jpg)). **Fix:** a "View full size" action that
+opens the original JPEG, and the still's pixel size shown in the viewer. **Effort:** S.
+
+#### F15 — Setlists: non-songs counted as songs; the searched song isn't highlighted
+
+*J4 · P8, P6*
+
+32 setlist entries are not songs ("Jam", "Interview (cuts in)") yet are numbered as songs
+([e07](evidence/e07-phone-drawer-setlist-junk.jpg)); CLAUDE.md already says they belong in
+`PrivateNotes`. "Encore break" is numbered like a song, which inflates the count. Arriving from a
+song search, the matched song isn't marked in the setlist. **Fix:** clean the 32 entries; render
+the encore as a divider; highlight the matched song (pass the search's song hits to the drawer).
+Later: song timings and a completeness flag. **Effort:** S (+ data).
+
+#### F16 — A first visit doesn't say what this is
+
+*T0 · all*
+
+The masthead is the wordmark and "Live music worth reliving". The collection's size appears only
+as "All artists 303" far below the fold; whose collection it is and what can be done with it
+appear nowhere. Lower priority now that your email introduces the site; still useful for anyone a
+trader forwards the link to. **Fix:** one plain line under the tagline, e.g. "A private archive of 1,213 live
+concert recordings, 1960s–2010s" **Effort:** S.
+
+### Low
+
+- **F17 — Truncation and inconsistent formats.** "Rage Against the Ma…", "Kuala Lumpur, Malay…"
+  on six-column cards with no tooltip; durations "1h 05m" on cards but "1h 5m" in the drawer;
+  "Proshot" where traders write "Pro-shot"; "Date Unknown" in the drawer but "Undated" on cards.
+  Add `title` on truncated text; use one format everywhere.
+- **F18 — Phone header height.** While results show, the sticky search, filters and count/sort
+  take about a fifth of a 390×844 screen ([e08](evidence/e08-shared-link-lands-on-search.jpg)).
+  Hide the count/sort row while scrolling down and bring it back on scroll up.
+
+---
+
+## Benchmark — industry practice vs The Vault
+
+| Practice | Where it comes from | The Vault | Gap |
+|---|---|---|---|
+| Every item has a stable URL; Back closes overlays | NN/g on deep linking; setlist.fm, Discogs, archive.org | No | F3 |
+| One work, many versions, compared in a table | Discogs master releases | No | F2 |
+| Provenance (source, lineage, generation, transferer) as first-class fields | archive.org Live Music Archive; Dime A Dozen info-file norms | Data exists, hidden | F1 |
+| Specs in the user's vocabulary, with units | Nielsen heuristic 2; product spec tables; MediaInfo naming | ffprobe names; no resolution | F1 |
+| List view and compare for spec-chosen items | Baymard (product lists, comparison) | Grid only | F2, F10 |
+| Search tolerant of abbreviations, synonyms, formats | Baymard (on-site search) | Partial | F6 |
+| No-results page shows active filters and a way out | Baymard (no-results) | No | F8 |
+| Filters on the attributes people decide by | Baymard (filtering) | Year, Country, Event | F12 |
+| Export a list | Trading-list convention; Discogs CSV export | No | F10 |
+| "Recently added" | archive.org, trackers' new-torrent lists, Discogs | No | F11 |
+| Visible owner, purpose and contact | Web credibility research; trading-list norms | No | Not needed: traders arrive from your email (F16 optional) |
+| Text contrast ≥4.5:1; text resizable | WCAG 2.2 SC 1.4.3, 1.4.4 | Partial | F13 |
+| Readable for users over 50 | NN/g research on older users; age-related vision | Partial | F13 |
+| Link previews; crawlable pages | Open Graph; basic SEO | No | F3 |
+| Error prevention; consistent controls | Nielsen heuristics 4 and 5 | Escape bug | F5 |
+| Speed | Core Web Vitals | Strong | Keep |
+
+---
+
+## Data quality — the metadata *is* the product
+
+Traders will judge the site on these numbers more than on its design. Counts are for the 1,213
+visible records.
+
+| Issue | Count | What a trader sees | Fix |
+|---|---|---|---|
+| Source (`RecordingType`) blank | 329 (27%) | No Pro-shot / Audience | Backfill |
+| Live shows with no setlist | 432 of 1,184 (36%) | "No setlist yet" | Continue the setlist work (`tools/missing-setlists`) |
+| Placeholder dates (`-01-01`, `-MM-01`) | up to 257 | Fake precision | `DatePrecision` (F7) |
+| Undated | 85 | "Date Unknown" | Research |
+| Venue blank | 347 (29%) | Missing place | Enrich |
+| City blank / Country blank | 161 / 62 | Missing place | Enrich |
+| HD records shown only as PAL/NTSC | 124 (85 "NTSC") | Can't spot HD | Resolution badge (F1) |
+| Low-res (≤352 px wide), unflagged | 43 | Looks like any other copy | Low-res badge (F1) |
+| Lineage / Generation present but hidden | 247 / 85 | Nothing | Publish (F1) |
+| Non-song setlist entries | 32 | "Jam" as song no. 12 | Move to `PrivateNotes` (F15) |
+| Size and Files at folder level | many multi-show discs | 4 min · 2.70 GB | Relabel (F1) |
+| No broadcaster field | all | Must read the logo | New field (pipeline) |
+| Taper names, emails, links, tracker names in public text | Notes: 185 of 379 shows · Lineage: 33 of 248 | Live on the site today (Notes) | Taper redaction (below) |
+
+---
+
+## Publishing lineage and generation without exposing tapers
+
+**Your rule (2026-10-16).** Publish lineage and generation, but never a taper's or uploader's
+name, handle, email address or website, and no tracker or fan-site names. Viewers mustn't be able
+to go round you to the taper, and nobody's contact details go out without their permission.
+
+### What the audit found
+
+- **Generation:** 85 values, all clean (Master, 1st Gen, 2nd Gen…). They publish as they are.
+- **Lineage:** 33 of 248 strings name a person or a tracker: single handles at the head of the
+  chain or in the middle of it, a full name with two email addresses, and tracker names as the
+  last step.
+- **Notes are the bigger exposure, and they're on the live site now.** The site shows Notes word
+  for word, and 185 of 379 hold at least one of: a taper or uploader credit ("Transferred by: Jo
+  Bloggs", "Upped at [tracker] by fooguy"), an email address (some disguised:
+  `name(at)gmail(dot)com`), a messenger ID, a link to a tracker, fan site or trading page, or a
+  thank-you list of tracker handles.
+- **The GitHub repository is public.** Anyone can download `public/shows.json` from GitHub with
+  every field: raw Lineage and Notes, but also `PrivateNotes` and `FolderPath`. "Private" today
+  means "not on the site", not "not public". Cleaning what the site publishes doesn't change what
+  the repository publishes (see *The repository* below).
+
+### How the redaction works
+
+One module, `tools/taper-redaction/redact.mjs`, so the review page and the build can never
+disagree.
+
+1. **Contact details out:** email addresses (disguised ones too), messenger and "add me" lines,
+   links, bare domains, @handles, and the names of trackers and trading sites.
+2. **Credits out:** "transferred / authored / uploaded / seeded… by <person>", "Taper:",
+   "Author:", "Thanks to…", "on the request of…", a list of names under a header ("…tracker fan
+   mafia:"), "handle (a.k.a. Name)" lines, a signature after "Enjoy & share". In lineage, a person
+   standing alone in the chain (`> fooguy >`).
+3. **Person or equipment?** A vocabulary of about 400 devices, programs, formats and broadcasters
+   (Topfield, ProjectX, VideoReDo, WDR…), country names and everyday words. Anything short and
+   unknown beside a credit word counts as a person: the rules err towards removal.
+4. **The text still reads.** Where a credit ends its clause, only the credit goes
+   ("SVHS(1) provided by Jo Bloggs" → "SVHS(1)"). Where prose carries on, the sentence goes. A
+   line left empty goes, and so does a sidecar file left empty (e.g. "Torrent downloaded from…").
+5. **Second pass, per show.** A name found in a show's credits is removed wherever else it appears
+   in that show: a file name "(fooguy).txt", "Notes by Jo Bloggs:". Only within the show, so a
+   handle that is also an ordinary word never touches a song title of the same name elsewhere.
+6. **Across shows, you decide.** 32 places where a found name appears in a show whose own credits
+   don't mention it. Distinctive handles start as remove; ordinary words (band members' first
+   names, song titles) start as keep.
+
+**Dry run, all 1,214 records:** 33 lineage strings and 185 shows' notes change, 577 edits in all,
+134 names, handles and sites found. 94.7% of the text stays. A scan of the output finds **no
+email address, link, tracker name or found name left** in any show.
+
+**Review it:** `~/VaultShots/reports/taper-redaction.html` (rebuild with
+`node tools/taper-redaction/build.mjs`). Every change is shown before and after. Switch any wrong
+one to Keep, add names the rules missed, then press Copy for Claude Code.
+
+### Wiring it in, after your review
+
+1. Your export becomes a reviewed names file beside the rules (kept names, added names, cross-show
+   decisions).
+2. `scripts/site-data.mjs` runs the redaction on Lineage and Notes in all three published files
+   (`shows-lite.json`, `show-notes.json` and the fallback `shows.json`), and stops dropping
+   Lineage and Generation.
+3. `npm run check:perf` gains a guard: the deploy fails if any published file holds an email
+   address, a link, a tracker name or a reviewed name. New records are covered automatically.
+4. The drawer gets its Source block: Source · Generation · Lineage (F1).
+5. CLAUDE.md's rule for Notes becomes "verbatim, minus taper identities, contacts and links,
+   redacted at build".
+
+### The repository: your call
+
+| Option | What it fixes | What it costs |
+|---|---|---|
+| **A. Make the repository private** (recommended) | Raw Lineage and Notes, `PrivateNotes`, `FolderPath` and the whole history stop being public in one step. The site stays public | GitHub Pages from a private repository needs a paid GitHub plan (Pro or higher); one settings change |
+| B. Redact `shows.json` itself | From now on the repository holds only redacted text; the originals stay in the sidecars on the drive | Changes your source of truth; past commits still hold the raw text unless the history is purged again, as on 2026-10-07 |
+| C. Redact at build only | The site is clean | The repository keeps publishing everything, `PrivateNotes` included, so your rule isn't met |
+
+A plus build-time redaction leaves your data untouched and is fully reversible.
+
+---
+
+## Planned: a drive scan for the missing specs
+
+Agreed 2026-10-16, for later: it needs **Live Music** mounted. A read-only pass over every record,
+written to a staging file and reviewed on a page before anything reaches `shows.json`.
+
+| Field | How | Needs the drive |
+|---|---|---|
+| Frame rate and scan (25i, 29.97i, progressive) | ffprobe stream headers; a short interlace sample only where headers are ambiguous (`~/VaultShots/combcheck.py` exists) | Yes |
+| Video and audio bitrate | ffprobe; for DVDs, title-set size ÷ IFO duration | Yes |
+| Disc type (DVD5 / DVD9 / BD), menus, chapters | IFO parsing (`~/VaultShots/dvd_chapters.py` exists) | Yes |
+| Size of the show itself, not the folder | Sum of the record's own files | Yes |
+| Broadcaster | From Lineage, Notes and folder names (WDR, BBC Three, Multishow…), reviewed | **No: can start any time** |
+
+Rough estimate: headers, IFOs and sizes for about 1,200 records over USB in under an hour;
+interlace sampling adds an hour or two if run on everything, so sample only where the headers
+disagree.
+
+---
+
+## Earlier decisions these findings touch
+
+Some recommendations revisit choices you made recently. They were reasonable for a gallery; the
+case for revisiting them is the trader's job.
+
+| Decision | Date | What the findings suggest |
+|---|---|---|
+| Pro-shot, Audience and HD badges dropped from cards | 2026-10-15 | Keep the cards clean, but add one **quiet text line** in the date's style (`2010-06-05 · HD 1080`). No coloured badges (F2). **Agreed 2026-10-16** |
+| Type filter removed; one row of controls | 2026-10-13 | The proposed filters are quality filters, not Live/Documentary; put them behind one "More filters" control (F12). **Agreed 2026-10-16** |
+| A–Z show counts at the faintest level ("Ghost") | 2026-10-13 | Fails contrast; raise to `gray-400`, or lighter on hover (F13) |
+| Width, Height, Lineage, Generation in `DROPPED` | 2026-10-02 | Publish them: about 7 KB gzipped on a 131 KB first load (F1). **Agreed 2026-10-16**, lineage through the taper redaction |
+| Drive, folder and file metadata not shown | — | Still right for paths; but the folder name often carries the source ("WDR", "BBC HD") and could seed a broadcaster field |
+
+---
+
+## Roadmap
+
+**Now: quick wins, each under half a day.** F5 Escape · F9 venue and city · F1 resolution, HD/SD
+and codec labels · F6 auto-initials and an "exact alias beats Did you mean" rule · F8 empty
+state · F13 contrast and sizes · F14 full-size still · F17 formats.
+
+**Next: 1–3 days each.** F3 show links, Back and meta tags · F2 other recordings, compare table,
+card date and spec line (measure with `npm run perf`) · F4 Share button · F1 Source,
+Lineage and Generation · F6 dates, synonyms, quoted and combined prefixes, search tips · F10 list
+view and CSV · F12 More filters.
+
+**Later: data and pipeline.** F7 date precision · F11 `AddedOn`, Recently added, RSS · per-show
+static pages and a sitemap · backfill source and setlists · frame rate, bitrate, menus/chapters
+and broadcaster in the scan · "paste your list" have/want matching.
+
+**Then:** run the sessions in [04-test-plan.md](04-test-plan.md) with real traders and re-rank
+this list.
+
+---
+
+## Your answers (2026-10-16)
+
+1. **Trading is the goal.** Traders arrive from your direct email, so no contact details on the
+   site. Show links and sharing are wanted, and per-show URLs will feed analytics (F3, F4).
+2. **Publish lineage and generation, without taper names, contacts or links.** Done 2026-10-16,
+   **option B**: every change approved as reviewed; names, contacts and links captured first to
+   `private/taper-contacts.md` (git-ignored), then removed from `shows.json`; the data-pipeline scan
+   outputs taken out of git; a health-check guard blocks their return (commits `e2d03953`,
+   `0b538a57`). Lineage and Generation now show in the drawer's Technical panel. The git history
+   still holds the old text; the owner accepted that (2026-10-16), as the three folder names that
+   carry a handle.
+3. **Drive scan for frame rate, bitrate, menus/chapters and broadcaster:** yes, later, with the
+   drive mounted (plan above).
+4. **A quiet spec line on cards and a "More filters" control:** yes to both (F2, F12).
+
+---
+
+## Evidence index
+
+| File | Shows |
+|---|---|
+| [e01](evidence/e01-landing-desktop.jpg) | Landing page, desktop |
+| [e02](evidence/e02-ratm-suggests-rammstein.jpg) | `RATM` → "Did you mean Rammstein" |
+| [e03](evidence/e03-four-identical-rock-am-ring-cards.jpg) | Four identical Rock am Ring 2010 cards |
+| [e04](evidence/e04-hd-copy-labelled-ntsc-no-resolution.jpg) | 1080 copy labelled NTSC, no resolution |
+| [e05](evidence/e05-escape-wipes-search.jpg) | Escape cleared the search; show still open |
+| [e06](evidence/e06-empty-state-ignores-filter.jpg) | Neil Young "not found" while Pinkpop filters |
+| [e07](evidence/e07-phone-drawer-setlist-junk.jpg) | Phone drawer; "Interview (cuts in)" and "Jam" as songs |
+| [e08](evidence/e08-shared-link-lands-on-search.jpg) | A copied link opens the search, not the show |
+| [e09](evidence/e09-placeholder-date-2001-01-01.jpg) | Placeholder date 2001-01-01 |
+| [e10](evidence/e10-ipad-a-z-faint-counts.jpg) | iPad A–Z with near-invisible counts |
+| [e11](evidence/e11-viewer-capped-at-drawer-width.jpg) | Still viewer capped at the drawer's width |
+| [e12](evidence/e12-song-search-creep.jpg) | Song search working well |
+| [e13](evidence/e13-phone-country-filter.jpg) | Country filter on a phone |
