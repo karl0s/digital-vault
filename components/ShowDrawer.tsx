@@ -60,6 +60,20 @@ const LAYOUT_TRANSITION = { duration: 0.38, ease: [0.16, 1, 0.3, 1] as const };
 /** One row of the drawer's Technical column. */
 type TechRow = { label: string; value: string; mono: boolean };
 
+/**
+ * Lineage as chains of steps, for the Technical panel: " | " separates sources
+ * or passes, an arrow ("->", "=>", ">>", ">", "→") the steps of one. A
+ * lineage with no arrows (a sentence, "Pro-shot") is a single step. Tapers'
+ * names never reach it: shows.json carries none (CLAUDE.md, Tapers are never
+ * named).
+ */
+function lineageChains(text?: string): string[][] {
+  if (!text) return [];
+  return text.split(/\s+\|\s+/)
+    .map(segment => segment.split(/\s*(?:-+>+|=+>+|>+|→)\s*/).map(step => step.trim()).filter(Boolean))
+    .filter(chain => chain.length > 0);
+}
+
 export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow, onSettled, notes = '' }: ShowDrawerProps) {
   // False while the drawer animates out, so finishing that animation is not
   // mistaken for having settled in.
@@ -280,6 +294,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
     show.TotalSizeHuman && { label: 'Size',     value: show.TotalSizeHuman,    mono: false },
     show.FileCount   && { label: 'Files',       value: show.FileCount,         mono: false },
   ].filter((row): row is TechRow => Boolean(row));
+  const lineage = lineageChains(show.Lineage);
   const techId = `drawer-tech-${show.ShowID}`;
 
   const artistInitials = show.Artist
@@ -662,7 +677,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
               </div>
 
               {/* Technical */}
-              {techRows.length > 0 && (
+              {(techRows.length > 0 || show.Generation || lineage.length > 0) && (
                 <div className="border-t border-white/6 pt-4 md:rounded-lg md:border md:bg-white/4 md:p-4">
                   <button
                     type="button"
@@ -684,6 +699,39 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                         <span className={`text-gray-200 leading-snug ${mono ? 'font-mono' : ''}`}>{value}</span>
                       </div>
                     ))}
+
+                    {/* Provenance: how this copy came to be, the second thing a
+                        trader compares after the specs. Under a hairline so it
+                        reads as its own group. */}
+                    {(show.Generation || lineage.length > 0) && (
+                      <div className={`space-y-2 ${techRows.length > 0 ? 'border-t border-white/6 pt-3 mt-3' : ''}`}>
+                        {show.Generation && (
+                          <div className="flex items-start gap-3 text-sm">
+                            <span className="text-gray-400 text-xs w-16 shrink-0 pt-px">Generation</span>
+                            <span className="text-gray-200 leading-snug">{show.Generation}</span>
+                          </div>
+                        )}
+                        {lineage.length > 0 && (
+                          <div className="text-sm">
+                            <span className="text-gray-400 text-xs">Lineage</span>
+                            {/* One step per line on a thin rule, top to bottom: the
+                                source first, the file last. */}
+                            {lineage.map((chain, i) => (
+                              <ol key={i} className={`${i > 0 ? 'mt-3' : 'mt-1.5'} ml-[3px] border-l border-white/12 pl-3 space-y-1`}>
+                                {chain.map((step, j) => (
+                                  <li
+                                    key={j}
+                                    className="relative text-gray-200 leading-snug wrap-break-word before:absolute before:-left-[15px] before:top-[0.5em] before:size-[5px] before:rounded-full before:bg-gray-500"
+                                  >
+                                    {step}
+                                  </li>
+                                ))}
+                              </ol>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               )}

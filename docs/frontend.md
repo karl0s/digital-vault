@@ -237,6 +237,12 @@ Drive/folder/file metadata is not shown.
 - Technical: `techRows` of `{ label, value, mono }` — Video, Aspect, Standard, Container, Audio,
   Channels, Sample rate, Size, Files; label `w-16 text-xs text-gray-400`, value `text-gray-200`
   (`font-mono` for codec-like values); only rows with a value, and no panel when there are none.
+- Provenance, under a hairline in the same panel (owner, 2026-10-16): **Generation** as a row, then
+  **Lineage** — `lineageChains` splits the field on ` | ` (separate sources or passes) and on arrows
+  (`>`, `->`, `=>`, `>>`, `→`; the steps of one), and each chain renders as an `<ol>` on a thin rule
+  with a dot per step, source first; a second chain sits `mt-3` below the first. A lineage without
+  arrows is one step. `shows.json` names no taper (CLAUDE.md → *Tapers are never named*), so the
+  drawer shows the field as it is.
 - Notes: from `getNotes` — public sidecar text only; `PrivateNotes` never ships (CLAUDE.md); `whitespace-pre-wrap wrap-break-word font-mono text-xs text-gray-400`
   (`wrap-break-word` stops long unbroken strings overflowing on mobile). Always shown in full
   (owner, 2026-10-12): no clamp, no More / Less.

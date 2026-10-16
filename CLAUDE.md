@@ -37,6 +37,7 @@ data-pipeline/          ← historical drive-scan scripts and CSVs (see Data pip
 docs/
   frontend.md           ← front-end architecture and UI patterns — read before any UI change
   browse-redesign-spec.md ← the Browse design and how the build departs from it
+  ux-research/          ← trader persona, participants, journeys, test plan, findings report (2026-10-16)
 tools/
   add-temp-images.py    ← temp-images → slots + manifest, verified (see Temp images workflow)
   show-editor/          ← Karl's metadata editor; build.py renders index.html (gitignored)
@@ -106,7 +107,7 @@ dev`) derives three files from it (`scripts/site-data.mjs`, wired in by
 `scripts/vite-plugin-site-data.mjs`):
 
 - `shows-lite.json` — every record minus `Notes` and the pipeline-only fields in `DROPPED`
-  (`Lineage`, `LastScannedAt`, `Width`, …). Loaded first, about a quarter of
+  (`LastScannedAt`, `SourceEquipment`, `Width`, …). Loaded first, about a quarter of
   the full file.
 - `show-notes.json` — `{ ShowID: Notes }`, loaded straight after.
 - `shows.json` — the full records minus the `PRIVATE` fields (`PrivateNotes`, and the drive's

@@ -34,7 +34,7 @@ import { join } from 'node:path';
 
 export const DROPPED = [
   'DuplicateKey', 'DuplicateOf', 'MasterDriveID', 'SourceCatalog', 'PrimaryCatalog', 'IsPrimary',
-  'LastScannedAt', 'Lineage', 'SourceEquipment', 'Generation',
+  'LastScannedAt', 'SourceEquipment',
   'TotalSizeBytes', 'Width', 'Height',
 ];
 
