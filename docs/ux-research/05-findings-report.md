@@ -13,6 +13,51 @@
 
 ---
 
+## Progress tracker
+
+*Updated with every change that touches a finding. Last update: 2026-10-16.*
+
+✅ done · 🟡 partly done · ⬜ to do · 📅 planned (needs the drive mounted)
+
+| # | Finding | Status | Done so far | Still to do |
+|---|---|---|---|---|
+| [F1](#f1--which-copy-is-better-cant-be-answered) | Which copy is better | 🟡 | Generation and Lineage in the drawer's Technical panel (`1cffc551`), cleaned of tapers first (`0b538a57`) | Resolution and an HD / SD / low-res label; trader names for codecs; an honest size label; Source on the 329 blank records; frame rate, bitrate, chapters (drive scan) |
+| [F2](#f2--recordings-of-the-same-show-arent-grouped-and-their-cards-are-identical) | Copies of one show not grouped | ⬜ | Quiet spec line on cards agreed (2026-10-16) | "Other recordings of this show" table in the drawer; full date and spec line on cards; "3 recordings" marker |
+| [F3](#f3--nothing-can-be-linked-and-back-leaves-the-site) | No show links; Back leaves the site | ⬜ | Wanted for sharing and analytics (2026-10-16) | `?show=` links; Back closes the show; page description and preview image; later, a page per show |
+| [F4](#f4--pointing-at-one-exact-recording-is-hard) | Pointing at one exact recording | ⬜ | No contact details on the site (your answer) | Share / Copy link button with a one-line reference (after F3) |
+| [F5](#f5--escape-erases-the-search-behind-an-open-show) | Escape erases the search | ⬜ | | One-line fix in `App.tsx` |
+| [F6](#f6--search-doesnt-match-how-traders-type) | Search misses how traders type | ⬜ | | Dates, abbreviations, country and city names, tech terms, combined field syntax, search tips |
+| [F7](#f7--placeholder-dates-look-like-real-dates) | Placeholder dates look real | ⬜ | | `DatePrecision` field and display; backfill |
+| [F8](#f8--empty-results-blame-spelling-when-a-filter-is-the-cause) | Empty results blame spelling | ⬜ | | Name the active filters; offer to drop them |
+| [F9](#f9--the-drawer-hides-venue-and-city-for-festival-and-tv-shows) | Venue and city hidden | ⬜ | | Always show the place in the drawer |
+| [F10](#f10--no-dense-list-export-or-useful-sort-for-reconciling-a-trading-list) | No list view or export | ⬜ | | Grid / List toggle, CSV download, more sorts, print |
+| [F11](#f11--returning-traders-cant-see-whats-new) | No "what's new" | ⬜ | | `AddedOn` field, "Recently added" row, sort, RSS |
+| [F12](#f12--filters-dont-cover-what-traders-decide-by) | Filters miss trader dimensions | ⬜ | "More filters" control agreed (2026-10-16) | Source, quality, standard, length, has setlist |
+| [F13](#f13--too-faint-and-too-small-for-eyes-aged-4060) | Too faint, too small | ⬜ | | Contrast and sizes |
+| [F14](#f14--stills-cant-be-inspected-closely) | Stills can't be inspected | ⬜ | | "View full size" in the viewer |
+| [F15](#f15--setlists-non-songs-counted-as-songs-the-searched-song-isnt-highlighted) | Setlist quality | 🟡 | One credit line removed from a Setlist (`0b538a57`) | 32 non-song entries; encore as a divider; highlight the searched song |
+| [F16](#f16--a-first-visit-doesnt-say-what-this-is) | First visit doesn't say what this is | ⬜ | Lower priority: your email introduces the site | One plain line under the tagline |
+| [F17](#low) | Truncation and formats | ⬜ | | Tooltips; one duration and label format |
+| [F18](#low) | Phone header height | ⬜ | | Hide the count/sort row while scrolling down |
+| — | [Taper redaction](#publishing-lineage-and-generation-without-exposing-tapers) | ✅ | Names, contacts and links captured to `private/`, then removed from `shows.json`; pipeline archives out of git; the site stops publishing folder names; health-check guard (`e2d03953`, `0b538a57`) | Old text stays in git history (accepted) |
+| — | [Drive scan](#planned-a-drive-scan-for-the-missing-specs) | 📅 | Plan agreed (2026-10-16) | Frame rate, bitrate, menus and chapters, show size: with Live Music mounted. Broadcaster can start now |
+| — | [Data quality](#data-quality--the-metadata-is-the-product) | ⬜ | | Source on 329 records, 432 setlists, venue and city, date precision |
+
+### The traders' jobs, then and now
+
+| Journey | At the review | Now |
+|---|---|---|
+| J1 Do you have it? | 🟡 Partial | 🟡 unchanged |
+| J2 Is yours better? | 🔴 Fail | 🔴 Generation and lineage now readable; resolution still missing and copies still ungrouped |
+| J3 Artist audit | 🟡 Partial | 🟡 unchanged |
+| J4 Song hunt | 🟢 Pass | 🟢 unchanged |
+| J5 Event dig | 🟡 Partial | 🟡 unchanged |
+| J6 Share and request | 🔴 Fail | 🔴 unchanged (contact is by your email; links still missing) |
+| J7 What's new | 🔴 Fail | 🔴 unchanged |
+| J8 Evidence check | 🟡 Partial | 🟡 Lineage now beside the stills; no full-size view yet |
+
+---
+
 ## Bottom line
 
 The Vault is **fast, handsome and better at song search than most trading lists**. The stills are
@@ -45,18 +90,18 @@ copies of one show is the HD one) couldn't be made from anything on screen.
 Ranked by impact on the traders' core jobs, then by effort (S = under half a day, M = 1–3 days,
 L = a week or more, or data work).
 
-| # | Fix | Finding | Effort |
-|---|---|---|---|
-| 1 | Stop Escape erasing the search while a show is open | [F5](#f5--escape-erases-the-search-behind-an-open-show) | S |
-| 2 | Show resolution and an HD / SD / low-res label; trader names for codecs | [F1](#f1--which-copy-is-better-cant-be-answered) | S |
-| 3 | Give every show a link (`?show=<ShowID>`); Back closes the show | [F3](#f3--nothing-can-be-linked-and-back-leaves-the-site) | M |
-| 4 | Group recordings of the same show; full date on cards; compare | [F2](#f2--recordings-of-the-same-show-arent-grouped-and-their-cards-are-identical) | M |
-| 5 | A Share button on each show: copies its link and a one-line reference (after #3) | [F4](#f4--pointing-at-one-exact-recording-is-hard) | S |
-| 6 | Search: dates, abbreviations (auto-initials), country and city synonyms, tech terms | [F6](#f6--search-doesnt-match-how-traders-type) | M |
-| 7 | Show venue and city in the drawer for festival and TV shows | [F9](#f9--the-drawer-hides-venue-and-city-for-festival-and-tv-shows) | S |
-| 8 | Empty results name the active filters and offer to drop them | [F8](#f8--empty-results-blame-spelling-when-a-filter-is-the-cause) | S |
-| 9 | Publish source, lineage and generation through the taper redaction (also cleans Notes, which leak today) | [Redaction](#publishing-lineage-and-generation-without-exposing-tapers) | M |
-| 10 | Stop placeholder dates posing as real dates | [F7](#f7--placeholder-dates-look-like-real-dates) | M (data) |
+| # | Fix | Finding | Effort | Status |
+|---|---|---|---|---|
+| 1 | Stop Escape erasing the search while a show is open | [F5](#f5--escape-erases-the-search-behind-an-open-show) | S | ⬜ |
+| 2 | Show resolution and an HD / SD / low-res label; trader names for codecs | [F1](#f1--which-copy-is-better-cant-be-answered) | S | ⬜ |
+| 3 | Give every show a link (`?show=<ShowID>`); Back closes the show | [F3](#f3--nothing-can-be-linked-and-back-leaves-the-site) | M | ⬜ |
+| 4 | Group recordings of the same show; full date on cards; compare | [F2](#f2--recordings-of-the-same-show-arent-grouped-and-their-cards-are-identical) | M | ⬜ |
+| 5 | A Share button on each show: copies its link and a one-line reference (after #3) | [F4](#f4--pointing-at-one-exact-recording-is-hard) | S | ⬜ |
+| 6 | Search: dates, abbreviations (auto-initials), country and city synonyms, tech terms | [F6](#f6--search-doesnt-match-how-traders-type) | M | ⬜ |
+| 7 | Show venue and city in the drawer for festival and TV shows | [F9](#f9--the-drawer-hides-venue-and-city-for-festival-and-tv-shows) | S | ⬜ |
+| 8 | Empty results name the active filters and offer to drop them | [F8](#f8--empty-results-blame-spelling-when-a-filter-is-the-cause) | S | ⬜ |
+| 9 | Publish source, lineage and generation through the taper redaction (Notes cleaned too) | [Redaction](#publishing-lineage-and-generation-without-exposing-tapers) | M | ✅ (`0b538a57`, `1cffc551`) |
+| 10 | Stop placeholder dates posing as real dates | [F7](#f7--placeholder-dates-look-like-real-dates) | M (data) | ⬜ |
 
 ---
 
@@ -555,6 +600,9 @@ one to Keep, add names the rules missed, then press Copy for Claude Code.
 
 ### Wiring it in, after your review
 
+*Done 2026-10-16 with option B: the redaction runs on `shows.json` itself
+(`tools/taper-redaction/apply.mjs`), not at build; steps 3–5 below are in place.*
+
 1. Your export becomes a reviewed names file beside the rules (kept names, added names, cross-show
    decisions).
 2. `scripts/site-data.mjs` runs the redaction on Lineage and Notes in all three published files
@@ -567,6 +615,8 @@ one to Keep, add names the rules missed, then press Copy for Claude Code.
    redacted at build".
 
 ### The repository: your call
+
+*Chosen 2026-10-16: **B**. The old text stays in git history, by your decision.*
 
 | Option | What it fixes | What it costs |
 |---|---|---|
