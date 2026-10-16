@@ -96,6 +96,7 @@ const cases: FilterState[] = [
   f({ from: 1996, to: 1996, undated: true }),
   f({ q: 'jane’s addiction', sort: 'year-asc' }),
   f({ quality: ['sd', 'hd-1080'], standard: ['pal'], length: ['60-90', 'over-90'], setlist: ['yes'] }),
+  f({ source: ['audience'], quality: ['sd'] }),
   f({ q: 'pearl jam', country: ['germany'], setlist: ['no'] }),
 ];
 for (const state of cases) {
@@ -136,6 +137,8 @@ eq('keys in order, values sorted',
 eq('values a filter does not have are dropped', parseFilters('?quality=4k,hd-1080&setlist=maybe&length=forever'),
   f({ quality: ['hd-1080'] }));
 eq('a More filter counts as filtering', isFiltered(f({ setlist: ['yes'] })), true);
+eq('source sits after festival', serializeFilters(f({ quality: ['sd'], source: ['proshot'], festival: ['pinkpop'] })), '?festival=pinkpop&source=proshot&quality=sd');
+eq('a source a link cannot have is dropped', parseFilters('?source=soundboard,audience').source, ['audience']);
 eq('each value counts once', activeFilterCount(f({ quality: ['sd', 'low-res'], setlist: ['no'] })), 3);
 
 console.log('\nList layout and the length sort (F10)');

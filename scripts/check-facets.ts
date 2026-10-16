@@ -206,6 +206,8 @@ console.log('\nMore filters match the data (F12), counted independently');
   const minutes = (s: Show) => Math.round((parseInt(s.DurationSec, 10) || 0) / 60);
   const isHd = (s: Show) => height(s) >= 700;
   const expect: [string, Partial<FilterState>, number][] = [
+    ['Pro-shot', { source: ['proshot'] }, shows.filter(s => s.RecordingType === 'Proshot').length],
+    ['Audience', { source: ['audience'] }, shows.filter(s => s.RecordingType === 'Audience').length],
     ['HD 1080', { quality: ['hd-1080'] }, shows.filter(s => height(s) >= 1000).length],
     ['HD 720', { quality: ['hd-720'] }, shows.filter(s => height(s) >= 700 && height(s) < 1000).length],
     ['Low-res', { quality: ['low-res'] }, shows.filter(s => height(s) && !isHd(s) && (width(s) <= 360 || height(s) <= 300)).length],

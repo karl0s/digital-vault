@@ -24,6 +24,7 @@ export interface DerivedShow {
   country: string;    // slug | NONE
   festival: string;   // slug | NONE
   /** "More filters": a value from src/lib/specFilters.ts, or NONE. */
+  source: string;
   quality: string;
   standard: string;
   length: string;

@@ -22,12 +22,12 @@
 | | Done | Partly | To do | |
 |---|---|---|---|---|
 | **The 8 trader jobs** (scripted run) | **8 pass** | — | — | At the review: 1 pass, 4 partial, 3 fail |
-| **The 18 findings** (F1–F18) | **15** ✅ | **3** 🟡 | **0** ⬜ | F1, F7, F12 partly: all three wait on data (Source, date precision, the drive scan) |
+| **The 18 findings** (F1–F18) | **16** ✅ | **2** 🟡 | **0** ⬜ | F1 and F7 partly: they wait on the drive scan and date precision |
 | **The 24 scored fixes** | **22** ✅ | — | **2** ⬜ | Left: date precision, the drive scan |
 | **Source on blank records** | **329** | — | **0** | All done (2026-10-17): every show says Pro-shot (1,162) or Audience (51) |
 
 **Live on the site:** everything above, up to the page per show (pushed 2026-10-17).
-**Waiting:** your Source review (275 records), then the Source filter.
+**Committed, not yet live:** every show's source (2026-10-17) and the Source filter.
 
 ### Done
 
@@ -52,6 +52,7 @@
   *(F11)*
 - [x] **Source on all 329 blank records** — 54 from another copy of the same show, 275 on your
   review page (2026-10-17): every show now says Pro-shot or Audience *(data)*
+- [x] **Source filter** — Pro-shot / Audience, first in More filters *(F12)*
 - [x] **A page per show** — a link pasted into WhatsApp, iMessage or a forum previews that show's
   still, name, date and quality; Copy link hands it out *(F3)*
 - [x] **H. Polish** — the searched song lit in the setlist, the encore a divider; the phone's
@@ -66,13 +67,9 @@
 - [ ] **Alongside the rest: real traders.** Everything left is predicted, not seen. Send the link
   with three tasks from [04-test-plan.md](04-test-plan.md) to two or three traders you already
   email; their answers re-score the list
-- [ ] **1. Source on the 275 blank records** — your review page, two stills per record
-  (`~/VaultShots/reports/source-review.html`; `python3 tools/source-review/build.py` rebuilds it,
-  `apply.py` writes the picks you paste). Then a **Source filter** joins More filters *(data,
-  then F12)*
-- [ ] **2. Data reviews** — date precision ("2001, exact date unknown") *(F7)*; the 432 missing
+- [ ] **1. Data reviews** — date precision ("2001, exact date unknown") *(F7)*; the 432 missing
   setlists, in their own review
-- [ ] **3. Drive scan** — frame rate, bitrate, chapters, the show's own size, broadcaster *(needs
+- [ ] **2. Drive scan** — frame rate, bitrate, chapters, the show's own size, broadcaster *(needs
   Live Music mounted)*
 
 **Small leftovers from finished items** (not scheduled; say if one matters):
@@ -97,7 +94,7 @@ be contrast-checked automatically (F13).
 | [F9](#f9--the-drawer-hides-venue-and-city-for-festival-and-tv-shows) | Venue and city hidden | ✅ | Batch A: `Date · Event · Venue · City, Country` under the name for every show | — |
 | [F10](#f10--no-dense-list-export-or-useful-sort-for-reconciling-a-trading-list) | No list view or export | ✅ | Batch F (2026-10-16): a Grid / List toggle kept in the link; the list a dense table (date, artist, event, venue, place, source, quality, PAL/NTSC, length, size, songs); **CSV** of the results on screen and **Download the full list** (21 columns, opens in Excel with accents intact, a link per show); sort by length; prints black on white | — |
 | [F11](#f11--returning-traders-cant-see-whats-new) | No "what's new" | ✅ | Batch G (2026-10-16), from today by your choice: `AddedOn` on every new record, enforced by the health check (`scripts/collection-at-launch.json` lists the 1,214 before); a "Recently added" row above Featured (last 60 days); New / Better copy / New copy badges for 30 days; the date in the drawer; a "Recently added" sort; an Added column in the CSV | RSS (optional). Shows only once records are added |
-| [F12](#f12--filters-dont-cover-what-traders-decide-by) | Filters miss trader dimensions | 🟡 | "More filters" beside Event (2026-10-16): Quality (HD 1080, HD 720, SD, Low-res), Standard (PAL, NTSC), Length (five bands), Setlist (has one, none yet), with live counts, chips and links | Source, once the blank records are filled in (step 2) |
+| [F12](#f12--filters-dont-cover-what-traders-decide-by) | Filters miss trader dimensions | ✅ | "More filters" beside Event (2026-10-16): Quality (HD 1080, HD 720, SD, Low-res), Standard (PAL, NTSC), Length (five bands), Setlist (has one, none yet), with live counts, chips and links; **Source** (Pro-shot, Audience) added 2026-10-17 once every record had one | — |
 | [F13](#f13--too-faint-and-too-small-for-eyes-aged-4060) | Too faint, too small | ✅ | Batch E: every text passes 4.5:1, measured on the rendered page in 12 views (A–Z counts 1.7 → 5.3:1, heading counts 2.3/3.8 → 5.3:1, "No setlist yet" 3.8 → 6.8:1); nothing under 12px but the cards' badges (9.5 → 11px); the drawer's section labels 10 → 12px; Notes 12 → 13px; tab bar and year axis 10 → 12px; layout holds at 150% and 200% zoom | Text over the stills (cards, drawer header) is protected by the gradients but can't be measured automatically |
 | [F14](#f14--stills-cant-be-inspected-closely) | Stills can't be inspected | ✅ | Batch A: "Open full size" in the screenshot viewer (the original, at 100%, in a new tab) | — |
 | [F15](#f15--setlists-non-songs-counted-as-songs-the-searched-song-isnt-highlighted) | Setlist quality | ✅ | One credit line removed from a Setlist (`0b538a57`). Batch H (2026-10-17): the searched song lit in the setlist; the encore a divider, not a numbered song ("Encore 2" when there are more) | — (the interviews, intros, jams and interludes stay in their setlists for now: your call, 2026-10-17) |
@@ -119,7 +116,7 @@ The review's walkthrough tasks, run again on the live site after batches A–E w
 | J2 Is yours better? | 🔴 Fail | 🟢 **Pass** | No broadcaster; frame rate and bitrate (drive scan) |
 | J3 Artist audit | 🟡 Partial | 🟢 **Pass** | — |
 | J4 Song hunt | 🟢 Pass | 🟢 Pass | — (the song is lit in the setlist; `songs:` works) |
-| J5 Event dig | 🟡 Partial | 🟢 **Pass** | A source filter (after the Source review); small events (Fuji Rock) only by search |
+| J5 Event dig | 🟡 Partial | 🟢 **Pass** | Small events (Fuji Rock) only by search |
 | J6 Share and request | 🔴 Fail | 🟢 **Pass** | — (a pasted link previews the show itself) |
 | J7 What's new | 🔴 Fail | 🟢 **Pass** (from 2026-10-16) | Fills as you add shows; nothing before that day is marked |
 | J8 Evidence check | 🟡 Partial | 🟢 **Pass** | Frame rate and bitrate (drive scan) |
@@ -170,7 +167,7 @@ come for, J1 and J2, now pass.
 - [x] An empty result names the filter to blame and offers "Show 1 without the filter"
 - [x] Year range, decades, oldest-first sort (already worked)
 - [x] Filters for quality, PAL / NTSC, length, has setlist ("More filters")
-- [ ] A source filter (waits for the Source review)
+- [x] A source filter: Pro-shot or Audience (2026-10-17)
 - [ ] Small events (Fuji Rock, Hurricane) in the Event filter
 
 **J6 — Can I get it?**
@@ -262,7 +259,7 @@ use. The highest score goes first. Where two items touch the same code they are 
 | 14 | Country, city and event synonyms; tech terms; search tips | [F6](#f6--search-doesnt-match-how-traders-type) | 2 | 2 | 1.0 | 2 | **2.0** | Fewer misses, more work than dates | ✅ batch B |
 | 15 | List view and CSV download | [F10](#f10--no-dense-list-export-or-useful-sort-for-reconciling-a-trading-list) | 2 | 2 | 0.8 | 2 | **1.6** | Predicted from how traders keep lists; not yet seen | ✅ batch F |
 | 16 | "Recently added" | [F11](#f11--returning-traders-cant-see-whats-new) | 2 | 2 | 0.8 | 2 | **1.6** | Returning visitors; predicted. Your call: start from today (git history can't tell new from re-filed) | ✅ batch G |
-| 17 | "More filters" (agreed) | [F12](#f12--filters-dont-cover-what-traders-decide-by) | 2 | 2 | 0.8 | 2 | **1.6** | Predicted; search covers part of it today. A source filter waits for #20: with 27% blank it would hide shows | ✅ (source to come) |
+| 17 | "More filters" (agreed) | [F12](#f12--filters-dont-cover-what-traders-decide-by) | 2 | 2 | 0.8 | 2 | **1.6** | Predicted; search covers part of it today. A source filter waited for #20: with 27% blank it would have hidden shows | ✅ batch F, source 2026-10-17 |
 | 18 | Drive scan: frame rate, bitrate, chapters, show size | [Plan](#planned-a-drive-scan-for-the-missing-specs) | 2 | 3 | 1.0 | 4 | **1.5** | Needs Live Music mounted | 📅 |
 | 19 | Date precision ("2001, exact date unknown") | [F7](#f7--placeholder-dates-look-like-real-dates) | 2 | 2 | 1.0 | 4 | **1.0** | 257 records; mostly data work | ⬜ |
 | 20 | Fill in Source on 329 records | [Data](#data-quality--the-metadata-is-the-product) | 2 | 2 | 1.0 | 2 | **2.0** | Re-scored 2026-10-16: 126 of the 329 have a clue in their own notes or event, so a review page settles them quickly (Effort 4 → 2); the other ~200 need their stills looked at | ✅ all 329 (2026-10-17) |

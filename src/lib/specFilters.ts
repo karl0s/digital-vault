@@ -1,12 +1,14 @@
 /**
  * "More filters" (docs/ux-research F12, agreed 2026-10-16): the specs traders
- * decide by — quality, PAL or NTSC, length, and whether a setlist is known.
+ * decide by — how it was filmed, quality, PAL or NTSC, length, and whether a
+ * setlist is known.
  *
  * Closed lists, unlike Country and Event, so each option is defined here once:
  * its URL value, its label, and which shows have it. url.ts reads the values
  * (a link can only select these), facets.ts the matching and the labels, and
- * the popover the order. Source (Pro-shot, Audience) joins once the 329 blank
- * records are filled in: with 27% blank it would hide shows.
+ * the popover the order. Source came last (2026-10-17), once the owner's
+ * review had filled in the 329 records that didn't say: blank, it would have
+ * hidden 27% of shows.
  */
 
 import type { Show } from '../../App';
@@ -25,6 +27,14 @@ export interface SpecFacet {
 }
 
 export const SPEC_FACETS = {
+  // How it was filmed: the first thing a trader ranks a copy by.
+  source: {
+    label: 'Source',
+    options: [
+      { value: 'proshot', label: 'Pro-shot' },
+      { value: 'audience', label: 'Audience' },
+    ],
+  },
   quality: {
     label: 'Quality',
     options: [
@@ -68,6 +78,10 @@ export const SPEC_FACET_KEYS = Object.keys(SPEC_FACETS) as SpecFacetKey[];
 /** A show's value for one of these filters; '' when it has none (no size, no length, HD for Standard). */
 export function specValue(show: Show, facet: SpecFacetKey): string {
   switch (facet) {
+    case 'source': {
+      const type = show.RecordingType?.trim().toLowerCase();
+      return type === 'proshot' || type === 'audience' ? type : '';
+    }
     case 'quality': {
       const q = quality(show);
       if (!q) return '';

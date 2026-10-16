@@ -66,6 +66,7 @@ export interface FilterState {
   country: string[];
   festival: string[];
   /** "More filters" (src/lib/specFilters.ts): closed lists of values. */
+  source: string[];
   quality: string[];
   standard: string[];
   length: string[];
@@ -81,6 +82,7 @@ export const EMPTY_FILTERS: FilterState = {
   undated: false,
   country: [],
   festival: [],
+  source: [],
   quality: [],
   standard: [],
   length: [],
@@ -94,12 +96,12 @@ export const EMPTY_FILTERS: FilterState = {
  * it is a range with its own controls, not a list of checkboxes. Country and
  * Event list the collection's own values; the rest are "More filters".
  */
-export const FACET_KEYS = ['country', 'festival', 'quality', 'standard', 'length', 'setlist'] as const;
+export const FACET_KEYS = ['country', 'festival', 'source', 'quality', 'standard', 'length', 'setlist'] as const;
 export type FacetKey = (typeof FACET_KEYS)[number];
 
 /** Rule 1. Emission order is fixed here and nowhere else. */
 const PARAM_ORDER = [
-  'q', 'from', 'to', 'undated', 'country', 'festival', 'quality', 'standard', 'length', 'setlist', 'sort', 'layout',
+  'q', 'from', 'to', 'undated', 'country', 'festival', 'source', 'quality', 'standard', 'length', 'setlist', 'sort', 'layout',
 ] as const;
 
 /** Rejects nonsense years from a hand-edited URL without pinning the data span. */
@@ -262,6 +264,7 @@ export function parseFilters(search: string): FilterState {
     undated: params.get('undated') === '1',
     country: readList(params, 'country'),
     festival: uniqueSorted(readList(params, 'festival').map(v => GROUPED_FESTIVAL_SLUGS[v] ?? v)),
+    source: readSpec(params, 'source'),
     quality: readSpec(params, 'quality'),
     standard: readSpec(params, 'standard'),
     length: readSpec(params, 'length'),

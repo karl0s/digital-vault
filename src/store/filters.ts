@@ -171,7 +171,7 @@ export function selectFilterState(s: FilterState): FilterState {
   return {
     q: s.q, from: s.from, to: s.to, undated: s.undated,
     country: s.country, festival: s.festival,
-    quality: s.quality, standard: s.standard, length: s.length, setlist: s.setlist,
+    source: s.source, quality: s.quality, standard: s.standard, length: s.length, setlist: s.setlist,
     sort: s.sort, layout: s.layout,
   };
 }
