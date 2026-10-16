@@ -521,7 +521,9 @@ top (band, venue, date, city) and trailer notes at the bottom (running time, lin
 "thanx to") — check the **first and last three entries** of any long setlist. A disc-numbered
 segment (`Interview (cuts in)`, `jam`) belongs in `PrivateNotes` rather than being deleted silently, and
 real songs collide with junk patterns (*Taper Jean Girl*, *Running on Faith*, *Pumping On Your
-Stereo*).
+Stereo*). **On hold (owner, 2026-10-17):** interview, intro, jam and interlude entries stay in the
+setlist for now — don't move them, or propose it, unasked. The site shows `Encore break` as a
+divider, not a song.
 
 ---
 
