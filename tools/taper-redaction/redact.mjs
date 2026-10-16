@@ -24,7 +24,7 @@ const TLD = 'com|net|org|info|biz|uk|de|nl|fr|it|es|be|ch|at|dk|se|fi|pl|ru|jp|a
 // that merely contains one ("dvdf.info.txt", "SomeTracker.org.txt").
 const DOMAIN = new RegExp(`\\b(?:[a-z0-9][a-z0-9-]*\\.)+(?:${TLD})\\b(?![.\\w-])(?:/[^\\s<>"'()[\\]]*)?`, 'gi');
 // Trackers and trading sites named without a domain.
-const SITES = /\b(?:dime\s?a\s?dozen|dimeadozen|dime|the\s?traders'?\s?den|thetradersden|traders'?\s?den|ttd|mindwarppavilion|btarg|(?:db\.)?etree|zombtorrents|zomb|shnflac|lossless\s?legs|bootlegzone|tapecity|netphoria|chilecomparte|cross\s?town\s?torrents|hunger\s?city|demonoid|zombtracker|the-zomb|alt\.binaries(?:\.[\w-]+)*)\b(?:-\w+)?/gi;
+const SITES = /\b(?:dime\s?a\s?dozen|dimeadozen|dime|the\s?traders'?\s?den|thetradersden|traders'?\s?den|ttd|mind[\s-]?warp[\s-]?pa+v+i+l+i*on|btarg|(?:db\.)?etree|zombtorrents|zomb|shnflac|lossless\s?legs|bootlegzone|tapecity|netphoria|chilecomparte|cross\s?town\s?torrents|hunger\s?city|demonoid|zombtracker|the-zomb|alt\.binaries(?:\.[\w-]+)*)\b(?:-\w+)?/gi;
 const HANDLE = /(?<![\w.@])@[a-z0-9_][\w.]{2,}/g;
 // "someone(at)gmail(dot)com"
 const OBFUSCATED = /\b[\w.+-]+\s*[([{]?\s*at\s*[)\]}]?\s*[\w-]+\s*[([{]?\s*dot\s*[)\]}]?\s*(?:com|net|org|de|nl|fr|it|co\.uk|uk)\b/i;

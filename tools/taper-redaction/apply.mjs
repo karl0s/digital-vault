@@ -162,7 +162,9 @@ for (const { show, fieldChanges } of results) {
   for (const c of fieldChanges.Setlist) e.entries.push(`sha1:${sha1(normSong(c.before))}`);
   e.why = [e.why, 'A credit line imported into Setlist as if it were a song; taper names are not published (owner, 2026-10-16). The text is in the owner\'s private record.'].filter(Boolean).join(' ');
 }
-approvals._README = approvals._README.replace(/ Anything removed WITHOUT/, ' An entry may be "sha1:<hash>" of the normalised string where the string itself must not be published (a taper\'s name). Anything removed WITHOUT');
+// Said once: an earlier version added this sentence again on every run.
+const SHA1_NOTE = ' An entry may be "sha1:<hash>" of the normalised string where the string itself must not be published (a taper\'s name).';
+approvals._README = approvals._README.split(SHA1_NOTE).join('').replace(/ Anything removed WITHOUT/, `${SHA1_NOTE} Anything removed WITHOUT`);
 
 // ── Report ──────────────────────────────────────────────────────────────────
 const count = f => results.filter(r => r.fieldChanges[f]).length;

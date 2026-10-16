@@ -1,5 +1,5 @@
 {
-  "_README": "Deliberate Setlist removals, acknowledged so the health-check guard passes. One entry per ShowID. 'entries' are the exact strings removed; 'why' must say why they were not songs. An entry may be \"sha1:<hash>\" of the normalised string where the string itself must not be published (a taper's name). An entry may be \"sha1:<hash>\" of the normalised string where the string itself must not be published (a taper's name). An entry may be \"sha1:<hash>\" of the normalised string where the string itself must not be published (a taper's name). Anything removed WITHOUT an entry here blocks the push.",
+  "_README": "Deliberate Setlist removals, acknowledged so the health-check guard passes. One entry per ShowID. 'entries' are the exact strings removed; 'why' must say why they were not songs. An entry may be \"sha1:<hash>\" of the normalised string where the string itself must not be published (a taper's name). Anything removed WITHOUT an entry here blocks the push.",
   "38936833f4cd": {
     "artist": "Chris Cornell",
     "show": "Argentina 12-08-2007",
