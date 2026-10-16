@@ -81,9 +81,21 @@ arrived in a link, removes the param. A link opens its show once the data loads;
 no show is dropped. App's popstate listener follows the URL both ways (Forward reopens), and
 `initFilterUrlSync` skips a popstate that leaves the filters unchanged, so closing a show does not
 recompute the results in its first frame. The tab title names the open show. `handleShowClick` is
-the analytics seam for recordings, as `commitFilterState` is for filters. Link previews come from
-the page description and Open Graph tags in `index.html` — one card for the site, since crawlers
-don't run the app.
+the analytics seam for recordings, as `commitFilterState` is for filters. The site's own link
+previews come from the page description and Open Graph tags in `index.html`.
+
+**A page per show** (F3, 2026-10-17; `scripts/show-pages.ts`, `vite-plugin-show-pages.ts`):
+`show/<ShowID>/` for every visible record, built with the site, so a link pasted into WhatsApp,
+iMessage, Discord or a forum previews that show — crawlers don't run the app, so the tags must be
+in the HTML. Each page has the show's title (`Artist · date · event`, the tab title's words),
+a description (place, then quality, length, source, as `specs.ts` words them), its slot-1 JPEG
+with its size as `og:image` (median 49 KB, under WhatsApp's limit; WebP thumbnails don't preview
+everywhere), `noindex`, and a script that `location.replace`s to `../../?show=<ShowID>`, so a
+person lands on the show and Back skips the page. **Copy link / Share and the CSV hand out this
+URL** (`showLink`); the site's own URL bar keeps `?show=`. `npm run dev` serves the pages too.
+The build also writes `404.html`: an old `show/<ShowID>/` link (a record since re-keyed, merged
+or hidden) opens in the site, which drops an unknown ID; any other missing path goes home.
+`npm run check:pages` builds every page from the data and checks it.
 
 **Pipeline** (`src/hooks/useBrowseResults.ts`): text query → MiniSearch id set → facets → sort,
 all synchronous `useMemo`s.
@@ -132,10 +144,12 @@ location" / "No event"). Undated records sort last both ways and are excluded fr
 unless `undated=1`.
 
 **Controls** (`components/filters/`). `FilterBar` (`sticky top-0`, `data-filter-bar`): the search
-field (a pill like the controls beside it; `text-base` below md), then Years, Country and Event —
+field (a pill like the controls beside it; `text-base` below md), then Years, Country, Event and
+More filters —
 one row from lg, the search on its own
 line below it, the controls scrolling sideways on a phone. Then removable chips and Clear all while
-anything is set, and — only while filtering — the result count and sort; the count's `aria-live`
+anything is set, and — only while filtering — the results row: the count, Grid / List, CSV and
+the sort (below); the count's `aria-live`
 region is always mounted (visually hidden), since one inside a `display:none` row is silent.
 **On a phone the results row folds while scrolling down** (F18, 2026-10-17): a passive scroll
 listener in `FilterBar` sets `data-folded` on the bar once it is stuck and the page moves down,
@@ -325,8 +339,9 @@ quality label (`quality()` in `src/lib/specs.ts`: HD 1080, HD 720, SD 576, SD 48
 resolution as its `title`), and `TVStandard` for SD and low-res copies only — on HD records the
 field is unreliable — each only when set. Last, a **Share** pill (an action, so rounded-full and
 lighter than the badges; F4): the share sheet on touch devices with `navigator.share` (titled with
-a one-line reference — `Artist · date · event · quality · length` — and `showLink()`, the show
-alone with no search or filters), otherwise "Copy link". That puts the link alone on the clipboard
+a one-line reference — `Artist · date · event · quality · length` — and `showLink()`: the show's
+own page, `show/<ShowID>/`, with no search or filters, which previews that show when pasted — see
+*A page per show*), otherwise "Copy link". That puts the link alone on the clipboard
 as plain text, so it pastes into an address bar or chat as a working link, and as rich text the
 reference linked to the show, so it pastes into an email by name; then it reads "Copied" for two
 seconds. Never the two joined as plain text: pasted into an address bar that was not a URL. Its click

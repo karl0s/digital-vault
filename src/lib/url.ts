@@ -13,8 +13,9 @@
  *   4. values slugified, so casing and spacing can't fork a URL
  *
  * Query params on the root path, not path segments: GitHub Pages has no SPA
- * fallback and this repo has no 404.html, so /browse/1990s would 404 before any
- * JS runs. See docs/browse-redesign-spec.md.
+ * fallback, so /browse/1990s would 404 before any JS runs. (The build's
+ * 404.html only forwards old show links, scripts/show-pages.ts; the site's
+ * state stays in the query.) See docs/browse-redesign-spec.md.
  */
 
 import { SPEC_FACETS, SPEC_FACET_KEYS } from './specFilters';
@@ -175,9 +176,15 @@ export function withShowParam(query: string, showId: string | null): string {
   return params.length ? `?${params.join('&')}` : '';
 }
 
-/** The link to send someone for one recording: the show alone, no search or filters. */
+/**
+ * The link to send someone for one recording: the show alone, no search or
+ * filters. Its own page (show/<ShowID>/, scripts/show-pages.ts), so a link
+ * pasted into a chat or forum previews that show; the page opens it in the
+ * site at ?show=.
+ */
 export function showLink(showId: string): string {
-  return `${window.location.origin}${window.location.pathname}?${SHOW_PARAM}=${showId}`;
+  const base = import.meta.env?.BASE_URL ?? '/';
+  return `${window.location.origin}${base}show/${showId}/`;
 }
 
 /**
