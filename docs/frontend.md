@@ -243,9 +243,12 @@ festival and TV shows too (owner, 2026-10-16; it was hidden on ~700). Badge pill
 quality label (`quality()` in `src/lib/specs.ts`: HD 1080, HD 720, SD 576, SD 480, Low-res; the
 resolution as its `title`), and `TVStandard` for SD and low-res copies only — on HD records the
 field is unreliable — each only when set. Last, a **Share** pill (an action, so rounded-full and
-lighter than the badges; F4): the share sheet on touch devices with `navigator.share`, otherwise
-"Copy link", which copies a one-line reference — `Artist · date · event · quality · length` — and
-`showLink()` (the show alone, no search or filters), then reads "Copied" for two seconds. Its click
+lighter than the badges; F4): the share sheet on touch devices with `navigator.share` (titled with
+a one-line reference — `Artist · date · event · quality · length` — and `showLink()`, the show
+alone with no search or filters), otherwise "Copy link". That puts the link alone on the clipboard
+as plain text, so it pastes into an address bar or chat as a working link, and as rich text the
+reference linked to the show, so it pastes into an email by name; then it reads "Copied" for two
+seconds. Never the two joined as plain text: pasted into an address bar that was not a URL. Its click
 stops propagation, since a click on the docked bar scrolls to the top.
 
 The header is a **minimum** height — `min-h-56` (224px) on phones, `21.5vh` from md (owner,

@@ -305,10 +305,13 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
   const lineage = lineageChains(show.Lineage);
 
   /**
-   * Share one exact recording (F4): its link, with a line that says which copy
-   * — a trader replying to the owner's email names the recording, not just the
-   * show. The share sheet on touch devices; elsewhere the line and the link go
-   * to the clipboard.
+   * Share one exact recording (F4). The share sheet on touch devices, titled
+   * with a line that says which copy; elsewhere "Copy link" puts the link
+   * alone on the clipboard as plain text — so it pastes into an address bar
+   * or a chat as a working link — and, as rich text, that line linked to the
+   * show, so it pastes into an email as "30 Seconds to Mars · 2010-06-05 ·
+   * Rock am Ring · HD 1080 · 43 min". A trader replying to the owner names the
+   * copy, not just the show.
    */
   const reference = [
     show.Artist,
@@ -326,14 +329,21 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
     e.stopPropagation();
     const url = showLink(show.ShowID);
     if (shareSheet) {
-      try { await navigator.share({ title: reference, text: reference, url }); } catch { /* dismissed */ }
+      try { await navigator.share({ title: reference, url }); } catch { /* dismissed */ }
       return;
     }
+    const html = `<a href="${url}">${reference.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</a>`;
     try {
-      await navigator.clipboard.writeText(`${reference}\n${url}`);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
-    } catch { /* no clipboard access: nothing to report */ }
+      await navigator.clipboard.write([new ClipboardItem({
+        'text/plain': new Blob([url], { type: 'text/plain' }),
+        'text/html': new Blob([html], { type: 'text/html' }),
+      })]);
+    } catch {
+      // No rich clipboard (older browsers): the link alone still works.
+      try { await navigator.clipboard.writeText(url); } catch { return; }
+    }
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 2000);
   }
   const techId = `drawer-tech-${show.ShowID}`;
 
