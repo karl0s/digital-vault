@@ -24,7 +24,7 @@
 | **The 8 trader jobs** (scripted run) | **8 pass** | — | — | At the review: 1 pass, 4 partial, 3 fail |
 | **The 18 findings** (F1–F18) | **16** ✅ | **2** 🟡 | **0** ⬜ | F1 and F7 partly: they wait on the drive scan and date precision |
 | **The 24 scored fixes** | **22** ✅ | — | **2** ⬜ | Left: date precision, the drive scan |
-| **Source on blank records** | **329** | — | **0** | All done (2026-10-17): every show says Pro-shot (1,162) or Audience (51) |
+| **Source on blank records** | **329** | — | **0** | All done (2026-10-17): every show says Pro-shot (1,164) or Audience (49) |
 
 **Live on the site:** everything above, up to the page per show (pushed 2026-10-17).
 **Committed, not yet live:** every show's source (2026-10-17) and the Source filter.
@@ -103,7 +103,7 @@ be contrast-checked automatically (F13).
 | [F18](#low) | Phone header height | ✅ | Batch H (2026-10-17): on a phone the count, layout and sort row folds away while scrolling down and returns on the way up; nothing on the page moves | — |
 | — | [Taper redaction](#publishing-lineage-and-generation-without-exposing-tapers) | ✅ | Names, contacts and links captured to `private/`, then removed from `shows.json`; pipeline archives out of git; the site stops publishing folder names; health-check guard (`e2d03953`, `0b538a57`) | Old text stays in git history (accepted) |
 | — | [Drive scan](#planned-a-drive-scan-for-the-missing-specs) | 📅 | Plan agreed (2026-10-16) | Frame rate, bitrate, menus and chapters, show size: with Live Music mounted. Broadcaster can start now |
-| — | [Data quality](#data-quality--the-metadata-is-the-product) | 🟡 | Source on all 329 blank records (2026-10-16/17): 1,162 Pro-shot, 51 Audience | 432 setlists; date precision |
+| — | [Data quality](#data-quality--the-metadata-is-the-product) | 🟡 | Source on all 329 blank records (2026-10-16/17): 1,164 Pro-shot, 51 Audience | 432 setlists; date precision |
 
 ### The traders' jobs, then and now
 
