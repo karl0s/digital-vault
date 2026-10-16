@@ -285,7 +285,8 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
   // quality label says what matters. Size and file count describe the whole
   // folder, which can hold more than this show, so the row says so.
   const q = quality(show);
-  const folder = [show.TotalSizeHuman, show.FileCount && `${show.FileCount} ${show.FileCount === '1' ? 'file' : 'files'}`].filter(Boolean).join(' · ');
+  // String(): a few records store their counts as numbers, not text.
+  const folder = [show.TotalSizeHuman, show.FileCount && `${show.FileCount} ${String(show.FileCount) === '1' ? 'file' : 'files'}`].filter(Boolean).join(' · ');
   const techRows = [
     show.VideoCodec  && { label: 'Video',       value: videoName(show.VideoCodec),            mono: false },
     q                && { label: 'Resolution',  value: q.resolution,                          mono: false },
