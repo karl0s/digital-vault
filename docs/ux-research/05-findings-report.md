@@ -17,6 +17,41 @@
 
 *Updated with every change that touches a finding. Last update: 2026-10-16 (batch E).*
 
+### At a glance
+
+> **Batches A–E are done but not live yet.** They are committed on your machine and appear on the
+> site when you say "push". The live site has the taper redaction only.
+
+**Done**
+
+- [x] **Taper redaction** — lineage and generation shown without tapers' names, contacts or links *(live)*
+- [x] **A. The drawer's facts** — HD / SD quality label, codecs in traders' words, venue and city
+  for every show, stills at full size, Escape keeps the search *(F1 part, F5, F9, F14)*
+- [x] **B. Search** — dates in any format, artist initials (RATM, KOL…), other names for places and
+  events, tech terms (hd, pal, pro shot…), empty results name the filter to blame *(F6, F8)*
+- [x] **C. Links and sharing** — a link for every show, Back closes the show, Copy link / Share
+  *(F3 part, F4)*
+- [x] **D. Cards and copies** — date and quality on every card, "N copies" badge, a show's copies
+  compared side by side in the drawer, one format for lengths *(F2, F17)*
+- [x] **E. Readability** — every text passes the contrast minimum; nothing smaller than 12px but
+  the card badges; holds at 200% zoom *(F13)*
+
+**Still to do, in this order**
+
+- [ ] **F. Narrow and list** — "More filters" (source, quality, standard, length, has setlist);
+  then a list view and CSV download *(F12, F10)*
+- [ ] **G. What's new** — "Recently added" row and sort *(F11)*
+- [ ] **H. Polish** — setlist clean-up and the searched song highlighted *(F15)*; the phone header
+  shrinks on scroll *(F18)*; one line saying what the site is *(F16)*
+- [ ] **Data** — "exact date unknown" for year-only dates *(F7)*; Source on 329 records; the 432
+  missing setlists continue in their own review
+- [ ] **Drive scan** — frame rate, bitrate, chapters, show size *(needs Live Music mounted)*
+- [ ] **Leftovers from done batches** — a page per show, so a pasted link previews that show
+  *(F3)*; search tips under the field, not only when nothing is found *(F6)*
+- [ ] **Real traders** — run the sessions in [04-test-plan.md](04-test-plan.md), then re-score
+
+### In detail
+
 ✅ done · 🟡 partly done · ⬜ to do · 📅 planned (needs the drive mounted)
 
 | # | Finding | Status | Done so far | Still to do |
