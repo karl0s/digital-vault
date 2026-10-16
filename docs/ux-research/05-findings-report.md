@@ -22,12 +22,12 @@
 | | Done | Partly | To do | |
 |---|---|---|---|---|
 | **The 8 trader jobs** (scripted run) | **8 pass** | — | — | At the review: 1 pass, 4 partial, 3 fail |
-| **The 18 findings** (F1–F18) | **14** ✅ | **4** 🟡 | **0** ⬜ | F1, F3, F7, F12 partly |
+| **The 18 findings** (F1–F18) | **15** ✅ | **3** 🟡 | **0** ⬜ | F1, F7, F12 partly: all three wait on data (Source, date precision, the drive scan) |
 | **The 24 scored fixes** | **21** ✅ | **1** 🟡 | **2** ⬜ | Left: the Source review, date precision, the drive scan |
 | **Source on blank records** | **54** | — | **275** | Of 329; your review page |
 
 **Live on the site:** everything up to the list view and CSV (pushed 2026-10-16, `8efb09b0`).
-**Committed, not yet live:** What's new, the "1 file" fix, and batch H (polish). They go out with the next push.
+**Committed, not yet live:** What's new, the "1 file" fix, batch H (polish) and the page per show. They go out with the next push.
 
 ### Done
 
@@ -51,6 +51,8 @@
   (enforced), a "Recently added" row, New / Better copy / New copy badges, a sort, a CSV column
   *(F11; not yet live)*
 - [x] **Source, first 54** — from another copy of the same show *(data)*
+- [x] **A page per show** — a link pasted into WhatsApp, iMessage or a forum previews that show's
+  still, name, date and quality; Copy link hands it out *(F3; not yet live)*
 - [x] **H. Polish** — the searched song lit in the setlist, the encore a divider; the phone's
   results row folds while scrolling; one line saying what the site is; `songs:` and `festival:`
   searches. Interview, intro and jam entries stay in their setlists for now (your call)
@@ -64,13 +66,12 @@
   with three tasks from [04-test-plan.md](04-test-plan.md) to two or three traders you already
   email; their answers re-score the list
 - [ ] **1. Source on the 275 blank records** — your review page, two stills per record
-  (`~/VaultShots/reports/source-review.html`). Then a **Source filter** joins More filters
-  *(data, then F12)*
-- [ ] **2. A page per show**, so a link pasted into WhatsApp or a forum previews that show, not the
-  site *(F3)*
-- [ ] **3. Data reviews** — date precision ("2001, exact date unknown") *(F7)*; the 432 missing
+  (`~/VaultShots/reports/source-review.html`; `python3 tools/source-review/build.py` rebuilds it,
+  `apply.py` writes the picks you paste). Then a **Source filter** joins More filters *(data,
+  then F12)*
+- [ ] **2. Data reviews** — date precision ("2001, exact date unknown") *(F7)*; the 432 missing
   setlists, in their own review
-- [ ] **4. Drive scan** — frame rate, bitrate, chapters, the show's own size, broadcaster *(needs
+- [ ] **3. Drive scan** — frame rate, bitrate, chapters, the show's own size, broadcaster *(needs
   Live Music mounted)*
 
 **Small leftovers from finished items** (not scheduled; say if one matters):
@@ -86,7 +87,7 @@ be contrast-checked automatically (F13).
 |---|---|---|---|---|
 | [F1](#f1--which-copy-is-better-cant-be-answered) | Which copy is better | 🟡 | Generation and Lineage in the drawer (`1cffc551`), cleaned of tapers first (`0b538a57`). Batch A: quality badge (HD 1080 / HD 720 / SD 576 / SD 480 / Low-res), Resolution row, PAL/NTSC on SD only, codecs and containers in traders' words, size and file count as one "Folder" row. Source on 54 more records | Source on the 275 still blank; frame rate, bitrate, chapters (drive scan) |
 | [F2](#f2--recordings-of-the-same-show-arent-grouped-and-their-cards-are-identical) | Copies of one show not grouped | ✅ | Batch D: cards carry a quiet spec line, the full date and the quality (`2010-06-05 · HD 1080`), and an "N copies" badge when the show is held more than once (131 shows, 311 records); the drawer lists "N recordings of this show", longest first, with quality, length, source, codecs, container, audio, PAL/NTSC, size and song count, one click to each | — |
-| [F3](#f3--nothing-can-be-linked-and-back-leaves-the-site) | No show links; Back leaves the site | 🟡 | Batch C: every show has a link (`?show=`); Back and the phone's back gesture close the show, Forward reopens it; a pasted link opens the show; the tab names it; page description and preview image for pasted links; an analytics seam for show views | A page per show, so a pasted show link previews that show (needs a build step) |
+| [F3](#f3--nothing-can-be-linked-and-back-leaves-the-site) | No show links; Back leaves the site | ✅ | Batch C: every show has a link (`?show=`); Back and the phone's back gesture close the show, Forward reopens it; a pasted link opens the show; the tab names it; page description and preview image for pasted links; an analytics seam for show views. 2026-10-17: **a page per show** (`show/<ShowID>/`, 1,213 built with the site), so a pasted link previews that show's still, name, date and quality; Copy link hands it out; an old link to a re-keyed show still lands in the site (404.html) | — |
 | [F4](#f4--pointing-at-one-exact-recording-is-hard) | Pointing at one exact recording | ✅ | Batch C: a Share pill (share sheet on phones, "Copy link" elsewhere): the link alone as plain text (pastes into an address bar or chat), and as rich text `Artist · date · event · quality · length` linked to the show (pastes into an email by name) | — |
 | [F5](#f5--escape-erases-the-search-behind-an-open-show) | Escape erases the search | ✅ | Batch A: Escape closes only the show; the results stay, so the next copy is one click away | — |
 | [F6](#f6--search-doesnt-match-how-traders-type) | Search misses how traders type | ✅ | Batch B: dates in every common format (and two-digit years); artist initials (RATM, FNM, KOL, 30STM…), no wrong "Did you mean"; countries, cities and events by other names (uk, brasil, koln, titp…); tech terms (hd, 1080, pal, pro shot, lpcm…); several field filters at once, quoted values; search tips in the empty state; 43 new search tests. Batch H: plural field names and `festival:` (`songs:creep`) | Tips appear when a search finds nothing, not under the field |
@@ -118,7 +119,7 @@ The review's walkthrough tasks, run again on the live site after batches A–E w
 | J3 Artist audit | 🟡 Partial | 🟢 **Pass** | — |
 | J4 Song hunt | 🟢 Pass | 🟢 Pass | — (the song is lit in the setlist; `songs:` works) |
 | J5 Event dig | 🟡 Partial | 🟢 **Pass** | A source filter (after the Source review); small events (Fuji Rock) only by search |
-| J6 Share and request | 🔴 Fail | 🟢 **Pass** | A pasted link previews the site, not the show |
+| J6 Share and request | 🔴 Fail | 🟢 **Pass** | — (a pasted link previews the show itself) |
 | J7 What's new | 🔴 Fail | 🟢 **Pass** (from 2026-10-16) | Fills as you add shows; nothing before that day is marked |
 | J8 Evidence check | 🟡 Partial | 🟢 **Pass** | Frame rate and bitrate (drive scan) |
 
@@ -176,7 +177,7 @@ come for, J1 and J2, now pass.
 - [x] Copy link (Share on phones): the link alone, or the show's name linked in an email
 - [x] Back closes the show and stays on the site
 - [x] A description and picture when the site's link is pasted
-- [ ] A link to one show previews that show (needs a page per show)
+- [x] A link to one show previews that show: its still, name, date and quality (a page per show)
 
 **J7 — What's new?**
 - [x] A date each record was added (from 2026-10-16; the health check makes sure)
@@ -289,7 +290,7 @@ A batch's place comes from its best score.
 | **F. Narrow and list** ✅ | 17, 15 | "More filters" (quality, standard, length, has setlist, then source); then a Grid / List toggle and CSV download | Both live in the results header and share the same facets; a list needs the trader columns the filters add |
 | **G. What's new** ✅ | 16 | An added-on date per record, a "Recently added" row and sort | Ties with F; your call: start from today |
 | **H. Polish** ✅ | 21, 22, 23 | Setlist non-songs and the encore as a divider, the searched song highlighted; phone header shrinks on scroll; one line saying what the site is | Small, independent |
-| Page per show | F3 leftover | A link to one show previews that show in chats and forums | Needs a build step; matters once traders share links among themselves |
+| Page per show ✅ | F3 leftover | A link to one show previews that show in chats and forums | Needs a build step; matters once traders share links among themselves |
 | Data | 19 | Date precision; the missing setlists | Your review pages, record by record |
 | Drive | 18 | Frame rate, bitrate, chapters, show size | When Live Music is mounted |
 

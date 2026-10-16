@@ -17,6 +17,16 @@ read as navigation and went unused.
 
 ## Deviations from this spec
 
+**Since this list (2026-10-17):** the build has moved on further, and `docs/frontend.md` is the
+current reference. In short: one page with no sidebar or top bar (2026-10-13), Featured shows and
+the A–Z artist list on it; the filter bar is Years · Country · Event · **More filters** (quality,
+PAL/NTSC, length, setlist); URL params, in order, `q, from, to, undated, country, festival,
+quality, standard, length, setlist, sort, layout`, then `show`; sorts `year-desc`, `year-asc`,
+`artist`, `length`, `added`; a Grid / List layout and CSV download; the open show in the URL and a
+page per show for link previews; card badges New / Better copy / New copy, Documentary, Excerpt and
+"N copies" (the RecordingType badge went on 2026-10-15); a "Recently added" row above Featured.
+The research behind these is `docs/ux-research/`.
+
 Checked against the code on 2026-10-05.
 
 - **No Era facet, no Year facet.** Years are one range control — `YearRangePopover`: decade

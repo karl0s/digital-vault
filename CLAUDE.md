@@ -44,6 +44,7 @@ tools/
   artist-portraits/     ← picker for the artist tiles' pictures; build.py renders ~/VaultShots/reports/artist-portraits.html
   missing-setlists/     ← every show with no setlist + twins that have one; build.py renders ~/VaultShots/reports/missing-setlists.html
   taper-redaction/      ← removes tapers' names, contacts and links from shows.json; apply.mjs captures them to private/ first (see Tapers are never named)
+  source-review/        ← records with no RecordingType: build.py renders ~/VaultShots/reports/source-review.html (two stills and a clue each); apply.py writes Karl's pasted picks
 scripts/
   health-check.py       ← integrity validator (pre-push hook, and the deploy)
   audit-*.py            ← read-only audits: image geometry, aspect vs source, sidecar setlists
@@ -52,7 +53,8 @@ scripts/
   perf/bench.mjs        ← measures Browse + drawer in headless Chromium (npm run perf)
   thumbs.mjs            ← card thumbnails, built into dist/thumbs/
   site-data.mjs         ← shows-lite.json + show-notes.json, derived from shows.json at build
-  vite-plugin-*.mjs     ← wire thumbs.mjs and site-data.mjs into vite.config.ts
+  vite-plugin-*         ← wire thumbs.mjs, site-data.mjs and show-pages.ts into vite.config.ts
+  show-pages.ts         ← a page per show for link previews, and 404.html (npm run check:pages)
   setlist-removals-approved.json ← deliberate setlist removals the health check accepts
   collection-at-launch.json ← the ShowIDs before "Recently added" began (2026-10-16): no AddedOn needed
   check-taper.mjs       ← blocks tapers' names, contacts, links and tracker names in shows.json (run by the health check)
@@ -95,8 +97,10 @@ Rules:
   `npm run check`, then `npm run build`, and publishes `dist/` to GitHub Pages. A failing check
   stops the deploy; the live site keeps the previous version. A newer push cancels a deploy still
   running.
-- Vite copies `public/` into `dist/`; the plugins add `thumbs/`, `shows-lite.json` and
-  `show-notes.json`. `dist/` is gitignored and CI-owned — **never commit it**.
+- Vite copies `public/` into `dist/`; the plugins add `thumbs/`, `shows-lite.json`,
+  `show-notes.json`, a page per show (`show/<ShowID>/index.html`, the link Copy link hands out, so
+  a pasted link previews that show) and `404.html`. `dist/` is gitignored and CI-owned — **never
+  commit it**.
 
 ---
 
@@ -611,6 +615,8 @@ check:perf` (part of `npm run check`) enforces every rule not marked (unchecked)
 - **Scroll-linked drawer styles go to the DOM, never React state.** The docking header's scroll
   listener writes `--p` onto the drawer (`style.setProperty`) and the `drawer-dock-*` rules in
   `styles/globals.css` follow it; a state update per scroll frame would re-render the whole drawer.
+  The same for the filter bar's phone fold (`data-folded`, `--fold` in `FilterBar`), which returns
+  before any layout read on desktop.
 - **No layout reads in the drawer's opening frame** (unchecked). The docking header measures itself
   two frames after the drawer opens; measuring in the click's frame added ~50 ms at 4× (116 → 166 ms).
 - **Card images use native `loading="lazy"`** in `LazyImage` — no per-image IntersectionObserver,
@@ -663,13 +669,15 @@ serialisation), `check:facets` (counts against the real `shows.json`), `check:st
 selector snapshots), `check:brush` (brush geometry), `check:search` (every artist view returns
 exactly that artist's shows, hand-checked search cases, free-text grouping, literal matching and
 Did you mean cases, and trader queries — dates, initials, other names, tech terms, field filters;
-`scripts/search-precision.ts`) and
-`typecheck`. Run it after any code change; the deploy runs it too.
+`scripts/search-precision.ts`), `check:pages` (a page per show for every visible record, nothing
+private on them; `scripts/check-show-pages.ts`) and `typecheck`. Run it after any code change; the
+deploy runs it too.
 
 ---
 
 ## Featured shows
-`components/FeaturedRows.tsx` → `FEATURED_IDS`: 12 hand-picked ShowIDs (two full rows at six
+Above them, **Recently added** (same file): records with an `AddedOn` in the last 60 days, absent
+until there are any (see AddedOn). `components/FeaturedRows.tsx` → `FEATURED_IDS`: 12 hand-picked ShowIDs (two full rows at six
 columns; owner, 2026-10-15), shuffled once per load, shown on Browse only while nothing filters. A missing ID
 drops out silently. The comment beside each ID says why that copy was chosen — keep doing that.
 
