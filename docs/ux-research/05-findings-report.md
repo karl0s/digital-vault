@@ -26,8 +26,8 @@
 | **The 24 scored fixes** | **21** ✅ | **1** 🟡 | **2** ⬜ | Left: the Source review, date precision, the drive scan |
 | **Source on blank records** | **54** | — | **275** | Of 329; your review page |
 
-**Live on the site:** everything up to the list view and CSV (pushed 2026-10-16, `8efb09b0`).
-**Committed, not yet live:** What's new, the "1 file" fix, batch H (polish) and the page per show. They go out with the next push.
+**Live on the site:** everything above, up to the page per show (pushed 2026-10-17).
+**Waiting:** your Source review (275 records), then the Source filter.
 
 ### Done
 
@@ -49,14 +49,14 @@
   CSV, a length sort, a printable list *(F10)*
 - [x] **G. What's new** — from 2026-10-16 by your choice: an added date on every new record
   (enforced), a "Recently added" row, New / Better copy / New copy badges, a sort, a CSV column
-  *(F11; not yet live)*
+  *(F11)*
 - [x] **Source, first 54** — from another copy of the same show *(data)*
 - [x] **A page per show** — a link pasted into WhatsApp, iMessage or a forum previews that show's
-  still, name, date and quality; Copy link hands it out *(F3; not yet live)*
+  still, name, date and quality; Copy link hands it out *(F3)*
 - [x] **H. Polish** — the searched song lit in the setlist, the encore a divider; the phone's
   results row folds while scrolling; one line saying what the site is; `songs:` and `festival:`
   searches. Interview, intro and jam entries stay in their setlists for now (your call)
-  *(F15, F16, F18, F6; not yet live)*
+  *(F15, F16, F18, F6)*
 
 ### Still to do, in this order
 
