@@ -169,15 +169,22 @@ row, fading the other letters on hover, white names for 5+ show artists.
 ### Show card (ShowCard)
 "Cinematic" (owner, 2026-10-15; designed as direction 02 on
 `~/VaultShots/reports/show-card-directions.html`). The 4:3 still is the card (`rounded-[10px]`):
-- On a bottom gradient (`from-black/90 via-black/55 via-30% to-transparent to-62%`): the title,
-  then `event · year`. The title is the artist, or on an artist's page (`searchMode="artist"`) the
-  event, since the artist is the same on every card. In the line under it the name truncates and the
-  year never does; undated reads "Undated".
-- Top-right: the length (`1h 42m`, `24 min`). Top-left: a badge only when the record is not a plain
-  live show: Documentary (`ContentType`) or Excerpt (`ParentShowID`). How it was filmed gets none:
-  Pro-shot, Audience and HD badges were dropped (owner, 2026-10-15).
+- On a bottom gradient (`from-black/90 via-black/55 via-30% to-transparent to-70%`), three lines:
+  the title; the place (event, else venue, city or country); and the **spec line**, `date ·
+  quality` (`2010-06-05 · HD 1080`; F2, owner 2026-10-16). The title is the artist, or on an
+  artist's page (`searchMode="artist"`) the event, with the venue or city under it, since the artist
+  is the same on every card. Each line truncates on its own. The date is in full so two shows in one
+  year differ (`cardDate` in `src/lib/specs.ts`): the year-only placeholder `YYYY-01-01` reads as the
+  year, and undated as "Undated". The quality is `quality()`'s label, as in the drawer.
+- The button's `title` holds the whole name, place and spec line, for what a narrow card cuts short.
+- One row across the top: badges left, the length right (`lengthName`: `1h 42m`, `24 min`, the one
+  length format on the site); badges wrap under each other rather than run beneath the length. A
+  badge only when the record is not a plain live show: Documentary (`ContentType`) or Excerpt
+  (`ParentShowID`) — and, dark and quieter, **N copies** when the collection holds the show more
+  than once (`copyCount` in `src/lib/copies.ts`, below), so look-alike cards say why. How it was
+  filmed gets none: Pro-shot, Audience and HD badges were dropped (owner, 2026-10-15).
 - A song match in search (`songHits`) adds a ♪ line under the title, matched letters lit, and the
-  gradient reaches higher (`to-72%`).
+  gradient reaches higher (`to-80%`).
 - Hover and keyboard focus crossfade to the show's second still (in 200ms, out 300ms, ease-out, so it
   starts at once); the text never moves. The second still is slot 2's build WebP (the original if the
   WebP is missing): it mounts on the first hover or focus, alone and at high priority, and the drawer's
@@ -237,9 +244,10 @@ scroll is locked, and the page behind goes `inert` once the slide-in finishes.
 ### Drawer metadata layout (ShowDrawer)
 **Hero** (over the header image): artist name (display font); one subtitle line `Date ·
 EventOrFestival · VenueName · City, Country`, each part only when set and once (the venue is
-dropped when it repeats the event or the city), "Date Unknown" when undated. The place shows for
+dropped when it repeats the event or the city), "Undated" when undated (the cards' word). The place shows for
 festival and TV shows too (owner, 2026-10-16; it was hidden on ~700). Badge pills —
-`ContentType` (violet), `RecordingType`, Duration (Clock icon + formatted `DurationSec`), the
+`ContentType` (violet), `RecordingType` as traders write it (`sourceName`: "Pro-shot"), Duration
+(Clock icon + `lengthName`), the
 quality label (`quality()` in `src/lib/specs.ts`: HD 1080, HD 720, SD 576, SD 480, Low-res; the
 resolution as its `title`), and `TVStandard` for SD and low-res copies only — on HD records the
 field is unreliable — each only when set. Last, a **Share** pill (an action, so rounded-full and
@@ -274,8 +282,18 @@ wrapper, not on the header, so the fade can hang below it.
 
 **Below the hero**, in order: a "Part of …" link to the master (linked records), the Screenshots
 strip, an "On this recording" list of linked records with time windows and song counts (masters),
-then the content grid. Following either link swaps the show in the open drawer and scrolls to top.
+**N recordings of this show** (below), then the content grid. Following either link swaps the show in the open drawer and scrolls to top.
 Drive/folder/file metadata is not shown.
+
+**Recordings of this show** (F2, 2026-10-16) — when `copiesOf(show)` holds more than one: a row
+per copy, longest first, giving quality, length, and the specs that tell copies apart (source,
+video, container, audio and channels, PAL/NTSC for SD, folder size, "excerpt"), with the song
+count from sm. The open copy is a plain row marked "This copy" (`aria-current`); the others are
+buttons that swap the drawer to that copy, as the links above do. `src/lib/copies.ts` groups the
+visible shows once per catalogue load (useShows) on CLAUDE.md's duplicate rule — artist, date,
+event, venue, city and country — plus `ContentType`, so a backstage documentary from the night is
+not a copy of the set; an excerpt is, since a trader wants to know the full set exists. Undated
+records have no copies. Module state, not a prop, so the memoised cards keep their props.
 
 **Content grid**:
 - Two columns from md (`md:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]`): the main column holds

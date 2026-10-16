@@ -92,3 +92,25 @@ export const sampleRateName = (hz?: string) => {
   const n = parseInt(hz || '', 10);
   return n ? `${+(n / 1000).toFixed(1)} kHz` : '';
 };
+
+/** "1h 42m" or "24 min"; empty when unknown. The one length format: cards, drawer, share line, copies (F17). */
+export function lengthName(durationSec?: string): string {
+  const total = Math.round(parseInt(durationSec || '0', 10) / 60);
+  if (!total) return '';
+  const hours = Math.floor(total / 60);
+  return hours ? `${hours}h ${String(total % 60).padStart(2, '0')}m` : `${total} min`;
+}
+
+/** How the record was filmed, as traders write it: "Pro-shot", "Audience". */
+export const sourceName = (type?: string) => (type === 'Proshot' ? 'Pro-shot' : type || '');
+
+/**
+ * A card's date, in full so two shows in one year differ (F2) — except the
+ * year-only placeholder, YYYY-01-01 (CLAUDE.md, ShowDate), which shows as the
+ * year: a card must not claim a day nobody knows. Until date precision is
+ * recorded (F7), a real New Year's Day show reads as its year too.
+ */
+export function cardDate(showDate?: string): string {
+  if (!showDate) return 'Undated';
+  return showDate.endsWith('-01-01') ? showDate.slice(0, 4) : showDate;
+}

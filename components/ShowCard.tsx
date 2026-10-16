@@ -4,6 +4,8 @@ import { Show } from '../App';
 import { LazyImage } from './LazyImage';
 import type { ImageUrlGetter } from '../src/hooks/useShows';
 import type { SongHit } from '../src/search/searchIndex';
+import { quality, lengthName, cardDate } from '../src/lib/specs';
+import { copyCount } from '../src/lib/copies';
 
 interface ShowCardProps {
   show: Show;
@@ -48,23 +50,19 @@ const getColorFromString = (str: string): string => {
   return colors[Math.abs(hash) % colors.length];
 };
 
-/** "1h 42m" or "24 min"; empty when the length is unknown. */
-function formatLength(durationSec: string): string {
-  const total = Math.round(parseInt(durationSec || '0') / 60);
-  if (!total) return '';
-  const hours = Math.floor(total / 60);
-  return hours ? `${hours}h ${String(total % 60).padStart(2, '0')}m` : `${total} min`;
-}
-
 /**
  * Badges for what the record is, when it is not a plain live show:
- * Documentary, or Excerpt (cut from a longer broadcast). How it was filmed
- * (Pro-shot, Audience, HD) gets no badge (owner, 2026-10-15).
+ * Documentary, or Excerpt (cut from a longer broadcast) — and, quieter, when
+ * the collection holds the show more than once ("3 copies", F2), so look-alike
+ * cards say why they look alike. How it was filmed gets no badge (owner,
+ * 2026-10-15); quality is in the line under the title instead.
  */
 function exceptions(show: Show): { label: string; tone: string; title?: string }[] {
   const out: { label: string; tone: string; title?: string }[] = [];
   if (show.ContentType === 'Documentary') out.push({ label: 'Documentary', tone: 'bg-violet-400/95 text-[#160c2e]' });
   if (show.ParentShowID) out.push({ label: 'Excerpt', tone: 'bg-white/90 text-[#111]', title: 'Cut from a longer broadcast' });
+  const copies = copyCount(show);
+  if (copies > 1) out.push({ label: `${copies} copies`, tone: 'bg-black/70 text-white ring-1 ring-inset ring-white/25', title: `${copies} recordings of this show: compare them in the show` });
   return out;
 }
 
@@ -90,8 +88,11 @@ function exceptions(show: Show): { label: string; tone: string; title?: string }
  */
 export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, searchMode, songHits }: ShowCardProps) {
   const year = show.ShowDate ? show.ShowDate.split('-')[0] : '';
-  const length = formatLength(show.DurationSec);
+  const length = lengthName(show.DurationSec);
   const badges = exceptions(show);
+  // The quiet spec line (F2, agreed 2026-10-16): the date in full, and the
+  // quality traders compare first.
+  const spec = [cardDate(show.ShowDate), quality(show)?.label].filter(Boolean).join(' · ');
 
   const imageUrl = show.ChecksumSHA1
     ? (getImageUrl ? getImageUrl(show.ChecksumSHA1, 1) : `/images/${show.ChecksumSHA1}_01.jpg`)
@@ -158,6 +159,8 @@ export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, se
       // What src/lib/hoverPreload.ts fetches ahead of a hover.
       data-hover-src={secondThumb || secondOriginal || undefined}
       className="group relative z-0 block w-full cursor-pointer text-left focus-visible:outline-none"
+      // The whole name, place and date on hover: a narrow card cuts them short (F17).
+      title={`${show.Artist} — ${[show.EventOrFestival, show.VenueName, location].filter(Boolean).join(', ')} · ${spec}`}
       onClick={() => onSelect(show)}
       onMouseEnter={warm}
       onFocus={warm}
@@ -207,22 +210,26 @@ export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, se
           nearly on screen, and cards scroll into view blank.
         */}
         <div
-          className={`pointer-events-none absolute inset-0 bg-linear-to-t from-black/90 via-black/55 via-30% to-transparent ${songHits?.length ? 'to-72%' : 'to-62%'}`}
+          className={`pointer-events-none absolute inset-0 bg-linear-to-t from-black/90 via-black/55 via-30% to-transparent ${songHits?.length ? 'to-80%' : 'to-70%'}`}
         />
 
-        {badges.length > 0 && (
-          <div className="pointer-events-none absolute left-2 top-2 flex gap-1">
-            {badges.map(b => (
-              <span key={b.label} title={b.title} className={`rounded-[3px] px-[5px] pt-1 pb-[3px] text-[9.5px] font-bold uppercase leading-none tracking-[0.08em] ${b.tone}`}>
-                {b.label}
+        {/* One row, so two badges on a narrow card wrap under each other
+            instead of running beneath the length. */}
+        {(badges.length > 0 || length) && (
+          <div className="pointer-events-none absolute inset-x-2 top-2 flex items-start gap-1">
+            <div className="flex min-w-0 flex-wrap gap-1">
+              {badges.map(b => (
+                <span key={b.label} title={b.title} className={`rounded-[3px] px-[5px] pt-1 pb-[3px] text-[9.5px] font-bold uppercase leading-none tracking-[0.08em] ${b.tone}`}>
+                  {b.label}
+                </span>
+              ))}
+            </div>
+            {length && (
+              <span className="ml-auto shrink-0 rounded bg-black/75 px-1.5 py-1 text-[11px] font-semibold leading-none tabular-nums text-white">
+                {length}
               </span>
-            ))}
+            )}
           </div>
-        )}
-        {length && (
-          <span className="pointer-events-none absolute right-2 top-2 rounded bg-black/75 px-1.5 py-1 text-[11px] font-semibold leading-none tabular-nums text-white">
-            {length}
-          </span>
         )}
 
         <div className="pointer-events-none absolute inset-x-3 bottom-[11px]">
@@ -242,11 +249,9 @@ export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, se
               </span>
             </p>
           )}
-          {/* The name shortens; the year never does. */}
-          <p className="mt-0.5 flex text-xs leading-snug text-white/80">
-            {sub && <span className="min-w-0 truncate">{sub}</span>}
-            <span className="shrink-0 tabular-nums">{sub ? ' · ' : ''}{year || 'Undated'}</span>
-          </p>
+          {/* Where, then when and how well: each line shortens on its own. */}
+          {sub && <p className="mt-0.5 truncate text-xs leading-snug text-white/80">{sub}</p>}
+          <p className="mt-0.5 truncate text-xs leading-snug tabular-nums text-white/80">{spec}</p>
         </div>
       </div>
     </button>

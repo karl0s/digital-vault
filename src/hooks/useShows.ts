@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { indexCopies } from '../lib/copies';
 import { Show } from '../../App';
 
 export type ImageSize = 'full' | 'thumb';
@@ -65,7 +66,10 @@ export function useShows() {
         // recording (metadata, images, provenance) but is never shown on the site.
         // Used where two records are the same recording and only one should appear.
         // Filtered here, at the single load point, so search, rows and counts all agree.
-        setShows(items.filter(s => s.Hidden !== 'Yes'));
+        const visible = items.filter(s => s.Hidden !== 'Yes');
+        // Before the cards render: each reads its "N copies" from this (src/lib/copies.ts).
+        indexCopies(visible);
+        setShows(visible);
 
         // After the grid has what it needs. A failure only costs the Notes
         // column and `note:` search, so it is logged, not shown as an error.

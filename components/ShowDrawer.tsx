@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence, useIsPresent } from 'motion/react';
-import { Clock, Music, ChevronLeft, ChevronRight, ChevronDown, Layers, Link2, Share2, Check } from 'lucide-react';
+import { Clock, Music, ChevronLeft, ChevronRight, ChevronDown, Layers, Link2, Share2, Check, Copy } from 'lucide-react';
 import { Show } from '../App';
 import { CloseButton } from './CloseButton';
 import type { ImageUrlGetter } from '../src/hooks/useShows';
 import { scrollContainerToTop } from '../src/lib/motion';
 import { showLink } from '../src/lib/url';
-import { quality, videoName, audioName, containerName, channelsName, aspectName, sampleRateName } from '../src/lib/specs';
+import { quality, videoName, audioName, containerName, channelsName, aspectName, sampleRateName, lengthName, sourceName } from '../src/lib/specs';
+import { copiesOf } from '../src/lib/copies';
 
 interface ShowDrawerProps {
   show: Show;
@@ -268,12 +269,8 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
     return () => { document.body.style.overflow = prev; };
   }, []);
 
-  const durationSec = parseInt(show.DurationSec || '0');
-  const hours = Math.floor(durationSec / 3600);
-  const minutes = Math.floor((durationSec % 3600) / 60);
-  const durationFormatted = durationSec > 0
-    ? (hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`)
-    : null;
+  // One length format everywhere: "1h 05m", "43 min" (F17).
+  const durationFormatted = lengthName(show.DurationSec) || null;
 
   const setlistItems = show.Setlist ? show.Setlist.split(';').map(s => s.trim()).filter(Boolean) : [];
 
@@ -318,8 +315,28 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
     show.ShowDate || 'undated',
     show.EventOrFestival || show.VenueName,
     q?.label,
-    durationSec > 0 ? (hours > 0 ? `${hours}h ${String(minutes).padStart(2, '0')}m` : `${minutes} min`) : null,
+    durationFormatted,
   ].filter(Boolean).join(' · ');
+
+  /**
+   * Every recording of this show, side by side (F2): the question traders
+   * come with is which copy is best, and look-alike cards could not answer it.
+   * The specs that tell copies apart, the open one marked; the others open in
+   * place, like a linked record.
+   */
+  const copies = copiesOf(show);
+  const copySpecs = (c: Show) => {
+    const cq = quality(c);
+    return [
+      sourceName(c.RecordingType),
+      videoName(c.VideoCodec),
+      containerName(c.Container),
+      [audioName(c.AudioCodec), channelsName(c.AudioChannels)].filter(Boolean).join(' '),
+      cq?.tier !== 'hd' && c.TVStandard,
+      c.TotalSizeHuman,
+      c.ParentShowID && 'excerpt',
+    ].filter(Boolean).join(' · ');
+  };
   const shareSheet = typeof navigator !== 'undefined' && typeof navigator.share === 'function'
     && typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
   const [copied, setCopied] = useState(false);
@@ -571,7 +588,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                 {/* Date · event · venue · city, country: the place always, event
                     or not (F9), each part once. */}
                 {[
-                  show.ShowDate || 'Date Unknown',
+                  show.ShowDate || 'Undated',
                   show.EventOrFestival || null,
                   show.VenueName && show.VenueName !== show.EventOrFestival && show.VenueName !== show.City ? show.VenueName : null,
                   [show.City, show.Country].filter(Boolean).join(', '),
@@ -587,7 +604,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                 )}
                 {show.RecordingType && (
                   <span className={`px-2.5 py-0.5 rounded text-xs font-medium ${getRecordingBadgeStyle(show.RecordingType)}`}>
-                    {show.RecordingType}
+                    {sourceName(show.RecordingType)}
                   </span>
                 )}
                 {durationFormatted && (
@@ -703,6 +720,48 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                           )}
                           <ChevronRight className="w-4 h-4 text-gray-500 shrink-0 group-hover/seg:text-gray-300 transition-colors" />
                         </button>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </div>
+            )}
+
+            {/* Every recording of this show, when there is more than one */}
+            {copies.length > 1 && (
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 mb-3 flex items-center gap-1.5">
+                  <Copy className="w-3 h-3" /> {copies.length} recordings of this show
+                </p>
+                <ol className="divide-y divide-white/5 border-y border-white/5">
+                  {copies.map(c => {
+                    const cq = quality(c);
+                    const n = songCount(c.Setlist);
+                    const current = c.ShowID === show.ShowID;
+                    const row = (
+                      <>
+                        <span className="w-[4.5rem] shrink-0 text-sm font-medium text-white tabular-nums">{cq?.label ?? '—'}</span>
+                        <span className="w-16 shrink-0 text-sm text-gray-200 tabular-nums">{lengthName(c.DurationSec) || '—'}</span>
+                        <span className="min-w-0 flex-1 text-xs leading-snug text-gray-400">{copySpecs(c)}</span>
+                        {n > 0 && <span className="hidden sm:inline shrink-0 text-xs text-gray-400">{n} {n === 1 ? 'song' : 'songs'}</span>}
+                      </>
+                    );
+                    return (
+                      <li key={c.ShowID}>
+                        {current ? (
+                          <div className="flex items-baseline gap-3 py-2.5 px-2 -mx-2 rounded bg-white/6" aria-current="true">
+                            {row}
+                            <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.12em] text-gray-300">This copy</span>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => onOpenShow?.(c)}
+                            className="w-full flex items-baseline gap-3 py-2.5 px-2 -mx-2 text-left rounded hover:bg-white/5 transition-colors group/copy"
+                          >
+                            {row}
+                            <ChevronRight className="w-4 h-4 self-center text-gray-500 shrink-0 group-hover/copy:text-gray-300 transition-colors" />
+                          </button>
+                        )}
                       </li>
                     );
                   })}
