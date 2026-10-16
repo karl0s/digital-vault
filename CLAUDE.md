@@ -42,6 +42,7 @@ tools/
   show-editor/          ← Karl's metadata editor; build.py renders index.html (gitignored)
   artist-portraits/     ← picker for the artist tiles' pictures; build.py renders ~/VaultShots/reports/artist-portraits.html
   missing-setlists/     ← every show with no setlist + twins that have one; build.py renders ~/VaultShots/reports/missing-setlists.html
+  taper-redaction/      ← removes tapers' names, contacts and links from shows.json; apply.mjs captures them to private/ first (see Tapers are never named)
 scripts/
   health-check.py       ← integrity validator (pre-push hook, and the deploy)
   audit-*.py            ← read-only audits: image geometry, aspect vs source, sidecar setlists
@@ -52,6 +53,9 @@ scripts/
   site-data.mjs         ← shows-lite.json + show-notes.json, derived from shows.json at build
   vite-plugin-*.mjs     ← wire thumbs.mjs and site-data.mjs into vite.config.ts
   setlist-removals-approved.json ← deliberate setlist removals the health check accepts
+  check-taper.mjs       ← blocks tapers' names, contacts, links and tracker names in shows.json (run by the health check)
+  taper-names.sha1.json ← hashes of known handles, for check-taper.mjs (the names themselves stay in private/)
+private/                ← Karl's own records, gitignored, never committed: taper contacts captured before redaction
 _playground/            ← dev-only UI experiments, never imported by the live app
   branding/             ← logo and typographic effect experiments
   grid/                 ← card layout and filter chip experiments
@@ -102,11 +106,11 @@ dev`) derives three files from it (`scripts/site-data.mjs`, wired in by
 `scripts/vite-plugin-site-data.mjs`):
 
 - `shows-lite.json` — every record minus `Notes` and the pipeline-only fields in `DROPPED`
-  (`FolderPath`, `RepVideoFiles`, `Lineage`, `LastScannedAt`, …). Loaded first, about a quarter of
+  (`Lineage`, `LastScannedAt`, `Width`, …). Loaded first, about a quarter of
   the full file.
 - `show-notes.json` — `{ ShowID: Notes }`, loaded straight after.
-- `shows.json` — the full records minus the `PRIVATE` fields (`PrivateNotes`), written over the
-  copy Vite publishes. The site's fallback; never carries a private field.
+- `shows.json` — the full records minus the `PRIVATE` fields (`PrivateNotes`, and the drive's
+  folder and file names, which can carry a taper's handle), written over the copy Vite publishes. The site's fallback; never carries a private field.
 
 Nothing to do when editing `shows.json`. Two rules for code: **read Notes only through
 `getNotes`** from `useShows` (show objects on the site carry no `Notes`), and **before displaying a
@@ -129,7 +133,7 @@ Flat JSON array of show objects. Key fields:
 | `RecordingType` | string | "Proshot", "Soundboard", "Audience": how it was **filmed**. Never "Documentary"; the health check rejects it |
 | `ContentType` | `"Documentary"` or absent | What the record **is**. Absent = a live show. Drives the card badge and the drawer pill (the Live / Documentaries filter was removed, 2026-10-13). See *Documentaries* below |
 | `ChecksumSHA1` | 40-char hex string | SHA1 of the source file; used as image key |
-| `Notes` | string | **Public.** Only text pasted verbatim from the show's own sidecar files, each under `---- filename ----`. Shown in the drawer. See *Notes and PrivateNotes* |
+| `Notes` | string | **Public.** Only text pasted verbatim from the show's own sidecar files, each under `---- filename ----`, minus tapers' names, contacts and links. Shown in the drawer. See *Notes and PrivateNotes* and *Tapers are never named* |
 | `PrivateNotes` | string or absent | **Never on the site.** Everything Claude or Karl writes: provenance, corrections and their evidence, capture and identity notes. See *Notes and PrivateNotes* |
 | `Hidden` | `"Yes"` or absent | Keeps the record in `shows.json` but off the site (filtered in `src/hooks/useShows.ts`). For two records of one recording where only one should show: set `DuplicateOf` to the shown record and say why in `PrivateNotes`. `DuplicateOf` alone does **not** hide (Jay-Z and Jack White carry it and are meant to show) |
 | `ParentShowID` | ShowID or absent | Set on a record cut from a multi-artist **master** recording (festival broadcast, talk-show compilation). The drawer links to the master ("Part of …"); the master's drawer lists its records under "On this recording". One level only; the master must not be hidden. Checked by the health check |
@@ -144,7 +148,30 @@ goes in `PrivateNotes`, which never reaches the site.**
 - `PrivateNotes` — every word Claude or Karl writes: why a field changed and the evidence, splits
   and links, capture and aspect notes, identity checks, dated headings like `CONTENT TYPE (date)`.
   When in doubt, it goes here. Add new entries at the end, each starting with what and when.
-- Visible to Karl in the Show Editor; `npm run check:perf` fails if it is ever published.
+- Visible to Karl in the Show Editor; `npm run check:perf` fails if it is ever published. It is
+  still in the public repository, so it names no taper either (below).
+
+### Tapers are never named
+**The owner's rule (2026-10-16): no taper's or uploader's name, handle, email address or website,
+and no tracker or trading-site name, anywhere in `shows.json`.** Traders must not go round Karl to
+the taper, nobody's contact details go out without their permission, and the repository is public.
+Lineage and Generation are published; the people in them are not.
+- After pasting a sidecar into `Notes` (or any re-scan), run the redaction. It first captures every
+  name, contact and link into `private/` (gitignored: `taper-contacts.md`, Karl's master record;
+  `taper-originals.json`, the original text), then removes them from Lineage, Notes and
+  SourceEquipment, marks them `[taper]` / `[tracker]` in PrivateNotes, and drops credit lines from
+  Setlist:
+
+  ```bash
+  node tools/taper-redaction/apply.mjs            # dry run
+  node tools/taper-redaction/apply.mjs --apply
+  ```
+- The health check blocks a push while any remain (`scripts/check-taper.mjs`: the rules, plus
+  hashes of known handles in `scripts/taper-names.sha1.json`, so the repo never states them).
+- Never write a taper's name, email or link into any field, PrivateNotes included, nor into a
+  tracked file, a code comment or a commit message. Write `[taper]`.
+- Exempt: `FolderName`, `FolderPath`, `RepVideoFiles` — the tools find folders on the drive by
+  them — and never published on the site (`PRIVATE` in `scripts/site-data.mjs`).
 
 ### Documentaries — `ContentType`
 **The owner's rule: a record is a Documentary when half or more of its runtime is people talking
@@ -296,8 +323,8 @@ rename the image files, update the manifest key, clear the Note.
   command: `git add path/new && git commit -m "…" -- path/new path/other`.
 - **Add by explicit path, never by directory, never with `-f`** (the old `git add -f public/`
   habit re-committed `public/.DS_Store`).
-- Git ignores `dist/`, `public/images/temp-images/`, `tools/show-editor/index.html`,
-  `.claude/settings.local.json`, and every `.claude/skills/` folder except `concert-screenshots/`
+- Git ignores `dist/`, `public/images/temp-images/`, `tools/show-editor/index.html`, `private/`,
+  the data-pipeline's CSV/JSON/PDF outputs, `.claude/settings.local.json`, and every `.claude/skills/` folder except `concert-screenshots/`
   and `va-masters/` (the design skills are local). `_playground/` is tracked but never shipped.
 - **Tailwind v4 reads class names from every file git does not ignore.** A tracked folder that is
   not the site must be excluded in `styles/globals.css` with `@source not` (as `public/`,
@@ -312,10 +339,11 @@ rename the image files, update the manifest key, clear the Note.
   `Artist`; duplicate ShowIDs; a `ParentShowID` that is not a record, is a hidden master of a shown
   record, is itself linked, or lacks `SegmentStart` < `SegmentEnd` (`H:MM:SS`); a `ContentType`
   other than `Documentary`, or "Documentary" in `RecordingType`; one artist under two names, or a
-  name starting with "The"; a manifest slot whose file is missing; **setlist loss**.
+  name starting with "The"; a manifest slot whose file is missing; **setlist loss**; a taper's
+  name, contact, link or tracker name in `shows.json` (*Tapers are never named*).
 - **Setlist loss** — a song gone from a `Setlist`. Songs that moved to a record which gained them
   (a split) pass; a deliberate removal needs an entry in `scripts/setlist-removals-approved.json`
-  with the exact strings and the reason. It compares the working tree with `HEAD`, so it sees only
+  with the exact strings and the reason (or `sha1:<hash>` of a string that names a taper). It compares the working tree with `HEAD`, so it sees only
   **uncommitted** changes: run it before committing a `shows.json` edit.
 - **Warns only:** checksums missing from the manifest, orphaned images, temp checksums, files left
   in `temp-images/`, records with no checksum, deprecated or garbage `EventOrFestival` values, a
@@ -494,7 +522,8 @@ Stereo*).
 08_final_create_master_CSV/          final merge → shows.json
 ```
 
-**Its CSVs are historical archives — do not edit them.** `public/shows.json` has been corrected by
+**Its CSVs are historical archives — do not edit them. They are not in git** (2026-10-16: they hold
+every sidecar's raw text, tapers' contacts included); they stay on disk, ignored. `public/shows.json` has been corrected by
 hand record by record since; **never copy the pipeline's output over it** (the summary in
 `data-pipeline/README/` says to; it is superseded). The pipeline reruns only when a new drive is
 added, and that workflow is not finalised.
@@ -503,7 +532,7 @@ added, and that workflow is not finalised.
 finds — and the repo is public.** The Big Daddy scan walked a PC backup (`Karls PC before it dies/`)
 and committed text from Karl's personal documents; on 2026-10-07 those 19 rows were purged from
 every commit and force-pushed. Before committing any scan output, check its folder paths and Notes
-for anything that is not a show.
+for anything that is not a show, and run the taper redaction.
 
 ### Drives
 `MasterDriveName` is the drive a record was **originally catalogued from** (mostly `Seagate

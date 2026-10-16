@@ -437,6 +437,7 @@ section('Setlist loss guard')
 # parent's songs move to the children, so any song still present on another
 # record is not a loss.
 import subprocess as _sp
+import hashlib as _hashlib
 
 def _songs(t):
     return [x.strip() for x in (t or '').split(';') if x.strip()]
@@ -488,8 +489,13 @@ else:
         _gone = [x for x in _gone if _norm_song(x) not in _now_songs]
         # Deliberate removals are acknowledged in scripts/setlist-removals-approved.json,
         # which forces the reason to be written down rather than silently bypassed.
-        _ok = {_norm_song(x) for x in _approved.get(_sid, {}).get('entries', [])}
-        _gone = [x for x in _gone if _norm_song(x) not in _ok]
+        # An entry may be "sha1:<hash>" of the normalised string, where the
+        # removed text must not be written down (a taper's name; the repo is public).
+        _entries = _approved.get(_sid, {}).get('entries', [])
+        _ok = {_norm_song(x) for x in _entries if not x.startswith('sha1:')}
+        _ok_hash = {x[5:] for x in _entries if x.startswith('sha1:')}
+        _gone = [x for x in _gone if _norm_song(x) not in _ok
+                 and _hashlib.sha1(_norm_song(x).encode()).hexdigest() not in _ok_hash]
         if _gone:
             _losses.append((_sid, _old.get('Artist', ''), len(_o), len(_n), _gone))
     if _losses:
@@ -501,6 +507,27 @@ else:
         print('  message says so. If a folder was split, put the songs on the child records.')
     else:
         print('  No setlist songs lost against HEAD — OK')
+
+# ── 14. Taper names, contacts and links ──────────────────────────────────────
+# Owner's rule (2026-10-16): no taper's or uploader's name, email, website or
+# tracker name in shows.json — the repository is public. The rules and the
+# hashed list of known handles live in scripts/check-taper.mjs.
+
+section('Taper names, contacts and links')
+try:
+    _tp = _sp.run(['node', os.path.join(ROOT, 'scripts', 'check-taper.mjs')],
+                  capture_output=True, text=True, cwd=str(ROOT))
+    if _tp.returncode == 0:
+        print('  ' + (_tp.stdout.strip().splitlines() or ['OK'])[-1])
+    else:
+        _lines = [l for l in _tp.stdout.splitlines() if l.strip()] or [_tp.stderr.strip()[:300]]
+        for _l in _lines[:20]:
+            error(f'  Taper text in shows.json: {_l}')
+        if len(_lines) > 20:
+            error(f'  … and {len(_lines) - 20} more')
+        print('  Capture and remove it with: node tools/taper-redaction/apply.mjs --apply')
+except FileNotFoundError:
+    warn('  node not found — taper check skipped (run: node scripts/check-taper.mjs)')
 
 # ── Summary ───────────────────────────────────────────────────────────────────
 

@@ -1,5 +1,5 @@
 {
-  "_README": "Deliberate Setlist removals, acknowledged so the health-check guard passes. One entry per ShowID. 'entries' are the exact strings removed; 'why' must say why they were not songs. Anything removed WITHOUT an entry here blocks the push.",
+  "_README": "Deliberate Setlist removals, acknowledged so the health-check guard passes. One entry per ShowID. 'entries' are the exact strings removed; 'why' must say why they were not songs. An entry may be \"sha1:<hash>\" of the normalised string where the string itself must not be published (a taper's name). An entry may be \"sha1:<hash>\" of the normalised string where the string itself must not be published (a taper's name). An entry may be \"sha1:<hash>\" of the normalised string where the string itself must not be published (a taper's name). Anything removed WITHOUT an entry here blocks the push.",
   "38936833f4cd": {
     "artist": "Chris Cornell",
     "show": "Argentina 12-08-2007",
@@ -7,7 +7,7 @@
       "Full Concert",
       "Internal ProShot DVD (never aired)",
       "Cover Included",
-      "Thanx to PREACHER from BTARG"
+      "sha1:09e057e07a1c32ae04121ef35753521a4182b18f"
     ],
     "why": "Provenance lines from the header of the folder's info.txt, imported into Setlist as if they were songs. The real setlist is the disc's 18 numbered tracks, which the field now holds; two of those tracks were missing while this junk was present."
   },
@@ -67,8 +67,8 @@
       "broadcast by Europe2 TV french cable/satellite channel",
       "the DVD is chaptered",
       "removed the TV logo with VirtualDub Mod using LogoAway filter",
-      "DVD inlay artwork by Pierre L",
-      "Pierre L"
+      "sha1:e909a4c22f92de6b0946a3610c8c670be3a21de1",
+      "sha1:f6e9c68ec3344a8d6852de3b7be750e5dbeb07ff"
     ],
     "why": "Three header lines and eight lines of transfer/authoring notes from the sidecar, imported as songs. The venue and country were moved into their own fields; the broadcast source is recorded in Notes. All thirteen real songs are kept."
   },
@@ -192,7 +192,7 @@
       "Zwan",
       "Billy Corgan",
       "Various TV appearances",
-      "RumoredToTheStraight&Narrow"
+      "sha1:2e7f08d531d3b524e6d9f547e25ce0afb5c6e4f8"
     ],
     "why": "Three artist names, a description line and the uploader's handle, taken from the head and foot of sp_zwan_corgan_DVD1.txt. None was a song. The disc is eleven separate TV appearances kept as one record; each is named in Notes with its date where known."
   },
@@ -216,7 +216,7 @@
       "Ava Adore",
       "songs not available on other versions of this show",
       "clips from 2003/01/27",
-      "thanks to Josh Provost and Matt Krueger for sending me their tapes to transfer",
+      "sha1:6f4910550b185d006ed1d3f788e7e60a88992f40",
       "rhinowing"
     ],
     "why": "Descriptive prose and credits from tsp_90-03_comp.txt, imported as songs. The sidecar describes a 1990-2003 compilation of eight segments, but only ONE was ever downloaded - the folder holds a single titleset plus a uTorrent part file. That titleset is the sidecar's segment 04, Eurockeennes 1997-07-04, whose three songs the field now holds and whose 13:19 runtime matches the record exactly. 'Ava Adore' is a real song but belongs to segment 05 (TFI Friday 1998), which is not on the drive."
@@ -345,7 +345,7 @@
     "artist": "R.E.M.",
     "show": "Orpheum, Vienna 1998-11-06",
     "entries": [
-      "TV broadcast (proshot) from the Up promotional tour. I got this from murmurs tracker in June 2006 where it was seeded by Crazy",
+      "sha1:63b4f03530d5f35eff7cc25e0e8f7272dac9a5bf",
       "R.E.M",
       "Running time 91 min 31 s"
     ],
@@ -395,7 +395,7 @@
       "Womble warns this is a non-standard DVD. This is I think because the frame size broadcast by BBCi is not one of",
       "the DVD standard ones. It plays fine in my standalone DVD player (a Sony) and should do in most others",
       "The BBC track transitions aren't very smooth",
-      "There's a version of this on Zomb combining the two broadcasts but it appears to be bloated from a DVD recorder recording",
+      "sha1:81e42b34c3a15a469d5f8e3c61a46a4bf6c501f1",
       "Land Of Sunshine"
     ],
     "why": "The sidecar was pasted in wholesale: the release name, a credit to another uploader, the header block and the Womble non-standard-DVD warning all sat in Setlist as songs. Rebuilt from the sidecar's numbered eight-track list. 'Land Of Sunshine' is not removed - it is the last track and now reads 'Land Of Sunshine (incomplete)', the house marker for a partial list."
@@ -505,17 +505,17 @@
     "artist": "Pearl Jam",
     "show": "Rock im Park 2000-06-11 (was 'Germany 2000')",
     "entries": [
-      "roryglzep(a.k.a. Jeff)",
-      "Claretkid(a.k.a. Andrew)",
-      "Prudence(a.k.a. Stevie)",
-      "TheSeizure(a.k.a. Stefan)",
-      "Jorcarelo(a.k.a. Joca)",
-      "Estimatedrudi(a.k.a. Rudi)",
+      "sha1:b3ce55e15165e614202e63bb9ab6d336934a95c5",
+      "sha1:1a829d1cfc65071b7b6f5fa0be451b33e53dafd4",
+      "sha1:ab49b926deed0039c1c381a6afc645d27f40c8d3",
+      "sha1:06e6412e57f0568787cf755ee8ca6d7802ba43f3",
+      "sha1:995a16161a33e4e967f2b42a23667deb48239806",
+      "sha1:b4e82ff1421ba768d277cd2e45d47ae3b892e2c1",
       "I apologize if I missed to include some Rory mafia member",
-      "BluesOxator(a.k.a. Christian)",
-      "raimax a.k.a. rainerneu(a.k.a. Rainer)",
-      "chico1610 (a.k.a HO)",
-      "RoryGallagher(a.k.a. Axel)",
+      "sha1:c3881a75baabb55cd8dba1183617c88967bbad76",
+      "sha1:35b0f36a8526e441ce597532a35877b6cbb74bc7",
+      "sha1:8883b54957b677e8b490514d5b67c6e22c46cd50",
+      "sha1:8d05c7aeff0be7a79754670a759d2e733ea5efe0",
       "No artwork",
       "I Do... ...as well",
       "P&L",
@@ -594,9 +594,9 @@
     "show": "Reading Festival 2011-08-27",
     "entries": [
       "The Strokes",
-      "This DVD was made thanks to the TS recording posted by Ural on alt.binaries.boneless"
+      "sha1:980122de55ea7a1ac01fb0aa14fb708d3b37a20a"
     ],
-    "why": "A header line and a trailer line from the folder's EXTRAS_TS/info.txt, imported into Setlist as if they were songs. The sidecar opens 'The Strokes / 2011-08-27 / Reading Festival, Reading, England' and closes with the provenance note about Ural's .ts recording. The rebuild uses the sidecar's 18 numbered tracks and ADDS two real songs the record was missing, 'What Ever Happened?' and 'Alone, Together'."
+    "why": "A header line and a trailer line from the folder's EXTRAS_TS/info.txt, imported into Setlist as if they were songs. The sidecar opens 'The Strokes / 2011-08-27 / Reading Festival, Reading, England' and closes with the provenance note about an uploader's .ts recording. The rebuild uses the sidecar's 18 numbered tracks and ADDS two real songs the record was missing, 'What Ever Happened?' and 'Alone, Together'."
   },
   "4f7a30142bcd": {
     "artist": "Soundgarden",
@@ -855,7 +855,7 @@
     "entries": [
       "what are you sharing with all of us",
       "No artwork",
-      "Announcement by Thorsten Sellheim",
+      "sha1:df2a74f8eb6d1a69808a30d235e0b42066718662",
       "The Local Boy In The Photograph",
       "P&L"
     ],
@@ -1102,7 +1102,7 @@
       "WEEZER",
       "GENERATION",
       "NOTES",
-      "Transferred by Dennis Mehren (DeMe)"
+      "sha1:ed913a2521fd87d7f1e2bc27c04bb795c2b9fdcd"
     ],
     "why": "Section headings and the transfer credit from the folder's Info.txt, imported into Setlist as if they were songs. The six numbered tracks remain."
   },
@@ -1121,17 +1121,17 @@
     "artist": "Manic Street Preachers",
     "show": "Rock am Ring 2001-06-01",
     "entries": [
-      "roryglzep(a.k.a. Jeff)",
-      "Claretkid(a.k.a. Andrew)",
-      "Prudence(a.k.a. Stevie)",
-      "TheSeizure(a.k.a. Stefan)",
-      "Jorcarelo(a.k.a. Joca)",
-      "Estimatedrudi(a.k.a. Rudi)",
+      "sha1:b3ce55e15165e614202e63bb9ab6d336934a95c5",
+      "sha1:1a829d1cfc65071b7b6f5fa0be451b33e53dafd4",
+      "sha1:ab49b926deed0039c1c381a6afc645d27f40c8d3",
+      "sha1:06e6412e57f0568787cf755ee8ca6d7802ba43f3",
+      "sha1:995a16161a33e4e967f2b42a23667deb48239806",
+      "sha1:b4e82ff1421ba768d277cd2e45d47ae3b892e2c1",
       "I apologize if I missed to include some Rory mafia member",
-      "BluesOxator(a.k.a. Christian)",
-      "raimax a.k.a. rainerneu(a.k.a. Rainer)",
-      "chico1610 (a.k.a HO)",
-      "RoryGallagher(a.k.a. Axel)",
+      "sha1:c3881a75baabb55cd8dba1183617c88967bbad76",
+      "sha1:35b0f36a8526e441ce597532a35877b6cbb74bc7",
+      "sha1:8883b54957b677e8b490514d5b67c6e22c46cd50",
+      "sha1:8d05c7aeff0be7a79754670a759d2e733ea5efe0",
       "No artwork",
       "I Do... ...as well",
       "P&L"
@@ -1373,7 +1373,7 @@
       "Song on 'The Jimmy Kimmel Show'",
       "NOvember 26",
       "Hollywood CA USA",
-      "Arte - By Moonwall",
+      "sha1:215f473a94289559d00c868449594301facd3d13",
       "This is a Hoarders Inc. Production a.k.a. Theyodaddy"
     ],
     "why": "The sidecar's header, dates, places and credits had been imported as songs."
@@ -1482,7 +1482,7 @@
       "xx-xx-1971",
       "Larry Steele - bass",
       "Alun Davies - guitar",
-      "Taped/edited by jabulon/brotherawest"
+      "sha1:87e6e0e8463ef5f214ad6f8ad98308dc158ac44a"
     ],
     "why": "Sidecar re-scan 2026-10-05: removed on the owner's choice (review page, option B) - lines the folder's own info file does not list as songs on this recording (header, credits, uploader text, or songs the disc does not carry)."
   },
@@ -1575,7 +1575,7 @@
       "No Timecode",
       "The Kinks",
       "BBC Televison Centre",
-      "Re-posted on DIME by TheCommish",
+      "sha1:6e6b87e5297006bf43aeacc2ee6970c865b3afd6",
       "July 2009"
     ],
     "why": "Sidecar re-scan 2026-10-05: removed on the owner's choice (review page, option B) - lines the folder's own info file does not list as songs on this recording (header, credits, uploader text, or songs the disc does not carry)."
@@ -1688,7 +1688,7 @@
       "seconds before it cut out. This made it possible to edit out seamlessly",
       "The mix of footage used on this tape appears to be different from other versions",
       "same",
-      "Thanks to Cool As Ice Cream for sending me his tapes to transfer",
+      "sha1:7778e3bdd11c8c240cd22ad14b2458a3098772dd",
       "Enjoy",
       "magikarp99"
     ],
@@ -1701,7 +1701,7 @@
       "The Smashing Pumpkins",
       "Intro",
       "Band Intros",
-      "Upped to the hub by Syco54645 on 05-06-2005"
+      "sha1:877d8171596230810a7669b669ec0a7bdca5491c"
     ],
     "why": "Sidecar re-scan 2026-10-05: removed on the owner's choice (review page, option B) - lines the folder's own info file does not list as songs on this recording (header, credits, uploader text, or songs the disc does not carry)."
   },
@@ -1772,5 +1772,13 @@
       "Introduction"
     ],
     "why": "The info file's header line (band name) and the first item of its Contents list, a spoken introduction rather than a song; noted in PrivateNotes. The 13 songs are unchanged."
+  },
+  "25b66e735613": {
+    "artist": "Smashing Pumpkins",
+    "show": "2000-05-23 Universal Amphitheater",
+    "entries": [
+      "sha1:3374fe11478e01d5586875c005479637634121f4"
+    ],
+    "why": "A credit line imported into Setlist as if it were a song; taper names are not published (owner, 2026-10-16). The text is in the owner's private record."
   }
 }

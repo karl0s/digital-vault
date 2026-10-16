@@ -151,6 +151,11 @@ data-pipeline/**/*.numbers
 # public/images/
 # public/shows.json
 
+# The owner's private records: taper names, contacts and links captured before
+# they were removed from shows.json (tools/taper-redaction/apply.mjs). Never
+# commit anything here — the repo is public.
+private/
+
 # Show Editor: generated page (rebuild with tools/show-editor/build.py)
 tools/show-editor/index.html
 

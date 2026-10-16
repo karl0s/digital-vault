@@ -174,7 +174,8 @@ junk patterns (*Taper Jean Girl*, *Running on Faith*, *February Stars*).
 A sidecar in the show's own folder is **authoritative for that show** (written from the disc).
 Read every one before capture and take, in order: **setlist** (house format), **date, venue,
 city**, **lineage** (evidence for aspect and quality), and **non-song segments** (to `PrivateNotes`).
-Paste the file verbatim into `Notes` under `---- filename ----`; name it in `PrivateNotes`. Verify per artist:
+Paste the file verbatim into `Notes` under `---- filename ----`; name it in `PrivateNotes`; then run
+`node tools/taper-redaction/apply.mjs --apply` (CLAUDE.md → *Tapers are never named*). Verify per artist:
 
 ```bash
 python3 scripts/audit-sidecar-setlists.py --artist "Bush"

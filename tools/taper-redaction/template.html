@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Taper redaction review</title>
+<style>
+  @font-face { font-family: 'DM Sans'; src: url('file://__REPO__/public/fonts/dm-sans-latin.woff2') format('woff2'); font-weight: 100 1000; }
+  @font-face { font-family: 'DM Sans'; src: url('file://__REPO__/public/fonts/dm-sans-latin-ext.woff2') format('woff2'); font-weight: 100 1000; unicode-range: U+0100-024F, U+1E00-1EFF; }
+  :root { color-scheme: dark; --g200:#e5e7eb; --g300:#d1d5db; --g400:#9ca3af; --g500:#6b7280; --line: rgba(255,255,255,.08); --del: rgba(248,113,113,.22); --delt: #fca5a5; --keep: #6ee7b7; }
+  * { box-sizing: border-box; } body { margin: 0; background: #141414; color: #fff; font: 14px/1.5 'DM Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  header { position: sticky; top: 0; z-index: 10; background: rgba(20,20,20,.97); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .bar { max-width: 1280px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  h1 { font-size: 18px; margin: 0 8px 0 0; }
+  .bar a { color: var(--g400); text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.06); }
+  .bar a:hover { background: rgba(255,255,255,.12); color: #fff; }
+  .sp { flex: 1; }
+  .kept { color: var(--g400); font-size: 13px; }
+  .copy { border: 0; border-radius: 999px; background: #fff; color: #111; font-weight: 600; padding: 8px 16px; font-size: 13px; }
+  main { max-width: 1280px; margin: 0 auto; padding: 8px 24px 120px; }
+  h2 { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--g400); margin: 44px 0 6px; font-weight: 600; scroll-margin-top: 110px; }
+  h2 span { letter-spacing: 0; text-transform: none; font-weight: 400; color: var(--g500); margin-left: 8px; }
+  .lead { color: var(--g300); margin: 14px 0; max-width: 920px; } .lead b { color: #fff; font-weight: 600; }
+  .sub { color: var(--g400); font-size: 13px; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin-top: 18px; }
+  .stat { border: 1px solid var(--line); background: rgba(255,255,255,.03); border-radius: 12px; padding: 14px 16px; }
+  .stat b { display: block; font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .stat span { color: var(--g400); font-size: 13px; }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; color: var(--g400); font-size: 13px; margin: 10px 0 0; }
+  .legend del, .d del { background: var(--del); color: var(--delt); text-decoration: line-through; text-decoration-color: rgba(252,165,165,.6); border-radius: 3px; padding: 0 2px; }
+
+  .tools { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 4px 0 12px; }
+  .find { border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.07); color: #fff; border-radius: 999px; padding: 7px 14px; font: inherit; min-width: 260px; outline: none; }
+  .chip { border: 0; border-radius: 999px; background: rgba(255,255,255,.06); color: var(--g300); padding: 5px 11px; font-size: 12.5px; }
+  .chip b { color: var(--g500); font-weight: 400; margin-left: 4px; } .chip.on { background: #fafafa; color: #111; } .chip.on b { color: #666; }
+
+  .names { display: flex; flex-wrap: wrap; gap: 6px; }
+  .nm { border: 1px solid rgba(248,113,113,.35); background: rgba(248,113,113,.08); color: var(--delt); border-radius: 999px; padding: 5px 11px; font-size: 13px; }
+  .nm small { color: var(--g500); margin-left: 6px; font-size: 11px; }
+  .nm.keep { border-color: rgba(110,231,183,.45); background: rgba(110,231,183,.08); color: var(--keep); }
+  .nm.keep::after { content: ' · keep'; font-size: 11px; }
+
+  .rec { border: 1px solid var(--line); border-radius: 12px; margin: 10px 0; overflow: hidden; }
+  .rh { display: flex; gap: 10px; align-items: baseline; padding: 10px 14px; background: rgba(255,255,255,.03); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .rh .a { font-weight: 600; } .rh .id { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--g500); }
+  .hid { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--g500); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; }
+  .ed { display: grid; grid-template-columns: 1fr 150px; gap: 14px; padding: 10px 14px; border-top: 1px solid var(--line); align-items: start; }
+  .ed:first-of-type { border-top: 0; }
+  .ed.isKept { background: rgba(110,231,183,.05); }
+  .ed.isKept .d del { background: none; color: inherit; text-decoration: none; }
+  .why { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,.08); color: var(--g300); margin-bottom: 6px; }
+  .why.person { background: rgba(248,113,113,.15); color: var(--delt); } .why.link { background: rgba(96,165,250,.15); color: #93c5fd; }
+  .why.tracker { background: rgba(251,191,36,.13); color: #fcd34d; } .why.filler { background: rgba(255,255,255,.06); color: var(--g400); }
+  .sec { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--g500); margin-left: 6px; }
+  .d { font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; white-space: pre-wrap; word-break: break-word; color: var(--g200); }
+  .lbl { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--g500); margin: 8px 0 2px; }
+  .gone { color: var(--delt); font-size: 12.5px; font-style: italic; }
+  .after { color: #d1fae5; }
+  .tg { border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.04); border-radius: 8px; padding: 7px 10px; font-size: 12.5px; text-align: left; width: 100%; }
+  .tg:hover { background: rgba(255,255,255,.08); }
+  .tg.on { border-color: rgba(110,231,183,.6); background: rgba(110,231,183,.12); color: var(--keep); }
+  textarea { width: 100%; min-height: 110px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05); color: #fff; border-radius: 10px; padding: 12px; font: 13px/1.5 ui-monospace, Menlo, monospace; }
+  .empty { color: var(--g500); padding: 20px 0; }
+  #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #fff; color: #111; padding: 10px 16px; border-radius: 999px; font-weight: 600; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+  #toast.on { opacity: 1; }
+  #out { position: absolute; left: -9999px; }
+  @media (max-width: 720px) { .ed { grid-template-columns: 1fr; } .find { min-width: 0; flex: 1; } }
+</style></head>
+<body>
+<header><div class="bar">
+  <h1>Taper redaction</h1>
+  <a href="#names">Names</a><a href="#lineage">Lineage</a><a href="#notes">Notes</a><a href="#elsewhere">Other shows</a><a href="#missed">Missed names</a>
+  <span class="sp"></span>
+  <span class="kept" id="keptCount"></span>
+  <button class="copy" id="copy">Copy for Claude Code</button>
+</div></header>
+<main>
+  <p class="lead">What would be removed from <b>Lineage</b> and <b>Notes</b> before they go on the site: taper and uploader names and handles, email addresses, links, and tracker or fan-site names. The technical chain stays. <b>Nothing has changed yet</b> — this page only shows what the rules would do.</p>
+  <p class="lead">Everything shown is removed by default. Where a rule got it wrong (it removed equipment, a broadcaster or something harmless), switch that change to <b>Keep</b>. Add any name the rules missed at the bottom. Then press <b>Copy for Claude Code</b> and paste it back.</p>
+  <div class="legend"><span><del>struck red</del> = removed</span><span>green = what's published instead</span><span>“Line removed” = the whole line goes</span></div>
+  <div class="stats" id="stats"></div>
+
+  <h2 id="names">Names the rules found<span id="namesCount"></span></h2>
+  <p class="sub">Every person, handle or site these rules remove. Click one that isn't a person or site to keep it everywhere.</p>
+  <div class="names" id="namesList"></div>
+
+  <h2 id="lineage">Lineage<span id="linCount"></span></h2>
+  <div class="tools"><input class="find" id="findLin" placeholder="Find artist, ShowID or text…"></div>
+  <div id="linList"></div>
+
+  <h2 id="notes">Notes<span id="notesCount"></span></h2>
+  <div class="tools"><input class="find" id="findNotes" placeholder="Find artist, ShowID or text…"><span id="chips"></span></div>
+  <div id="notesList"></div>
+
+  <h2 id="elsewhere">The same name in other shows<span id="elseCount"></span></h2>
+  <p class="sub">A name found in one show's credits that also appears in a show whose own credits don't mention it. Usually the same handle (remove it); sometimes just an ordinary word, a band member or a song title (keep it). Distinctive names start as <b>Remove</b>, ordinary words as <b>Keep</b>.</p>
+  <div id="elseList"></div>
+
+  <h2 id="missed">Names the rules missed</h2>
+  <p class="sub">One per line: a taper, uploader or site you spotted anywhere in the notes that should go too. They'll be added to the rules and removed wherever they appear.</p>
+  <textarea id="extra" placeholder="One name or handle per line"></textarea>
+</main>
+<textarea id="out"></textarea>
+<div id="toast"></div>
+<script>
+const DATA = __DATA__;
+const KEY = 'taper-redaction-v1';
+let st = { keep: {}, keepName: {}, extra: '', elsewhere: {} };
+try { st = Object.assign(st, JSON.parse(localStorage.getItem(KEY)) || {}); } catch {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch {} counts(); };
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const kind = why => /person|credit|signature|contact/.test(why) ? 'person' : /tracker|site|file/.test(why) ? 'tracker' : /link|website/.test(why) ? 'link' : 'filler';
+const KINDS = { person: 'People & contacts', tracker: 'Trackers & sites', link: 'Links', filler: 'Filler' };
+
+/** Word diff: what in `a` is missing from `b`, struck through. */
+function diff(a, b) {
+  const A = a.match(/\s+|[^\s]+/g) || [], B = (b || '').match(/\s+|[^\s]+/g) || [];
+  if (A.length * B.length > 2.5e6) return esc(a);
+  const n = A.length, m = B.length, L = Array.from({ length: n + 1 }, () => new Uint16Array(m + 1));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) L[i][j] = A[i] === B[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+  let i = 0, j = 0, out = '', run = '';
+  const flush = () => { if (run) { out += run.trim() ? `<del>${esc(run)}</del>` : esc(run); run = ''; } };
+  while (i < n) {
+    if (j < m && A[i] === B[j]) { flush(); out += esc(A[i]); i++; j++; }
+    else if (j < m && L[i][j + 1] >= L[i + 1][j]) j++;
+    else { run += A[i]; i++; }
+  }
+  flush();
+  return out;
+}
+
+const S = DATA.stats;
+document.getElementById('stats').innerHTML = [
+  [S.lineageChanged, `of ${S.withLineage} lineage strings change`],
+  [S.notesChanged, `of ${S.withNotes} shows' notes change`],
+  [S.edits, 'changes in all'],
+  [DATA.names.length, 'names, handles and sites found'],
+  [S.generation, 'generation values publish as they are'],
+].map(([b, t]) => `<div class="stat"><b>${b}</b><span>${t}</span></div>`).join('');
+
+function head(r) {
+  return `<div class="rh"><span class="a">${esc(r.artist)}</span><span class="sub">${esc(r.date)}${r.event ? ' · ' + esc(r.event) : ''}</span>${r.hidden ? '<span class="hid">hidden</span>' : ''}<span class="sp"></span><span class="id">${r.id}</span></div>`;
+}
+function toggle(k) { return `<button class="tg${st.keep[k] ? ' on' : ''}" data-k="${esc(k)}">${st.keep[k] ? 'Keep as it was ✓' : 'Keep as it was'}</button>`; }
+
+function renderNames() {
+  document.getElementById('namesCount').textContent = DATA.names.length;
+  document.getElementById('namesList').innerHTML = DATA.names.map(n =>
+    `<button class="nm${st.keepName[n.name] ? ' keep' : ''}" data-n="${esc(n.name)}">${esc(n.name)}<small>${n.count}</small></button>`).join('');
+}
+
+function renderLineage() {
+  const q = document.getElementById('findLin').value.toLowerCase();
+  const rows = DATA.rows.filter(r => r.lineage && (!q || (r.artist + r.id + r.lineage.before).toLowerCase().includes(q)));
+  document.getElementById('linCount').textContent = rows.length;
+  document.getElementById('linList').innerHTML = rows.map(r => {
+    const k = `L:${r.id}`;
+    return `<div class="rec">${head(r)}<div class="ed${st.keep[k] ? ' isKept' : ''}"><div>
+      ${r.lineage.why.map(w => `<span class="why ${kind(w)}">${esc(w)}</span> `).join('')}
+      <div class="lbl">Before</div><div class="d">${diff(r.lineage.before, r.lineage.after)}</div>
+      <div class="lbl">Published</div>${r.lineage.after ? `<div class="d after">${esc(r.lineage.after)}</div>` : '<div class="gone">Nothing left to publish</div>'}
+    </div>${toggle(k)}</div></div>`;
+  }).join('') || '<p class="empty">Nothing matches.</p>';
+}
+
+function elseKey(e) { return `E:${e.id}:${e.name}`; }
+function elseOn(e) { const k = elseKey(e); return k in st.elsewhere ? st.elsewhere[k] : e.remove; }
+function renderElsewhere() {
+  const list = DATA.elsewhere;
+  document.getElementById('elseCount').textContent = list.length;
+  const mark = (line, name) => esc(line).split(esc(name)).join(`<del>${esc(name)}</del>`);
+  document.getElementById('elseList').innerHTML = list.length ? `<div class="rec">${list.map(e => {
+    const on = elseOn(e);
+    return `<div class="ed${on ? '' : ' isKept'}"><div>
+      <span class="why ${on ? 'person' : 'filler'}">${esc(e.name)}</span><span class="sec">${esc(e.artist)} · ${esc(e.date)} · ${e.id}</span>
+      <div class="d">${mark(e.line, e.name)}</div></div>
+      <button class="tg${on ? '' : ' on'}" data-e="${esc(elseKey(e))}" data-def="${e.remove ? 1 : 0}">${on ? 'Remove here too' : 'Keep — not this person ✓'}</button></div>`;
+  }).join('')}</div>` : '<p class="empty">None.</p>';
+}
+
+let kindOn = null;
+function renderNotes() {
+  const q = document.getElementById('findNotes').value.toLowerCase();
+  const all = DATA.rows.filter(r => r.notes.length);
+  const counts = {};
+  for (const r of all) for (const e of r.notes) counts[kind(e.why)] = (counts[kind(e.why)] || 0) + 1;
+  document.getElementById('chips').innerHTML = Object.entries(KINDS).filter(([k]) => counts[k]).map(([k, t]) =>
+    `<button class="chip${kindOn === k ? ' on' : ''}" data-kind="${k}">${t}<b>${counts[k]}</b></button>`).join(' ');
+  const rows = all.map(r => ({ r, eds: r.notes.map((e, i) => ({ e, i })).filter(({ e }) => (!kindOn || kind(e.why) === kindOn)
+      && (!q || (r.artist + r.id + e.before).toLowerCase().includes(q))) })).filter(x => x.eds.length);
+  document.getElementById('notesCount').textContent = `${rows.length} shows · ${rows.reduce((n, x) => n + x.eds.length, 0)} changes`;
+  document.getElementById('notesList').innerHTML = rows.map(({ r, eds }) => `<div class="rec">${head(r)}${eds.map(({ e, i }) => {
+    const k = `N:${r.id}:${i}`;
+    return `<div class="ed${st.keep[k] ? ' isKept' : ''}"><div>
+      <span class="why ${kind(e.why)}">${esc(e.why)}</span>${e.section ? `<span class="sec">${esc(e.section)}</span>` : ''}
+      <div class="d">${e.after === null ? `<del>${esc(e.before)}</del>` : diff(e.before, e.after)}</div>
+      ${e.after === null ? '<div class="gone">Line removed</div>' : `<div class="lbl">Published</div><div class="d after">${esc(e.after)}</div>`}
+    </div>${toggle(k)}</div>`;
+  }).join('')}</div>`).join('') || '<p class="empty">Nothing matches.</p>';
+}
+
+function counts() {
+  const k = Object.values(st.keep).filter(Boolean).length, n = Object.values(st.keepName).filter(Boolean).length;
+  const x = st.extra.split('\n').map(s => s.trim()).filter(Boolean).length;
+  document.getElementById('keptCount').textContent = k || n || x ? `${k} kept · ${n} names kept · ${x} added` : 'All approved so far';
+}
+
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-k]');
+  if (t) { st.keep[t.dataset.k] = !st.keep[t.dataset.k]; save(); t.dataset.k.startsWith('L:') ? renderLineage() : renderNotes(); return; }
+  const ee = e.target.closest('[data-e]');
+  if (ee) { const item = DATA.elsewhere.find(x => elseKey(x) === ee.dataset.e); st.elsewhere[ee.dataset.e] = !elseOn(item); save(); renderElsewhere(); return; }
+  const n = e.target.closest('[data-n]');
+  if (n) { st.keepName[n.dataset.n] = !st.keepName[n.dataset.n]; save(); renderNames(); return; }
+  const c = e.target.closest('[data-kind]');
+  if (c) { kindOn = kindOn === c.dataset.kind ? null : c.dataset.kind; renderNotes(); }
+});
+document.getElementById('findLin').addEventListener('input', renderLineage);
+document.getElementById('findNotes').addEventListener('input', renderNotes);
+const extra = document.getElementById('extra');
+extra.value = st.extra;
+extra.addEventListener('input', () => { st.extra = extra.value; save(); });
+
+function exportText() {
+  const byId = Object.fromEntries(DATA.rows.map(r => [r.id, r]));
+  const lin = [], notes = [];
+  for (const [k, v] of Object.entries(st.keep)) {
+    if (!v) continue;
+    const [t, id, i] = k.split(':');
+    const r = byId[id]; if (!r) continue;
+    if (t === 'L') lin.push(`- ${id} ${r.artist} ${r.date} | ${r.lineage.before}`);
+    else { const e = r.notes[+i]; if (e) notes.push(`- ${id} ${r.artist} ${r.date} | ${e.why} | ${e.before}`); }
+  }
+  const keepNames = Object.entries(st.keepName).filter(([, v]) => v).map(([k]) => k);
+  const elseRemove = DATA.elsewhere.filter(elseOn).map(e => `- ${e.id} ${e.artist} ${e.date} | ${e.name}`);
+  const add = st.extra.split('\n').map(s => s.trim()).filter(Boolean);
+  return [
+    `TAPER REDACTION REVIEW (${new Date().toISOString().slice(0, 10)}) — tools/taper-redaction`,
+    `Everything not listed below is approved for removal.`,
+    ``,
+    `Lineage to keep as it was (${lin.length}):`, ...(lin.length ? lin : ['- none']),
+    ``,
+    `Notes changes to keep as they were (${notes.length}):`, ...(notes.length ? notes : ['- none']),
+    ``,
+    `Not a person or site, keep everywhere (${keepNames.length}): ${keepNames.join('; ') || 'none'}`,
+    ``,
+    `Also remove these names in these other shows (${elseRemove.length}):`, ...(elseRemove.length ? elseRemove : ['- none']),
+    ``,
+    `Names the rules missed, remove everywhere (${add.length}): ${add.join('; ') || 'none'}`,
+  ].join('\n');
+}
+function toast(t) { const el = document.getElementById('toast'); el.textContent = t; el.classList.add('on'); setTimeout(() => el.classList.remove('on'), 1800); }
+document.getElementById('copy').addEventListener('click', async () => {
+  const text = exportText();
+  try { await navigator.clipboard.writeText(text); toast('Copied — paste it into Claude Code'); }
+  catch { const o = document.getElementById('out'); o.value = text; o.focus(); o.select(); document.execCommand('copy'); toast('Copied'); }
+});
+
+renderNames(); renderLineage(); renderNotes(); renderElsewhere(); counts();
+</script>
+</body></html>

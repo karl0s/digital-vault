@@ -148,7 +148,9 @@ ok('no published data file carries a private field',
 // Belt and braces: no private note's text turns up in a published file either,
 // e.g. pasted into Notes by mistake. Long, wordy lines only, so a shared short
 // line or a row of asterisks is not a hit.
-const privateLines = new Set(source.flatMap(s => PRIVATE.flatMap(field => (s[field] || '').split('\n')))
+// PrivateNotes only: the other private fields are folder and file names, and a
+// sidecar's first line often repeats its folder's name.
+const privateLines = new Set(source.flatMap(s => (s.PrivateNotes || '').split('\n'))
   .map(l => l.trim()).filter(l => l.length >= 60 && (l.match(/[A-Za-z]/g) || []).length >= 30));
 const publicNotes = new Set(source.flatMap(s => (s.Notes || '').split('\n').map(l => l.trim())));
 const leaked = [...privateLines].filter(l => publicNotes.has(l));

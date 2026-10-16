@@ -7,7 +7,8 @@ description: Turn a multi-artist recording (festival broadcast, TV compilation, 
 
 **`Notes` is public; `PrivateNotes` never reaches the site.** The running order, sources, billing
 and every other note this procedure writes go in `PrivateNotes`; `Notes` holds only an info file
-from the disc's own folder, pasted verbatim (CLAUDE.md → *Notes and PrivateNotes*).
+from the disc's own folder, pasted verbatim, then redacted with `node tools/taper-redaction/apply.mjs
+--apply` (CLAUDE.md → *Notes and PrivateNotes*, *Tapers are never named*).
 
 The owner's model, stated 2026-09-30:
 

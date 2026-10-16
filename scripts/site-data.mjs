@@ -22,7 +22,10 @@
  * PRIVATE lists fields that never leave the repo: no published file carries
  * them, the deployed shows.json included. PrivateNotes holds Claude's and Karl's
  * working notes (provenance, corrections, evidence); Notes holds only text from
- * the show's own sidecar files and is public. `npm run check:perf` fails if any
+ * the show's own sidecar files and is public. The folder and file names are the
+ * drive's own, which the tools need, and some carry a taper's handle or a site
+ * (as do the scan's ExtractionWarnings, which quote sidecar file names); owner,
+ * 2026-10-16: no taper is named on the site. `npm run check:perf` fails if any
  * published file carries a PRIVATE field, or the site code reads one.
  */
 
@@ -30,13 +33,12 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 export const DROPPED = [
-  'FolderPath', 'FolderName', 'RepVideoFiles', 'RepVideoCount',
   'DuplicateKey', 'DuplicateOf', 'MasterDriveID', 'SourceCatalog', 'PrimaryCatalog', 'IsPrimary',
-  'LastScannedAt', 'ExtractionWarnings', 'Lineage', 'SourceEquipment', 'Generation',
+  'LastScannedAt', 'Lineage', 'SourceEquipment', 'Generation',
   'TotalSizeBytes', 'Width', 'Height',
 ];
 
-export const PRIVATE = ['PrivateNotes'];
+export const PRIVATE = ['PrivateNotes', 'FolderPath', 'FolderName', 'RepVideoFiles', 'RepVideoCount', 'ExtractionWarnings'];
 
 export const LITE_FILE = 'shows-lite.json';
 export const NOTES_FILE = 'show-notes.json';
