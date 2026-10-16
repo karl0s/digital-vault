@@ -107,7 +107,7 @@ dev`) derives three files from it (`scripts/site-data.mjs`, wired in by
 `scripts/vite-plugin-site-data.mjs`):
 
 - `shows-lite.json` — every record minus `Notes` and the pipeline-only fields in `DROPPED`
-  (`LastScannedAt`, `SourceEquipment`, `Width`, …). Loaded first, about a quarter of
+  (`LastScannedAt`, `SourceEquipment`, `TotalSizeBytes`, …). Loaded first, about a quarter of
   the full file.
 - `show-notes.json` — `{ ShowID: Notes }`, loaded straight after.
 - `shows.json` — the full records minus the `PRIVATE` fields (`PrivateNotes`, and the drive's

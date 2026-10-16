@@ -133,14 +133,16 @@ export default function App() {
     if (window.matchMedia('(min-width: 48rem)').matches) searchInputRef.current?.focus({ preventScroll: true });
   }, []);
 
-  // Escape clears the search
+  // Escape clears the search, but not while a show is open: there Escape
+  // closes the show (ShowDrawer), and the results behind it must survive so
+  // the next copy can be opened (F5).
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && searchQuery) { setSearchQuery(''); searchInputRef.current?.focus(); }
+      if (e.key === 'Escape' && searchQuery && !selectedShow) { setSearchQuery(''); searchInputRef.current?.focus(); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [searchQuery]);
+  }, [searchQuery, selectedShow]);
 
   // Stable, because every memoised ShowCard receives it as `onSelect`.
   const handleShowClick = useCallback((show: Show) => {

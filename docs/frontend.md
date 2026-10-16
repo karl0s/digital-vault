@@ -188,14 +188,20 @@ On mobile: full width, `h-dvh` (live dynamic viewport height, so it always fills
 as the URL bar moves — never a static `vh`), sliding up from the bottom. From md: slides in from the
 right at `58vw`, then `52vw` from lg, `41.6vw` from 2xl and `33.3vw` from 3xl (picked per breakpoint
 by the owner, 2026-10-12). It is a modal: `role="dialog"`, focus moves in on open and is
-trapped, Escape closes the image viewer first and then the drawer, focus returns to the card, body
+trapped, Escape closes the image viewer first and then the drawer — and only that: App's "Escape
+clears the search" waits while a show is open, so the results behind survive (F5) — focus returns
+to the card, body
 scroll is locked, and the page behind goes `inert` once the slide-in finishes.
 
 ### Drawer metadata layout (ShowDrawer)
 **Hero** (over the header image): artist name (display font); one subtitle line `Date ·
-EventOrFestival (or VenueName if no event) · Country (or City, Country if no event)`, "Date
-Unknown" when undated; badge pills — `ContentType` (violet), `RecordingType`, Duration (Clock icon
-+ formatted `DurationSec`), `TVStandard`, each only when set.
+EventOrFestival · VenueName · City, Country`, each part only when set and once (the venue is
+dropped when it repeats the event or the city), "Date Unknown" when undated. The place shows for
+festival and TV shows too (owner, 2026-10-16; it was hidden on ~700). Badge pills —
+`ContentType` (violet), `RecordingType`, Duration (Clock icon + formatted `DurationSec`), the
+quality label (`quality()` in `src/lib/specs.ts`: HD 1080, HD 720, SD 576, SD 480, Low-res; the
+resolution as its `title`), and `TVStandard` for SD and low-res copies only — on HD records the
+field is unreliable — each only when set.
 
 The header is a **minimum** height — `min-h-56` (224px) on phones, `21.5vh` from md (owner,
 2026-10-12) — not a fixed one. The title block sits in the flow at its foot (`flex flex-col
@@ -234,9 +240,13 @@ Drive/folder/file metadata is not shown.
 - Column labels: `text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400`.
 - Setlist: numbered `<ol>` from the semicolon-split `Setlist`; `Encore break` is an ordinary
   numbered item (the "On this recording" song counts leave it out).
-- Technical: `techRows` of `{ label, value, mono }` — Video, Aspect, Standard, Container, Audio,
-  Channels, Sample rate, Size, Files; label `w-16 text-xs text-gray-400`, value `text-gray-200`
-  (`font-mono` for codec-like values); only rows with a value, and no panel when there are none.
+- Technical: `techRows` of `{ label, value, mono }` — Video, Resolution, Aspect, Standard (SD
+  only), Container, Audio, Channels, Sample rate, Folder; label `w-16 text-xs text-gray-400`, value
+  `text-gray-200`; only rows with a value, and no panel when there are none. Values are in traders'
+  words, from `src/lib/specs.ts` (MPEG-2, H.264, Dolby Digital (AC-3), LPCM, DVD-Video (VOB),
+  MPEG-TS, Stereo, 5.1, 48 kHz; "(native)" dropped from the aspect); an unknown codec shows as
+  stored. **Folder** joins size and file count ("2.71 GB · 8 files"), since both describe the
+  whole folder, which can hold more than this show.
 - Provenance, under a hairline in the same panel (owner, 2026-10-16): **Generation** as a row, then
   **Lineage** — `lineageChains` splits the field on ` | ` (separate sources or passes) and on arrows
   (`>`, `->`, `=>`, `>>`, `→`; the steps of one), and each chain renders as an `<ol>` on a thin rule
@@ -261,7 +271,9 @@ Tailwind v4: use `bg-linear-to-t`, not `bg-gradient-to-t` (deprecated).
   close button (`z-60`). **× means one thing everywhere** (owner, 2026-10-12): the drawer's close
   button stays visible over the viewer and closes the show. Its twin on the left, a round **Back**
   button (`ChevronLeft`, same style, `aria-label="Back to the show"`), returns to the thumbnails;
-  beside it the artist name and `Screenshot N of M`, set like the docked header bar. Both carry
+  beside it the artist name and `Screenshot N of M · Open full size` — the original JPEG in a new
+  tab, at 100% (the viewer fits the drawer, too small to judge an encode), set like the docked
+  header bar; a click on the link does not count as a click in the dark around the picture. Both carry
   the docking transform (`drawer-dock-back`, `drawer-dock-follow`), so they line up with × whether
   or not the header is docked. Back also on Esc and on a click in the dark around the picture.
 - Focus: Back takes focus when the viewer opens; going back returns it to the thumbnail

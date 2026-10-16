@@ -15,26 +15,26 @@
 
 ## Progress tracker
 
-*Updated with every change that touches a finding. Last update: 2026-10-16.*
+*Updated with every change that touches a finding. Last update: 2026-10-16 (batch A).*
 
 ✅ done · 🟡 partly done · ⬜ to do · 📅 planned (needs the drive mounted)
 
 | # | Finding | Status | Done so far | Still to do |
 |---|---|---|---|---|
-| [F1](#f1--which-copy-is-better-cant-be-answered) | Which copy is better | 🟡 | Generation and Lineage in the drawer's Technical panel (`1cffc551`), cleaned of tapers first (`0b538a57`) | Resolution and an HD / SD / low-res label; trader names for codecs; an honest size label; Source on the 329 blank records; frame rate, bitrate, chapters (drive scan) |
+| [F1](#f1--which-copy-is-better-cant-be-answered) | Which copy is better | 🟡 | Generation and Lineage in the drawer (`1cffc551`), cleaned of tapers first (`0b538a57`). Batch A: quality badge (HD 1080 / HD 720 / SD 576 / SD 480 / Low-res), Resolution row, PAL/NTSC on SD only, codecs and containers in traders' words, size and file count as one "Folder" row | Source on the 329 blank records; frame rate, bitrate, chapters (drive scan) |
 | [F2](#f2--recordings-of-the-same-show-arent-grouped-and-their-cards-are-identical) | Copies of one show not grouped | ⬜ | Quiet spec line on cards agreed (2026-10-16) | "Other recordings of this show" table in the drawer; full date and spec line on cards; "3 recordings" marker |
 | [F3](#f3--nothing-can-be-linked-and-back-leaves-the-site) | No show links; Back leaves the site | ⬜ | Wanted for sharing and analytics (2026-10-16) | `?show=` links; Back closes the show; page description and preview image; later, a page per show |
 | [F4](#f4--pointing-at-one-exact-recording-is-hard) | Pointing at one exact recording | ⬜ | No contact details on the site (your answer) | Share / Copy link button with a one-line reference (after F3) |
-| [F5](#f5--escape-erases-the-search-behind-an-open-show) | Escape erases the search | ⬜ | | One-line fix in `App.tsx` |
+| [F5](#f5--escape-erases-the-search-behind-an-open-show) | Escape erases the search | ✅ | Batch A: Escape closes only the show; the results stay, so the next copy is one click away | — |
 | [F6](#f6--search-doesnt-match-how-traders-type) | Search misses how traders type | ⬜ | | Dates, abbreviations, country and city names, tech terms, combined field syntax, search tips |
 | [F7](#f7--placeholder-dates-look-like-real-dates) | Placeholder dates look real | ⬜ | | `DatePrecision` field and display; backfill |
 | [F8](#f8--empty-results-blame-spelling-when-a-filter-is-the-cause) | Empty results blame spelling | ⬜ | | Name the active filters; offer to drop them |
-| [F9](#f9--the-drawer-hides-venue-and-city-for-festival-and-tv-shows) | Venue and city hidden | ⬜ | | Always show the place in the drawer |
+| [F9](#f9--the-drawer-hides-venue-and-city-for-festival-and-tv-shows) | Venue and city hidden | ✅ | Batch A: `Date · Event · Venue · City, Country` under the name for every show | — |
 | [F10](#f10--no-dense-list-export-or-useful-sort-for-reconciling-a-trading-list) | No list view or export | ⬜ | | Grid / List toggle, CSV download, more sorts, print |
 | [F11](#f11--returning-traders-cant-see-whats-new) | No "what's new" | ⬜ | | `AddedOn` field, "Recently added" row, sort, RSS |
 | [F12](#f12--filters-dont-cover-what-traders-decide-by) | Filters miss trader dimensions | ⬜ | "More filters" control agreed (2026-10-16) | Source, quality, standard, length, has setlist |
 | [F13](#f13--too-faint-and-too-small-for-eyes-aged-4060) | Too faint, too small | ⬜ | | Contrast and sizes |
-| [F14](#f14--stills-cant-be-inspected-closely) | Stills can't be inspected | ⬜ | | "View full size" in the viewer |
+| [F14](#f14--stills-cant-be-inspected-closely) | Stills can't be inspected | ✅ | Batch A: "Open full size" in the screenshot viewer (the original, at 100%, in a new tab) | — |
 | [F15](#f15--setlists-non-songs-counted-as-songs-the-searched-song-isnt-highlighted) | Setlist quality | 🟡 | One credit line removed from a Setlist (`0b538a57`) | 32 non-song entries; encore as a divider; highlight the searched song |
 | [F16](#f16--a-first-visit-doesnt-say-what-this-is) | First visit doesn't say what this is | ⬜ | Lower priority: your email introduces the site | One plain line under the tagline |
 | [F17](#low) | Truncation and formats | ⬜ | | Tooltips; one duration and label format |
@@ -47,14 +47,14 @@
 
 | Journey | At the review | Now |
 |---|---|---|
-| J1 Do you have it? | 🟡 Partial | 🟡 unchanged |
-| J2 Is yours better? | 🔴 Fail | 🔴 Generation and lineage now readable; resolution still missing and copies still ungrouped |
+| J1 Do you have it? | 🟡 Partial | 🟡 The place now confirms the show; searching by date is still missing (batch B) |
+| J2 Is yours better? | 🔴 Fail | 🟡 Each copy now says HD or SD, its resolution, generation and lineage, and Escape keeps the list; copies are still not grouped or compared side by side (batch D) |
 | J3 Artist audit | 🟡 Partial | 🟡 unchanged |
 | J4 Song hunt | 🟢 Pass | 🟢 unchanged |
 | J5 Event dig | 🟡 Partial | 🟡 unchanged |
 | J6 Share and request | 🔴 Fail | 🔴 unchanged (contact is by your email; links still missing) |
 | J7 What's new | 🔴 Fail | 🔴 unchanged |
-| J8 Evidence check | 🟡 Partial | 🟡 Lineage now beside the stills; no full-size view yet |
+| J8 Evidence check | 🟡 Partial | 🟢 Stills open at full size; lineage, resolution and codecs beside them |
 
 ---
 
@@ -103,18 +103,18 @@ use. The highest score goes first. Where two items touch the same code they are 
 
 | Rank | Fix | Finding | Impact | Reach | Conf. | Effort | **Score** | Why | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | Resolution and an HD / SD / low-res label; trader names for codecs | [F1](#f1--which-copy-is-better-cant-be-answered) | 3 | 3 | 1.0 | 1 | **9.0** | Decides "which copy is better"; the data is on all 1,213 shows; 124 HD records are never called HD | ⬜ |
+| 1 | Resolution and an HD / SD / low-res label; trader names for codecs | [F1](#f1--which-copy-is-better-cant-be-answered) | 3 | 3 | 1.0 | 1 | **9.0** | Decides "which copy is better"; the data is on all 1,213 shows; 124 HD records are never called HD | ✅ batch A |
 | 2 | Search by date, in every format | [F6](#f6--search-doesnt-match-how-traders-type) | 3 | 3 | 1.0 | 1 | **9.0** | A date is the trader's first search; every format returns nothing today | ⬜ |
-| 3 | Venue and city always in the drawer | [F9](#f9--the-drawer-hides-venue-and-city-for-festival-and-tv-shows) | 2 | 3 | 1.0 | 1 | **6.0** | Identity of the show; hidden on 699 shows (venue) and 843 (city) | ⬜ |
+| 3 | Venue and city always in the drawer | [F9](#f9--the-drawer-hides-venue-and-city-for-festival-and-tv-shows) | 2 | 3 | 1.0 | 1 | **6.0** | Identity of the show; hidden on 699 shows (venue) and 843 (city) | ✅ batch A |
 | 4 | A link for every show; Back closes the show; link previews | [F3](#f3--nothing-can-be-linked-and-back-leaves-the-site) | 3 | 3 | 1.0 | 2 | **4.5** | Sharing fails, and Back leaves the site on every phone; also unlocks #7 and analytics, which you asked for | ⬜ |
-| 5 | Escape keeps the search | [F5](#f5--escape-erases-the-search-behind-an-open-show) | 2 | 2 | 1.0 | 1 | **4.0** | A real bug, but × works and only keyboard users hit it; one line, so it rides along with batch A | ⬜ |
+| 5 | Escape keeps the search | [F5](#f5--escape-erases-the-search-behind-an-open-show) | 2 | 2 | 1.0 | 1 | **4.0** | A real bug, but × works and only keyboard users hit it; one line, so it rides along with batch A | ✅ batch A |
 | 6 | Artist abbreviations (RATM, FNM…); no wrong "Did you mean" | [F6](#f6--search-doesnt-match-how-traders-type) | 2 | 2 | 1.0 | 1 | **4.0** | The full name works, so it's a detour, not a block | ⬜ |
 | 7 | Share button with a one-line reference | [F4](#f4--pointing-at-one-exact-recording-is-hard) | 2 | 2 | 0.8 | 1 | **3.2** | Waits for #4 | ⬜ |
 | 8 | Full date and a quiet spec line on cards (agreed) | [F2](#f2--recordings-of-the-same-show-arent-grouped-and-their-cards-are-identical) | 2 | 3 | 1.0 | 2 | **3.0** | 375 look-alike cards; a card change needs performance runs | ⬜ |
 | 9 | "Other recordings of this show" table | [F2](#f2--recordings-of-the-same-show-arent-grouped-and-their-cards-are-identical) | 3 | 2 | 1.0 | 2 | **3.0** | The heart of J2, but only 118 shows (288 records) have several copies | ⬜ |
 | 10 | Contrast and text sizes | [F13](#f13--too-faint-and-too-small-for-eyes-aged-4060) | 1 | 3 | 1.0 | 1 | **3.0** | Every visit, but it slows people rather than stopping them | ⬜ |
 | 11 | Empty results name the active filters | [F8](#f8--empty-results-blame-spelling-when-a-filter-is-the-cause) | 2 | 1 | 1.0 | 1 | **2.0** | A wrong conclusion, but only with a filter and a search together | ⬜ |
-| 12 | View a still at full size | [F14](#f14--stills-cant-be-inspected-closely) | 1 | 2 | 1.0 | 1 | **2.0** | Helps judge an encode; the stills already show logos | ⬜ |
+| 12 | View a still at full size | [F14](#f14--stills-cant-be-inspected-closely) | 1 | 2 | 1.0 | 1 | **2.0** | Helps judge an encode; the stills already show logos | ✅ batch A |
 | 13 | One format for durations and labels; tooltips on cut-off text | [F17](#low) | 1 | 2 | 1.0 | 1 | **2.0** | Polish | ⬜ |
 | 14 | Country, city and event synonyms; tech terms; search tips | [F6](#f6--search-doesnt-match-how-traders-type) | 2 | 2 | 1.0 | 2 | **2.0** | Fewer misses, more work than dates | ⬜ |
 | 15 | List view and CSV download | [F10](#f10--no-dense-list-export-or-useful-sort-for-reconciling-a-trading-list) | 2 | 2 | 0.8 | 2 | **1.6** | Predicted from how traders keep lists; not yet seen | ⬜ |
@@ -137,7 +137,7 @@ A batch's place comes from its best score.
 
 | Batch | Ranks | What | Why together |
 |---|---|---|---|
-| **A. The drawer's facts** | 1, 3, 12, plus 5 | Resolution and HD/SD label with codec names; venue and city; full-size still; the Escape fix | All in the show drawer; one performance run covers them |
+| **A. The drawer's facts** ✅ | 1, 3, 12, plus 5 | Resolution and HD/SD label with codec names; venue and city; full-size still; the Escape fix | All in the show drawer; one performance run covers them |
 | **B. Search** | 2, 6, 11, then 14 | Dates; abbreviations; empty results; then synonyms and tips | All in the search index and results page, with one set of search tests |
 | **C. Links and sharing** | 4, 7 | Show links, Back, previews; then Share | Share needs the links |
 | **D. Cards and copies** | 8, 9, 13 | Full date and spec line; other recordings; formats | Cards are the most performance-sensitive part of the site |

@@ -35,7 +35,7 @@ import { join } from 'node:path';
 export const DROPPED = [
   'DuplicateKey', 'DuplicateOf', 'MasterDriveID', 'SourceCatalog', 'PrimaryCatalog', 'IsPrimary',
   'LastScannedAt', 'SourceEquipment',
-  'TotalSizeBytes', 'Width', 'Height',
+  'TotalSizeBytes',
 ];
 
 export const PRIVATE = ['PrivateNotes', 'FolderPath', 'FolderName', 'RepVideoFiles', 'RepVideoCount', 'ExtractionWarnings'];

@@ -5,6 +5,7 @@ import { Show } from '../App';
 import { CloseButton } from './CloseButton';
 import type { ImageUrlGetter } from '../src/hooks/useShows';
 import { scrollContainerToTop } from '../src/lib/motion';
+import { quality, videoName, audioName, containerName, channelsName, aspectName, sampleRateName } from '../src/lib/specs';
 
 interface ShowDrawerProps {
   show: Show;
@@ -283,16 +284,22 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
       ? 'Documentary, no setlist'
       : 'No setlist yet';
 
+  // Specs in traders' words (src/lib/specs.ts). PAL/NTSC only for SD: on an
+  // HD record the field is unreliable (most 1080-line copies say NTSC), and the
+  // quality label says what matters. Size and file count describe the whole
+  // folder, which can hold more than this show, so the row says so.
+  const q = quality(show);
+  const folder = [show.TotalSizeHuman, show.FileCount && `${show.FileCount} ${show.FileCount === '1' ? 'file' : 'files'}`].filter(Boolean).join(' · ');
   const techRows = [
-    show.VideoCodec  && { label: 'Video',       value: show.VideoCodec,       mono: true  },
-    show.AspectRatio && { label: 'Aspect',      value: show.AspectRatio,       mono: false },
-    show.TVStandard  && { label: 'Standard',    value: show.TVStandard,        mono: false },
-    show.Container   && { label: 'Container',   value: show.Container,         mono: true  },
-    show.AudioCodec  && { label: 'Audio',       value: show.AudioCodec,        mono: true  },
-    show.AudioChannels && { label: 'Channels',  value: `${show.AudioChannels}ch`, mono: false },
-    show.AudioSampleRate && { label: 'Sample rate', value: `${(parseInt(show.AudioSampleRate) / 1000).toFixed(1)} kHz`, mono: true },
-    show.TotalSizeHuman && { label: 'Size',     value: show.TotalSizeHuman,    mono: false },
-    show.FileCount   && { label: 'Files',       value: show.FileCount,         mono: false },
+    show.VideoCodec  && { label: 'Video',       value: videoName(show.VideoCodec),            mono: false },
+    q                && { label: 'Resolution',  value: q.resolution,                          mono: false },
+    show.AspectRatio && { label: 'Aspect',      value: aspectName(show.AspectRatio),          mono: false },
+    q?.tier !== 'hd' && show.TVStandard && { label: 'Standard', value: show.TVStandard,       mono: false },
+    show.Container   && { label: 'Container',   value: containerName(show.Container),         mono: false },
+    show.AudioCodec  && { label: 'Audio',       value: audioName(show.AudioCodec),            mono: false },
+    channelsName(show.AudioChannels) && { label: 'Channels', value: channelsName(show.AudioChannels), mono: false },
+    sampleRateName(show.AudioSampleRate) && { label: 'Sample rate', value: sampleRateName(show.AudioSampleRate), mono: false },
+    folder           && { label: 'Folder',      value: folder,                                mono: false },
   ].filter((row): row is TechRow => Boolean(row));
   const lineage = lineageChains(show.Lineage);
   const techId = `drawer-tech-${show.ShowID}`;
@@ -338,7 +345,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
               exit={{ opacity: 0, transition: { duration: 0.25 } }}
               transition={{ duration: 0.18 }}
               // A click on the dark around the picture goes back, as Esc and Back do.
-              onClick={e => { if (!(e.target as HTMLElement).closest('button, img')) closeImage(); }}
+              onClick={e => { if (!(e.target as HTMLElement).closest('button, img, a')) closeImage(); }}
             >
               {/* Back to the thumbnails: the close button's twin, mirrored on
                   the left. The drawer's own close button stays over the viewer
@@ -364,6 +371,17 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                 </p>
                 <p className="mt-1 text-xs text-gray-400 tabular-nums">
                   {images.length > 1 ? `Screenshot ${viewingIndex + 1} of ${images.length}` : 'Screenshot'}
+                  {/* The original JPEG in a tab of its own, at 100%: the viewer
+                      fits the drawer, too small to judge an encode (F14). */}
+                  {' · '}
+                  <a
+                    href={images[viewingIndex]}
+                    target="_blank"
+                    rel="noopener"
+                    className="pointer-events-auto underline decoration-white/30 underline-offset-2 hover:text-white hover:decoration-white/60 transition-colors"
+                  >
+                    Open full size
+                  </a>
                 </p>
               </div>
 
@@ -507,14 +525,13 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                 {show.Artist}
               </h2>
               <p className="drawer-dock-sub text-gray-400">
+                {/* Date · event · venue · city, country: the place always, event
+                    or not (F9), each part once. */}
                 {[
                   show.ShowDate || 'Date Unknown',
-                  show.EventOrFestival
-                    ? show.EventOrFestival
-                    : show.VenueName || null,
-                  show.EventOrFestival
-                    ? show.Country
-                    : [show.City, show.Country].filter(Boolean).join(', '),
+                  show.EventOrFestival || null,
+                  show.VenueName && show.VenueName !== show.EventOrFestival && show.VenueName !== show.City ? show.VenueName : null,
+                  [show.City, show.Country].filter(Boolean).join(', '),
                 ].filter(Boolean).join(' · ')}
               </p>
 
@@ -536,7 +553,15 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                     {durationFormatted}
                   </span>
                 )}
-                {show.TVStandard && (
+                {q && (
+                  <span
+                    title={q.resolution}
+                    className="px-2.5 py-0.5 rounded text-xs font-medium bg-white/8 text-gray-300 border border-white/10"
+                  >
+                    {q.label}
+                  </span>
+                )}
+                {q?.tier !== 'hd' && show.TVStandard && (
                   <span className="px-2.5 py-0.5 rounded text-xs font-medium bg-white/8 text-gray-300 border border-white/10">
                     {show.TVStandard}
                   </span>
