@@ -29,6 +29,8 @@ interface FilterActions {
   setSort: (sort: SortKey) => void;
   clearFacet: (facet: FacetKey) => void;
   clearAll: () => void;
+  /** Every filter off, the search kept: the way out of an empty result. */
+  clearFilters: () => void;
   /** Back/forward and initial hydration. Does not write the URL back. */
   hydrateFromUrl: (search: string) => void;
 }
@@ -115,6 +117,9 @@ export const useFilterStore = create<FilterStore>((set, get) => {
     // filter, and resetting it would silently reorder results the user is reading.
     clearAll: () =>
       apply({ q: '', from: null, to: null, undated: false, country: [], festival: [] }),
+
+    clearFilters: () =>
+      apply({ from: null, to: null, undated: false, country: [], festival: [] }),
 
     hydrateFromUrl: search => {
       applyingFromUrl = true;

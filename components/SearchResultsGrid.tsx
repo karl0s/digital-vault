@@ -23,6 +23,8 @@ interface SearchResultsGridProps {
   onArtistSelect?: (artist: string) => void;
   onClear: () => void;
   onSearch?: (query: string) => void;
+  /** Set while filters narrow the results: their labels, and what the search finds without them. */
+  withoutFilters?: { count: number; labels: string[]; onClear: () => void } | null;
   getImageUrl: ImageUrlGetter;
 }
 
@@ -34,7 +36,7 @@ const SECTION_COUNT = 'font-normal normal-case tracking-normal tabular-nums text
 
 const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
-export function SearchResultsGrid({ shows, query, searchType, transitionKey, songSuggestion, groups, onShowClick, onArtistSelect, onClear, onSearch, getImageUrl }: SearchResultsGridProps) {
+export function SearchResultsGrid({ shows, query, searchType, transitionKey, songSuggestion, groups, onShowClick, onArtistSelect, onClear, onSearch, withoutFilters, getImageUrl }: SearchResultsGridProps) {
   // Explicit type from the call site wins; fall back to inferring from results for free-text searches
   const isSingleArtist = shows.length > 0 && shows.every(s => s.Artist === shows[0].Artist);
   const cardMode: 'artist' | 'search' = searchType === 'artist'
@@ -101,12 +103,36 @@ export function SearchResultsGrid({ shows, query, searchType, transitionKey, son
             <ChevronRight className="h-4 w-4 text-gray-500 transition duration-150 group-hover:translate-x-0.5 group-hover:text-gray-200" aria-hidden="true" />
           </button>
         </section>
+      ) : shows.length === 0 && withoutFilters && withoutFilters.count > 0 ? (
+        // The search finds shows; the filters hide them all (F8). Say which
+        // filters, and offer the shows without them, rather than blame the
+        // spelling of a query that is fine.
+        <div className="py-24 text-center">
+          <p className="text-gray-300 text-base">
+            No “{query}” shows with {withoutFilters.labels.length === 1 ? 'this filter' : 'these filters'}: {withoutFilters.labels.join(', ')}
+          </p>
+          <button
+            type="button"
+            onClick={withoutFilters.onClear}
+            className="group mt-5 inline-flex cursor-pointer items-center gap-2.5 rounded-full border border-white/10 bg-white/7 py-2 pl-4 pr-3 text-[15px] text-white transition-colors duration-150 hover:border-white/20 hover:bg-white/12 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+          >
+            Show {withoutFilters.count} without the {withoutFilters.labels.length === 1 ? 'filter' : 'filters'}
+            <ChevronRight className="h-4 w-4 text-gray-500 transition duration-150 group-hover:translate-x-0.5 group-hover:text-gray-200" aria-hidden="true" />
+          </button>
+        </div>
       ) : shows.length === 0 ? (
         <div className="py-24 text-center">
           {/* The way out is the Clear beside the count, always in one place;
-              this says what to try instead. */}
-          <p className="text-gray-400 text-base">No shows found for “{query}”</p>
-          <p className="mt-1 text-sm text-gray-500">Check the spelling, or try an artist, song, venue or year.</p>
+              this says what to try instead, including what the search
+              understands (F6): dates, abbreviations and one-field searches. */}
+          <p className="text-gray-300 text-base">No shows found for “{query}”</p>
+          <p className="mx-auto mt-2 max-w-xl text-sm text-gray-400">
+            Try an artist, a song, a place or a date: <span className="text-gray-300">1996-05-24</span>,{' '}
+            <span className="text-gray-300">May 1996</span> and abbreviations like <span className="text-gray-300">RATM</span> work too.
+          </p>
+          <p className="mx-auto mt-2 max-w-xl text-sm text-gray-400">
+            Or search one field: <span className="font-mono text-[13px] text-gray-300">song:creep · venue:brixton · event:pinkpop · year:1997</span>
+          </p>
         </div>
       ) : (
         // presenceAffectsLayout={false}: see the matching comment in App.tsx.

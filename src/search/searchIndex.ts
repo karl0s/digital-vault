@@ -1,5 +1,7 @@
 import MiniSearch, { type SearchResult } from 'minisearch';
 import type { Show } from '../../App';
+import { placeAliases, techAliases, KNOWN_TERMS } from './aliases';
+import { extractDates } from './dates';
 
 /**
  * Pure search logic — no React, no DOM.
@@ -19,6 +21,10 @@ interface SearchDoc {
   country: string;
   type: string;
   event: string;
+  /** Other names for the place and event: "uk", "koln", "titp" (aliases.ts). */
+  aka: string;
+  /** How it was made, in traders' words: "hd 1080", "pal", "pro shot", "lpcm" (aliases.ts). */
+  tech: string;
   songs: string;
 }
 
@@ -28,7 +34,7 @@ interface SearchDoc {
  * match is a "song" match. The split is what lets results group by why they
  * matched (SearchResultsGrid).
  */
-const SHOW_FIELDS = ['artist', 'year', 'venue', 'city', 'country', 'type', 'event'] as const;
+const SHOW_FIELDS = ['artist', 'year', 'venue', 'city', 'country', 'type', 'event', 'aka', 'tech'] as const;
 const SEARCH_FIELDS = [...SHOW_FIELDS, 'songs'] as const;
 
 /** Lower case without accents: "bjork" finds Björk, "nurnberg" Nürnberg. */
@@ -69,6 +75,8 @@ function toSearchDoc(show: Show): SearchDoc {
     country: show.Country,
     type: [show.RecordingType, show.ContentType].filter(Boolean).join(' '),
     event: show.EventOrFestival || '',
+    aka: placeAliases(show),
+    tech: techAliases(show),
     // Setlist is indexed so shows can be found by song.
     //
     // Notes is deliberately NOT indexed. It is largely data-pipeline exhaust
@@ -178,8 +186,38 @@ const ARTIST_ALIASES: Record<string, string> = {
   rhcp: 'Red Hot Chili Peppers',
   qotsa: 'Queens of the Stone Age',
   smp: 'Smashing Pumpkins',
+  sp: 'Smashing Pumpkins',
   rem: 'R.E.M.',
 };
+
+/**
+ * Initials the site works out for itself, for any artist of three words or
+ * more: RATM, FNM, KOL, NIN, MSP, BRMC, 30STM (docs/ux-research, finding F6).
+ * A number stays whole ("30"); an apostrophe joins its word ("Jane's" is one
+ * word, so Jane's Addiction gets no initials rather than the wrong ones). Two
+ * artists with the same initials get neither, and initials that spell another
+ * artist's name never win. Left out: MAS (Mumford & Sons), a Spanish word.
+ */
+const INITIALS_DENY = new Set(['mas']);
+const initialsCache = new WeakMap<string[], Map<string, string>>();
+
+function artistInitials(artistNames: string[]): Map<string, string> {
+  const cached = initialsCache.get(artistNames);
+  if (cached) return cached;
+  const names = new Set(artistNames.map(normaliseArtist));
+  const byKey = new Map<string, string[]>();
+  for (const name of artistNames) {
+    const words = fold(name).replace(/['’]/g, '').replace(/&/g, ' and ').split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+    const w = words.length > 1 && words[0] === 'the' ? words.slice(1) : words;
+    if (w.length < 3) continue;
+    const key = w.map(x => (/^\p{N}+$/u.test(x) ? x : x[0])).join('');
+    if (key.length < 3 || INITIALS_DENY.has(key) || names.has(key)) continue;
+    byKey.set(key, [...(byKey.get(key) ?? []), name]);
+  }
+  const initials = new Map([...byKey].filter(([, list]) => list.length === 1).map(([key, [name]]) => [key, name]));
+  initialsCache.set(artistNames, initials);
+  return initials;
+}
 
 /**
  * Lowercase, drop a leading "The", read "&" as "and", and strip everything that
@@ -213,7 +251,7 @@ export function resolveArtist(query: string, artistNames: string[]): string | nu
   const alias = ARTIST_ALIASES[key];
   if (alias && artistNames.includes(alias)) return alias;
 
-  return artistNames.find(name => normaliseArtist(name) === key) ?? null;
+  return artistNames.find(name => normaliseArtist(name) === key) ?? artistInitials(artistNames).get(key) ?? null;
 }
 
 /** Every show by exactly this artist, newest first. */
@@ -318,36 +356,45 @@ function songTitles(setlist: string): string[] {
 // Query execution
 // ---------------------------------------------------------------------------
 
-function runFieldFilter(shows: Show[], field: string, value: string, query: string, getNotes: NotesOf): Show[] {
-  const v = value.toLowerCase().trim();
-  return shows.filter(show => {
-    switch (field) {
-      case 'artist':  return show.Artist.toLowerCase().includes(v);
-      case 'type':    return [show.RecordingType, show.ContentType].some(t => t?.toLowerCase().includes(v));
-      case 'country': return show.Country.toLowerCase().includes(v);
-      case 'city':    return show.City.toLowerCase().includes(v);
-      case 'venue':   return show.VenueName.toLowerCase().includes(v);
-      case 'event':   return show.EventOrFestival?.toLowerCase().includes(v) ?? false;
-      case 'song':    return show.Setlist.toLowerCase().includes(v);
-      case 'note':    return getNotes(show).toLowerCase().includes(v);
-      case 'year':    return show.ShowDate.includes(v);
-      case 'drive':   return show.MasterDriveName.toLowerCase().includes(v);
-      case 'codec':   return show.VideoCodec.toLowerCase().includes(v);
-      default:
-        return (
-          show.Artist.toLowerCase().includes(query) ||
-          show.VenueName.toLowerCase().includes(query) ||
-          show.City.toLowerCase().includes(query) ||
-          show.Country.toLowerCase().includes(query) ||
-          show.ShowDate.includes(query) ||
-          (show.EventOrFestival?.toLowerCase().includes(query) ?? false) ||
-          (show.RecordingType?.toLowerCase().includes(query) ?? false) ||
-          (show.ContentType?.toLowerCase().includes(query) ?? false) ||
-          show.Setlist.toLowerCase().includes(query) ||
-          getNotes(show).toLowerCase().includes(query)
-        );
-    }
-  }).sort(sortChronological);
+/** The fields a query can name: "artist:pearl jam", "song:creep", "year:1997". */
+const FIELDS = ['artist', 'type', 'country', 'city', 'venue', 'event', 'song', 'note', 'year', 'date', 'drive', 'codec'] as const;
+type Field = typeof FIELDS[number];
+
+/** Substring match on one field, accents ignored ("venue:nurburgring"). */
+function fieldMatches(show: Show, field: Field, value: string, getNotes: NotesOf): boolean {
+  const v = fold(value.trim());
+  const has = (text?: string) => fold(text ?? '').includes(v);
+  switch (field) {
+    case 'artist':  return has(show.Artist);
+    case 'type':    return has(show.RecordingType) || has(show.ContentType);
+    case 'country': return has(show.Country);
+    case 'city':    return has(show.City);
+    case 'venue':   return has(show.VenueName);
+    case 'event':   return has(show.EventOrFestival);
+    case 'song':    return has(show.Setlist);
+    case 'note':    return has(getNotes(show));
+    case 'year':
+    case 'date':    return show.ShowDate.includes(v);
+    case 'drive':   return has(show.MasterDriveName);
+    case 'codec':   return has(show.VideoCodec);
+  }
+}
+
+/**
+ * Field filters anywhere in the query, several at once, quoted or not:
+ * `artist:"pearl jam" year:2000 pinkpop`. A value runs to the next field or the
+ * end ("song:black hole sun"), so free words go before the fields. Null when
+ * the query names no known field ("re: sessions" stays free text).
+ */
+function parseFields(query: string): { fields: [Field, string][]; rest: string } | null {
+  const fields: [Field, string][] = [];
+  const known = FIELDS.join('|');
+  const rx = new RegExp(`(?:^|\\s)(${known}):\\s*("[^"]*"?|[^\\s"]+(?:\\s+(?!(?:${known}):)[^\\s"]+)*)`, 'gi');
+  const rest = query.replace(rx, (_, field: string, value: string) => {
+    fields.push([field.toLowerCase() as Field, value.replace(/^"|"$/g, '')]);
+    return ' ';
+  });
+  return fields.length ? { fields, rest: rest.replace(/\s+/g, ' ').trim() } : null;
 }
 
 // ---------------------------------------------------------------------------
@@ -577,7 +624,7 @@ function songHitsBySubstring(setlist: string, needle: string): SongHit[] {
  * Free text over a pool of shows (every show, or a decade's): artist matches
  * by name, then MiniSearch, each result tagged with why it matched.
  */
-function textSearch(pool: Show[], query: string, index: SearchIndex): SearchOutcome {
+function textSearch(pool: Show[], query: string, index: SearchIndex, quiet = false): SearchOutcome {
   const artists = matchArtists(query, index);
   const byArtist = new Set(artists);
   const inPool = new Set(pool.map(s => s.ShowID));
@@ -604,12 +651,17 @@ function textSearch(pool: Show[], query: string, index: SearchIndex): SearchOutc
     }
   }
 
-  const didYouMean = found.length ? [] : suggestArtists(query, index);
+  // No "Did you mean" for an abbreviation ("XTC" is not a typo of a name), a
+  // known place or spec word, or a query that came with a date or decade
+  // (`quiet`): a near spelling there is a wrong suggestion, not a helpful one.
+  const words = query.trim().split(/\s+/);
+  const unsuggestable = quiet || /^[A-Z0-9&]{2,6}$/.test(query.trim()) || words.every(w => KNOWN_TERMS.has(fold(w)));
+  const didYouMean = found.length || unsuggestable ? [] : suggestArtists(query, index);
   return {
     shows: found.sort(sortChronological),
     grouped: {
       kind, artists, songs, didYouMean,
-      correctedQuery: found.length || didYouMean.length ? null : suggestQuery(query, index),
+      correctedQuery: found.length || didYouMean.length || unsuggestable ? null : suggestQuery(query, index),
     },
   };
 }
@@ -637,45 +689,68 @@ export function searchShows(shows: Show[], searchQuery: string, index: SearchInd
 
   const query = searchQuery.toLowerCase().trim();
 
-  // Field-specific filters: "artist:pearl jam", "type:soundboard", etc.
-  const fieldMatch = query.match(/^(\w+):(.+)$/);
-  if (fieldMatch) {
-    const [, field, value] = fieldMatch;
-    const found = runFieldFilter(shows, field, value, query, getNotes);
-    if (field !== 'song') return { shows: found, grouped: null };
-    const needle = value.trim();
+  // Field filters, alone or with free words: "song:creep", "artist:pearl year:2000 pinkpop".
+  const parsed = parseFields(query);
+  if (parsed) {
+    const pool = shows.filter(show => parsed.fields.every(([field, value]) => fieldMatches(show, field, value, getNotes)));
+    if (parsed.rest) return searchWithin(pool, parsed.rest, index);
+    const song = parsed.fields.find(([field]) => field === 'song');
+    if (!song) return { shows: pool.sort(sortChronological), grouped: null };
+    const needle = fold(song[1].trim());
     return {
-      shows: found,
+      shows: pool.sort(sortChronological),
       grouped: {
-        kind: new Map(found.map(s => [s.ShowID, 'song' as const])),
+        kind: new Map(pool.map(s => [s.ShowID, 'song' as const])),
         artists: [],
-        songs: new Map(found.map(s => [s.ShowID, songHitsBySubstring(s.Setlist, needle)])),
+        songs: new Map(pool.map(s => [s.ShowID, songHitsBySubstring(s.Setlist, needle)])),
         didYouMean: [],
         correctedQuery: null,
       },
     };
   }
 
-  // Artist view — an exact artist name is a facet, never a text search.
-  // Checked before decade/general search so an artist name always wins.
+  // Artist view — an exact artist name, alias or initials is a facet, never a
+  // text search. Checked before dates and decades so an artist name always wins.
   const artist = resolveArtist(query, index.artistNames);
   if (artist) return { shows: getArtistShows(shows, artist), grouped: null };
 
-  // Decade search — detect decade keyword anywhere in the query
-  const words = query.split(/\s+/);
+  const outcome = searchWithin(shows, searchQuery, index);
+
+  // "Rock am Ring 97": a bare two-digit number is tried as a year, but only
+  // when the words alone found nothing — it may be a song ("99 Problems").
+  if (!outcome.shows.length && /(?:^|\s)\d{2}(?=\s|$)/.test(query)) {
+    const asYear = searchWithin(shows, query.replace(/(^|\s)(\d{2})(?=\s|$)/g, "$1'$2"), index);
+    if (asYear.shows.length) return asYear;
+  }
+  return outcome;
+}
+
+/**
+ * Free text within a pool of shows: dates and a decade narrow the pool
+ * (extractDates, DECADE_MAP), the remaining words are searched in it. If a date
+ * reading finds nothing, the words are tried as typed ("30 Seconds to Mars
+ * May 2010" when the show was in June still finds the band).
+ */
+function searchWithin(pool: Show[], text: string, index: SearchIndex): SearchOutcome {
+  const { dates, rest } = extractDates(text);
+  let narrowed = pool;
+  for (const d of dates) narrowed = narrowed.filter(show => d.prefixes.some(p => show.ShowDate.startsWith(p)));
+
+  const words = rest.split(/\s+/).filter(Boolean);
   const decadeWord = words.find(w => DECADE_MAP[w]);
   if (decadeWord) {
     const [start, end] = DECADE_MAP[decadeWord];
-    const decadeFiltered = shows.filter(show => {
+    narrowed = narrowed.filter(show => {
       const year = getShowYear(show);
       return year >= start && year <= end;
     });
-
-    // Other words alongside the decade search within it.
-    const remainingWords = words.filter(w => w !== decadeWord).join(' ').trim();
-    if (!remainingWords) return { shows: [...decadeFiltered].sort(sortChronological), grouped: null };
-    return textSearch(decadeFiltered, remainingWords, index);
   }
+  const remaining = words.filter(w => w !== decadeWord).join(' ');
+  if (!dates.length && !decadeWord) return textSearch(pool, text, index);
+  if (!remaining) return { shows: [...narrowed].sort(sortChronological), grouped: null };
 
-  return textSearch(shows, searchQuery, index);
+  const found = textSearch(narrowed, remaining, index, true);
+  if (found.shows.length || !dates.length) return found;
+  const literal = textSearch(pool, text, index, true);
+  return literal.shows.length ? literal : found;
 }

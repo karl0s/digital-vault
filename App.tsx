@@ -87,6 +87,7 @@ export default function App() {
   const storeQuery = useFilterStore(s => s.q);
   const setStoreQuery = useFilterStore(s => s.setQuery);
   const clearAllFilters = useFilterStore(s => s.clearAll);
+  const clearFilters = useFilterStore(s => s.clearFilters);
   // useShallow is required, not optional. selectFilterState builds a new object
   // on every call, and zustand v5 reads selectors through useSyncExternalStore,
   // which demands a stable snapshot — without it React re-renders forever with
@@ -103,8 +104,24 @@ export default function App() {
   const debouncedQuery = useDebounce(searchQuery, 150);
 
   // One pipeline: text query -> facets -> sort, plus the counts the bar needs.
-  const { results, counts, histogram, songSuggestion, groups } = useBrowseResults(shows, filterState, getNotes);
+  const { results, counts, histogram, songSuggestion, groups, matchedByQuery } = useBrowseResults(shows, filterState, getNotes);
   const filtered = computeIsFiltered(filterState);
+
+  /**
+   * When a search finds nothing because of the filters (F8): what they are and
+   * how many shows the search finds without them, so the empty result can say
+   * so instead of blaming the spelling. Null while no filter narrows anything.
+   */
+  const filterLabels = [
+    filterState.from !== null || filterState.to !== null
+      ? filterState.from === filterState.to ? `${filterState.from}` : `${filterState.from ?? '…'}–${filterState.to ?? '…'}`
+      : null,
+    ...counts.country.filter(o => o.selected).map(o => o.label),
+    ...counts.festival.filter(o => o.selected).map(o => o.label),
+  ].filter((label): label is string => Boolean(label));
+  const withoutFilters = filterLabels.length
+    ? { count: matchedByQuery, labels: filterLabels, onClear: clearFilters }
+    : null;
 
   /**
    * The input stays local for responsiveness; only the debounced value reaches
@@ -303,6 +320,7 @@ export default function App() {
             ? goToDirectory
             : () => { setSearchQuery(''); setStoreQuery(''); scrollToTop(); searchInputRef.current?.focus(); }}
           onSearch={(q) => handleSearchChange(q, 'general')}
+          withoutFilters={withoutFilters}
           getImageUrl={getImageUrl}
         />
       ) : (

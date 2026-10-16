@@ -102,7 +102,7 @@ export function FilterBar({
             <input
               ref={searchInputRef}
               type="search"
-              placeholder="Artist, song, venue, year…"
+              placeholder="Artist, song, venue, date…"
               aria-label="Search shows"
               value={searchQuery}
               onChange={e => onSearchChange(e.target.value)}

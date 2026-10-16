@@ -80,7 +80,33 @@ names the song, matched letters lit). Content words match literally — **no fuz
 ("stone" found "stole"); only the last word, from four letters, is a prefix. Typos are offered,
 never run: when nothing matches, a **Did you mean** names artists a typo away (edit distance with
 swapped letters, `suggestArtists`), or failing that the query with a misspelt place or event
-corrected (`suggestQuery`). `npm run check:search` holds golden cases for all of it. `src/search/facets.ts` counts each facet against every *other* active
+corrected (`suggestQuery`). `npm run check:search` holds golden cases for all of it.
+
+**Trader queries** (owner, 2026-10-16; docs/ux-research F6, F8):
+- **Dates** in any common format — `1996-05-24`, `24.05.1996`, `05/24/1996`, `24 May 1996`,
+  `24. Mai 1996`, `May 1996`, `'97` — are taken out of the query (`src/search/dates.ts`) and
+  filter `ShowDate`; the words left are searched among those shows (`searchWithin`). Slashed or
+  dashed dates with both parts ≤ 12 are read both ways; dotted ones day first. Month names in seven
+  languages, without "mars". A bare two-digit year ("Rock am Ring 97") is tried only when the
+  words alone find nothing. If a date reading finds nothing, the words are tried as typed.
+- **Initials** open an artist (RATM, FNM, KOL, 30STM, NIN, GNR…): worked out for names of three
+  words or more (`artistInitials`), unique ones only, never a name's own spelling; hand aliases
+  (`ARTIST_ALIASES`: STP, RHCP, SP…) win; MAS is left out.
+- **Other names** are indexed beside each show, not rewritten into the query, so a word that is
+  also a song title still finds the song (`src/search/aliases.ts`): `aka` — countries and cities
+  in other languages and spellings (uk, brasil, deutschland, holland, koln/koeln, lisboa…),
+  event short names (rar, titp, bdo, acl, snl, glasto, lolla); `tech` — hd/sd/lowres with the
+  line count (1080, 1080i, 576…), pal/ntsc (SD only, as the drawer), pro shot, aud, doc, dvd,
+  mkv, lpcm, ac3, mpeg2, h264. "us", "america", "england" and "rip" are left out (song words).
+- **Fields** anywhere and several at once, quoted or not: `artist:"pearl jam" year:2000 pinkpop`
+  (`parseFields`; a value runs to the next field, so free words go first). Fields: artist, type,
+  country, city, venue, event, song, note, year, date, drive, codec; accents ignored.
+- **No "Did you mean"** for an abbreviation (all capitals, up to six), a known place or spec word
+  (`KNOWN_TERMS`), or a query with a date or decade: a near spelling there is a wrong guess.
+- **Empty results** (`SearchResultsGrid`): when the search finds shows but the filters hide them
+  all, it names the filters and offers "Show N without the filter(s)" (`clearFilters` keeps the
+  query); otherwise it says what the search understands — dates, abbreviations, one-field
+  searches. The field's placeholder reads "Artist, song, venue, date…". `src/search/facets.ts` counts each facet against every *other* active
 filter, so an option's count is what selecting it yields; zero-count options are disabled, never
 hidden. An empty `Country` or `EventOrFestival` becomes the `NONE` sentinel (`'none'`, "Unknown
 location" / "No event"). Undated records sort last both ways and are excluded from a year range

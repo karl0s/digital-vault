@@ -645,8 +645,9 @@ when you change any of them.
 `npm run check` = `check:perf` (Front-end performance), `check:url` (canonical
 serialisation), `check:facets` (counts against the real `shows.json`), `check:store` (stable
 selector snapshots), `check:brush` (brush geometry), `check:search` (every artist view returns
-exactly that artist's shows, hand-checked search cases, and free-text grouping, literal matching and
-Did you mean cases; `scripts/search-precision.ts`) and
+exactly that artist's shows, hand-checked search cases, free-text grouping, literal matching and
+Did you mean cases, and trader queries — dates, initials, other names, tech terms, field filters;
+`scripts/search-precision.ts`) and
 `typecheck`. Run it after any code change; the deploy runs it too.
 
 ---

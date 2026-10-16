@@ -253,9 +253,88 @@ for (const g of GROUPING) {
   }
 }
 
+/**
+ * Queries the way traders type them (docs/ux-research, finding F6): dates in
+ * every format, abbreviations, other names for places and events, tech terms,
+ * several field filters at once. Every expectation is worked out from the data,
+ * not hard-coded, so it holds as the collection grows.
+ */
 console.log('\n' + '='.repeat(66));
-const clean = goldFail === 0 && hintFail === 0 && groupFail === 0 && totalFP === 0 && totalFN === 0;
-console.log(`  ${clean ? 'ALL CLEAN' : `${goldFail} golden failures, ${hintFail} hint failures, ${groupFail} grouping failures, ${totalFP} false positives, ${totalFN} false negatives`}`);
+console.log('  TRADER QUERIES');
+console.log('='.repeat(66));
+
+const ids = (list: Show[]) => new Set(list.map(s => s.ShowID));
+const height = (s: Show) => parseInt(s.Height, 10) || 0;
+const width = (s: Show) => parseInt(s.Width, 10) || 0;
+const tier = (s: Show) => (height(s) >= 700 ? 'hd' : width(s) <= 360 || height(s) <= 300 ? 'low' : 'sd');
+const on = (date: string) => shows.filter(s => s.ShowDate === date);
+const TRADER: { query: string; exactly?: Show[]; includes?: Show[]; artist?: string | null; noSuggestion?: boolean; note: string }[] = [
+  ...['1996-05-24', '1996/05/24', '24.05.1996', '24.05.96', '24/05/1996', '05/24/1996', 'May 24 1996',
+    'May 24, 1996', '24 May 1996', '24th May 1996', '24. Mai 1996'].map(query => ({
+    query, exactly: on('1996-05-24'), note: 'one date, every format' })),
+  { query: '1996-05', exactly: shows.filter(s => s.ShowDate.startsWith('1996-05')), note: 'year and month' },
+  { query: 'May 1996', exactly: shows.filter(s => s.ShowDate.startsWith('1996-05')), note: 'month by name' },
+  { query: "May '96", exactly: shows.filter(s => s.ShowDate.startsWith('1996-05')), note: 'two-digit year' },
+  { query: '08/06/1992', exactly: [...on('1992-06-08'), ...on('1992-08-06')], note: 'ambiguous: read both ways' },
+  { query: 'rage 1996-05-24', exactly: on('1996-05-24').filter(s => s.Artist === 'Rage Against the Machine'), note: 'artist and date' },
+  { query: "rock am ring '97", exactly: shows.filter(s => s.EventOrFestival === 'Rock am Ring' && s.ShowDate.startsWith('1997')), note: 'apostrophe year' },
+  { query: 'rock am ring 97', exactly: shows.filter(s => s.EventOrFestival === 'Rock am Ring' && s.ShowDate.startsWith('1997')), note: 'bare two-digit year, when the words alone find nothing' },
+  ...([['RATM', 'Rage Against the Machine'], ['FNM', 'Faith No More'], ['KOL', 'Kings of Leon'], ['30STM', '30 Seconds to Mars'],
+    ['NIN', 'Nine Inch Nails'], ['SP', 'Smashing Pumpkins'], ['GNR', "Guns N' Roses"], ['rhcp', 'Red Hot Chili Peppers']] as const)
+    .map(([query, artist]) => ({ query, artist, note: 'initials open the artist' })),
+  { query: 'mas', artist: null, note: 'a Spanish word, not Mumford & Sons' },
+  { query: 'XYZQ', noSuggestion: true, note: 'an unknown abbreviation is not "corrected" into a name' },
+  { query: 'soundboard', noSuggestion: true, note: 'a spec word is not "corrected" into Soundgarden' },
+  { query: 'uk', includes: shows.filter(s => s.Country === 'United Kingdom'), note: 'country short name' },
+  { query: 'brasil', includes: shows.filter(s => s.Country === 'Brazil'), note: 'country in its own language' },
+  { query: 'deutschland', includes: shows.filter(s => s.Country === 'Germany'), note: 'country in its own language' },
+  ...['koln', 'köln', 'koeln'].map(query => ({ query, includes: shows.filter(s => s.City === 'Cologne'), note: 'city in its own language' })),
+  { query: 'titp', includes: shows.filter(s => s.EventOrFestival === 'T in the Park'), note: 'event short name' },
+  { query: 'glasto 1997', exactly: shows.filter(s => s.EventOrFestival === 'Glastonbury Festival' && s.ShowDate.startsWith('1997')), note: 'event short name with a year' },
+  { query: 'hd', exactly: shows.filter(s => tier(s) === 'hd'), note: 'HD copies' },
+  { query: 'lowres', exactly: shows.filter(s => tier(s) === 'low'), note: 'low-resolution copies' },
+  { query: 'pal', exactly: shows.filter(s => tier(s) !== 'hd' && s.TVStandard === 'PAL'), note: 'PAL, SD only (as the drawer shows it)' },
+  { query: 'artist:pearl year:2000', exactly: shows.filter(s => s.Artist.toLowerCase().includes('pearl') && s.ShowDate.includes('2000')), note: 'two fields at once' },
+  { query: 'venue:"brixton academy"', exactly: shows.filter(s => s.VenueName.toLowerCase().includes('brixton academy')), note: 'a quoted value' },
+  { query: 'pinkpop artist:pearl jam', exactly: shows.filter(s => s.Artist === 'Pearl Jam' && s.EventOrFestival === 'Pinkpop'), note: 'free words and a field' },
+];
+
+let traderFail = 0;
+for (const t of TRADER) {
+  const { shows: found, grouped } = searchShows(shows, t.query, index);
+  const got = ids(found);
+  const problems: string[] = [];
+  if (t.exactly) {
+    const want = ids(t.exactly);
+    if (!want.size) problems.push('test has no expected shows');
+    const missing = [...want].filter(id => !got.has(id)).length;
+    const extra = [...got].filter(id => !want.has(id)).length;
+    if (missing || extra) problems.push(`${missing} missing, ${extra} extra (got ${got.size}, want ${want.size})`);
+  }
+  if (t.includes) {
+    const missing = t.includes.filter(s => !got.has(s.ShowID)).length;
+    if (!t.includes.length) problems.push('test has no expected shows');
+    if (missing) problems.push(`${missing} of ${t.includes.length} missing`);
+  }
+  if (t.artist !== undefined) {
+    const resolved = resolveArtist(t.query.toLowerCase(), artistNames);
+    if (resolved !== t.artist) problems.push(`resolved to ${resolved ?? 'nothing'}`);
+  }
+  if (t.noSuggestion && (grouped?.didYouMean.length || grouped?.correctedQuery)) {
+    problems.push(`suggested ${grouped?.didYouMean.join(', ') || grouped?.correctedQuery}`);
+  }
+  if (problems.length) {
+    traderFail++;
+    console.log(`  FAIL  ${t.query.padEnd(26)} ${problems.join('; ')}`);
+    console.log(`        ${t.note}`);
+  } else {
+    console.log(`  pass  ${t.query.padEnd(26)} ${t.artist !== undefined ? `→ ${t.artist ?? 'no artist'}` : `${got.size} shows`}  (${t.note})`);
+  }
+}
+
+console.log('\n' + '='.repeat(66));
+const clean = goldFail === 0 && hintFail === 0 && groupFail === 0 && traderFail === 0 && totalFP === 0 && totalFN === 0;
+console.log(`  ${clean ? 'ALL CLEAN' : `${goldFail} golden failures, ${hintFail} hint failures, ${groupFail} grouping failures, ${traderFail} trader-query failures, ${totalFP} false positives, ${totalFN} false negatives`}`);
 console.log('='.repeat(66) + '\n');
 
 process.exit(clean ? 0 : 1);

@@ -3,8 +3,9 @@
 A browser for a private archive of live concert video: around twelve hundred recordings —
 festival sets, TV appearances, pro-shot and audience tapes, documentaries — each with its
 date, venue, setlist, technical details and up to four stills taken from the footage. Browse
-the whole collection, narrow it by year, country or event, search by artist, song or venue —
-results grouped into artists, shows and songs, with a "Did you mean" for a misspelt name — or work
+the whole collection, narrow it by year, country or event, search by artist, song, venue or date
+(any format; abbreviations like RATM and terms like "hd" or "pal" too) — results grouped into
+artists, shows and songs, with a "Did you mean" for a misspelt name — or work
 through the A–Z artist directory. There is no backend: the
 site is static and all show data is one JSON file.
 
