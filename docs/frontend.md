@@ -117,7 +117,9 @@ corrected (`suggestQuery`). `npm run check:search` holds golden cases for all of
   mkv, lpcm, ac3, mpeg2, h264. "us", "america", "england" and "rip" are left out (song words).
 - **Fields** anywhere and several at once, quoted or not: `artist:"pearl jam" year:2000 pinkpop`
   (`parseFields`; a value runs to the next field, so free words go first). Fields: artist, type,
-  country, city, venue, event, song, note, year, date, drive, codec; accents ignored.
+  country, city, venue, event, song, note, year, date, drive, codec; accents ignored. Plurals and
+  `festival:` work too (`FIELD_ALIASES`: `songs:creep`, `festival:pinkpop`) — they used to find
+  nothing, with no hint why.
 - **No "Did you mean"** for an abbreviation (all capitals, up to six), a known place or spec word
   (`KNOWN_TERMS`), or a query with a date or decade: a near spelling there is a wrong guess.
 - **Empty results** (`SearchResultsGrid`): when the search finds shows but the filters hide them
@@ -135,6 +137,13 @@ one row from lg, the search on its own
 line below it, the controls scrolling sideways on a phone. Then removable chips and Clear all while
 anything is set, and — only while filtering — the result count and sort; the count's `aria-live`
 region is always mounted (visually hidden), since one inside a `display:none` row is silent.
+**On a phone the results row folds while scrolling down** (F18, 2026-10-17): a passive scroll
+listener in `FilterBar` sets `data-folded` on the bar once it is stuck and the page moves down,
+and removes it on the way up — DOM only, never React state. Folded, the row (`data-results-row`)
+is `h-0` and the bar takes its measured height as `margin-bottom` (`--fold`), in the same frame,
+so nothing below moves. Not animated: tried, and mid-animation the row and the margin didn't sum
+to the same height, the browser's scroll anchoring nudged the page, and the nudge read as
+scrolling up. On desktop the listener returns before any layout read.
 `FacetPopover` is a base-ui `Popover` — its `z-50` belongs on the `Positioner`; a text filter
 appears above 15 options. `minTotal` leaves out options with fewer shows in the whole collection
 (`listedOptions` in `facets.ts`; a selected one stays): Country and Event list only values with 6+
@@ -286,7 +295,10 @@ no `flushSync`. Keep the pattern for any input that does mount on tap. Mobile in
 `font-size` 16px (`text-base`) or larger, or iOS zooms the page on focus.
 
 ### Masthead (HeroSearch)
-Wordmark (`HalationLogo`) and tagline only — the one place the brand appears. Always mounted,
+Wordmark (`HalationLogo`), tagline, and one quiet line saying what the site is (F16,
+2026-10-17): "A private collection of 1,213 concert videos by 303 artists, 1965–2015", counted
+from the shows by App (`collectionSummary`), so it never goes stale; it fades in when the data
+loads. The one place the brand appears. Always mounted,
 animating to `height: 0 / opacity: 0` while filtering (`isSearching={filtered}` from App). It uses
 motion's `animate` prop, not `AnimatePresence`, so the search field in the bar below keeps its
 place and focus mid-keystroke. `instant` skips the animation for the jump to the artist list.
@@ -366,8 +378,11 @@ records have no copies. Module state, not a prop, so the memoised cards keep the
   (`ContentType`), or on a master `Each act's songs are on its own page, under On this recording`.
 - Column labels: `text-xs font-semibold uppercase tracking-[0.2em] text-gray-400` — the page's section
   labels (Featured shows, All artists, Shows) in the same style.
-- Setlist: numbered `<ol>` from the semicolon-split `Setlist`; `Encore break` is an ordinary
-  numbered item (the "On this recording" song counts leave it out).
+- Setlist: an `<ol>` from the semicolon-split `Setlist`, songs numbered 1..N; `Encore break` is an
+  unnumbered divider ("Encore", then "Encore 2"…; `role="separator"`), so it neither takes a number
+  nor counts (F15, 2026-10-17). Opened from a song search, the matched song is lit: App passes the
+  search's `songHits` for this show, and that row gets a tint and the typed letters in bold, as on
+  the card, with "(the song you searched for)" for screen readers.
 - Technical: `techRows` of `{ label, value, mono }` — Video, Resolution, Aspect, Standard (SD
   only), Container, Audio, Channels, Sample rate, Folder; label `w-16 text-xs text-gray-400`, value
   `text-gray-200`; only rows with a value, and no panel when there are none. Values are in traders'

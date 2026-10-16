@@ -1,5 +1,5 @@
 import { Download, LayoutGrid, List, Search, X } from 'lucide-react';
-import { RefObject } from 'react';
+import { RefObject, useEffect, useRef } from 'react';
 import { cn } from '../../src/lib/cn';
 import { CONTENT_WIDTH } from '../../src/lib/layout';
 import { FACET_KEYS, FacetKey, SortKey } from '../../src/lib/url';
@@ -61,6 +61,39 @@ export function FilterBar({
   counts, histogram, resultCount, filtered, searchQuery, onSearchChange, searchInputRef, onDownloadCsv,
 }: FilterBarProps) {
   const state = useFilterStore();
+  const barRef = useRef<HTMLDivElement>(null);
+
+  // F18: on a phone the bar took a fifth of the screen. While scrolling down
+  // through results, the results row (count, layout, sort) folds away; it
+  // comes back on the way up. Written to the DOM, never React state: a scroll
+  // listener must not re-render the bar. The bar gives the row's height back
+  // as margin (--fold), so nothing under it moves while it folds.
+  useEffect(() => {
+    const bar = barRef.current;
+    if (!bar) return;
+    const phone = window.matchMedia('(max-width: 47.99rem)');
+    let lastY = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      const dy = y - lastY;
+      if (Math.abs(dy) < 8) return;
+      lastY = y;
+      const folded = bar.hasAttribute('data-folded');
+      if (folded) {
+        // Back on the way up, or when the screen is no longer a phone's.
+        if (dy < 0 || !phone.matches) bar.removeAttribute('data-folded');
+        return;
+      }
+      // Measured as it folds: its height is the margin that stands in for it.
+      const row = bar.querySelector<HTMLElement>('[data-results-row]');
+      if (dy > 0 && phone.matches && bar.getBoundingClientRect().top <= 0 && row && row.offsetHeight > 0) {
+        bar.style.setProperty('--fold', `${row.offsetHeight}px`);
+        bar.setAttribute('data-folded', '');
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
   const { toggleFacet, clearFacet, clearAll, setSort, setLayout, setYearRange, toggleUndated } = state;
 
   // A chip per selected value, Country and Event first, then "More filters".
@@ -98,7 +131,11 @@ export function FilterBar({
 
   return (
     // z-30: above the grid, under the phone tab bar (z-40) and the drawer (z-50).
-    <div data-filter-bar className="sticky top-0 z-30 border-b border-white/6 bg-[#141414]/97 backdrop-blur-md print:hidden">
+    <div
+      ref={barRef}
+      data-filter-bar
+      className="group/bar sticky top-0 z-30 border-b border-white/6 bg-[#141414]/97 backdrop-blur-md print:hidden max-md:data-folded:mb-(--fold)"
+    >
       <div className={CONTENT_WIDTH}>
         <div className="flex flex-wrap items-center gap-x-2 gap-y-3 py-3">
           {/* One of the pills: same height and roundness as the controls beside
@@ -173,6 +210,11 @@ export function FilterBar({
         <p className="sr-only" aria-live="polite">
           {filtered ? `${resultCount} ${resultCount === 1 ? 'show' : 'shows'}` : ''}
         </p>
+        {/* Folds on a phone while scrolling down (above). In one frame, not
+            animated: the row's height and the margin standing in for it must
+            change together, or the browser's scroll anchoring nudges the page
+            and the nudge reads as scrolling back up (tried, 2026-10-17). */}
+        <div data-results-row className={cn('overflow-hidden max-md:group-data-folded/bar:h-0', !filtered && 'hidden')}>
         <div className={cn('items-center justify-between gap-4 pb-3', filtered ? 'flex' : 'hidden')}>
           <p className="whitespace-nowrap text-sm text-gray-400" aria-hidden="true">
             <span className="tabular-nums text-gray-200">{resultCount}</span>
@@ -230,6 +272,7 @@ export function FilterBar({
             </select>
           </label>
           </div>
+        </div>
         </div>
       </div>
     </div>

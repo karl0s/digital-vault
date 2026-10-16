@@ -10,10 +10,12 @@ interface HeroSearchProps {
    * page scrolls to it, and the jump would land short.
    */
   instant?: boolean;
+  /** One plain line on what the site is (F16), counted from the data by App. */
+  summary?: string;
 }
 
 /**
- * Landing masthead: wordmark and tagline, nothing else.
+ * Landing masthead: wordmark, tagline, and one line saying what the site is.
  *
  * This is the only place the brand appears. Search and the filters live in
  * the filter bar directly below it, and the Featured grid is the landing's
@@ -22,7 +24,7 @@ interface HeroSearchProps {
  * Always mounted, animating to zero height rather than unmounting, so the
  * search field in the bar below keeps its place and focus mid-keystroke.
  */
-export function HeroSearch({ isSearching = false, instant = false }: HeroSearchProps) {
+export function HeroSearch({ isSearching = false, instant = false, summary }: HeroSearchProps) {
   return (
     <motion.div
       style={{ overflow: 'hidden' }}
@@ -68,6 +70,16 @@ export function HeroSearch({ isSearching = false, instant = false }: HeroSearchP
             transition={{ duration: 0.4, delay: 0.15 }}
           >
             Live music worth reliving.
+          </motion.p>
+          {/* Under the tagline, quieter: a forwarded link's reader learns what
+              this is before scrolling (F16). Empty until the data loads. */}
+          <motion.p
+            className="mt-3 min-h-5 text-sm text-gray-400"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: summary ? 1 : 0 }}
+            transition={{ duration: 0.4, delay: 0.25 }}
+          >
+            {summary}
           </motion.p>
         </div>
       </div>

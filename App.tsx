@@ -1,5 +1,5 @@
 
-import { useRef, useState, useEffect, useCallback } from 'react';
+import { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import { ArtistDirectory } from './components/ArtistDirectory';
 import { ShowDrawer } from './components/ShowDrawer';
 import { SearchResultsGrid } from './components/SearchResultsGrid';
@@ -130,6 +130,14 @@ export default function App() {
   const withoutFilters = filterLabels.length
     ? { count: matchedByQuery, labels: filterLabels, onClear: clearFilters }
     : null;
+
+  // What the site is, for a first visit (F16): counted from the data, so it never goes stale.
+  const collectionSummary = useMemo(() => {
+    if (shows.length === 0) return '';
+    const years = shows.map(s => parseInt(s.ShowDate, 10)).filter(y => y > 0);
+    const artists = new Set(shows.map(s => s.Artist)).size;
+    return `A private collection of ${shows.length.toLocaleString('en')} concert videos by ${artists} artists, ${Math.min(...years)}–${Math.max(...years)}`;
+  }, [shows]);
 
   // The results on screen as a spreadsheet (F10), named for the search and filters.
   const downloadResults = () => downloadCsv(results, [filterState.q, ...filterLabels].join(' '));
@@ -355,7 +363,7 @@ export default function App() {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <HeroSearch isSearching={filtered} instant={instantMasthead} />
+      <HeroSearch isSearching={filtered} instant={instantMasthead} summary={collectionSummary} />
 
       <FilterBar
         counts={counts}
@@ -493,6 +501,8 @@ export default function App() {
             onOpenShow={handleShowClick}
             onSettled={() => setDrawerSettled(true)}
             notes={getNotes(selectedShow)}
+            // Opened from a song search: the songs that matched, lit in the setlist (F15).
+            songHits={groups?.songHits.get(selectedShow.ShowID)}
           />
         )}
       </AnimatePresence>

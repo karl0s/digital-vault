@@ -22,12 +22,12 @@
 | | Done | Partly | To do | |
 |---|---|---|---|---|
 | **The 8 trader jobs** (scripted run) | **8 pass** | — | — | At the review: 1 pass, 4 partial, 3 fail |
-| **The 18 findings** (F1–F18) | **11** ✅ | **5** 🟡 | **2** ⬜ | F1, F3, F7, F12, F15 partly; F16, F18 to do |
-| **The 24 scored fixes** | **18** ✅ | **2** 🟡 | **4** ⬜ | Left: Source review, setlists, phone header, first-visit line, date precision, drive scan |
+| **The 18 findings** (F1–F18) | **14** ✅ | **4** 🟡 | **0** ⬜ | F1, F3, F7, F12 partly |
+| **The 24 scored fixes** | **21** ✅ | **1** 🟡 | **2** ⬜ | Left: the Source review, date precision, the drive scan |
 | **Source on blank records** | **54** | — | **275** | Of 329; your review page |
 
 **Live on the site:** everything up to the list view and CSV (pushed 2026-10-16, `8efb09b0`).
-**Committed, not yet live:** What's new, and the "1 file" fix. They go out with the next push.
+**Committed, not yet live:** What's new, the "1 file" fix, and batch H (polish). They go out with the next push.
 
 ### Done
 
@@ -51,6 +51,10 @@
   (enforced), a "Recently added" row, New / Better copy / New copy badges, a sort, a CSV column
   *(F11; not yet live)*
 - [x] **Source, first 54** — from another copy of the same show *(data)*
+- [x] **H. Polish** — the searched song lit in the setlist, the encore a divider; the phone's
+  results row folds while scrolling; one line saying what the site is; `songs:` and `festival:`
+  searches. Interview, intro and jam entries stay in their setlists for now (your call)
+  *(F15, F16, F18, F6; not yet live)*
 
 ### Still to do, in this order
 
@@ -62,14 +66,11 @@
 - [ ] **1. Source on the 275 blank records** — your review page, two stills per record
   (`~/VaultShots/reports/source-review.html`). Then a **Source filter** joins More filters
   *(data, then F12)*
-- [ ] **2. H. Polish** — the searched song highlighted in the setlist and 32 non-song setlist
-  entries cleaned *(F15)*; the phone header shrinks on scroll *(F18)*; one line saying what the
-  site is *(F16)*; `songs:` as well as `song:` *(F6)*
-- [ ] **3. A page per show**, so a link pasted into WhatsApp or a forum previews that show, not the
+- [ ] **2. A page per show**, so a link pasted into WhatsApp or a forum previews that show, not the
   site *(F3)*
-- [ ] **4. Data reviews** — date precision ("2001, exact date unknown") *(F7)*; the 432 missing
+- [ ] **3. Data reviews** — date precision ("2001, exact date unknown") *(F7)*; the 432 missing
   setlists, in their own review
-- [ ] **5. Drive scan** — frame rate, bitrate, chapters, the show's own size, broadcaster *(needs
+- [ ] **4. Drive scan** — frame rate, bitrate, chapters, the show's own size, broadcaster *(needs
   Live Music mounted)*
 
 **Small leftovers from finished items** (not scheduled; say if one matters):
@@ -88,7 +89,7 @@ be contrast-checked automatically (F13).
 | [F3](#f3--nothing-can-be-linked-and-back-leaves-the-site) | No show links; Back leaves the site | 🟡 | Batch C: every show has a link (`?show=`); Back and the phone's back gesture close the show, Forward reopens it; a pasted link opens the show; the tab names it; page description and preview image for pasted links; an analytics seam for show views | A page per show, so a pasted show link previews that show (needs a build step) |
 | [F4](#f4--pointing-at-one-exact-recording-is-hard) | Pointing at one exact recording | ✅ | Batch C: a Share pill (share sheet on phones, "Copy link" elsewhere): the link alone as plain text (pastes into an address bar or chat), and as rich text `Artist · date · event · quality · length` linked to the show (pastes into an email by name) | — |
 | [F5](#f5--escape-erases-the-search-behind-an-open-show) | Escape erases the search | ✅ | Batch A: Escape closes only the show; the results stay, so the next copy is one click away | — |
-| [F6](#f6--search-doesnt-match-how-traders-type) | Search misses how traders type | ✅ | Batch B: dates in every common format (and two-digit years); artist initials (RATM, FNM, KOL, 30STM…), no wrong "Did you mean"; countries, cities and events by other names (uk, brasil, koln, titp…); tech terms (hd, 1080, pal, pro shot, lpcm…); several field filters at once, quoted values; search tips in the empty state; 43 new search tests | Tips appear when a search finds nothing, not under the field |
+| [F6](#f6--search-doesnt-match-how-traders-type) | Search misses how traders type | ✅ | Batch B: dates in every common format (and two-digit years); artist initials (RATM, FNM, KOL, 30STM…), no wrong "Did you mean"; countries, cities and events by other names (uk, brasil, koln, titp…); tech terms (hd, 1080, pal, pro shot, lpcm…); several field filters at once, quoted values; search tips in the empty state; 43 new search tests. Batch H: plural field names and `festival:` (`songs:creep`) | Tips appear when a search finds nothing, not under the field |
 | [F7](#f7--placeholder-dates-look-like-real-dates) | Placeholder dates look real | 🟡 | Batch D: cards show a year-only date (`YYYY-01-01`) as the year; then the drawer, share line and tab title too | A `DatePrecision` field, for month-only dates and real 1 January shows; backfill |
 | [F8](#f8--empty-results-blame-spelling-when-a-filter-is-the-cause) | Empty results blame spelling | ✅ | Batch B: names the filters that hide the results and offers "Show N without the filter" | — |
 | [F9](#f9--the-drawer-hides-venue-and-city-for-festival-and-tv-shows) | Venue and city hidden | ✅ | Batch A: `Date · Event · Venue · City, Country` under the name for every show | — |
@@ -97,10 +98,10 @@ be contrast-checked automatically (F13).
 | [F12](#f12--filters-dont-cover-what-traders-decide-by) | Filters miss trader dimensions | 🟡 | "More filters" beside Event (2026-10-16): Quality (HD 1080, HD 720, SD, Low-res), Standard (PAL, NTSC), Length (five bands), Setlist (has one, none yet), with live counts, chips and links | Source, once the blank records are filled in (step 2) |
 | [F13](#f13--too-faint-and-too-small-for-eyes-aged-4060) | Too faint, too small | ✅ | Batch E: every text passes 4.5:1, measured on the rendered page in 12 views (A–Z counts 1.7 → 5.3:1, heading counts 2.3/3.8 → 5.3:1, "No setlist yet" 3.8 → 6.8:1); nothing under 12px but the cards' badges (9.5 → 11px); the drawer's section labels 10 → 12px; Notes 12 → 13px; tab bar and year axis 10 → 12px; layout holds at 150% and 200% zoom | Text over the stills (cards, drawer header) is protected by the gradients but can't be measured automatically |
 | [F14](#f14--stills-cant-be-inspected-closely) | Stills can't be inspected | ✅ | Batch A: "Open full size" in the screenshot viewer (the original, at 100%, in a new tab) | — |
-| [F15](#f15--setlists-non-songs-counted-as-songs-the-searched-song-isnt-highlighted) | Setlist quality | 🟡 | One credit line removed from a Setlist (`0b538a57`) | 32 non-song entries; encore as a divider; highlight the searched song |
-| [F16](#f16--a-first-visit-doesnt-say-what-this-is) | First visit doesn't say what this is | ⬜ | Lower priority: your email introduces the site | One plain line under the tagline |
+| [F15](#f15--setlists-non-songs-counted-as-songs-the-searched-song-isnt-highlighted) | Setlist quality | ✅ | One credit line removed from a Setlist (`0b538a57`). Batch H (2026-10-17): the searched song lit in the setlist; the encore a divider, not a numbered song ("Encore 2" when there are more) | — (the interviews, intros, jams and interludes stay in their setlists for now: your call, 2026-10-17) |
+| [F16](#f16--a-first-visit-doesnt-say-what-this-is) | First visit doesn't say what this is | ✅ | Batch H (2026-10-17): one quiet line under the tagline, counted from the data: "A private collection of 1,213 concert videos by 303 artists, 1965–2015" | — |
 | [F17](#low) | Truncation and formats | ✅ | Batch D: one length format everywhere (`1h 05m`, `42 min`); "Pro-shot"; "Undated" in the drawer as on cards; a card's full name, place and specs on hover | — |
-| [F18](#low) | Phone header height | ⬜ | | Hide the count/sort row while scrolling down |
+| [F18](#low) | Phone header height | ✅ | Batch H (2026-10-17): on a phone the count, layout and sort row folds away while scrolling down and returns on the way up; nothing on the page moves | — |
 | — | [Taper redaction](#publishing-lineage-and-generation-without-exposing-tapers) | ✅ | Names, contacts and links captured to `private/`, then removed from `shows.json`; pipeline archives out of git; the site stops publishing folder names; health-check guard (`e2d03953`, `0b538a57`) | Old text stays in git history (accepted) |
 | — | [Drive scan](#planned-a-drive-scan-for-the-missing-specs) | 📅 | Plan agreed (2026-10-16) | Frame rate, bitrate, menus and chapters, show size: with Live Music mounted. Broadcaster can start now |
 | — | [Data quality](#data-quality--the-metadata-is-the-product) | 🟡 | Source on 54 records, from another copy of the same show (2026-10-16) | Source on 275 more (review page); 432 setlists; date precision |
@@ -115,7 +116,7 @@ The review's walkthrough tasks, run again on the live site after batches A–E w
 | J1 Do you have it? | 🟡 Partial | 🟢 **Pass** | — (a year-only date now reads as the year everywhere) |
 | J2 Is yours better? | 🔴 Fail | 🟢 **Pass** | Source blank on 27% of records; no broadcaster; frame rate and bitrate (drive scan) |
 | J3 Artist audit | 🟡 Partial | 🟢 **Pass** | — |
-| J4 Song hunt | 🟢 Pass | 🟢 Pass | The song isn't highlighted in the setlist; `songs:` returns nothing |
+| J4 Song hunt | 🟢 Pass | 🟢 Pass | — (the song is lit in the setlist; `songs:` works) |
 | J5 Event dig | 🟡 Partial | 🟢 **Pass** | A source filter (after the Source review); small events (Fuji Rock) only by search |
 | J6 Share and request | 🔴 Fail | 🟢 **Pass** | A pasted link previews the site, not the show |
 | J7 What's new | 🔴 Fail | 🟢 **Pass** (from 2026-10-16) | Fills as you add shows; nothing before that day is marked |
@@ -159,8 +160,8 @@ come for, J1 and J2, now pass.
 **J4 — Where was this song played?**
 - [x] `creep` finds 37 recordings, grouped as songs (already worked)
 - [x] Field searches combine: `artist:pearl song:alive` finds 11
-- [ ] The searched song highlighted in the setlist
-- [ ] `songs:creep` returns nothing (only `song:` works)
+- [x] The searched song lit in the setlist, at its place in the set
+- [x] `songs:creep` works like `song:creep` (37), and `festival:` like `event:`
 - [ ] Search tips under the field (today only when nothing is found)
 
 **J5 — Show me the series**
@@ -215,7 +216,7 @@ copies of one show is the HD one) couldn't be made from anything on screen.
 | J1 Do you have it? | 🟡 Partial | Dates and abbreviations don't search | 🟢 Pass | Batch B: dates, initials, other names; batch A: venue and city |
 | J2 Is yours better? | 🔴 Fail | No resolution; versions not grouped; Escape wipes the results | 🟢 Pass | Batch A: quality and codecs; D: copies side by side; A: Escape |
 | J3 Artist audit | 🟡 Partial | Year-only cards; no list view or export | 🟢 Pass | Batch D: full dates; F: list view and CSV |
-| J4 Song hunt | 🟢 Pass | (Song not highlighted in the setlist) | 🟢 Pass | Highlight still to come (H) |
+| J4 Song hunt | 🟢 Pass | (Song not highlighted in the setlist) | 🟢 Pass | Batch H: the song lit in the setlist |
 | J5 Event dig | 🟡 Partial | Empty results blame spelling when a filter is the cause | 🟢 Pass | Batch B: empty results name the filter; F: More filters |
 | J6 Share and request | 🔴 Fail | No per-show link; Back leaves the site | 🟢 Pass | Batch C: links, Back, Copy link |
 | J7 What's new | 🔴 Fail | Nothing marks what's new | 🟢 Pass | Batch G: Recently added (fills as shows are added) |
@@ -263,9 +264,9 @@ use. The highest score goes first. Where two items touch the same code they are 
 | 18 | Drive scan: frame rate, bitrate, chapters, show size | [Plan](#planned-a-drive-scan-for-the-missing-specs) | 2 | 3 | 1.0 | 4 | **1.5** | Needs Live Music mounted | 📅 |
 | 19 | Date precision ("2001, exact date unknown") | [F7](#f7--placeholder-dates-look-like-real-dates) | 2 | 2 | 1.0 | 4 | **1.0** | 257 records; mostly data work | ⬜ |
 | 20 | Fill in Source on 329 records | [Data](#data-quality--the-metadata-is-the-product) | 2 | 2 | 1.0 | 2 | **2.0** | Re-scored 2026-10-16: 126 of the 329 have a clue in their own notes or event, so a review page settles them quickly (Effort 4 → 2); the other ~200 need their stills looked at | 🟡 54 of 329 |
-| 21 | Setlists: 32 non-song entries; encore as a divider; highlight the searched song | [F15](#f15--setlists-non-songs-counted-as-songs-the-searched-song-isnt-highlighted) | 1 | 1 | 1.0 | 1 | **1.0** | Small | 🟡 |
-| 22 | Phone header shrinks while scrolling | [F18](#low) | 1 | 1 | 0.8 | 1 | **0.8** | Polish | ⬜ |
-| 23 | One line saying what the site is | [F16](#f16--a-first-visit-doesnt-say-what-this-is) | 1 | 1 | 0.5 | 1 | **0.5** | Your email already introduces the site | ⬜ |
+| 21 | Setlists: 32 non-song entries; encore as a divider; highlight the searched song | [F15](#f15--setlists-non-songs-counted-as-songs-the-searched-song-isnt-highlighted) | 1 | 1 | 1.0 | 1 | **1.0** | Small | ✅ batch H; the entries stay, your call (2026-10-17) |
+| 22 | Phone header shrinks while scrolling | [F18](#low) | 1 | 1 | 0.8 | 1 | **0.8** | Polish | ✅ batch H |
+| 23 | One line saying what the site is | [F16](#f16--a-first-visit-doesnt-say-what-this-is) | 1 | 1 | 0.5 | 1 | **0.5** | Your email already introduces the site | ✅ batch H |
 | 24 | Year-only dates read as the year in the drawer too, as on the cards | [F7](#f7--placeholder-dates-look-like-real-dates) | 2 | 2 | 1.0 | 1 | **4.0** | Added 2026-10-16: seen on the live site (card "2000", drawer "2000-01-01"); minutes of work | ✅ |
 | — | Lineage and Generation, after the taper redaction | [Redaction](#publishing-lineage-and-generation-without-exposing-tapers) | | | | | | | ✅ `0b538a57`, `1cffc551` |
 
@@ -287,7 +288,7 @@ A batch's place comes from its best score.
 | Source 🟡 | 20 | Source on the blank records, on a review page: 54 done, 275 to go | Scores above F once re-estimated, and F's source filter needs it |
 | **F. Narrow and list** ✅ | 17, 15 | "More filters" (quality, standard, length, has setlist, then source); then a Grid / List toggle and CSV download | Both live in the results header and share the same facets; a list needs the trader columns the filters add |
 | **G. What's new** ✅ | 16 | An added-on date per record, a "Recently added" row and sort | Ties with F; your call: start from today |
-| **H. Polish** ← next | 21, 22, 23 | Setlist non-songs and the encore as a divider, the searched song highlighted; phone header shrinks on scroll; one line saying what the site is | Small, independent |
+| **H. Polish** ✅ | 21, 22, 23 | Setlist non-songs and the encore as a divider, the searched song highlighted; phone header shrinks on scroll; one line saying what the site is | Small, independent |
 | Page per show | F3 leftover | A link to one show previews that show in chats and forums | Needs a build step; matters once traders share links among themselves |
 | Data | 19 | Date precision; the missing setlists | Your review pages, record by record |
 | Drive | 18 | Frame rate, bitrate, chapters, show size | When Live Music is mounted |

@@ -360,6 +360,16 @@ function songTitles(setlist: string): string[] {
 const FIELDS = ['artist', 'type', 'country', 'city', 'venue', 'event', 'song', 'note', 'year', 'date', 'drive', 'codec'] as const;
 type Field = typeof FIELDS[number];
 
+/**
+ * The same fields as people also type them (F6): plurals, and "festival" for
+ * event. "songs:creep" found nothing before, with no hint why.
+ */
+const FIELD_ALIASES: Record<string, Field> = {
+  artists: 'artist', types: 'type', countries: 'country', cities: 'city', venues: 'venue',
+  events: 'event', festival: 'event', festivals: 'event', songs: 'song', notes: 'note',
+  years: 'year', dates: 'date', drives: 'drive', codecs: 'codec',
+};
+
 /** Substring match on one field, accents ignored ("venue:nurburgring"). */
 function fieldMatches(show: Show, field: Field, value: string, getNotes: NotesOf): boolean {
   const v = fold(value.trim());
@@ -388,10 +398,11 @@ function fieldMatches(show: Show, field: Field, value: string, getNotes: NotesOf
  */
 function parseFields(query: string): { fields: [Field, string][]; rest: string } | null {
   const fields: [Field, string][] = [];
-  const known = FIELDS.join('|');
+  const known = [...FIELDS, ...Object.keys(FIELD_ALIASES)].join('|');
   const rx = new RegExp(`(?:^|\\s)(${known}):\\s*("[^"]*"?|[^\\s"]+(?:\\s+(?!(?:${known}):)[^\\s"]+)*)`, 'gi');
   const rest = query.replace(rx, (_, field: string, value: string) => {
-    fields.push([field.toLowerCase() as Field, value.replace(/^"|"$/g, '')]);
+    const name = field.toLowerCase();
+    fields.push([FIELD_ALIASES[name] ?? (name as Field), value.replace(/^"|"$/g, '')]);
     return ' ';
   });
   return fields.length ? { fields, rest: rest.replace(/\s+/g, ' ').trim() } : null;

@@ -9,6 +9,7 @@ import { showLink } from '../src/lib/url';
 import { quality, videoName, audioName, containerName, channelsName, aspectName, sampleRateName, lengthName, sourceName, dateName, songCount } from '../src/lib/specs';
 import { copiesOf } from '../src/lib/copies';
 import { ADDED_LABEL, addedKind } from '../src/lib/added';
+import type { SongHit } from '../src/search/searchIndex';
 
 interface ShowDrawerProps {
   show: Show;
@@ -25,6 +26,21 @@ interface ShowDrawerProps {
    * getNotes), so they are passed in rather than read off `show`.
    */
   notes?: string;
+  /** The songs a song search matched in this show, lit in the setlist (F15). */
+  songHits?: SongHit[];
+}
+
+/** A matched song with the letters the search typed in bold, as on the card. */
+function MarkedTitle({ hit }: { hit: SongHit }) {
+  const parts: React.ReactNode[] = [];
+  let at = 0;
+  for (const [start, end] of hit.ranges) {
+    if (start > at) parts.push(hit.title.slice(at, start));
+    parts.push(<mark key={start} className="bg-transparent font-semibold text-white">{hit.title.slice(start, end)}</mark>);
+    at = end;
+  }
+  if (at < hit.title.length) parts.push(hit.title.slice(at));
+  return <>{parts}</>;
 }
 
 /** "0:23:19" -> "23:19"; keeps the hour only when there is one. */
@@ -75,7 +91,7 @@ function lineageChains(text?: string): string[][] {
     .filter(chain => chain.length > 0);
 }
 
-export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow, onSettled, notes = '' }: ShowDrawerProps) {
+export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow, onSettled, notes = '', songHits }: ShowDrawerProps) {
   // False while the drawer animates out, so finishing that animation is not
   // mistaken for having settled in.
   const isPresent = useIsPresent();
@@ -271,6 +287,11 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
   const durationFormatted = lengthName(show.DurationSec) || null;
 
   const setlistItems = show.Setlist ? show.Setlist.split(';').map(s => s.trim()).filter(Boolean) : [];
+  let songNo = 0;
+  let encoreNo = 0;
+  const setlistNumbered = setlistItems.map(song =>
+    song === 'Encore break' ? { song, n: null, encore: ++encoreNo } : { song, n: ++songNo, encore: 0 });
+  const hitFor = (song: string) => songHits?.find(h => h.title === song);
 
   // The Setlist heading is always drawn, so a show without songs says so
   // instead of letting Technical take the place people read as the setlist.
@@ -784,13 +805,27 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                   <Music className="w-3 h-3" /> Setlist
                 </p>
                 {setlistItems.length > 0 ? (
+                  // Songs numbered 1..N; "Encore break" is a divider, not a
+                  // song, so it neither takes a number nor counts (F15).
                   <ol className="space-y-2">
-                    {setlistItems.map((song, idx) => (
-                      <li key={idx} className="flex items-start gap-3 text-sm">
+                    {setlistNumbered.map(({ song, n, encore }, idx) => n === null ? (
+                      <li key={idx} role="separator" className="flex items-center gap-3 pt-1 text-xs uppercase tracking-[0.2em] text-gray-400">
+                        <span className="w-5 shrink-0" />
+                        {encore > 1 ? `Encore ${encore}` : 'Encore'}
+                        <span className="h-px flex-1 bg-white/10" aria-hidden="true" />
+                      </li>
+                    ) : (
+                      <li
+                        key={idx}
+                        className={`-mx-2 flex items-start gap-3 rounded-md px-2 text-sm ${hitFor(song) ? 'bg-white/10 py-1' : ''}`}
+                      >
                         <span className="text-gray-400 tabular-nums text-xs w-5 shrink-0 pt-px text-right">
-                          {idx + 1}
+                          {n}
                         </span>
-                        <span className="text-gray-200 leading-snug">{song}</span>
+                        <span className={`leading-snug ${hitFor(song) ? 'text-white' : 'text-gray-200'}`}>
+                          {hitFor(song) ? <MarkedTitle hit={hitFor(song)!} /> : song}
+                        </span>
+                        {hitFor(song) && <span className="sr-only"> (the song you searched for)</span>}
                       </li>
                     ))}
                   </ol>
