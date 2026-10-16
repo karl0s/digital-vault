@@ -13,6 +13,7 @@ import { EMPTY_FILTERS, FACET_KEYS, FacetKey, FilterState, NONE } from '../src/l
 import { applyFilters, computeFacetCounts, computeYearHistogram, deriveAll, listedOptions, sortShows } from '../src/search/facets';
 import { indexCopies } from '../src/lib/copies';
 import { addedKind, addedWithin } from '../src/lib/added';
+import { dateCaveat, dateName, datePrecision, isoDate } from '../src/lib/specs';
 
 const shows: Show[] = JSON.parse(readFileSync('public/shows.json', 'utf8'));
 const derived = deriveAll(shows);
@@ -250,6 +251,21 @@ console.log("\nWhat's new (F11): AddedOn, labels and the sort, on copies of real
   const order = sortShows(all, 'added').map(s => s.ShowID);
   ok('recently added sorts the additions first', order.slice(0, 3).every(id => ['aaaaaaaaaa02', 'aaaaaaaaaa03', 'aaaaaaaaaa04'].includes(id)));
   indexCopies(shows);
+}
+
+console.log('\ndate precision (F7): what a date shows');
+{
+  const d = (ShowDate: string, DatePrecision?: 'year' | 'month' | 'day') => ({ ShowDate, DatePrecision });
+  ok('a full date shows in full', dateName(d('2010-06-05')) === '2010-06-05' && dateCaveat(d('2010-06-05')) === '');
+  ok('YYYY-01-01 is the year alone (the convention)', dateName(d('2001-01-01')) === '2001' && dateCaveat(d('2001-01-01')) === 'date unknown');
+  ok('a real New Year\'s Day show keeps its day', dateName(d('1995-01-01', 'day')) === '1995-01-01' && datePrecision(d('1995-01-01', 'day')) === 'day');
+  ok('month only: "May 2001 (day unknown)"', dateName(d('2001-05-01', 'month')) === 'May 2001' && dateCaveat(d('2001-05-01', 'month')) === 'day unknown');
+  ok('an unmarked 1st of the month shows in full until reviewed', dateName(d('2001-05-01')) === '2001-05-01');
+  ok('undated', dateName(d('')) === 'Undated' && datePrecision(d('')) === null && isoDate(d('')) === '');
+  ok('the CSV keeps partial dates sortable', isoDate(d('2001-01-01')) === '2001' && isoDate(d('2001-05-01', 'month')) === '2001-05' && isoDate(d('2010-06-05')) === '2010-06-05');
+  const marked = shows.filter(s => s.DatePrecision);
+  ok(`every DatePrecision in the data agrees with its date (${marked.length} marked)`, marked.every(s =>
+    (s.DatePrecision === 'month' && /-01$/.test(s.ShowDate)) || (s.DatePrecision === 'year' && /-01-01$/.test(s.ShowDate)) || (s.DatePrecision === 'day' && !!s.ShowDate)));
 }
 
 console.log('\nmulti-select is OR within a facet, AND across facets');

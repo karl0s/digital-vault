@@ -77,6 +77,32 @@ if bad_dates:
 else:
     print('  All dates are YYYY-MM-DD or blank — OK')
 
+# ── 2b. Date precision ───────────────────────────────────────────────────────
+# DatePrecision says how much of ShowDate is known where the convention can't
+# (CLAUDE.md, ShowDate): "month" for a YYYY-MM-01 that means the month alone,
+# "day" for a real date on the 1st. "year" may be written but YYYY-01-01 means
+# it already. The site reads it (src/lib/specs.ts, datePrecision).
+
+section('Date precision')
+_dp_before = len(ERRORS)
+_dp = {'year': 0, 'month': 0, 'day': 0}
+for s in shows:
+    p, d = s.get('DatePrecision'), s.get('ShowDate') or ''
+    if p is None:
+        continue
+    if p not in _dp:
+        error(f'  {s.get("ShowID")}: DatePrecision {p!r} is not one of year, month, day')
+    elif not d:
+        error(f'  {s.get("ShowID")}: DatePrecision {p!r} on an undated record')
+    elif p == 'year' and not d.endswith('-01-01'):
+        error(f'  {s.get("ShowID")}: DatePrecision year needs ShowDate YYYY-01-01, not {d}')
+    elif p == 'month' and not d.endswith('-01'):
+        error(f'  {s.get("ShowID")}: DatePrecision month needs ShowDate YYYY-MM-01, not {d}')
+    else:
+        _dp[p] += 1
+if len(ERRORS) == _dp_before:
+    print(f'  {_dp["month"]} month-only, {_dp["day"]} confirmed on the 1st, {_dp["year"]} marked year — OK')
+
 # ── 3. Required fields ────────────────────────────────────────────────────────
 
 section('Required fields')

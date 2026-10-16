@@ -1216,7 +1216,8 @@ ChecksumSHA1 = sha1(concatenated representative media, in order).hexdigest()
 Technical fields from `ffprobe` (container, codecs, width, height, duration, `AspectRatio` as
 `"<DAR> (native)"`, `TVStandard` from frame rate), `FileCount` and `TotalSizeBytes` from the filesystem.
 `Setlist` only from the folder's own sidecar (pasted into `Notes`, named in `PrivateNotes`); uncertainty goes in `PrivateNotes`;
-`YYYY-01-01` when only the year is known. `Artist`, `AddedOn` and `ContentType` exactly as §10b step 5. **Validate
+`YYYY-01-01` when only the year is known; `YYYY-MM-01` plus `"DatePrecision": "month"` when only the year and month are
+(CLAUDE.md → ShowDate). `Artist`, `AddedOn` and `ContentType` exactly as §10b step 5. **Validate
 before writing:** ShowID and checksum unique, `ShowDate` empty or exactly `YYYY-MM-DD`, and the record
 count up by exactly the number added. Split bills get a derived checksum for the second act (§2).
 

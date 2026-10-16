@@ -96,7 +96,7 @@ export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, se
   const badges = exceptions(show);
   // The quiet spec line (F2, agreed 2026-10-16): the date in full, and the
   // quality traders compare first.
-  const spec = [dateName(show.ShowDate), quality(show)?.label].filter(Boolean).join(' · ');
+  const spec = [dateName(show), quality(show)?.label].filter(Boolean).join(' · ');
 
   const imageUrl = show.ChecksumSHA1
     ? (getImageUrl ? getImageUrl(show.ChecksumSHA1, 1) : `/images/${show.ChecksumSHA1}_01.jpg`)

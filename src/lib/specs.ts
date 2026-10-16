@@ -108,14 +108,44 @@ export const songCount = (setlist?: string): number =>
 /** How the record was filmed, as traders write it: "Pro-shot", "Audience". */
 export const sourceName = (type?: string) => (type === 'Proshot' ? 'Pro-shot' : type || '');
 
+export type DatePrecision = 'year' | 'month' | 'day';
+
 /**
- * A show's date as the site shows it — card, drawer, share line, tab title. In
- * full, so two shows in one year differ (F2), except the year-only
- * placeholder, YYYY-01-01 (CLAUDE.md, ShowDate), which shows as the year: the
- * site must not claim a day nobody knows (F7). Until date precision is
- * recorded, a real New Year's Day show reads as its year too.
+ * How much of a show's date is known (F7; CLAUDE.md, ShowDate). Stored only
+ * where the convention can't tell: a `DatePrecision` of "month" for a
+ * YYYY-MM-01 that means the month alone, "day" for a date on the 1st that is
+ * real (a New Year's Day show). Otherwise YYYY-01-01 is the year alone, the
+ * convention since the start, and any other date is the day. Null if undated.
  */
-export function dateName(showDate?: string): string {
-  if (!showDate) return 'Undated';
-  return showDate.endsWith('-01-01') ? showDate.slice(0, 4) : showDate;
+export function datePrecision(show: Pick<Show, 'ShowDate' | 'DatePrecision'>): DatePrecision | null {
+  if (!show.ShowDate) return null;
+  if (show.DatePrecision === 'year' || show.DatePrecision === 'month' || show.DatePrecision === 'day') return show.DatePrecision;
+  return show.ShowDate.endsWith('-01-01') ? 'year' : 'day';
+}
+
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+/**
+ * A show's date as the site shows it — card, list, drawer, share line, tab
+ * title, link preview: "2010-06-05", "May 2001", "2001", or "Undated". In
+ * full, so two shows in one year differ (F2), and never a day nobody knows (F7).
+ */
+export function dateName(show: Pick<Show, 'ShowDate' | 'DatePrecision'>): string {
+  const p = datePrecision(show);
+  if (!p) return 'Undated';
+  if (p === 'year') return show.ShowDate.slice(0, 4);
+  if (p === 'month') return `${MONTHS[parseInt(show.ShowDate.slice(5, 7), 10) - 1]} ${show.ShowDate.slice(0, 4)}`;
+  return show.ShowDate;
+}
+
+/** The drawer's word on a partial date: "date unknown", "day unknown", or nothing. */
+export function dateCaveat(show: Pick<Show, 'ShowDate' | 'DatePrecision'>): string {
+  const p = datePrecision(show);
+  return p === 'year' ? 'date unknown' : p === 'month' ? 'day unknown' : '';
+}
+
+/** For a spreadsheet: "2001", "2001-05" or "2001-05-24", so partial dates still sort. */
+export function isoDate(show: Pick<Show, 'ShowDate' | 'DatePrecision'>): string {
+  const p = datePrecision(show);
+  return !p ? '' : p === 'year' ? show.ShowDate.slice(0, 4) : p === 'month' ? show.ShowDate.slice(0, 7) : show.ShowDate;
 }

@@ -60,7 +60,7 @@ function Row({ show, onShowClick }: { show: Show; onShowClick: (show: Show) => v
       onClick={e => { e.currentTarget.querySelector('button')?.focus({ preventScroll: true }); onShowClick(show); }}
       className="cursor-pointer border-b border-white/6 align-top transition-colors duration-100 hover:bg-white/5 print:break-inside-avoid print:border-black/15"
     >
-      <td className="whitespace-nowrap py-2 pr-3 tabular-nums text-gray-300 print:text-black">{dateName(show.ShowDate)}</td>
+      <td className="whitespace-nowrap py-2 pr-3 tabular-nums text-gray-300 print:text-black">{dateName(show)}</td>
       <td className="py-2 pr-3">
         <button
           type="button"

@@ -44,6 +44,7 @@ tools/
   artist-portraits/     ← picker for the artist tiles' pictures; build.py renders ~/VaultShots/reports/artist-portraits.html
   missing-setlists/     ← every show with no setlist + twins that have one; build.py renders ~/VaultShots/reports/missing-setlists.html
   taper-redaction/      ← removes tapers' names, contacts and links from shows.json; apply.mjs captures them to private/ first (see Tapers are never named)
+  date-precision/       ← shows dated the 1st of a month: build.py renders ~/VaultShots/reports/date-precision.html (real date or month only?); apply.py writes Karl's pasted picks
   source-review/        ← records with no RecordingType: build.py renders ~/VaultShots/reports/source-review.html (two stills and a clue each); apply.py writes Karl's pasted picks
 scripts/
   health-check.py       ← integrity validator (pre-push hook, and the deploy)
@@ -144,6 +145,7 @@ Flat JSON array of show objects. Key fields:
 | `Hidden` | `"Yes"` or absent | Keeps the record in `shows.json` but off the site (filtered in `src/hooks/useShows.ts`). For two records of one recording where only one should show: set `DuplicateOf` to the shown record and say why in `PrivateNotes`. `DuplicateOf` alone does **not** hide (Jay-Z and Jack White carry it and are meant to show) |
 | `ParentShowID` | ShowID or absent | Set on a record cut from a multi-artist **master** recording (festival broadcast, talk-show compilation). The drawer links to the master ("Part of …"); the master's drawer lists its records under "On this recording". One level only; the master must not be hidden. Checked by the health check |
 | `SegmentStart` / `SegmentEnd` | `H:MM:SS` | Where that linked record sits on the master's timeline. Always set together with `ParentShowID` |
+| `DatePrecision` | `"month"`, `"day"`, `"year"` or absent | How much of `ShowDate` is known where its convention can't tell — see *ShowDate* below |
 | `AddedOn` | `YYYY-MM-DD` or absent | When the recording joined the site; drives "Recently added". **Set on every new record** — see *AddedOn* below |
 
 ### Notes and PrivateNotes
@@ -357,7 +359,8 @@ rename the image files, update the manifest key, clear the Note.
   record, is itself linked, or lacks `SegmentStart` < `SegmentEnd` (`H:MM:SS`); a `ContentType`
   other than `Documentary`, or "Documentary" in `RecordingType`; one artist under two names, or a
   name starting with "The"; a manifest slot whose file is missing; a new record with no `AddedOn`
-  (and not on the launch list), or an `AddedOn` that isn't a real date since 2026-10-16;
+  (and not on the launch list), or an `AddedOn` that isn't a real date since 2026-10-16; a
+  `DatePrecision` that disagrees with its `ShowDate`;
   **setlist loss**; a taper's
   name, contact, link or tracker name in `shows.json` (*Tapers are never named*).
 - **Setlist loss** — a song gone from a `Setlist`. Songs that moved to a record which gained them
@@ -430,7 +433,13 @@ scan for duplicates whenever you edit any of these fields.
 
 ### ShowDate
 - `YYYY-MM-DD` or `""` — nothing else, ever (no `"0000-00-00"`, `"Compilation"` or placeholders).
-- Only the year known → `YYYY-01-01`; year and month → `YYYY-MM-01`.
+- Only the year known → `YYYY-01-01`; year and month → `YYYY-MM-01` **and `"DatePrecision":
+  "month"`**, or the site shows the 1st as the real day. A real date on the 1st that could pass
+  for a placeholder (a New Year's Day show) → `"DatePrecision": "day"`. Without the field,
+  `YYYY-01-01` means the year alone and any other date the day (`datePrecision` in
+  `src/lib/specs.ts`; the site shows "2001", "May 2001 (day unknown)"). The health check blocks a
+  `DatePrecision` that disagrees with its date. Undecided 1sts of the month are on
+  `tools/date-precision` (F7, 2026-10-17).
 - Compilations, documentaries, rockumentaries and TV-only specials with no air/performance date → `""`.
 
 ### Text encoding

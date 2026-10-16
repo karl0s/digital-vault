@@ -6,7 +6,7 @@ import { CloseButton } from './CloseButton';
 import type { ImageUrlGetter } from '../src/hooks/useShows';
 import { scrollContainerToTop } from '../src/lib/motion';
 import { showLink } from '../src/lib/url';
-import { quality, videoName, audioName, containerName, channelsName, aspectName, sampleRateName, lengthName, sourceName, dateName, songCount } from '../src/lib/specs';
+import { quality, videoName, audioName, containerName, channelsName, aspectName, sampleRateName, lengthName, sourceName, dateName, dateCaveat, songCount } from '../src/lib/specs';
 import { copiesOf } from '../src/lib/copies';
 import { ADDED_LABEL, addedKind } from '../src/lib/added';
 import type { SongHit } from '../src/search/searchIndex';
@@ -334,7 +334,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
    */
   const reference = [
     show.Artist,
-    dateName(show.ShowDate),
+    dateName(show),
     show.EventOrFestival || show.VenueName,
     q?.label,
     durationFormatted,
@@ -610,7 +610,8 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                 {/* Date · event · venue · city, country: the place always, event
                     or not (F9), each part once. */}
                 {[
-                  dateName(show.ShowDate),
+                  // "2001 (date unknown)": the drawer says so outright (F7).
+                  dateCaveat(show) ? `${dateName(show)} (${dateCaveat(show)})` : dateName(show),
                   show.EventOrFestival || null,
                   show.VenueName && show.VenueName !== show.EventOrFestival && show.VenueName !== show.City ? show.VenueName : null,
                   [show.City, show.Country].filter(Boolean).join(', '),

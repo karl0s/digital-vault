@@ -36,7 +36,7 @@ export function visibleShows(root: string): Show[] {
 
 /** "30 Seconds to Mars · 2010-06-05 · Rock am Ring": the tab title's words. */
 export function showTitle(show: Show): string {
-  return [show.Artist, dateName(show.ShowDate), show.EventOrFestival || show.VenueName].filter(Boolean).join(' · ');
+  return [show.Artist, dateName(show), show.EventOrFestival || show.VenueName].filter(Boolean).join(' · ');
 }
 
 /** "Rock am Ring · Nürburgring · Nürburg, Germany. HD 1080 · 44 min · Pro-shot." */
@@ -70,7 +70,7 @@ export function showPage(show: Show, site: string, still: Still | null): string 
         `<meta property="og:image" content="${esc(still.url)}">`,
         still.width ? `<meta property="og:image:width" content="${still.width}">` : '',
         still.height ? `<meta property="og:image:height" content="${still.height}">` : '',
-        `<meta property="og:image:alt" content="${esc(`${show.Artist}, ${dateName(show.ShowDate)}`)}">`,
+        `<meta property="og:image:alt" content="${esc(`${show.Artist}, ${dateName(show)}`)}">`,
       ].filter(Boolean).join('\n')
     : '';
   return `<!doctype html>

@@ -59,6 +59,8 @@ export interface Show {
   DuplicateOf?: string;
   /** "Yes" keeps the record in shows.json but off the site (see useShows). */
   Hidden?: string;
+  /** Where ShowDate's convention can't tell: "month" for a month-only YYYY-MM-01, "day" for a real date on the 1st (src/lib/specs.ts). */
+  DatePrecision?: 'year' | 'month' | 'day';
   /** YYYY-MM-DD the recording joined the collection; set from 2026-10-16 (src/lib/added.ts). */
   AddedOn?: string;
   /**
@@ -340,7 +342,7 @@ export default function App() {
   useEffect(() => {
     const base = 'The Vault — Live Concert Archive';
     document.title = selectedShow
-      ? `${selectedShow.Artist} · ${[dateName(selectedShow.ShowDate), selectedShow.EventOrFestival || selectedShow.VenueName].filter(Boolean).join(' · ')} — The Vault`
+      ? `${selectedShow.Artist} · ${[dateName(selectedShow), selectedShow.EventOrFestival || selectedShow.VenueName].filter(Boolean).join(' · ')} — The Vault`
       : base;
   }, [selectedShow]);
 
