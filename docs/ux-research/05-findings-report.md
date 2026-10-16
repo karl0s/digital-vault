@@ -85,23 +85,72 @@ copies of one show is the HD one) couldn't be made from anything on screen.
 
 ---
 
-## Fix these first
+## Fix these first — and why in this order
 
-Ranked by impact on the traders' core jobs, then by effort (S = under half a day, M = 1–3 days,
-L = a week or more, or data work).
+The order comes from a score, so you can see the working and argue with any number. Each item gets
+four ratings:
 
-| # | Fix | Finding | Effort | Status |
-|---|---|---|---|---|
-| 1 | Stop Escape erasing the search while a show is open | [F5](#f5--escape-erases-the-search-behind-an-open-show) | S | ⬜ |
-| 2 | Show resolution and an HD / SD / low-res label; trader names for codecs | [F1](#f1--which-copy-is-better-cant-be-answered) | S | ⬜ |
-| 3 | Give every show a link (`?show=<ShowID>`); Back closes the show | [F3](#f3--nothing-can-be-linked-and-back-leaves-the-site) | M | ⬜ |
-| 4 | Group recordings of the same show; full date on cards; compare | [F2](#f2--recordings-of-the-same-show-arent-grouped-and-their-cards-are-identical) | M | ⬜ |
-| 5 | A Share button on each show: copies its link and a one-line reference (after #3) | [F4](#f4--pointing-at-one-exact-recording-is-hard) | S | ⬜ |
-| 6 | Search: dates, abbreviations (auto-initials), country and city synonyms, tech terms | [F6](#f6--search-doesnt-match-how-traders-type) | M | ⬜ |
-| 7 | Show venue and city in the drawer for festival and TV shows | [F9](#f9--the-drawer-hides-venue-and-city-for-festival-and-tv-shows) | S | ⬜ |
-| 8 | Empty results name the active filters and offer to drop them | [F8](#f8--empty-results-blame-spelling-when-a-filter-is-the-cause) | S | ⬜ |
-| 9 | Publish source, lineage and generation through the taper redaction (Notes cleaned too) | [Redaction](#publishing-lineage-and-generation-without-exposing-tapers) | M | ✅ (`0b538a57`, `1cffc551`) |
-| 10 | Stop placeholder dates posing as real dates | [F7](#f7--placeholder-dates-look-like-real-dates) | M (data) | ⬜ |
+| Rating | What it measures | Scale |
+|---|---|---|
+| **Impact** | How badly the problem hurts a trader's job | 3 = a core job fails without the fix (J1, J2, J6) · 2 = leads to a wrong conclusion or a big detour · 1 = friction or polish |
+| **Reach** | How often traders meet it | 3 = every visit, or most of the 1,213 shows · 2 = a common task, or hundreds of shows · 1 = an edge case, or dozens |
+| **Confidence** | How sure we are it matters | 1.0 = seen in the walkthrough or measured in the data · 0.8 = predicted from the persona, not yet seen · 0.5 = a guess |
+| **Effort** | How long it takes | 1 = under half a day · 2 = one to three days · 4 = a week or more, or data and pipeline work |
+
+**Score = Impact × Reach × Confidence ÷ Effort.** It is a version of the RICE method product teams
+use. The highest score goes first. Where two items touch the same code they are done together
+(next table), and an item that depends on another waits for it.
+
+| Rank | Fix | Finding | Impact | Reach | Conf. | Effort | **Score** | Why | Status |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | Resolution and an HD / SD / low-res label; trader names for codecs | [F1](#f1--which-copy-is-better-cant-be-answered) | 3 | 3 | 1.0 | 1 | **9.0** | Decides "which copy is better"; the data is on all 1,213 shows; 124 HD records are never called HD | ⬜ |
+| 2 | Search by date, in every format | [F6](#f6--search-doesnt-match-how-traders-type) | 3 | 3 | 1.0 | 1 | **9.0** | A date is the trader's first search; every format returns nothing today | ⬜ |
+| 3 | Venue and city always in the drawer | [F9](#f9--the-drawer-hides-venue-and-city-for-festival-and-tv-shows) | 2 | 3 | 1.0 | 1 | **6.0** | Identity of the show; hidden on 699 shows (venue) and 843 (city) | ⬜ |
+| 4 | A link for every show; Back closes the show; link previews | [F3](#f3--nothing-can-be-linked-and-back-leaves-the-site) | 3 | 3 | 1.0 | 2 | **4.5** | Sharing fails, and Back leaves the site on every phone; also unlocks #7 and analytics, which you asked for | ⬜ |
+| 5 | Escape keeps the search | [F5](#f5--escape-erases-the-search-behind-an-open-show) | 2 | 2 | 1.0 | 1 | **4.0** | A real bug, but × works and only keyboard users hit it; one line, so it rides along with batch A | ⬜ |
+| 6 | Artist abbreviations (RATM, FNM…); no wrong "Did you mean" | [F6](#f6--search-doesnt-match-how-traders-type) | 2 | 2 | 1.0 | 1 | **4.0** | The full name works, so it's a detour, not a block | ⬜ |
+| 7 | Share button with a one-line reference | [F4](#f4--pointing-at-one-exact-recording-is-hard) | 2 | 2 | 0.8 | 1 | **3.2** | Waits for #4 | ⬜ |
+| 8 | Full date and a quiet spec line on cards (agreed) | [F2](#f2--recordings-of-the-same-show-arent-grouped-and-their-cards-are-identical) | 2 | 3 | 1.0 | 2 | **3.0** | 375 look-alike cards; a card change needs performance runs | ⬜ |
+| 9 | "Other recordings of this show" table | [F2](#f2--recordings-of-the-same-show-arent-grouped-and-their-cards-are-identical) | 3 | 2 | 1.0 | 2 | **3.0** | The heart of J2, but only 118 shows (288 records) have several copies | ⬜ |
+| 10 | Contrast and text sizes | [F13](#f13--too-faint-and-too-small-for-eyes-aged-4060) | 1 | 3 | 1.0 | 1 | **3.0** | Every visit, but it slows people rather than stopping them | ⬜ |
+| 11 | Empty results name the active filters | [F8](#f8--empty-results-blame-spelling-when-a-filter-is-the-cause) | 2 | 1 | 1.0 | 1 | **2.0** | A wrong conclusion, but only with a filter and a search together | ⬜ |
+| 12 | View a still at full size | [F14](#f14--stills-cant-be-inspected-closely) | 1 | 2 | 1.0 | 1 | **2.0** | Helps judge an encode; the stills already show logos | ⬜ |
+| 13 | One format for durations and labels; tooltips on cut-off text | [F17](#low) | 1 | 2 | 1.0 | 1 | **2.0** | Polish | ⬜ |
+| 14 | Country, city and event synonyms; tech terms; search tips | [F6](#f6--search-doesnt-match-how-traders-type) | 2 | 2 | 1.0 | 2 | **2.0** | Fewer misses, more work than dates | ⬜ |
+| 15 | List view and CSV download | [F10](#f10--no-dense-list-export-or-useful-sort-for-reconciling-a-trading-list) | 2 | 2 | 0.8 | 2 | **1.6** | Predicted from how traders keep lists; not yet seen | ⬜ |
+| 16 | "Recently added" | [F11](#f11--returning-traders-cant-see-whats-new) | 2 | 2 | 0.8 | 2 | **1.6** | Returning visitors; predicted | ⬜ |
+| 17 | "More filters" (agreed) | [F12](#f12--filters-dont-cover-what-traders-decide-by) | 2 | 2 | 0.8 | 2 | **1.6** | Predicted; search covers part of it today | ⬜ |
+| 18 | Drive scan: frame rate, bitrate, chapters, show size | [Plan](#planned-a-drive-scan-for-the-missing-specs) | 2 | 3 | 1.0 | 4 | **1.5** | Needs Live Music mounted | 📅 |
+| 19 | Date precision ("2001, exact date unknown") | [F7](#f7--placeholder-dates-look-like-real-dates) | 2 | 2 | 1.0 | 4 | **1.0** | 257 records; mostly data work | ⬜ |
+| 20 | Fill in Source on 329 records | [Data](#data-quality--the-metadata-is-the-product) | 2 | 2 | 1.0 | 4 | **1.0** | Data work | ⬜ |
+| 21 | Setlists: 32 non-song entries; encore as a divider; highlight the searched song | [F15](#f15--setlists-non-songs-counted-as-songs-the-searched-song-isnt-highlighted) | 1 | 1 | 1.0 | 1 | **1.0** | Small | 🟡 |
+| 22 | Phone header shrinks while scrolling | [F18](#low) | 1 | 1 | 0.8 | 1 | **0.8** | Polish | ⬜ |
+| 23 | One line saying what the site is | [F16](#f16--a-first-visit-doesnt-say-what-this-is) | 1 | 1 | 0.5 | 1 | **0.5** | Your email already introduces the site | ⬜ |
+| — | Lineage and Generation, after the taper redaction | [Redaction](#publishing-lineage-and-generation-without-exposing-tapers) | | | | | | | ✅ `0b538a57`, `1cffc551` |
+
+The 432 missing setlists continue separately, in their own review (`tools/missing-setlists`).
+
+### The order of work
+
+Items that touch the same code ship together, so each area is opened, tested and measured once.
+A batch's place comes from its best score.
+
+| Batch | Ranks | What | Why together |
+|---|---|---|---|
+| **A. The drawer's facts** | 1, 3, 12, plus 5 | Resolution and HD/SD label with codec names; venue and city; full-size still; the Escape fix | All in the show drawer; one performance run covers them |
+| **B. Search** | 2, 6, 11, then 14 | Dates; abbreviations; empty results; then synonyms and tips | All in the search index and results page, with one set of search tests |
+| **C. Links and sharing** | 4, 7 | Show links, Back, previews; then Share | Share needs the links |
+| **D. Cards and copies** | 8, 9, 13 | Full date and spec line; other recordings; formats | Cards are the most performance-sensitive part of the site |
+| **E. Readability** | 10 | Contrast and sizes | Touches every screen; best after D settles the cards |
+| Later | 15–23 | List view and CSV, recently added, more filters, data work, the drive scan, polish | Lower scores, or waiting on data or the drive |
+
+### What would change the order
+
+- **Real traders.** The sessions in [04-test-plan.md](04-test-plan.md) replace the Reach and
+  Confidence guesses with evidence; an item seen to stop several people jumps up.
+- **Your priorities.** If analytics matters sooner, links (#4) move up; if sharing in the email
+  thread is the bottleneck, so does Share (#7). Tell me and I'll re-score.
+- **Effort surprises.** A fix that turns out bigger than estimated is re-scored before it starts.
 
 ---
 
@@ -664,21 +713,11 @@ case for revisiting them is the trader's job.
 
 ## Roadmap
 
-**Now: quick wins, each under half a day.** F5 Escape · F9 venue and city · F1 resolution, HD/SD
-and codec labels · F6 auto-initials and an "exact alias beats Did you mean" rule · F8 empty
-state · F13 contrast and sizes · F14 full-size still · F17 formats.
-
-**Next: 1–3 days each.** F3 show links, Back and meta tags · F2 other recordings, compare table,
-card date and spec line (measure with `npm run perf`) · F4 Share button · F1 Source,
-Lineage and Generation · F6 dates, synonyms, quoted and combined prefixes, search tips · F10 list
-view and CSV · F12 More filters.
-
-**Later: data and pipeline.** F7 date precision · F11 `AddedOn`, Recently added, RSS · per-show
-static pages and a sitemap · backfill source and setlists · frame rate, bitrate, menus/chapters
-and broadcaster in the scan · "paste your list" have/want matching.
-
-**Then:** run the sessions in [04-test-plan.md](04-test-plan.md) with real traders and re-rank
-this list.
+The order of work is set by the scores in [Fix these first](#fix-these-first--and-why-in-this-order):
+batch A (the drawer's facts), B (search), C (links and sharing), D (cards and copies),
+E (readability), then the lower-scoring items, the data work and the drive scan. Progress is in the
+[tracker](#progress-tracker). Once a few batches are live, run the sessions in
+[04-test-plan.md](04-test-plan.md) with real traders and re-score.
 
 ---
 
