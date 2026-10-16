@@ -197,6 +197,34 @@ console.log('\nNONE keeps sparse records reachable');
     computeFacetCounts(derived, f(), null).country.at(-1)?.value === NONE);
 }
 
+console.log('\nMore filters match the data (F12), counted independently');
+{
+  const height = (s: Show) => parseInt(s.Height, 10) || 0;
+  const width = (s: Show) => parseInt(s.Width, 10) || 0;
+  const minutes = (s: Show) => Math.round((parseInt(s.DurationSec, 10) || 0) / 60);
+  const isHd = (s: Show) => height(s) >= 700;
+  const expect: [string, Partial<FilterState>, number][] = [
+    ['HD 1080', { quality: ['hd-1080'] }, shows.filter(s => height(s) >= 1000).length],
+    ['HD 720', { quality: ['hd-720'] }, shows.filter(s => height(s) >= 700 && height(s) < 1000).length],
+    ['Low-res', { quality: ['low-res'] }, shows.filter(s => height(s) && !isHd(s) && (width(s) <= 360 || height(s) <= 300)).length],
+    ['PAL (SD and low-res only)', { standard: ['pal'] }, shows.filter(s => !isHd(s) && s.TVStandard?.trim().toUpperCase() === 'PAL').length],
+    ['NTSC (SD and low-res only)', { standard: ['ntsc'] }, shows.filter(s => !isHd(s) && s.TVStandard?.trim().toUpperCase() === 'NTSC').length],
+    ['under 10 min', { length: ['under-10'] }, shows.filter(s => minutes(s) > 0 && minutes(s) < 10).length],
+    ['over 1½ hours', { length: ['over-90'] }, shows.filter(s => minutes(s) >= 90).length],
+    ['has a setlist', { setlist: ['yes'] }, shows.filter(s => s.Setlist?.trim()).length],
+    ['no setlist', { setlist: ['no'] }, shows.filter(s => !s.Setlist?.trim()).length],
+  ];
+  for (const [label, over, expected] of expect) {
+    const actual = applyFilters(derived, f(over), null).length;
+    ok(`${label}: ${actual} (expected ${expected})`, actual === expected && expected > 0);
+  }
+  const bands = ['under-10', '10-30', '30-60', '60-90', 'over-90']
+    .reduce((n, v) => n + applyFilters(derived, f({ length: [v] }), null).length, 0);
+  ok(`the length bands cover every show with a length (${bands})`, bands === shows.filter(s => minutes(s) > 0).length);
+  ok('HD and PAL together find nothing: HD has no standard',
+    applyFilters(derived, f({ quality: ['hd-1080', 'hd-720'], standard: ['pal', 'ntsc'] }), null).length === 0);
+}
+
 console.log('\nmulti-select is OR within a facet, AND across facets');
 {
   const de = applyFilters(derived, f({ country: ['germany'] }), null).length;

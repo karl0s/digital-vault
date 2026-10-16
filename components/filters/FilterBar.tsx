@@ -2,10 +2,11 @@ import { Search, X } from 'lucide-react';
 import { RefObject } from 'react';
 import { cn } from '../../src/lib/cn';
 import { CONTENT_WIDTH } from '../../src/lib/layout';
-import { FacetKey, SortKey } from '../../src/lib/url';
+import { FACET_KEYS, FacetKey, SortKey } from '../../src/lib/url';
 import { FacetCounts, YearHistogram } from '../../src/search/facets';
 import { useFilterStore } from '../../src/store/filters';
 import { FacetPopover } from './FacetPopover';
+import { MoreFiltersPopover } from './MoreFiltersPopover';
 import { YearRangePopover } from './YearRangePopover';
 
 /**
@@ -58,7 +59,8 @@ export function FilterBar({
   const state = useFilterStore();
   const { toggleFacet, clearFacet, clearAll, setSort, setYearRange, toggleUndated } = state;
 
-  const facetChips = FACETS.flatMap(({ key }) =>
+  // A chip per selected value, Country and Event first, then "More filters".
+  const facetChips = FACET_KEYS.flatMap(key =>
     counts[key]
       .filter(o => o.selected)
       .map(o => ({
@@ -133,6 +135,7 @@ export function FilterBar({
                 onClear={() => clearFacet(key)}
               />
             ))}
+            <MoreFiltersPopover counts={counts} />
           </div>
         </div>
 

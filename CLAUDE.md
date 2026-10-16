@@ -24,12 +24,12 @@ main.tsx                ← entry; DEV-only playground gate
 components/             ← cards, grids, ShowDrawer, ArtistDirectory, HeroSearch, FeaturedRows
   CloseButton.tsx       ← shared close button — use this for ALL close buttons
   shell/                ← AppShell, MobileTabBar (no sidebar or top bar since 2026-10-13)
-  filters/              ← FilterBar, FacetPopover, YearRangePopover, YearHistogram
+  filters/              ← FilterBar, FacetPopover, MoreFiltersPopover, YearRangePopover, YearHistogram
   logos/                ← HalationLogo (the wordmark)
 src/
   hooks/                ← useShows (data + getNotes + getImageUrl), useBrowseResults, useSearchEngine, useDebounce
   store/filters.ts      ← zustand filter store, synced to the URL
-  lib/                  ← url.ts (canonical URL state, EVENT_GROUPS), layout.ts (the one content width), portraits.ts (artist tile picks), hoverPreload.ts (cards' hover stills), brush.ts, motion.ts, cn.ts
+  lib/                  ← url.ts (canonical URL state, EVENT_GROUPS), specs.ts (specs in traders' words: quality, codecs, lengths, dates), specFilters.ts (More filters' options), copies.ts (a show's other recordings), layout.ts (the one content width), portraits.ts (artist tile picks), hoverPreload.ts (cards' hover stills), brush.ts, motion.ts, cn.ts
   search/               ← searchIndex.ts (MiniSearch, field prefixes; free text grouped artist/show/song, Did you mean), facets.ts (filter, count, sort)
 styles/globals.css      ← Tailwind entry, global CSS and the breakpoints (imported by main.tsx)
 dist/                   ← BUILD OUTPUT — never commit this, CI owns it

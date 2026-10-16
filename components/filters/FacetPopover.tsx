@@ -11,6 +11,46 @@ import { FacetOption, listedOptions } from '../../src/search/facets';
  * Hand-rolling that is how you end up with the focus bugs the drawer had.
  */
 
+/**
+ * One option: a checkbox row with its live count. Disabled, not hidden, when
+ * nothing would match: options vanishing under the cursor is disorienting,
+ * and hiding them conceals the collection's shape. Shared with MoreFilters.
+ */
+export function FacetOptionButton({ option, label = option.label, onToggle }: {
+  option: FacetOption;
+  label?: string;
+  onToggle: (value: string) => void;
+}) {
+  const unavailable = option.count === 0 && !option.selected;
+  return (
+    <button
+      onClick={() => onToggle(option.value)}
+      disabled={unavailable}
+      aria-pressed={option.selected}
+      className={cn(
+        'flex w-full items-center gap-2.5 rounded-md px-2 py-1.5 text-left text-sm transition-colors duration-150',
+        unavailable
+          ? 'cursor-not-allowed text-gray-600'
+          : 'cursor-pointer text-gray-200 hover:bg-white/10',
+      )}
+    >
+      <span
+        className={cn(
+          'flex h-4 w-4 shrink-0 items-center justify-center rounded border',
+          option.selected ? 'border-white bg-white' : 'border-white/25',
+        )}
+        aria-hidden="true"
+      >
+        {option.selected && <Check className="h-3 w-3 text-black" strokeWidth={3} />}
+      </span>
+      <span className="min-w-0 flex-1 truncate">{label}</span>
+      <span className="shrink-0 tabular-nums text-xs text-gray-400">
+        {option.count}
+      </span>
+    </button>
+  );
+}
+
 interface FacetPopoverProps {
   label: string;
   options: FacetOption[];
@@ -98,39 +138,9 @@ export function FacetPopover({
                 <p className="px-2 py-6 text-center text-sm text-gray-400">No matches</p>
               )}
 
-              {visible.map(option => {
-                // Disabled, not hidden: options vanishing under the cursor is
-                // disorienting, and hiding them conceals the collection's shape.
-                const unavailable = option.count === 0 && !option.selected;
-                return (
-                  <button
-                    key={option.value}
-                    onClick={() => onToggle(option.value)}
-                    disabled={unavailable}
-                    aria-pressed={option.selected}
-                    className={cn(
-                      'flex w-full items-center gap-2.5 rounded-md px-2 py-1.5 text-left text-sm transition-colors duration-150',
-                      unavailable
-                        ? 'cursor-not-allowed text-gray-600'
-                        : 'cursor-pointer text-gray-200 hover:bg-white/10',
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        'flex h-4 w-4 shrink-0 items-center justify-center rounded border',
-                        option.selected ? 'border-white bg-white' : 'border-white/25',
-                      )}
-                      aria-hidden="true"
-                    >
-                      {option.selected && <Check className="h-3 w-3 text-black" strokeWidth={3} />}
-                    </span>
-                    <span className="min-w-0 flex-1 truncate">{option.label}</span>
-                    <span className="shrink-0 tabular-nums text-xs text-gray-400">
-                      {option.count}
-                    </span>
-                  </button>
-                );
-              })}
+              {visible.map(option => (
+                <FacetOptionButton key={option.value} option={option} onToggle={onToggle} />
+              ))}
             </div>
 
             {selectedCount > 0 && (

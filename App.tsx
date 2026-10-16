@@ -14,7 +14,7 @@ import { AppShell } from './components/shell/AppShell';
 import { FilterBar } from './components/filters/FilterBar';
 import { ShowGrid } from './components/ShowGrid';
 import { useBrowseResults } from './src/hooks/useBrowseResults';
-import { isFiltered as computeIsFiltered, LEGACY_VIEW_PARAM, readShowParam, withShowParam } from './src/lib/url';
+import { FACET_KEYS, isFiltered as computeIsFiltered, LEGACY_VIEW_PARAM, readShowParam, withShowParam } from './src/lib/url';
 import { useFilterStore, initFilterUrlSync, selectFilterState } from './src/store/filters';
 import { startHoverPreload } from './src/lib/hoverPreload';
 import { dateName } from './src/lib/specs';
@@ -121,8 +121,7 @@ export default function App() {
     filterState.from !== null || filterState.to !== null
       ? filterState.from === filterState.to ? `${filterState.from}` : `${filterState.from ?? '…'}–${filterState.to ?? '…'}`
       : null,
-    ...counts.country.filter(o => o.selected).map(o => o.label),
-    ...counts.festival.filter(o => o.selected).map(o => o.label),
+    ...FACET_KEYS.flatMap(key => counts[key].filter(o => o.selected).map(o => o.label)),
   ].filter((label): label is string => Boolean(label));
   const withoutFilters = filterLabels.length
     ? { count: matchedByQuery, labels: filterLabels, onClear: clearFilters }

@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import {
   DEFAULT_SORT,
   EMPTY_FILTERS,
+  FACET_KEYS,
   FacetKey,
   FilterState,
   SortKey,
@@ -80,6 +81,9 @@ function toggleValue(list: (string | number)[], value: string | number): string[
 // Every remaining facet holds slug strings — years moved to a range and are no
 // longer a multi-select facet, so the numeric special case is gone.
 
+/** Every facet empty: Country, Event and the "More filters". */
+const NO_FACETS = Object.fromEntries(FACET_KEYS.map(key => [key, []])) as unknown as Pick<FilterState, FacetKey>;
+
 export const useFilterStore = create<FilterStore>((set, get) => {
   /** Applies a partial change, then syncs the URL unless we came from the URL. */
   const apply = (patch: Partial<FilterState>) => {
@@ -121,10 +125,10 @@ export const useFilterStore = create<FilterStore>((set, get) => {
     // Sort deliberately survives "clear all" — it is a view preference, not a
     // filter, and resetting it would silently reorder results the user is reading.
     clearAll: () =>
-      apply({ q: '', from: null, to: null, undated: false, country: [], festival: [] }),
+      apply({ q: '', from: null, to: null, undated: false, ...NO_FACETS }),
 
     clearFilters: () =>
-      apply({ from: null, to: null, undated: false, country: [], festival: [] }),
+      apply({ from: null, to: null, undated: false, ...NO_FACETS }),
 
     hydrateFromUrl: search => {
       applyingFromUrl = true;
@@ -162,7 +166,9 @@ export function initFilterUrlSync(): () => void {
 export function selectFilterState(s: FilterState): FilterState {
   return {
     q: s.q, from: s.from, to: s.to, undated: s.undated,
-    country: s.country, festival: s.festival, sort: s.sort,
+    country: s.country, festival: s.festival,
+    quality: s.quality, standard: s.standard, length: s.length, setlist: s.setlist,
+    sort: s.sort,
   };
 }
 

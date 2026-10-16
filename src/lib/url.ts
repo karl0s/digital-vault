@@ -17,6 +17,8 @@
  * JS runs. See docs/browse-redesign-spec.md.
  */
 
+import { SPEC_FACETS, SPEC_FACET_KEYS } from './specFilters';
+
 export type SortKey = 'year-desc' | 'year-asc' | 'artist';
 
 export const DEFAULT_SORT: SortKey = 'year-desc';
@@ -55,6 +57,11 @@ export interface FilterState {
   undated: boolean;
   country: string[];
   festival: string[];
+  /** "More filters" (src/lib/specFilters.ts): closed lists of values. */
+  quality: string[];
+  standard: string[];
+  length: string[];
+  setlist: string[];
   sort: SortKey;
 }
 
@@ -65,19 +72,24 @@ export const EMPTY_FILTERS: FilterState = {
   undated: false,
   country: [],
   festival: [],
+  quality: [],
+  standard: [],
+  length: [],
+  setlist: [],
   sort: DEFAULT_SORT,
 };
 
 /**
  * Multi-select facets only. The year range is deliberately not one of these —
- * it is a range with its own controls, not a list of checkboxes.
+ * it is a range with its own controls, not a list of checkboxes. Country and
+ * Event list the collection's own values; the rest are "More filters".
  */
-export const FACET_KEYS = ['country', 'festival'] as const;
+export const FACET_KEYS = ['country', 'festival', 'quality', 'standard', 'length', 'setlist'] as const;
 export type FacetKey = (typeof FACET_KEYS)[number];
 
 /** Rule 1. Emission order is fixed here and nowhere else. */
 const PARAM_ORDER = [
-  'q', 'from', 'to', 'undated', 'country', 'festival', 'sort',
+  'q', 'from', 'to', 'undated', 'country', 'festival', 'quality', 'standard', 'length', 'setlist', 'sort',
 ] as const;
 
 /** Rejects nonsense years from a hand-edited URL without pinning the data span. */
@@ -204,6 +216,12 @@ function readList(params: URLSearchParams, key: string): string[] {
   return uniqueSorted(raw.split(',').map(v => slugify(decodeURIComponent(v))));
 }
 
+/** A "More filters" list, keeping only values the filter has. */
+function readSpec(params: URLSearchParams, key: (typeof SPEC_FACET_KEYS)[number]): string[] {
+  const known = new Set(SPEC_FACETS[key].options.map(o => o.value));
+  return readList(params, key).filter(v => known.has(v));
+}
+
 /** Query string -> FilterState. Unknown params and junk values are dropped. */
 export function parseFilters(search: string): FilterState {
   const params = new URLSearchParams(search.startsWith('?') ? search.slice(1) : search);
@@ -223,6 +241,10 @@ export function parseFilters(search: string): FilterState {
     undated: params.get('undated') === '1',
     country: readList(params, 'country'),
     festival: uniqueSorted(readList(params, 'festival').map(v => GROUPED_FESTIVAL_SLUGS[v] ?? v)),
+    quality: readSpec(params, 'quality'),
+    standard: readSpec(params, 'standard'),
+    length: readSpec(params, 'length'),
+    setlist: readSpec(params, 'setlist'),
     sort: rawSort && SORT_KEYS.includes(rawSort) ? rawSort : DEFAULT_SORT,
   };
 }

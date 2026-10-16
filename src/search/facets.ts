@@ -1,5 +1,6 @@
 import { Show } from '../../App';
 import { EVENT_GROUPS, FACET_KEYS, FacetKey, FilterState, NONE, SortKey, slugify } from '../lib/url';
+import { SPEC_FACET_KEYS, SpecFacetKey, specLabel, specValue } from '../lib/specFilters';
 
 /**
  * Faceted filtering, counting and sorting over the show catalogue.
@@ -21,6 +22,11 @@ export interface DerivedShow {
   year: number | null;
   country: string;    // slug | NONE
   festival: string;   // slug | NONE
+  /** "More filters": a value from src/lib/specFilters.ts, or NONE. */
+  quality: string;
+  standard: string;
+  length: string;
+  setlist: string;
   artist: string;
   /** Sortable date key; '' for undated, which always sorts last. */
   dateKey: string;
@@ -51,6 +57,7 @@ export function deriveShow(show: Show): DerivedShow {
     year: deriveYear(date),
     country: show.Country?.trim() ? slugify(show.Country) : NONE,
     festival: filterEvent(show) ? slugify(filterEvent(show)) : NONE,
+    ...(Object.fromEntries(SPEC_FACET_KEYS.map(key => [key, specValue(show, key) || NONE])) as Record<SpecFacetKey, string>),
     artist: show.Artist,
     dateKey: /^\d{4}/.test(date) ? date : '',
   };
@@ -63,10 +70,7 @@ export function deriveAll(shows: Show[]): DerivedShow[] {
 // ─── matching ────────────────────────────────────────────────────────────────
 
 function facetValueOf(d: DerivedShow, facet: FacetKey): string {
-  switch (facet) {
-    case 'country': return d.country;
-    case 'festival': return d.festival;
-  }
+  return d[facet];
 }
 
 /**
@@ -82,6 +86,7 @@ function facetLabelOf(d: DerivedShow, facet: FacetKey): string {
   switch (facet) {
     case 'country': return d.show.Country?.trim() || 'Unknown location';
     case 'festival': return filterEvent(d.show) || 'No event';
+    default: return specLabel(facet, d[facet]) ?? 'Unknown';
   }
 }
 

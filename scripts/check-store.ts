@@ -10,7 +10,7 @@
  * appears at runtime in a browser.
  */
 
-import { EMPTY_FILTERS } from '../src/lib/url';
+import { EMPTY_FILTERS, FACET_KEYS } from '../src/lib/url';
 import { selectFilterState, useFilterStore } from '../src/store/filters';
 
 let failures = 0;
@@ -89,9 +89,14 @@ console.log('\nactions');
   store.getState().setYearRange(1990, 1999);
   store.getState().toggleUndated();
   store.getState().setSort('artist');
+  store.getState().setFacet('quality', ['sd']);
+  store.getState().setFacet('setlist', ['yes']);
+  store.getState().clearFilters();
+  ok('clearFilters empties the More filters too', store.getState().quality.length === 0 && store.getState().setlist.length === 0);
+  store.getState().setFacet('quality', ['sd']);
   store.getState().clearAll();
   const s = store.getState();
-  ok('clearAll empties every facet', s.country.length === 0 && s.festival.length === 0);
+  ok('clearAll empties every facet', FACET_KEYS.every(key => s[key].length === 0));
   ok('clearAll clears the range', s.from === null && s.to === null);
   ok('clearAll clears undated', s.undated === false);
   ok('clearAll clears the query', s.q === '');

@@ -47,8 +47,8 @@
 - [ ] **2. Source on the blank records** — 329 records (27%) didn't say Pro-shot or Audience. A
   review page with two stills per record (`~/VaultShots/reports/source-review.html`): **54 done**
   (2026-10-16, from another copy of the same show); 275 to go *(data)*
-- [ ] **3. F. More filters** — quality (HD / SD / low-res), PAL / NTSC, length, has setlist, and
-  source once step 2 is done *(F12)*
+- [x] **3. F. More filters** — quality (HD / SD / low-res), PAL / NTSC, length, has setlist, with
+  live counts; source joins once step 2 is done *(F12)*
 - [ ] **4. F. List view and CSV download** — the last thing between J3 and a pass *(F10)*
 - [ ] **5. G. What's new** — the one job still failing (J7). **Needs your call first:** what
   counts as new? Git history can't tell — 244 records first appear in October, most of them
@@ -80,7 +80,7 @@
 | [F9](#f9--the-drawer-hides-venue-and-city-for-festival-and-tv-shows) | Venue and city hidden | ✅ | Batch A: `Date · Event · Venue · City, Country` under the name for every show | — |
 | [F10](#f10--no-dense-list-export-or-useful-sort-for-reconciling-a-trading-list) | No list view or export | ⬜ | | Grid / List toggle, CSV download, more sorts, print |
 | [F11](#f11--returning-traders-cant-see-whats-new) | No "what's new" | ⬜ | | `AddedOn` field, "Recently added" row, sort, RSS |
-| [F12](#f12--filters-dont-cover-what-traders-decide-by) | Filters miss trader dimensions | ⬜ | "More filters" control agreed (2026-10-16) | Source, quality, standard, length, has setlist |
+| [F12](#f12--filters-dont-cover-what-traders-decide-by) | Filters miss trader dimensions | 🟡 | "More filters" beside Event (2026-10-16): Quality (HD 1080, HD 720, SD, Low-res), Standard (PAL, NTSC), Length (five bands), Setlist (has one, none yet), with live counts, chips and links | Source, once the blank records are filled in (step 2) |
 | [F13](#f13--too-faint-and-too-small-for-eyes-aged-4060) | Too faint, too small | ✅ | Batch E: every text passes 4.5:1, measured on the rendered page in 12 views (A–Z counts 1.7 → 5.3:1, heading counts 2.3/3.8 → 5.3:1, "No setlist yet" 3.8 → 6.8:1); nothing under 12px but the cards' badges (9.5 → 11px); the drawer's section labels 10 → 12px; Notes 12 → 13px; tab bar and year axis 10 → 12px; layout holds at 150% and 200% zoom | Text over the stills (cards, drawer header) is protected by the gradients but can't be measured automatically |
 | [F14](#f14--stills-cant-be-inspected-closely) | Stills can't be inspected | ✅ | Batch A: "Open full size" in the screenshot viewer (the original, at 100%, in a new tab) | — |
 | [F15](#f15--setlists-non-songs-counted-as-songs-the-searched-song-isnt-highlighted) | Setlist quality | 🟡 | One credit line removed from a Setlist (`0b538a57`) | 32 non-song entries; encore as a divider; highlight the searched song |
@@ -102,7 +102,7 @@ The review's walkthrough tasks, run again on the live site after batches A–E w
 | J2 Is yours better? | 🔴 Fail | 🟢 **Pass** | Source blank on 27% of records; no broadcaster; frame rate and bitrate (drive scan) |
 | J3 Artist audit | 🟡 Partial | 🟡 Partial | List view, CSV download, more sorts |
 | J4 Song hunt | 🟢 Pass | 🟢 Pass | The song isn't highlighted in the setlist; `songs:` returns nothing |
-| J5 Event dig | 🟡 Partial | 🟢 **Pass** | Filters by source, quality, length; small events (Fuji Rock) only by search |
+| J5 Event dig | 🟡 Partial | 🟢 **Pass** | A source filter (after the Source review); small events (Fuji Rock) only by search |
 | J6 Share and request | 🔴 Fail | 🟢 **Pass** | A pasted link previews the site, not the show |
 | J7 What's new | 🔴 Fail | 🔴 Fail | Everything: nothing marks what's new |
 | J8 Evidence check | 🟡 Partial | 🟢 **Pass** | Frame rate and bitrate (drive scan) |
@@ -152,7 +152,8 @@ come for, J1 and J2, now pass.
 **J5 — Show me the series**
 - [x] An empty result names the filter to blame and offers "Show 1 without the filter"
 - [x] Year range, decades, oldest-first sort (already worked)
-- [ ] Filters for source, quality, PAL / NTSC, length, has setlist
+- [x] Filters for quality, PAL / NTSC, length, has setlist ("More filters")
+- [ ] A source filter (waits for the Source review)
 - [ ] Small events (Fuji Rock, Hurricane) in the Event filter
 
 **J6 — Can I get it?**
@@ -235,7 +236,7 @@ use. The highest score goes first. Where two items touch the same code they are 
 | 14 | Country, city and event synonyms; tech terms; search tips | [F6](#f6--search-doesnt-match-how-traders-type) | 2 | 2 | 1.0 | 2 | **2.0** | Fewer misses, more work than dates | ✅ batch B |
 | 15 | List view and CSV download | [F10](#f10--no-dense-list-export-or-useful-sort-for-reconciling-a-trading-list) | 2 | 2 | 0.8 | 2 | **1.6** | Predicted from how traders keep lists; not yet seen | ⬜ |
 | 16 | "Recently added" | [F11](#f11--returning-traders-cant-see-whats-new) | 2 | 2 | 0.8 | 2 | **1.6** | Returning visitors; predicted. Needs your call on what counts as new: git history can't tell (244 records first appear in October, mostly splits and re-filings) | ⬜ |
-| 17 | "More filters" (agreed) | [F12](#f12--filters-dont-cover-what-traders-decide-by) | 2 | 2 | 0.8 | 2 | **1.6** | Predicted; search covers part of it today. A source filter waits for #20: with 27% blank it would hide shows | ⬜ |
+| 17 | "More filters" (agreed) | [F12](#f12--filters-dont-cover-what-traders-decide-by) | 2 | 2 | 0.8 | 2 | **1.6** | Predicted; search covers part of it today. A source filter waits for #20: with 27% blank it would hide shows | ✅ (source to come) |
 | 18 | Drive scan: frame rate, bitrate, chapters, show size | [Plan](#planned-a-drive-scan-for-the-missing-specs) | 2 | 3 | 1.0 | 4 | **1.5** | Needs Live Music mounted | 📅 |
 | 19 | Date precision ("2001, exact date unknown") | [F7](#f7--placeholder-dates-look-like-real-dates) | 2 | 2 | 1.0 | 4 | **1.0** | 257 records; mostly data work | ⬜ |
 | 20 | Fill in Source on 329 records | [Data](#data-quality--the-metadata-is-the-product) | 2 | 2 | 1.0 | 2 | **2.0** | Re-scored 2026-10-16: 126 of the 329 have a clue in their own notes or event, so a review page settles them quickly (Effort 4 → 2); the other ~200 need their stills looked at | ⬜ |

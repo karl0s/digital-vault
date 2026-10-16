@@ -56,7 +56,8 @@ same render). Picking an artist runs the exact-artist facet and writes the store
 the search debounce. `directoryInView` (read on scroll, re-rendering only when it flips) lights the
 Artists tab.
 
-**State** (`src/store/filters.ts`, zustand): `q, from, to, undated, country, festival, sort`. Read
+**State** (`src/store/filters.ts`, zustand): `q, from, to, undated, country, festival, quality,
+standard, length, setlist, sort`. Read
 the whole state only as `useFilterStore(useShallow(selectFilterState))` — without `useShallow`,
 zustand v5 re-renders until React throws ("getSnapshot should be cached"). Single fields take plain
 selectors. The search input is local to App; only its debounced value (150 ms) reaches the store.
@@ -143,6 +144,18 @@ and Reading and Leeds Festival are "Reading & Leeds" (owner, 2026-10-13) — whi
 drawer and search keep the record's own name; an old link to a folded name lands on the group. `YearRangePopover`: decade chips (decades with 5+ records), the
 `YearHistogram` brush, From/To inputs (the keyboard and screen-reader path) and "Include undated".
 Brush maths is pure, in `src/lib/brush.ts`; the store is written on pointer-up only.
+
+**More filters** (`MoreFiltersPopover`; owner-agreed 2026-10-16, docs/ux-research F12): the specs
+traders decide by, in one popover after Event — **Quality** (HD 1080, HD 720, SD, Low-res, from
+`quality()`), **Standard** (PAL, NTSC; SD and low-res copies only, as the drawer: HD records have
+none), **Length** (under 10 min, 10–30, 30–60, 1–1½ hours, over 1½ hours) and **Setlist** (has one,
+none yet). Closed lists, defined once in `src/lib/specFilters.ts` (URL value, label, `specValue`);
+each is a facet like Country — URL keys `quality`, `standard`, `length`, `setlist` after
+`festival`, values a link cannot invent dropped on parse, OR within a group and AND across, live
+counts, the same option rows (`FacetOptionButton`, shared with `FacetPopover`), chips, and named in
+the empty state. Options keep the file's order, never by count: they are scales. Two columns from
+md, one on a phone. **Source** (Pro-shot, Audience) joins once the blank records are filled in:
+with 27% blank it would hide shows.
 
 **Grids.** `GRID_COLS` (exported by `FeaturedRows.tsx`) is the one column set for every grid:
 2 → md 4 → lg 5 → xl 6, six at most (owner, 2026-10-15), with a 14px row gap since a card carries no

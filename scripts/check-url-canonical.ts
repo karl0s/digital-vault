@@ -95,6 +95,8 @@ const cases: FilterState[] = [
   f({ country: ['none'] }),
   f({ from: 1996, to: 1996, undated: true }),
   f({ q: 'jane’s addiction', sort: 'year-asc' }),
+  f({ quality: ['sd', 'hd-1080'], standard: ['pal'], length: ['60-90', 'over-90'], setlist: ['yes'] }),
+  f({ q: 'pearl jam', country: ['germany'], setlist: ['no'] }),
 ];
 for (const state of cases) {
   const once = serializeFilters(state);
@@ -126,6 +128,15 @@ eq('isFiltered true on a facet', isFiltered(f({ country: ['germany'] })), true);
 eq('isFiltered true on a query', isFiltered(f({ q: 'nirvana' })), true);
 eq('isFiltered ignores sort', isFiltered(f({ sort: 'artist' })), false);
 eq('activeFilterCount sums facets and q', activeFilterCount(f({ country: ['germany', 'japan'], q: 'x' })), 3);
+
+console.log('\nMore filters (F12)');
+eq('keys in order, values sorted',
+  serializeFilters(f({ setlist: ['yes'], length: ['over-90', '60-90'], standard: ['pal'], quality: ['sd', 'hd-1080'], country: ['germany'] })),
+  '?country=germany&quality=hd-1080,sd&standard=pal&length=60-90,over-90&setlist=yes');
+eq('values a filter does not have are dropped', parseFilters('?quality=4k,hd-1080&setlist=maybe&length=forever'),
+  f({ quality: ['hd-1080'] }));
+eq('a More filter counts as filtering', isFiltered(f({ setlist: ['yes'] })), true);
+eq('each value counts once', activeFilterCount(f({ quality: ['sd', 'low-res'], setlist: ['no'] })), 3);
 
 console.log('\nthe open show (?show=, F3)');
 eq('reads a show ID', readShowParam('?q=nirvana&show=4dba0c8ff6ae'), '4dba0c8ff6ae');
