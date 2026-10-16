@@ -4,7 +4,7 @@ import { Show } from '../App';
 import { LazyImage } from './LazyImage';
 import type { ImageUrlGetter } from '../src/hooks/useShows';
 import type { SongHit } from '../src/search/searchIndex';
-import { quality, lengthName, cardDate } from '../src/lib/specs';
+import { quality, lengthName, dateName } from '../src/lib/specs';
 import { copyCount } from '../src/lib/copies';
 
 interface ShowCardProps {
@@ -92,7 +92,7 @@ export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, se
   const badges = exceptions(show);
   // The quiet spec line (F2, agreed 2026-10-16): the date in full, and the
   // quality traders compare first.
-  const spec = [cardDate(show.ShowDate), quality(show)?.label].filter(Boolean).join(' · ');
+  const spec = [dateName(show.ShowDate), quality(show)?.label].filter(Boolean).join(' · ');
 
   const imageUrl = show.ChecksumSHA1
     ? (getImageUrl ? getImageUrl(show.ChecksumSHA1, 1) : `/images/${show.ChecksumSHA1}_01.jpg`)

@@ -6,7 +6,7 @@ import { CloseButton } from './CloseButton';
 import type { ImageUrlGetter } from '../src/hooks/useShows';
 import { scrollContainerToTop } from '../src/lib/motion';
 import { showLink } from '../src/lib/url';
-import { quality, videoName, audioName, containerName, channelsName, aspectName, sampleRateName, lengthName, sourceName } from '../src/lib/specs';
+import { quality, videoName, audioName, containerName, channelsName, aspectName, sampleRateName, lengthName, sourceName, dateName } from '../src/lib/specs';
 import { copiesOf } from '../src/lib/copies';
 
 interface ShowDrawerProps {
@@ -312,7 +312,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
    */
   const reference = [
     show.Artist,
-    show.ShowDate || 'undated',
+    dateName(show.ShowDate),
     show.EventOrFestival || show.VenueName,
     q?.label,
     durationFormatted,
@@ -588,7 +588,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                 {/* Date · event · venue · city, country: the place always, event
                     or not (F9), each part once. */}
                 {[
-                  show.ShowDate || 'Undated',
+                  dateName(show.ShowDate),
                   show.EventOrFestival || null,
                   show.VenueName && show.VenueName !== show.EventOrFestival && show.VenueName !== show.City ? show.VenueName : null,
                   [show.City, show.Country].filter(Boolean).join(', '),

@@ -17,6 +17,7 @@ import { useBrowseResults } from './src/hooks/useBrowseResults';
 import { isFiltered as computeIsFiltered, LEGACY_VIEW_PARAM, readShowParam, withShowParam } from './src/lib/url';
 import { useFilterStore, initFilterUrlSync, selectFilterState } from './src/store/filters';
 import { startHoverPreload } from './src/lib/hoverPreload';
+import { dateName } from './src/lib/specs';
 import { useShallow } from 'zustand/react/shallow';
 
 export interface Show {
@@ -325,7 +326,7 @@ export default function App() {
   useEffect(() => {
     const base = 'The Vault — Live Concert Archive';
     document.title = selectedShow
-      ? `${selectedShow.Artist} · ${[selectedShow.ShowDate, selectedShow.EventOrFestival || selectedShow.VenueName].filter(Boolean).join(' · ')} — The Vault`
+      ? `${selectedShow.Artist} · ${[dateName(selectedShow.ShowDate), selectedShow.EventOrFestival || selectedShow.VenueName].filter(Boolean).join(' · ')} — The Vault`
       : base;
   }, [selectedShow]);
 

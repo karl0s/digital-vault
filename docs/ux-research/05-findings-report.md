@@ -42,8 +42,8 @@
   set for it. Send the link with three tasks from [04-test-plan.md](04-test-plan.md) to two or
   three traders you already email. Everything still to do is predicted, not seen; their answers
   re-score it
-- [ ] **1. Year-only dates read as the year in the drawer too** — the card says "2000", the drawer
-  still says "2000-01-01" (seen on the live site). Minutes *(F7, part)*
+- [x] **1. Year-only dates read as the year in the drawer too** — and in the share line and the
+  tab title, as on the cards *(F7, part)*
 - [ ] **2. Source on the blank records** — 329 records (27%) don't say Pro-shot or Audience; 126
   have a clue in their own notes or event (TV shows, broadcasters). A review page for those first,
   then the rest by their stills *(data)*
@@ -75,7 +75,7 @@
 | [F4](#f4--pointing-at-one-exact-recording-is-hard) | Pointing at one exact recording | ✅ | Batch C: a Share pill (share sheet on phones, "Copy link" elsewhere): the link alone as plain text (pastes into an address bar or chat), and as rich text `Artist · date · event · quality · length` linked to the show (pastes into an email by name) | — |
 | [F5](#f5--escape-erases-the-search-behind-an-open-show) | Escape erases the search | ✅ | Batch A: Escape closes only the show; the results stay, so the next copy is one click away | — |
 | [F6](#f6--search-doesnt-match-how-traders-type) | Search misses how traders type | ✅ | Batch B: dates in every common format (and two-digit years); artist initials (RATM, FNM, KOL, 30STM…), no wrong "Did you mean"; countries, cities and events by other names (uk, brasil, koln, titp…); tech terms (hd, 1080, pal, pro shot, lpcm…); several field filters at once, quoted values; search tips in the empty state; 43 new search tests | Tips appear when a search finds nothing, not under the field |
-| [F7](#f7--placeholder-dates-look-like-real-dates) | Placeholder dates look real | 🟡 | Batch D: cards show a year-only date (`YYYY-01-01`) as the year | The drawer still shows it in full (next quick fix); a `DatePrecision` field and backfill |
+| [F7](#f7--placeholder-dates-look-like-real-dates) | Placeholder dates look real | 🟡 | Batch D: cards show a year-only date (`YYYY-01-01`) as the year; then the drawer, share line and tab title too | A `DatePrecision` field, for month-only dates and real 1 January shows; backfill |
 | [F8](#f8--empty-results-blame-spelling-when-a-filter-is-the-cause) | Empty results blame spelling | ✅ | Batch B: names the filters that hide the results and offers "Show N without the filter" | — |
 | [F9](#f9--the-drawer-hides-venue-and-city-for-festival-and-tv-shows) | Venue and city hidden | ✅ | Batch A: `Date · Event · Venue · City, Country` under the name for every show | — |
 | [F10](#f10--no-dense-list-export-or-useful-sort-for-reconciling-a-trading-list) | No list view or export | ⬜ | | Grid / List toggle, CSV download, more sorts, print |
@@ -98,7 +98,7 @@ The review's walkthrough tasks, run again on the live site after batches A–E w
 
 | Job | At the review | Now | Still missing |
 |---|---|---|---|
-| J1 Do you have it? | 🟡 Partial | 🟢 **Pass** | The drawer shows a year-only date as a full date |
+| J1 Do you have it? | 🟡 Partial | 🟢 **Pass** | — (a year-only date now reads as the year everywhere) |
 | J2 Is yours better? | 🔴 Fail | 🟢 **Pass** | Source blank on 27% of records; no broadcaster; frame rate and bitrate (drive scan) |
 | J3 Artist audit | 🟡 Partial | 🟡 Partial | List view, CSV download, more sorts |
 | J4 Song hunt | 🟢 Pass | 🟢 Pass | The song isn't highlighted in the setlist; `songs:` returns nothing |
@@ -120,7 +120,7 @@ come for, J1 and J2, now pass.
 - [x] Two-digit years: `rock am ring 97` finds the show
 - [x] The full date on every card (`1996-05-24 · SD 480`), so two shows in one year differ
 - [x] Venue and city on every show: `2007-05-28 · Pinkpop · Megaland · Landgraaf, Netherlands`
-- [ ] A year-only date reads as the year on the card, but as `2000-01-01` in the drawer
+- [x] A year-only date reads as the year everywhere: card, drawer, share line, tab title
 
 **J2 — Is yours better than mine?**
 - [x] Copies of a show listed together in the drawer, side by side: "4 recordings of this show"
@@ -242,7 +242,7 @@ use. The highest score goes first. Where two items touch the same code they are 
 | 21 | Setlists: 32 non-song entries; encore as a divider; highlight the searched song | [F15](#f15--setlists-non-songs-counted-as-songs-the-searched-song-isnt-highlighted) | 1 | 1 | 1.0 | 1 | **1.0** | Small | 🟡 |
 | 22 | Phone header shrinks while scrolling | [F18](#low) | 1 | 1 | 0.8 | 1 | **0.8** | Polish | ⬜ |
 | 23 | One line saying what the site is | [F16](#f16--a-first-visit-doesnt-say-what-this-is) | 1 | 1 | 0.5 | 1 | **0.5** | Your email already introduces the site | ⬜ |
-| 24 | Year-only dates read as the year in the drawer too, as on the cards | [F7](#f7--placeholder-dates-look-like-real-dates) | 2 | 2 | 1.0 | 1 | **4.0** | Added 2026-10-16: seen on the live site (card "2000", drawer "2000-01-01"); minutes of work | ⬜ |
+| 24 | Year-only dates read as the year in the drawer too, as on the cards | [F7](#f7--placeholder-dates-look-like-real-dates) | 2 | 2 | 1.0 | 1 | **4.0** | Added 2026-10-16: seen on the live site (card "2000", drawer "2000-01-01"); minutes of work | ✅ |
 | — | Lineage and Generation, after the taper redaction | [Redaction](#publishing-lineage-and-generation-without-exposing-tapers) | | | | | | | ✅ `0b538a57`, `1cffc551` |
 
 The 432 missing setlists continue separately, in their own review (`tools/missing-setlists`).

@@ -105,12 +105,13 @@ export function lengthName(durationSec?: string): string {
 export const sourceName = (type?: string) => (type === 'Proshot' ? 'Pro-shot' : type || '');
 
 /**
- * A card's date, in full so two shows in one year differ (F2) — except the
- * year-only placeholder, YYYY-01-01 (CLAUDE.md, ShowDate), which shows as the
- * year: a card must not claim a day nobody knows. Until date precision is
- * recorded (F7), a real New Year's Day show reads as its year too.
+ * A show's date as the site shows it — card, drawer, share line, tab title. In
+ * full, so two shows in one year differ (F2), except the year-only
+ * placeholder, YYYY-01-01 (CLAUDE.md, ShowDate), which shows as the year: the
+ * site must not claim a day nobody knows (F7). Until date precision is
+ * recorded, a real New Year's Day show reads as its year too.
  */
-export function cardDate(showDate?: string): string {
+export function dateName(showDate?: string): string {
   if (!showDate) return 'Undated';
   return showDate.endsWith('-01-01') ? showDate.slice(0, 4) : showDate;
 }

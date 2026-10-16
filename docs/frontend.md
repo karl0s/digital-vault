@@ -188,7 +188,7 @@ Traders are mostly 40–60 (docs/ux-research). The floor, everywhere:
   quality` (`2010-06-05 · HD 1080`; F2, owner 2026-10-16). The title is the artist, or on an
   artist's page (`searchMode="artist"`) the event, with the venue or city under it, since the artist
   is the same on every card. Each line truncates on its own. The date is in full so two shows in one
-  year differ (`cardDate` in `src/lib/specs.ts`): the year-only placeholder `YYYY-01-01` reads as the
+  year differ (`dateName` in `src/lib/specs.ts`, the site's one date format: cards, drawer, share line, tab title): the year-only placeholder `YYYY-01-01` reads as the
   year, and undated as "Undated". The quality is `quality()`'s label, as in the drawer.
 - The button's `title` holds the whole name, place and spec line, for what a narrow card cuts short.
 - One row across the top: badges left, the length right (`lengthName`: `1h 42m`, `24 min`, the one
@@ -258,7 +258,8 @@ scroll is locked, and the page behind goes `inert` once the slide-in finishes.
 ### Drawer metadata layout (ShowDrawer)
 **Hero** (over the header image): artist name (display font); one subtitle line `Date ·
 EventOrFestival · VenueName · City, Country`, each part only when set and once (the venue is
-dropped when it repeats the event or the city), "Undated" when undated (the cards' word). The place shows for
+dropped when it repeats the event or the city). The date is `dateName`, as on the cards: a year-only
+`YYYY-01-01` reads as the year, and undated as "Undated". The place shows for
 festival and TV shows too (owner, 2026-10-16; it was hidden on ~700). Badge pills —
 `ContentType` (violet), `RecordingType` as traders write it (`sourceName`: "Pro-shot"), Duration
 (Clock icon + `lengthName`), the
