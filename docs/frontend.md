@@ -314,7 +314,7 @@ no `flushSync`. Keep the pattern for any input that does mount on tap. Mobile in
 
 ### Masthead (HeroSearch)
 Wordmark (`HalationLogo`), tagline, and one quiet line saying what the site is (F16,
-2026-10-17; shortened by the owner 2026-10-18): "A private collection of 1,213 live shows", counted
+2026-10-17; shortened by the owner 2026-10-18): "1,213 live shows", counted
 from the shows by App (`collectionSummary`), so it never goes stale; it fades in when the data
 loads. The one place the brand appears. Always mounted,
 animating to `height: 0 / opacity: 0` while filtering (`isSearching={filtered}` from App). It uses
