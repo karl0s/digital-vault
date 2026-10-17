@@ -6,7 +6,7 @@ Coverage (how many records were found on the drive, and how), what the scan says
 collection (frame rates, scan, disc types, bitrates), where the source disagrees with the record,
 and, record by record, the fields a later step would write. Read-only.
 """
-import collections, html, json
+import collections, html, json, re
 from pathlib import Path
 
 SCAN = Path.home() / 'VaultShots' / 'drive-scan' / 'scan.json'
@@ -21,6 +21,15 @@ def human(n):
     return f'{n} B'
 
 
+def smaller_than_record(r):
+    """The source has fewer lines than the record stores."""
+    for x in r.get('flags', []):
+        m = re.match(r'height: record (\d+), source (\d+)', x)
+        if m and int(m.group(2)) < int(m.group(1)):
+            return True
+    return False
+
+
 def proposed(r):
     """The fields a later step would write for this record."""
     if not r.get('found'):
@@ -33,8 +42,13 @@ def proposed(r):
         f['FrameRate'] = r['frame_rate']
     if r.get('scan'):
         f['ScanType'] = r['scan']
-    # Bitrate and size rest on the length: where the record and the source disagree on it (a
-    # slice of a shared titleset, a record with no length), neither is proposed.
+    # A source with fewer lines than the record says may be the wrong titleset (Alice in Chains
+    # and Smashing Pumpkins, 2026-10-18: their stills came from the record's size): nothing,
+    # until it is checked.
+    if smaller_than_record(r):
+        return {}
+    # Bitrate, size and chapters rest on the length: where the record and the source disagree on
+    # it (a slice of a shared titleset, a different programme), none of them is proposed.
     bad_rate = any(x.startswith(('bitrate', 'length')) for x in r.get('flags', []))
     if r.get('video_kbps') and not bad_rate:
         f['VideoKbps'] = str(r['video_kbps'])
@@ -47,7 +61,7 @@ def proposed(r):
         f['DiscType'] = r['disc_type']
     if r.get('disc_type', '').startswith('DVD'):
         f['Menu'] = 'Yes' if r.get('menu') else 'No'
-        if r.get('chapters'):
+        if r.get('chapters') and not any(x.startswith('length') for x in r.get('flags', [])):
             f['Chapters'] = str(r['chapters'])
     if r.get('own_bytes') and not r.get('shared') and not r.get('approximate') and not bad_rate:
         f['ShowSizeHuman'] = human(r['own_bytes'])
