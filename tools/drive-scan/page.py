@@ -73,16 +73,20 @@ def corrections(r, s):
     return out
 
 
-def main():
-    rows = json.load(open(SCAN))
-    shows = {s['ShowID']: s for s in json.load(open(REPO / 'public' / 'shows.json', encoding='utf-8'))}
-    # Acts cut from a programme that was found take the programme's stream details.
+def prepared(rows, shows):
+    """The scan, with acts cut from a programme that was found taking the programme's stream."""
     by_id = {r['ShowID']: r for r in rows}
     for r in rows:
         master = by_id.get(shows.get(r['ShowID'], {}).get('ParentShowID') or '')
         if not r.get('found') and master and master.get('found'):
             r.update(found=True, inherited=True, matched_by='programme', frame_rate=master.get('frame_rate'),
                      scan=master.get('scan'), disc_type=master.get('disc_type'), flags=[])
+    return rows
+
+
+def main():
+    shows = {s['ShowID']: s for s in json.load(open(REPO / 'public' / 'shows.json', encoding='utf-8'))}
+    rows = prepared(json.load(open(SCAN)), shows)
     found = [r for r in rows if r.get('found')]
     E = html.escape
     c = lambda key: collections.Counter(r.get(key) or '—' for r in found).most_common()
