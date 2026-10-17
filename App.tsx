@@ -61,6 +61,21 @@ export interface Show {
   Hidden?: string;
   /** Where ShowDate's convention can't tell: "month" for a month-only YYYY-MM-01, "day" for a real date on the 1st (src/lib/specs.ts). */
   DatePrecision?: 'year' | 'month' | 'day';
+  /**
+   * Read from the record's own files by the drive scan (tools/drive-scan, 2026-10-18): frame
+   * rate ("25", "29.97"), "interlaced" or "progressive", average video and audio bitrate in
+   * kb/s, audio tracks where several, "DVD-5" / "DVD-9" / "Blu-ray" / "File", a DVD's menu
+   * ("Yes"/"No") and chapters, and the show's own size where its files are its own.
+   */
+  FrameRate?: string;
+  ScanType?: string;
+  VideoKbps?: string;
+  AudioKbps?: string;
+  AudioTracks?: string;
+  DiscType?: string;
+  Menu?: string;
+  Chapters?: string;
+  ShowSizeHuman?: string;
   /** YYYY-MM-DD the recording joined the collection; set from 2026-10-16 (src/lib/added.ts). */
   AddedOn?: string;
   /**

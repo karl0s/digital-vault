@@ -30,6 +30,15 @@ const COLUMNS: [string, (s: Show) => string | number][] = [
   ['Video', s => videoName(s.VideoCodec)],
   ['Audio', s => [audioName(s.AudioCodec), channelsName(s.AudioChannels)].filter(Boolean).join(' ')],
   ['Container', s => containerName(s.Container)],
+  // From the drive scan (2026-10-18); numbers as numbers, so the spreadsheet sorts them.
+  ['Frame rate', s => s.FrameRate || ''],
+  ['Scan', s => s.ScanType || ''],
+  ['Video kbps', s => (s.VideoKbps ? parseInt(s.VideoKbps, 10) : '')],
+  ['Audio kbps', s => (s.AudioKbps ? parseInt(s.AudioKbps, 10) : '')],
+  ['Disc', s => s.DiscType || ''],
+  ['Menu', s => s.Menu || ''],
+  ['Chapters', s => (s.Chapters ? parseInt(s.Chapters, 10) : '')],
+  ['Show size', s => s.ShowSizeHuman || ''],
   // A number, so the spreadsheet can sort and sum it.
   ['Length (min)', s => Math.round((parseInt(s.DurationSec, 10) || 0) / 60) || ''],
   ['Folder size', s => s.TotalSizeHuman || ''],

@@ -104,6 +104,11 @@ export function techAliases(show: Show): string {
     show.RecordingType === 'Proshot' && 'pro shot proshot',
     show.RecordingType === 'Audience' && 'aud',
     show.ContentType === 'Documentary' && 'doc',
+    // From the drive scan: "interlaced", "progressive", "dvd9", "bluray".
+    show.ScanType === 'interlaced' && 'interlaced',
+    show.ScanType === 'progressive' && 'progressive',
+    show.DiscType?.startsWith('DVD') && show.DiscType.replace('-', '').toLowerCase(),
+    show.DiscType === 'Blu-ray' && 'bluray',
     CONTAINER[show.Container?.toLowerCase()],
     VIDEO[show.VideoCodec],
     show.AudioCodec && AUDIO[show.AudioCodec],
@@ -115,6 +120,7 @@ export function techAliases(show: Show): string {
 export const KNOWN_TERMS = new Set(
   [...Object.values(COUNTRY), ...Object.values(PLACE), ...Object.values(EVENT),
     'hd sd lowres pal ntsc pro shot proshot aud sbd soundboard doc dvd vob ts m2ts mkv mp4 mpeg2 h264 hevc h265 lpcm pcm ac3 mp2 aac',
+    'interlaced progressive dvd5 dvd9 bluray',
     '1080 1080i 1080p 720 720p 576 576i 480 480i']
     .join(' ').split(/\s+/),
 );

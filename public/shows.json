@@ -94,7 +94,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "16",
-    "ShowSizeHuman": "352.51 MB"
+    "ShowSizeHuman": "336.18 MB"
   },
   {
     "ShowID": "4e132de5166a",
@@ -191,7 +191,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "2.91 GB"
+    "ShowSizeHuman": "2.71 GB"
   },
   {
     "ShowID": "77daec9d337a",
@@ -242,7 +242,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "6",
-    "ShowSizeHuman": "2.28 GB"
+    "ShowSizeHuman": "2.13 GB"
   },
   {
     "ShowID": "be7a476f833d",
@@ -293,7 +293,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "494.65 MB"
+    "ShowSizeHuman": "471.73 MB"
   },
   {
     "ShowID": "4ddccf31ded4",
@@ -345,7 +345,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "207.16 MB"
+    "ShowSizeHuman": "197.56 MB"
   },
   {
     "ShowID": "36c04b4ffd31",
@@ -396,7 +396,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "542.05 MB"
+    "ShowSizeHuman": "516.94 MB"
   },
   {
     "ShowID": "cec046124f64",
@@ -447,7 +447,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "2.92 GB"
+    "ShowSizeHuman": "2.72 GB"
   },
   {
     "ShowID": "c9fb69e1d50f",
@@ -498,7 +498,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "1.74 GB"
+    "ShowSizeHuman": "1.62 GB"
   },
   {
     "ShowID": "e37bbb716ee0",
@@ -1036,7 +1036,7 @@
     "VideoKbps": "12037",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "4.24 GB"
+    "ShowSizeHuman": "3.95 GB"
   },
   {
     "ShowID": "78aad2ba93f1",
@@ -1087,7 +1087,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "784.22 MB"
+    "ShowSizeHuman": "747.89 MB"
   },
   {
     "ShowID": "3f107d6ca2c4",
@@ -1138,7 +1138,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "1.24 GB"
+    "ShowSizeHuman": "1.15 GB"
   },
   {
     "ShowID": "c7d5bd8f3f45",
@@ -1187,7 +1187,7 @@
     "VideoKbps": "18078",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "6.06 GB"
+    "ShowSizeHuman": "5.65 GB"
   },
   {
     "ShowID": "1a86e566c993",
@@ -1237,7 +1237,7 @@
     "DiscType": "DVD-9",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "7.01 GB",
+    "ShowSizeHuman": "6.52 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -1287,7 +1287,7 @@
     "VideoKbps": "4023",
     "AudioKbps": "128",
     "DiscType": "File",
-    "ShowSizeHuman": "1.24 GB"
+    "ShowSizeHuman": "1.15 GB"
   },
   {
     "ShowID": "a26628f3aab5",
@@ -1338,7 +1338,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "16",
-    "ShowSizeHuman": "2.66 GB"
+    "ShowSizeHuman": "2.48 GB"
   },
   {
     "ShowID": "db91d096ef1b",
@@ -1389,7 +1389,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "884.99 MB"
+    "ShowSizeHuman": "843.99 MB"
   },
   {
     "ShowID": "c305d80f9380",
@@ -1440,7 +1440,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "3.35 GB"
+    "ShowSizeHuman": "3.12 GB"
   },
   {
     "ShowID": "28c56ef6084c",
@@ -1491,7 +1491,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "725.61 MB"
+    "ShowSizeHuman": "691.99 MB"
   },
   {
     "ShowID": "396a4ee1d972",
@@ -1542,7 +1542,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "4",
-    "ShowSizeHuman": "1.18 GB"
+    "ShowSizeHuman": "1.10 GB"
   },
   {
     "ShowID": "64eaee948d1c",
@@ -1590,7 +1590,7 @@
     "VideoKbps": "21258",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "571.77 MB",
+    "ShowSizeHuman": "545.28 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -1639,7 +1639,7 @@
     "VideoKbps": "10757",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "1.66 GB",
+    "ShowSizeHuman": "1.54 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by content). Nothing existing changed."
   },
   {
@@ -1691,7 +1691,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "11",
-    "ShowSizeHuman": "3.89 GB"
+    "ShowSizeHuman": "3.63 GB"
   },
   {
     "ShowID": "e53720ca23d3",
@@ -1742,7 +1742,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "24",
-    "ShowSizeHuman": "4.57 GB"
+    "ShowSizeHuman": "4.26 GB"
   },
   {
     "ShowID": "6bb690ecf0ba",
@@ -1793,7 +1793,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "1.68 GB"
+    "ShowSizeHuman": "1.57 GB"
   },
   {
     "ShowID": "aa813cc575ee",
@@ -1844,7 +1844,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "4",
-    "ShowSizeHuman": "831.91 MB"
+    "ShowSizeHuman": "793.37 MB"
   },
   {
     "ShowID": "a11e33ea4865",
@@ -1895,7 +1895,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "1.73 GB"
+    "ShowSizeHuman": "1.61 GB"
   },
   {
     "ShowID": "35f481a48b03",
@@ -1946,7 +1946,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "277.91 MB"
+    "ShowSizeHuman": "265.03 MB"
   },
   {
     "ShowID": "7bdfef99e579",
@@ -1997,7 +1997,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "3",
-    "ShowSizeHuman": "536.88 MB"
+    "ShowSizeHuman": "512.01 MB"
   },
   {
     "ShowID": "09d038145338",
@@ -2048,7 +2048,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "354.68 MB"
+    "ShowSizeHuman": "338.25 MB"
   },
   {
     "ShowID": "11b148da25d9",
@@ -2099,7 +2099,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "23",
-    "ShowSizeHuman": "4.22 GB"
+    "ShowSizeHuman": "3.93 GB"
   },
   {
     "ShowID": "a23a34637f74",
@@ -2150,7 +2150,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "20",
-    "ShowSizeHuman": "4.61 GB"
+    "ShowSizeHuman": "4.29 GB"
   },
   {
     "ShowID": "9fd79828213e",
@@ -2200,7 +2200,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "27",
-    "ShowSizeHuman": "3.75 GB",
+    "ShowSizeHuman": "3.50 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by content). Nothing existing changed."
   },
   {
@@ -2252,7 +2252,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "6",
-    "ShowSizeHuman": "793.58 MB"
+    "ShowSizeHuman": "756.82 MB"
   },
   {
     "ShowID": "3395c78f1ad2",
@@ -2304,7 +2304,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "2.50 GB"
+    "ShowSizeHuman": "2.33 GB"
   },
   {
     "ShowID": "276541bb4d56",
@@ -2355,7 +2355,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "11",
-    "ShowSizeHuman": "3.29 GB"
+    "ShowSizeHuman": "3.07 GB"
   },
   {
     "ShowID": "8db5b79b6015",
@@ -2498,7 +2498,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "3.09 GB"
+    "ShowSizeHuman": "2.87 GB"
   },
   {
     "ShowID": "ed4b1caa8f63",
@@ -2549,7 +2549,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "23",
-    "ShowSizeHuman": "2.72 GB"
+    "ShowSizeHuman": "2.54 GB"
   },
   {
     "ShowID": "5d46ce7c9932",
@@ -2600,7 +2600,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "20",
-    "ShowSizeHuman": "2.54 GB"
+    "ShowSizeHuman": "2.37 GB"
   },
   {
     "ShowID": "f5a1511eff75",
@@ -2650,7 +2650,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "15",
-    "ShowSizeHuman": "2.86 GB",
+    "ShowSizeHuman": "2.67 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -2702,7 +2702,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "2.73 GB"
+    "ShowSizeHuman": "2.54 GB"
   },
   {
     "ShowID": "98fa1ade7c44",
@@ -2753,7 +2753,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "16",
-    "ShowSizeHuman": "2.38 GB"
+    "ShowSizeHuman": "2.22 GB"
   },
   {
     "ShowID": "437f2d7042e5",
@@ -2804,7 +2804,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "15",
-    "ShowSizeHuman": "4.02 GB"
+    "ShowSizeHuman": "3.75 GB"
   },
   {
     "ShowID": "a062c6d4ee9f",
@@ -2903,7 +2903,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "917.25 MB"
+    "ShowSizeHuman": "874.75 MB"
   },
   {
     "ShowID": "68c6679398d8",
@@ -2954,7 +2954,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "917.09 MB"
+    "ShowSizeHuman": "874.61 MB"
   },
   {
     "ShowID": "e16f55a36df2",
@@ -3051,7 +3051,7 @@
     "VideoKbps": "6803",
     "AudioKbps": "448",
     "DiscType": "File",
-    "ShowSizeHuman": "3.72 GB"
+    "ShowSizeHuman": "3.46 GB"
   },
   {
     "ShowID": "f58f8e05321b",
@@ -3102,7 +3102,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "7",
-    "ShowSizeHuman": "1.71 GB"
+    "ShowSizeHuman": "1.59 GB"
   },
   {
     "ShowID": "024e09efdffa",
@@ -3152,7 +3152,7 @@
     "AudioKbps": "384",
     "AudioTracks": "2",
     "DiscType": "Blu-ray",
-    "ShowSizeHuman": "6.91 GB"
+    "ShowSizeHuman": "6.44 GB"
   },
   {
     "ShowID": "09a83b28c522",
@@ -3201,7 +3201,7 @@
     "VideoKbps": "9492",
     "AudioKbps": "384",
     "DiscType": "Blu-ray",
-    "ShowSizeHuman": "5.88 GB"
+    "ShowSizeHuman": "5.47 GB"
   },
   {
     "ShowID": "ca39c8984f31",
@@ -3298,7 +3298,7 @@
     "VideoKbps": "12650",
     "AudioKbps": "384",
     "DiscType": "Blu-ray",
-    "ShowSizeHuman": "4.45 GB"
+    "ShowSizeHuman": "4.14 GB"
   },
   {
     "ShowID": "d34d9ac38cf9",
@@ -3349,7 +3349,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "1.77 GB"
+    "ShowSizeHuman": "1.64 GB"
   },
   {
     "ShowID": "46b7896248e1",
@@ -3448,7 +3448,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "3.71 GB"
+    "ShowSizeHuman": "3.46 GB"
   },
   {
     "ShowID": "761b022efa1e",
@@ -3499,7 +3499,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "3.38 GB"
+    "ShowSizeHuman": "3.15 GB"
   },
   {
     "ShowID": "413e7812dfcb",
@@ -3550,7 +3550,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "31",
-    "ShowSizeHuman": "4.42 GB"
+    "ShowSizeHuman": "4.12 GB"
   },
   {
     "ShowID": "c44540d9bcc3",
@@ -3649,7 +3649,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "8",
-    "ShowSizeHuman": "2.40 GB"
+    "ShowSizeHuman": "2.23 GB"
   },
   {
     "ShowID": "1c53555ed085",
@@ -3699,7 +3699,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "5",
-    "ShowSizeHuman": "1.50 GB",
+    "ShowSizeHuman": "1.40 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -3750,7 +3750,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "3.09 GB",
+    "ShowSizeHuman": "2.87 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -3802,7 +3802,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "8",
-    "ShowSizeHuman": "4.16 GB"
+    "ShowSizeHuman": "3.87 GB"
   },
   {
     "ShowID": "90547cbf52ae",
@@ -3852,7 +3852,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "10",
-    "ShowSizeHuman": "1.91 GB",
+    "ShowSizeHuman": "1.78 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -4686,7 +4686,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "11",
-    "ShowSizeHuman": "3.06 GB"
+    "ShowSizeHuman": "2.85 GB"
   },
   {
     "ShowID": "4d9047348698",
@@ -4786,7 +4786,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "1.87 GB"
+    "ShowSizeHuman": "1.74 GB"
   },
   {
     "ShowID": "556b972653f1",
@@ -4837,7 +4837,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "4.15 GB"
+    "ShowSizeHuman": "3.87 GB"
   },
   {
     "ShowID": "9bb8d876a5b7",
@@ -4887,7 +4887,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "1.09 GB",
+    "ShowSizeHuman": "1.02 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -4939,7 +4939,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "12",
-    "ShowSizeHuman": "1.97 GB"
+    "ShowSizeHuman": "1.83 GB"
   },
   {
     "ShowID": "b3adea22181d",
@@ -4990,7 +4990,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "15",
-    "ShowSizeHuman": "2.50 GB"
+    "ShowSizeHuman": "2.33 GB"
   },
   {
     "ShowID": "f2c49f1fc821",
@@ -5041,7 +5041,7 @@
     "DiscType": "DVD-9",
     "Menu": "Yes",
     "Chapters": "24",
-    "ShowSizeHuman": "6.48 GB"
+    "ShowSizeHuman": "6.03 GB"
   },
   {
     "ShowID": "3ae5c634b832",
@@ -5092,7 +5092,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "15",
-    "ShowSizeHuman": "3.38 GB"
+    "ShowSizeHuman": "3.14 GB"
   },
   {
     "ShowID": "9bd0e976051d",
@@ -5142,7 +5142,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "11",
-    "ShowSizeHuman": "3.06 GB",
+    "ShowSizeHuman": "2.85 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -5194,7 +5194,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "10",
-    "ShowSizeHuman": "3.63 GB"
+    "ShowSizeHuman": "3.38 GB"
   },
   {
     "ShowID": "bfe0a8297db5",
@@ -5293,7 +5293,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "11",
-    "ShowSizeHuman": "2.02 GB"
+    "ShowSizeHuman": "1.88 GB"
   },
   {
     "ShowID": "f84099ff96d9",
@@ -5344,7 +5344,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "7",
-    "ShowSizeHuman": "2.49 GB"
+    "ShowSizeHuman": "2.32 GB"
   },
   {
     "ShowID": "7a5f8ab5ebed",
@@ -5395,7 +5395,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "14",
-    "ShowSizeHuman": "4.29 GB"
+    "ShowSizeHuman": "4.00 GB"
   },
   {
     "ShowID": "d82384c2808a",
@@ -5446,7 +5446,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "6",
-    "ShowSizeHuman": "2.83 GB"
+    "ShowSizeHuman": "2.63 GB"
   },
   {
     "ShowID": "c741c689c2a7",
@@ -5696,7 +5696,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "13",
-    "ShowSizeHuman": "3.67 GB"
+    "ShowSizeHuman": "3.42 GB"
   },
   {
     "ShowID": "a395cbcbaca3",
@@ -5744,7 +5744,7 @@
     "VideoKbps": "6513",
     "AudioKbps": "256",
     "DiscType": "File",
-    "ShowSizeHuman": "236.83 MB",
+    "ShowSizeHuman": "225.86 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -5796,7 +5796,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "10",
-    "ShowSizeHuman": "2.83 GB"
+    "ShowSizeHuman": "2.63 GB"
   },
   {
     "ShowID": "be8e3601ec72",
@@ -5890,7 +5890,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "7",
-    "ShowSizeHuman": "2.72 GB"
+    "ShowSizeHuman": "2.53 GB"
   },
   {
     "ShowID": "9ede89f9f9de",
@@ -5939,7 +5939,7 @@
     "VideoKbps": "14346",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "507.09 MB"
+    "ShowSizeHuman": "483.60 MB"
   },
   {
     "ShowID": "eb005e2c7150",
@@ -5990,7 +5990,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "3.62 GB"
+    "ShowSizeHuman": "3.37 GB"
   },
   {
     "ShowID": "a2eca7a47294",
@@ -6041,7 +6041,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "3.27 GB"
+    "ShowSizeHuman": "3.04 GB"
   },
   {
     "ShowID": "7d436e3bc541",
@@ -6090,7 +6090,7 @@
     "VideoKbps": "10706",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "3.90 GB"
+    "ShowSizeHuman": "3.64 GB"
   },
   {
     "ShowID": "f46771432956",
@@ -6141,7 +6141,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "15",
-    "ShowSizeHuman": "4.37 GB"
+    "ShowSizeHuman": "4.07 GB"
   },
   {
     "ShowID": "8a399061e5e3",
@@ -6192,7 +6192,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "18",
-    "ShowSizeHuman": "3.31 GB"
+    "ShowSizeHuman": "3.08 GB"
   },
   {
     "ShowID": "14402dff0061",
@@ -6290,7 +6290,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "21",
-    "ShowSizeHuman": "3.33 GB"
+    "ShowSizeHuman": "3.10 GB"
   },
   {
     "ShowID": "4606fb6e87c9",
@@ -6341,7 +6341,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "3",
-    "ShowSizeHuman": "269.21 MB"
+    "ShowSizeHuman": "256.74 MB"
   },
   {
     "ShowID": "ff7771d1ef54",
@@ -6392,7 +6392,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "14",
-    "ShowSizeHuman": "3.43 GB",
+    "ShowSizeHuman": "3.19 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, AudioTracks, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -6443,7 +6443,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "6",
-    "ShowSizeHuman": "1.10 GB",
+    "ShowSizeHuman": "1.03 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -6493,7 +6493,7 @@
     "VideoKbps": "4506",
     "AudioKbps": "256",
     "DiscType": "File",
-    "ShowSizeHuman": "150.32 MB"
+    "ShowSizeHuman": "143.36 MB"
   },
   {
     "ShowID": "a24e59795d5e",
@@ -6543,7 +6543,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "1.85 GB",
+    "ShowSizeHuman": "1.73 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -6595,7 +6595,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "10",
-    "ShowSizeHuman": "2.06 GB"
+    "ShowSizeHuman": "1.92 GB"
   },
   {
     "ShowID": "fe268a183f6b",
@@ -6647,7 +6647,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "3",
-    "ShowSizeHuman": "1.19 GB"
+    "ShowSizeHuman": "1.11 GB"
   },
   {
     "ShowID": "9eb82076fc1c",
@@ -6696,7 +6696,7 @@
     "VideoKbps": "17469",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "5.93 GB"
+    "ShowSizeHuman": "5.52 GB"
   },
   {
     "ShowID": "69bed786a908",
@@ -6747,7 +6747,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "8",
-    "ShowSizeHuman": "2.98 GB"
+    "ShowSizeHuman": "2.77 GB"
   },
   {
     "ShowID": "fccae4b5ccc7",
@@ -6798,7 +6798,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "1.09 GB"
+    "ShowSizeHuman": "1.02 GB"
   },
   {
     "ShowID": "3c76fc1c3f0f",
@@ -6849,7 +6849,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "16",
-    "ShowSizeHuman": "2.85 GB"
+    "ShowSizeHuman": "2.66 GB"
   },
   {
     "ShowID": "5cb4c7511884",
@@ -6901,7 +6901,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "11",
-    "ShowSizeHuman": "2.38 GB"
+    "ShowSizeHuman": "2.22 GB"
   },
   {
     "ShowID": "c9a5d52ea9d0",
@@ -7144,7 +7144,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "13",
-    "ShowSizeHuman": "2.06 GB"
+    "ShowSizeHuman": "1.92 GB"
   },
   {
     "ShowID": "1f0fe787dd27",
@@ -7195,7 +7195,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "6",
-    "ShowSizeHuman": "1.02 GB"
+    "ShowSizeHuman": "972.45 MB"
   },
   {
     "ShowID": "f0668aaa4d20",
@@ -7246,7 +7246,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "6",
-    "ShowSizeHuman": "1.69 GB"
+    "ShowSizeHuman": "1.57 GB"
   },
   {
     "ShowID": "a3143b0e6375",
@@ -7298,7 +7298,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "608.88 MB"
+    "ShowSizeHuman": "580.67 MB"
   },
   {
     "ShowID": "af5bfdacc652",
@@ -7346,7 +7346,7 @@
     "VideoKbps": "7178",
     "AudioKbps": "1536",
     "DiscType": "File",
-    "ShowSizeHuman": "202.99 MB",
+    "ShowSizeHuman": "193.58 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by content). Nothing existing changed."
   },
   {
@@ -7399,7 +7399,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "14",
-    "ShowSizeHuman": "4.56 GB"
+    "ShowSizeHuman": "4.25 GB"
   },
   {
     "ShowID": "527cba4f7921",
@@ -7762,7 +7762,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "3.05 GB"
+    "ShowSizeHuman": "2.84 GB"
   },
   {
     "ShowID": "f87dc6d61793",
@@ -7813,7 +7813,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "18",
-    "ShowSizeHuman": "3.08 GB"
+    "ShowSizeHuman": "2.87 GB"
   },
   {
     "ShowID": "56b3483f340f",
@@ -7865,7 +7865,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "17",
-    "ShowSizeHuman": "3.94 GB"
+    "ShowSizeHuman": "3.67 GB"
   },
   {
     "ShowID": "6620c6ca576f",
@@ -7916,7 +7916,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "2",
-    "ShowSizeHuman": "426.63 MB"
+    "ShowSizeHuman": "406.87 MB"
   },
   {
     "ShowID": "52724497b04b",
@@ -7967,7 +7967,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "13",
-    "ShowSizeHuman": "1.96 GB"
+    "ShowSizeHuman": "1.83 GB"
   },
   {
     "ShowID": "1aaed6f45487",
@@ -8018,7 +8018,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "12",
-    "ShowSizeHuman": "4.40 GB"
+    "ShowSizeHuman": "4.10 GB"
   },
   {
     "ShowID": "9826bec8a632",
@@ -8069,7 +8069,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "9",
-    "ShowSizeHuman": "4.18 GB"
+    "ShowSizeHuman": "3.89 GB"
   },
   {
     "ShowID": "591a7635a4db",
@@ -8168,7 +8168,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "262.88 MB"
+    "ShowSizeHuman": "250.70 MB"
   },
   {
     "ShowID": "3b6833a47beb",
@@ -8219,7 +8219,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "7",
-    "ShowSizeHuman": "1.23 GB"
+    "ShowSizeHuman": "1.14 GB"
   },
   {
     "ShowID": "78c99bcde706",
@@ -8270,7 +8270,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "11",
-    "ShowSizeHuman": "2.02 GB"
+    "ShowSizeHuman": "1.88 GB"
   },
   {
     "ShowID": "cca2e761fc70",
@@ -8321,7 +8321,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "7",
-    "ShowSizeHuman": "1.23 GB"
+    "ShowSizeHuman": "1.14 GB"
   },
   {
     "ShowID": "0abcc84cc853",
@@ -8372,7 +8372,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "388.81 MB"
+    "ShowSizeHuman": "370.80 MB"
   },
   {
     "ShowID": "cb8d078a8b2c",
@@ -8423,7 +8423,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "1.33 GB"
+    "ShowSizeHuman": "1.24 GB"
   },
   {
     "ShowID": "76b0ad66da71",
@@ -8472,7 +8472,7 @@
     "VideoKbps": "4632",
     "AudioKbps": "256",
     "DiscType": "File",
-    "ShowSizeHuman": "181.77 MB"
+    "ShowSizeHuman": "173.35 MB"
   },
   {
     "ShowID": "5276ff6ff344",
@@ -8523,7 +8523,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "15",
-    "ShowSizeHuman": "4.34 GB"
+    "ShowSizeHuman": "4.04 GB"
   },
   {
     "ShowID": "12c3f5c0147d",
@@ -8574,7 +8574,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "20",
-    "ShowSizeHuman": "3.04 GB"
+    "ShowSizeHuman": "2.84 GB"
   },
   {
     "ShowID": "e6b6b6fa246a",
@@ -8625,7 +8625,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "13",
-    "ShowSizeHuman": "2.45 GB"
+    "ShowSizeHuman": "2.28 GB"
   },
   {
     "ShowID": "08be4133b02b",
@@ -8677,7 +8677,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "22",
-    "ShowSizeHuman": "4.51 GB"
+    "ShowSizeHuman": "4.20 GB"
   },
   {
     "ShowID": "3d81c158fe83",
@@ -8728,7 +8728,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "7",
-    "ShowSizeHuman": "2.00 GB"
+    "ShowSizeHuman": "1.86 GB"
   },
   {
     "ShowID": "ac9fe07e5c02",
@@ -8779,7 +8779,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "13",
-    "ShowSizeHuman": "1.83 GB"
+    "ShowSizeHuman": "1.71 GB"
   },
   {
     "ShowID": "56a0d564ba6c",
@@ -8830,7 +8830,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "1",
-    "ShowSizeHuman": "3.79 GB"
+    "ShowSizeHuman": "3.53 GB"
   },
   {
     "ShowID": "fe1e14ec3cfc",
@@ -8881,7 +8881,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "1",
-    "ShowSizeHuman": "3.43 GB"
+    "ShowSizeHuman": "3.19 GB"
   },
   {
     "ShowID": "809db6a1040b",
@@ -8932,7 +8932,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "16",
-    "ShowSizeHuman": "3.90 GB"
+    "ShowSizeHuman": "3.64 GB"
   },
   {
     "ShowID": "8c18beb94c54",
@@ -8983,7 +8983,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "19",
-    "ShowSizeHuman": "4.40 GB"
+    "ShowSizeHuman": "4.10 GB"
   },
   {
     "ShowID": "8818dc0501ba",
@@ -9034,7 +9034,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "23",
-    "ShowSizeHuman": "3.70 GB"
+    "ShowSizeHuman": "3.45 GB"
   },
   {
     "ShowID": "53fcb6dcb6ae",
@@ -9085,7 +9085,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "8",
-    "ShowSizeHuman": "1.33 GB"
+    "ShowSizeHuman": "1.24 GB"
   },
   {
     "ShowID": "058eccf7e58f",
@@ -9137,7 +9137,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "19",
-    "ShowSizeHuman": "4.59 GB"
+    "ShowSizeHuman": "4.28 GB"
   },
   {
     "ShowID": "9d843204a59e",
@@ -9188,7 +9188,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "637.48 MB"
+    "ShowSizeHuman": "607.95 MB"
   },
   {
     "ShowID": "2ad70acb2fe3",
@@ -9238,7 +9238,7 @@
     "AudioKbps": "256",
     "AudioTracks": "2",
     "DiscType": "File",
-    "ShowSizeHuman": "16.42 GB"
+    "ShowSizeHuman": "15.30 GB"
   },
   {
     "ShowID": "95eaf61fa5ca",
@@ -9289,7 +9289,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "23",
-    "ShowSizeHuman": "3.31 GB"
+    "ShowSizeHuman": "3.08 GB"
   },
   {
     "ShowID": "ee1a7fb1b7d3",
@@ -9340,7 +9340,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "28",
-    "ShowSizeHuman": "3.60 GB"
+    "ShowSizeHuman": "3.35 GB"
   },
   {
     "ShowID": "a057aa12a049",
@@ -9391,7 +9391,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "6",
-    "ShowSizeHuman": "1.00 GB"
+    "ShowSizeHuman": "956.80 MB"
   },
   {
     "ShowID": "12d30a2c8b99",
@@ -9440,7 +9440,7 @@
     "VideoKbps": "7207",
     "AudioKbps": "448",
     "DiscType": "File",
-    "ShowSizeHuman": "934.70 MB"
+    "ShowSizeHuman": "891.40 MB"
   },
   {
     "ShowID": "7cabd76f8f32",
@@ -9494,7 +9494,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "4.53 GB"
+    "ShowSizeHuman": "4.22 GB"
   },
   {
     "ShowID": "0d928cd3bf32",
@@ -9913,7 +9913,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "3.53 GB"
+    "ShowSizeHuman": "3.29 GB"
   },
   {
     "ShowID": "c8bc803d0924",
@@ -9964,7 +9964,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "7",
-    "ShowSizeHuman": "3.35 GB"
+    "ShowSizeHuman": "3.12 GB"
   },
   {
     "ShowID": "6e046a4b994c",
@@ -10015,7 +10015,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "3.02 GB"
+    "ShowSizeHuman": "2.82 GB"
   },
   {
     "ShowID": "7d895babe098",
@@ -10066,7 +10066,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "7",
-    "ShowSizeHuman": "2.33 GB"
+    "ShowSizeHuman": "2.17 GB"
   },
   {
     "ShowID": "894212f046d2",
@@ -10117,7 +10117,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "692.64 MB"
+    "ShowSizeHuman": "660.55 MB"
   },
   {
     "ShowID": "26a79fd303aa",
@@ -10168,7 +10168,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "7",
-    "ShowSizeHuman": "2.26 GB"
+    "ShowSizeHuman": "2.10 GB"
   },
   {
     "ShowID": "ee0b16c989b2",
@@ -10219,7 +10219,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "1.45 GB"
+    "ShowSizeHuman": "1.35 GB"
   },
   {
     "ShowID": "c1f2cb65fc2d",
@@ -10317,7 +10317,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "9",
-    "ShowSizeHuman": "3.06 GB"
+    "ShowSizeHuman": "2.85 GB"
   },
   {
     "ShowID": "c90f6de6dd8b",
@@ -10368,7 +10368,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "23",
-    "ShowSizeHuman": "3.14 GB"
+    "ShowSizeHuman": "2.93 GB"
   },
   {
     "ShowID": "9f866f496eaa",
@@ -10418,7 +10418,7 @@
     "VideoKbps": "14432",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "11.20 GB"
+    "ShowSizeHuman": "10.43 GB"
   },
   {
     "ShowID": "f05548617099",
@@ -10518,7 +10518,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "7",
-    "ShowSizeHuman": "1.64 GB"
+    "ShowSizeHuman": "1.53 GB"
   },
   {
     "ShowID": "7c860a05fcce",
@@ -10569,7 +10569,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "16",
-    "ShowSizeHuman": "4.18 GB"
+    "ShowSizeHuman": "3.89 GB"
   },
   {
     "ShowID": "7e02ecaee54d",
@@ -10620,7 +10620,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "13",
-    "ShowSizeHuman": "3.44 GB"
+    "ShowSizeHuman": "3.21 GB"
   },
   {
     "ShowID": "bfcebc8b0d54",
@@ -10671,7 +10671,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "15",
-    "ShowSizeHuman": "4.38 GB"
+    "ShowSizeHuman": "4.08 GB"
   },
   {
     "ShowID": "9dd5ebebf6ff",
@@ -10722,7 +10722,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "3.18 GB"
+    "ShowSizeHuman": "2.96 GB"
   },
   {
     "ShowID": "43507f0dddda",
@@ -10773,7 +10773,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "10",
-    "ShowSizeHuman": "3.38 GB"
+    "ShowSizeHuman": "3.15 GB"
   },
   {
     "ShowID": "830a76bec4cc",
@@ -10824,7 +10824,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "12",
-    "ShowSizeHuman": "3.04 GB"
+    "ShowSizeHuman": "2.83 GB"
   },
   {
     "ShowID": "ed2852db9fcc",
@@ -10971,7 +10971,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "15",
-    "ShowSizeHuman": "3.57 GB"
+    "ShowSizeHuman": "3.33 GB"
   },
   {
     "ShowID": "39543a8a44a5",
@@ -11022,7 +11022,7 @@
     "DiscType": "DVD-9",
     "Menu": "Yes",
     "Chapters": "27",
-    "ShowSizeHuman": "5.63 GB"
+    "ShowSizeHuman": "5.25 GB"
   },
   {
     "ShowID": "a93618c16397",
@@ -11073,7 +11073,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "16",
-    "ShowSizeHuman": "2.11 GB"
+    "ShowSizeHuman": "1.96 GB"
   },
   {
     "ShowID": "c8619c9e0edb",
@@ -11124,7 +11124,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "2.02 GB"
+    "ShowSizeHuman": "1.89 GB"
   },
   {
     "ShowID": "8a4588774c3e",
@@ -11175,7 +11175,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "24",
-    "ShowSizeHuman": "4.68 GB"
+    "ShowSizeHuman": "4.36 GB"
   },
   {
     "ShowID": "8349e6f453e8",
@@ -11226,7 +11226,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "17",
-    "ShowSizeHuman": "4.51 GB"
+    "ShowSizeHuman": "4.20 GB"
   },
   {
     "ShowID": "488c35986e53",
@@ -11274,7 +11274,7 @@
     "VideoKbps": "18040",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "3.86 GB",
+    "ShowSizeHuman": "3.60 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -11326,7 +11326,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "2.02 GB"
+    "ShowSizeHuman": "1.88 GB"
   },
   {
     "ShowID": "3e9b61bcd974",
@@ -11579,7 +11579,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "14",
-    "ShowSizeHuman": "3.72 GB"
+    "ShowSizeHuman": "3.47 GB"
   },
   {
     "ShowID": "0a2904997411",
@@ -11631,7 +11631,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "2.84 GB"
+    "ShowSizeHuman": "2.64 GB"
   },
   {
     "ShowID": "b5a1eec3c24b",
@@ -11682,7 +11682,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "1.18 GB"
+    "ShowSizeHuman": "1.10 GB"
   },
   {
     "ShowID": "ddf2ed34fbd2",
@@ -11733,7 +11733,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "5",
-    "ShowSizeHuman": "1.56 GB"
+    "ShowSizeHuman": "1.45 GB"
   },
   {
     "ShowID": "9873814ba775",
@@ -11829,7 +11829,7 @@
     "VideoKbps": "18587",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "6.18 GB"
+    "ShowSizeHuman": "5.75 GB"
   },
   {
     "ShowID": "27726121cfae",
@@ -11880,7 +11880,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "13",
-    "ShowSizeHuman": "4.07 GB"
+    "ShowSizeHuman": "3.79 GB"
   },
   {
     "ShowID": "86c46d281d4d",
@@ -12032,7 +12032,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "1.53 GB"
+    "ShowSizeHuman": "1.42 GB"
   },
   {
     "ShowID": "87c8e1fff7b4",
@@ -12083,7 +12083,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "12",
-    "ShowSizeHuman": "2.12 GB"
+    "ShowSizeHuman": "1.97 GB"
   },
   {
     "ShowID": "9d364231017b",
@@ -12232,7 +12232,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "1.83 GB"
+    "ShowSizeHuman": "1.70 GB"
   },
   {
     "ShowID": "a0c641c02478",
@@ -12283,7 +12283,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "11",
-    "ShowSizeHuman": "4.46 GB"
+    "ShowSizeHuman": "4.16 GB"
   },
   {
     "ShowID": "4900c80dfef8",
@@ -12334,7 +12334,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "14",
-    "ShowSizeHuman": "1.99 GB"
+    "ShowSizeHuman": "1.85 GB"
   },
   {
     "ShowID": "3ffb242b99b5",
@@ -14970,7 +14970,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "12",
-    "ShowSizeHuman": "2.19 GB"
+    "ShowSizeHuman": "2.04 GB"
   },
   {
     "ShowID": "505edfda3b37",
@@ -15021,7 +15021,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "16",
-    "ShowSizeHuman": "4.31 GB"
+    "ShowSizeHuman": "4.01 GB"
   },
   {
     "ShowID": "678f382c44dd",
@@ -15072,7 +15072,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "15",
-    "ShowSizeHuman": "3.18 GB"
+    "ShowSizeHuman": "2.96 GB"
   },
   {
     "ShowID": "78e1fd233f9a",
@@ -15123,7 +15123,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "16",
-    "ShowSizeHuman": "3.03 GB"
+    "ShowSizeHuman": "2.82 GB"
   },
   {
     "ShowID": "44aa8504e89b",
@@ -15174,7 +15174,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "14",
-    "ShowSizeHuman": "4.33 GB"
+    "ShowSizeHuman": "4.03 GB"
   },
   {
     "ShowID": "78ace4edbb43",
@@ -15273,7 +15273,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "8",
-    "ShowSizeHuman": "1.95 GB"
+    "ShowSizeHuman": "1.81 GB"
   },
   {
     "ShowID": "d5b0040f5757",
@@ -15373,7 +15373,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "3.22 GB"
+    "ShowSizeHuman": "3.00 GB"
   },
   {
     "ShowID": "3760fccd8631",
@@ -15424,7 +15424,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "12",
-    "ShowSizeHuman": "2.88 GB"
+    "ShowSizeHuman": "2.68 GB"
   },
   {
     "ShowID": "fdddd194f762",
@@ -15475,7 +15475,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "19",
-    "ShowSizeHuman": "3.46 GB"
+    "ShowSizeHuman": "3.22 GB"
   },
   {
     "ShowID": "6aa79b5d43dc",
@@ -15526,7 +15526,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "8",
-    "ShowSizeHuman": "1.80 GB"
+    "ShowSizeHuman": "1.67 GB"
   },
   {
     "ShowID": "029a685bd2e6",
@@ -15577,7 +15577,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "16",
-    "ShowSizeHuman": "4.29 GB"
+    "ShowSizeHuman": "4.00 GB"
   },
   {
     "ShowID": "9876d0292d49",
@@ -15629,7 +15629,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "4.17 GB"
+    "ShowSizeHuman": "3.89 GB"
   },
   {
     "ShowID": "0dfc65fa15e8",
@@ -15679,7 +15679,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "9",
-    "ShowSizeHuman": "1.42 GB",
+    "ShowSizeHuman": "1.32 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -15731,7 +15731,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "6",
-    "ShowSizeHuman": "1.58 GB"
+    "ShowSizeHuman": "1.47 GB"
   },
   {
     "ShowID": "5fdb638e4707",
@@ -15782,7 +15782,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "3.73 GB"
+    "ShowSizeHuman": "3.48 GB"
   },
   {
     "ShowID": "f4d5349bc101",
@@ -15833,7 +15833,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "2.16 GB"
+    "ShowSizeHuman": "2.01 GB"
   },
   {
     "ShowID": "0d37170a885a",
@@ -15934,7 +15934,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "17",
-    "ShowSizeHuman": "3.97 GB"
+    "ShowSizeHuman": "3.70 GB"
   },
   {
     "ShowID": "9e21ab42c105",
@@ -15985,7 +15985,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "675.11 MB"
+    "ShowSizeHuman": "643.84 MB"
   },
   {
     "ShowID": "6a5101281ede",
@@ -16089,7 +16089,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "233.16 MB"
+    "ShowSizeHuman": "222.36 MB"
   },
   {
     "ShowID": "29883638bd8e",
@@ -16141,7 +16141,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "3",
-    "ShowSizeHuman": "1.53 GB"
+    "ShowSizeHuman": "1.42 GB"
   },
   {
     "ShowID": "c533d3c70444",
@@ -16241,7 +16241,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "4",
-    "ShowSizeHuman": "1.73 GB"
+    "ShowSizeHuman": "1.61 GB"
   },
   {
     "ShowID": "8a2c9888b415",
@@ -16292,7 +16292,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "14",
-    "ShowSizeHuman": "3.96 GB"
+    "ShowSizeHuman": "3.69 GB"
   },
   {
     "ShowID": "d357b31a437a",
@@ -16343,7 +16343,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "16",
-    "ShowSizeHuman": "4.34 GB"
+    "ShowSizeHuman": "4.05 GB"
   },
   {
     "ShowID": "cddaf2050315",
@@ -16394,7 +16394,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "1.80 GB"
+    "ShowSizeHuman": "1.68 GB"
   },
   {
     "ShowID": "5d90186c9181",
@@ -16445,7 +16445,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "3.60 GB"
+    "ShowSizeHuman": "3.35 GB"
   },
   {
     "ShowID": "ef74ff7fa114",
@@ -16544,7 +16544,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "3.82 GB",
+    "ShowSizeHuman": "3.56 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -16595,7 +16595,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "4.31 GB",
+    "ShowSizeHuman": "4.02 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -16647,7 +16647,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "6",
-    "ShowSizeHuman": "1.84 GB"
+    "ShowSizeHuman": "1.71 GB"
   },
   {
     "ShowID": "6f96566d4bb9",
@@ -16698,7 +16698,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "14",
-    "ShowSizeHuman": "2.85 GB"
+    "ShowSizeHuman": "2.65 GB"
   },
   {
     "ShowID": "0a9a2978c904",
@@ -16747,7 +16747,7 @@
     "VideoKbps": "18088",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "822.59 MB"
+    "ShowSizeHuman": "784.49 MB"
   },
   {
     "ShowID": "914961b6f0a3",
@@ -16796,7 +16796,7 @@
     "VideoKbps": "12202",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "434.63 MB"
+    "ShowSizeHuman": "414.50 MB"
   },
   {
     "ShowID": "fda440d65505",
@@ -16845,7 +16845,7 @@
     "VideoKbps": "12199",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "478.11 MB"
+    "ShowSizeHuman": "455.96 MB"
   },
   {
     "ShowID": "ff25a03fa586",
@@ -16896,7 +16896,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "17",
-    "ShowSizeHuman": "2.44 GB"
+    "ShowSizeHuman": "2.27 GB"
   },
   {
     "ShowID": "d60d2cd9152b",
@@ -16945,7 +16945,7 @@
     "VideoKbps": "18060",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "12.28 GB"
+    "ShowSizeHuman": "11.44 GB"
   },
   {
     "ShowID": "d3b479d76244",
@@ -16996,7 +16996,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "2.35 GB"
+    "ShowSizeHuman": "2.19 GB"
   },
   {
     "ShowID": "cb428e645237",
@@ -17046,7 +17046,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "1.50 GB",
+    "ShowSizeHuman": "1.39 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -17189,7 +17189,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "3.30 GB"
+    "ShowSizeHuman": "3.07 GB"
   },
   {
     "ShowID": "f8e1a1f36936",
@@ -17384,7 +17384,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "19",
-    "ShowSizeHuman": "4.28 GB"
+    "ShowSizeHuman": "3.98 GB"
   },
   {
     "ShowID": "c25d46fbd7ca",
@@ -17435,7 +17435,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "18",
-    "ShowSizeHuman": "4.28 GB"
+    "ShowSizeHuman": "3.99 GB"
   },
   {
     "ShowID": "dbc26a4f29fc",
@@ -17486,7 +17486,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "14",
-    "ShowSizeHuman": "4.15 GB"
+    "ShowSizeHuman": "3.86 GB"
   },
   {
     "ShowID": "13f07c543b2c",
@@ -17537,7 +17537,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "4",
-    "ShowSizeHuman": "1.61 GB"
+    "ShowSizeHuman": "1.50 GB"
   },
   {
     "ShowID": "fa64fa89dba8",
@@ -17681,7 +17681,7 @@
     "VideoKbps": "18577",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "6.57 GB",
+    "ShowSizeHuman": "6.12 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -17730,7 +17730,7 @@
     "VideoKbps": "14891",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "590.65 MB",
+    "ShowSizeHuman": "563.29 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -17780,7 +17780,7 @@
     "VideoKbps": "9557",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "857.73 MB"
+    "ShowSizeHuman": "818.00 MB"
   },
   {
     "ShowID": "66834410d7fd",
@@ -17830,7 +17830,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "1.83 GB",
+    "ShowSizeHuman": "1.70 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -17881,7 +17881,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "13",
-    "ShowSizeHuman": "4.22 GB",
+    "ShowSizeHuman": "3.93 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -17932,7 +17932,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "11",
-    "ShowSizeHuman": "3.79 GB",
+    "ShowSizeHuman": "3.53 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -17984,7 +17984,7 @@
     "DiscType": "DVD-9",
     "Menu": "Yes",
     "Chapters": "14",
-    "ShowSizeHuman": "5.60 GB"
+    "ShowSizeHuman": "5.21 GB"
   },
   {
     "ShowID": "716610b5396a",
@@ -18033,7 +18033,7 @@
     "VideoKbps": "13014",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "8.65 GB"
+    "ShowSizeHuman": "8.06 GB"
   },
   {
     "ShowID": "80a8cf1bdfdc",
@@ -18084,7 +18084,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "1.56 GB"
+    "ShowSizeHuman": "1.45 GB"
   },
   {
     "ShowID": "daeb3a95fe0d",
@@ -18135,7 +18135,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "14",
-    "ShowSizeHuman": "2.65 GB"
+    "ShowSizeHuman": "2.47 GB"
   },
   {
     "ShowID": "c2bfd443ff27",
@@ -18186,7 +18186,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "319.60 MB"
+    "ShowSizeHuman": "304.79 MB"
   },
   {
     "ShowID": "78f065aba315",
@@ -18236,7 +18236,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "14",
-    "ShowSizeHuman": "1.63 GB",
+    "ShowSizeHuman": "1.52 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -18337,7 +18337,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "4",
-    "ShowSizeHuman": "794.88 MB"
+    "ShowSizeHuman": "758.05 MB"
   },
   {
     "ShowID": "329ee42711f9",
@@ -18388,7 +18388,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "6",
-    "ShowSizeHuman": "3.97 GB"
+    "ShowSizeHuman": "3.70 GB"
   },
   {
     "ShowID": "8e3e2d8165f4",
@@ -18439,7 +18439,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "9",
-    "ShowSizeHuman": "4.59 GB"
+    "ShowSizeHuman": "4.27 GB"
   },
   {
     "ShowID": "4134716ede7f",
@@ -18489,7 +18489,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "3.21 GB",
+    "ShowSizeHuman": "2.98 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -18538,7 +18538,7 @@
     "VideoKbps": "10864",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "9.98 GB",
+    "ShowSizeHuman": "9.30 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -18590,7 +18590,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "3.22 GB"
+    "ShowSizeHuman": "3.00 GB"
   },
   {
     "ShowID": "0e68ca3335ad",
@@ -18641,7 +18641,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "5",
-    "ShowSizeHuman": "1.54 GB"
+    "ShowSizeHuman": "1.43 GB"
   },
   {
     "ShowID": "278829f70494",
@@ -18737,7 +18737,7 @@
     "VideoKbps": "8660",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "8.73 GB"
+    "ShowSizeHuman": "8.13 GB"
   },
   {
     "ShowID": "b4f7bdda90d2",
@@ -18789,7 +18789,7 @@
     "VideoKbps": "8675",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "344.79 MB"
+    "ShowSizeHuman": "328.82 MB"
   },
   {
     "ShowID": "74ea5ba711e7",
@@ -18841,7 +18841,7 @@
     "VideoKbps": "8679",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "324.63 MB"
+    "ShowSizeHuman": "309.59 MB"
   },
   {
     "ShowID": "9d0922cdce62",
@@ -18893,7 +18893,7 @@
     "VideoKbps": "8663",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "300.24 MB"
+    "ShowSizeHuman": "286.33 MB"
   },
   {
     "ShowID": "c10d89b9d5bc",
@@ -18945,7 +18945,7 @@
     "VideoKbps": "8675",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "245.84 MB"
+    "ShowSizeHuman": "234.45 MB"
   },
   {
     "ShowID": "186a9f4a8afb",
@@ -18997,7 +18997,7 @@
     "VideoKbps": "8653",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "273.60 MB"
+    "ShowSizeHuman": "260.93 MB"
   },
   {
     "ShowID": "5d2fe49a2918",
@@ -19048,7 +19048,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "1.82 GB"
+    "ShowSizeHuman": "1.69 GB"
   },
   {
     "ShowID": "59b342c1f866",
@@ -19099,7 +19099,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "5",
-    "ShowSizeHuman": "1.18 GB"
+    "ShowSizeHuman": "1.10 GB"
   },
   {
     "ShowID": "d67d78bc7824",
@@ -19147,7 +19147,7 @@
     "VideoKbps": "13658",
     "AudioKbps": "256",
     "DiscType": "File",
-    "ShowSizeHuman": "9.65 GB",
+    "ShowSizeHuman": "8.99 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -19198,7 +19198,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "10",
-    "ShowSizeHuman": "3.19 GB",
+    "ShowSizeHuman": "2.97 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -19248,7 +19248,7 @@
     "VideoKbps": "16868",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "5.75 GB"
+    "ShowSizeHuman": "5.35 GB"
   },
   {
     "ShowID": "da1adde664ac",
@@ -19298,7 +19298,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "3.05 GB",
+    "ShowSizeHuman": "2.84 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -19398,7 +19398,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "3",
-    "ShowSizeHuman": "1.34 GB"
+    "ShowSizeHuman": "1.24 GB"
   },
   {
     "ShowID": "5e6a202ebeda",
@@ -19449,7 +19449,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "14",
-    "ShowSizeHuman": "3.03 GB"
+    "ShowSizeHuman": "2.82 GB"
   },
   {
     "ShowID": "9dd520ad3c97",
@@ -19500,7 +19500,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "4",
-    "ShowSizeHuman": "507.79 MB"
+    "ShowSizeHuman": "484.27 MB"
   },
   {
     "ShowID": "89f7ca1240d1",
@@ -19602,7 +19602,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "956.79 MB"
+    "ShowSizeHuman": "912.47 MB"
   },
   {
     "ShowID": "06c5d7864a3f",
@@ -19656,7 +19656,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "3",
-    "ShowSizeHuman": "441.07 MB"
+    "ShowSizeHuman": "420.64 MB"
   },
   {
     "ShowID": "fdbae083df8b",
@@ -19710,7 +19710,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "401.54 MB"
+    "ShowSizeHuman": "382.94 MB"
   },
   {
     "ShowID": "3c779087e394",
@@ -19867,7 +19867,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "6",
-    "ShowSizeHuman": "1.08 GB"
+    "ShowSizeHuman": "1.01 GB"
   },
   {
     "ShowID": "1530747ea474",
@@ -19918,7 +19918,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "13",
-    "ShowSizeHuman": "1.94 GB"
+    "ShowSizeHuman": "1.81 GB"
   },
   {
     "ShowID": "e878d2521a00",
@@ -19969,7 +19969,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "9",
-    "ShowSizeHuman": "1.54 GB"
+    "ShowSizeHuman": "1.44 GB"
   },
   {
     "ShowID": "92d91ee93c78",
@@ -20020,7 +20020,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "1",
-    "ShowSizeHuman": "125.20 MB"
+    "ShowSizeHuman": "119.40 MB"
   },
   {
     "ShowID": "b4a2c9cd6919",
@@ -20071,7 +20071,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "7",
-    "ShowSizeHuman": "1.18 GB"
+    "ShowSizeHuman": "1.10 GB"
   },
   {
     "ShowID": "e61713f2a48a",
@@ -20122,7 +20122,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "2",
-    "ShowSizeHuman": "1.51 GB"
+    "ShowSizeHuman": "1.40 GB"
   },
   {
     "ShowID": "21214a851c48",
@@ -20173,7 +20173,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "3.01 GB"
+    "ShowSizeHuman": "2.81 GB"
   },
   {
     "ShowID": "6c431f54e1dd",
@@ -20272,7 +20272,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "2.30 GB"
+    "ShowSizeHuman": "2.15 GB"
   },
   {
     "ShowID": "0fe08ad37cc0",
@@ -20370,7 +20370,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "15",
-    "ShowSizeHuman": "2.14 GB",
+    "ShowSizeHuman": "1.99 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -20422,7 +20422,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "5",
-    "ShowSizeHuman": "641.86 MB"
+    "ShowSizeHuman": "612.12 MB"
   },
   {
     "ShowID": "eee6e1fded62",
@@ -20521,7 +20521,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "994.31 MB"
+    "ShowSizeHuman": "948.25 MB"
   },
   {
     "ShowID": "2e863c442de3",
@@ -20572,7 +20572,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "19",
-    "ShowSizeHuman": "3.59 GB"
+    "ShowSizeHuman": "3.34 GB"
   },
   {
     "ShowID": "0d0905da4bf0",
@@ -20622,7 +20622,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "1.23 GB",
+    "ShowSizeHuman": "1.15 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -20674,7 +20674,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "2.12 GB"
+    "ShowSizeHuman": "1.97 GB"
   },
   {
     "ShowID": "200c844044cf",
@@ -20728,7 +20728,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "336.31 MB"
+    "ShowSizeHuman": "320.73 MB"
   },
   {
     "ShowID": "5b3108b9c6ba",
@@ -20777,7 +20777,7 @@
     "VideoKbps": "8821",
     "AudioKbps": "256",
     "DiscType": "File",
-    "ShowSizeHuman": "260.64 MB"
+    "ShowSizeHuman": "248.56 MB"
   },
   {
     "ShowID": "0da18f09f58e",
@@ -20827,7 +20827,7 @@
     "AudioKbps": "192",
     "AudioTracks": "2",
     "DiscType": "File",
-    "ShowSizeHuman": "234.62 MB"
+    "ShowSizeHuman": "223.75 MB"
   },
   {
     "ShowID": "de34894ee1e3",
@@ -20875,7 +20875,7 @@
     "VideoKbps": "18523",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "1.71 GB",
+    "ShowSizeHuman": "1.60 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -20924,7 +20924,7 @@
     "VideoKbps": "17769",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "788.56 MB",
+    "ShowSizeHuman": "752.02 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -20974,7 +20974,7 @@
     "VideoKbps": "8425",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "222.34 MB"
+    "ShowSizeHuman": "212.04 MB"
   },
   {
     "ShowID": "e927ca0b985f",
@@ -21025,7 +21025,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "10",
-    "ShowSizeHuman": "975.72 MB"
+    "ShowSizeHuman": "930.52 MB"
   },
   {
     "ShowID": "45f85a0a5785",
@@ -21073,7 +21073,7 @@
     "VideoKbps": "11362",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "2.01 GB",
+    "ShowSizeHuman": "1.87 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -21124,7 +21124,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "7",
-    "ShowSizeHuman": "1.44 GB",
+    "ShowSizeHuman": "1.34 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -21175,7 +21175,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "12",
-    "ShowSizeHuman": "2.33 GB",
+    "ShowSizeHuman": "2.17 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -21224,7 +21224,7 @@
     "VideoKbps": "17360",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "2.89 GB",
+    "ShowSizeHuman": "2.69 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -21274,7 +21274,7 @@
     "VideoKbps": "18361",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "1.38 GB"
+    "ShowSizeHuman": "1.29 GB"
   },
   {
     "ShowID": "ecd00b6d36e5",
@@ -21322,7 +21322,7 @@
     "VideoKbps": "1503",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "921.88 MB",
+    "ShowSizeHuman": "879.17 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -21373,7 +21373,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "79.79 MB",
+    "ShowSizeHuman": "76.10 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -21426,7 +21426,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "19",
-    "ShowSizeHuman": "3.90 GB"
+    "ShowSizeHuman": "3.63 GB"
   },
   {
     "ShowID": "efdce91e7d8a",
@@ -21474,7 +21474,7 @@
     "VideoKbps": "12365",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "1.28 GB",
+    "ShowSizeHuman": "1.19 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -21526,7 +21526,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "17",
-    "ShowSizeHuman": "1.78 GB"
+    "ShowSizeHuman": "1.66 GB"
   },
   {
     "ShowID": "3bdefe01fc05",
@@ -21577,7 +21577,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "5",
-    "ShowSizeHuman": "544.04 MB"
+    "ShowSizeHuman": "518.83 MB"
   },
   {
     "ShowID": "2de85ca7c92a",
@@ -21628,7 +21628,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "4",
-    "ShowSizeHuman": "571.95 MB"
+    "ShowSizeHuman": "545.46 MB"
   },
   {
     "ShowID": "58337e11029e",
@@ -21678,7 +21678,7 @@
     "AudioKbps": "384",
     "AudioTracks": "2",
     "DiscType": "File",
-    "ShowSizeHuman": "2.21 GB"
+    "ShowSizeHuman": "2.06 GB"
   },
   {
     "ShowID": "4cf51126cac3",
@@ -21727,7 +21727,7 @@
     "AudioKbps": "384",
     "AudioTracks": "2",
     "DiscType": "File",
-    "ShowSizeHuman": "3.97 GB",
+    "ShowSizeHuman": "3.70 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, AudioTracks, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -21779,7 +21779,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "35",
-    "ShowSizeHuman": "3.97 GB"
+    "ShowSizeHuman": "3.70 GB"
   },
   {
     "ShowID": "c207d0b6d59b",
@@ -21830,7 +21830,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "17",
-    "ShowSizeHuman": "1.56 GB"
+    "ShowSizeHuman": "1.45 GB"
   },
   {
     "ShowID": "77bf9aa7b1fd",
@@ -21881,7 +21881,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "11",
-    "ShowSizeHuman": "3.53 GB"
+    "ShowSizeHuman": "3.29 GB"
   },
   {
     "ShowID": "9913d5594871",
@@ -21931,7 +21931,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "2.42 GB",
+    "ShowSizeHuman": "2.25 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -21983,7 +21983,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "1.03 GB"
+    "ShowSizeHuman": "977.73 MB"
   },
   {
     "ShowID": "04e9a98d7ae4",
@@ -22034,7 +22034,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "1.91 GB"
+    "ShowSizeHuman": "1.78 GB"
   },
   {
     "ShowID": "0bc1610b5e3b",
@@ -22085,7 +22085,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "495.62 MB"
+    "ShowSizeHuman": "472.66 MB"
   },
   {
     "ShowID": "9426334a848d",
@@ -22136,7 +22136,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "12",
-    "ShowSizeHuman": "4.56 GB"
+    "ShowSizeHuman": "4.25 GB"
   },
   {
     "ShowID": "3842fe5d2ea3",
@@ -22187,7 +22187,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "10",
-    "ShowSizeHuman": "4.56 GB"
+    "ShowSizeHuman": "4.25 GB"
   },
   {
     "ShowID": "bf1b076fdd51",
@@ -22238,7 +22238,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "16",
-    "ShowSizeHuman": "4.26 GB"
+    "ShowSizeHuman": "3.97 GB"
   },
   {
     "ShowID": "57425a16cba2",
@@ -22288,7 +22288,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "14",
-    "ShowSizeHuman": "3.66 GB",
+    "ShowSizeHuman": "3.41 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -22340,7 +22340,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "7",
-    "ShowSizeHuman": "1.07 GB"
+    "ShowSizeHuman": "1.00 GB"
   },
   {
     "ShowID": "4eeac94bd488",
@@ -22391,7 +22391,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "13",
-    "ShowSizeHuman": "3.67 GB"
+    "ShowSizeHuman": "3.42 GB"
   },
   {
     "ShowID": "44a414568f03",
@@ -22442,7 +22442,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "13",
-    "ShowSizeHuman": "2.91 GB"
+    "ShowSizeHuman": "2.71 GB"
   },
   {
     "ShowID": "e5ae809505b5",
@@ -22542,7 +22542,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "23",
-    "ShowSizeHuman": "4.65 GB"
+    "ShowSizeHuman": "4.33 GB"
   },
   {
     "ShowID": "3fe2d2713abb",
@@ -22593,7 +22593,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "7",
-    "ShowSizeHuman": "1.56 GB"
+    "ShowSizeHuman": "1.45 GB"
   },
   {
     "ShowID": "cff92aa863dc",
@@ -22644,7 +22644,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "25",
-    "ShowSizeHuman": "4.34 GB"
+    "ShowSizeHuman": "4.04 GB"
   },
   {
     "ShowID": "5b83c229df85",
@@ -22694,7 +22694,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "2.22 GB",
+    "ShowSizeHuman": "2.07 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -22746,7 +22746,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "16",
-    "ShowSizeHuman": "3.96 GB"
+    "ShowSizeHuman": "3.69 GB"
   },
   {
     "ShowID": "2e8bb0740488",
@@ -22797,7 +22797,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "22",
-    "ShowSizeHuman": "3.50 GB"
+    "ShowSizeHuman": "3.26 GB"
   },
   {
     "ShowID": "dd47c5fa0e57",
@@ -22848,7 +22848,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "19",
-    "ShowSizeHuman": "4.67 GB"
+    "ShowSizeHuman": "4.35 GB"
   },
   {
     "ShowID": "a82c7d813257",
@@ -22897,7 +22897,7 @@
     "VideoKbps": "3078",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "2.35 GB"
+    "ShowSizeHuman": "2.19 GB"
   },
   {
     "ShowID": "198538f73033",
@@ -22948,7 +22948,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "7",
-    "ShowSizeHuman": "2.54 GB"
+    "ShowSizeHuman": "2.37 GB"
   },
   {
     "ShowID": "6c29d807b47f",
@@ -22999,7 +22999,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "12",
-    "ShowSizeHuman": "4.29 GB"
+    "ShowSizeHuman": "4.00 GB"
   },
   {
     "ShowID": "46fc95348535",
@@ -23097,7 +23097,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "10",
-    "ShowSizeHuman": "1.10 GB"
+    "ShowSizeHuman": "1.02 GB"
   },
   {
     "ShowID": "fdedd28b08ad",
@@ -23147,7 +23147,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "2.93 GB",
+    "ShowSizeHuman": "2.73 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -23199,7 +23199,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "4",
-    "ShowSizeHuman": "713.21 MB"
+    "ShowSizeHuman": "680.17 MB"
   },
   {
     "ShowID": "228a9a74d90b",
@@ -23251,7 +23251,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "18",
-    "ShowSizeHuman": "1.46 GB"
+    "ShowSizeHuman": "1.36 GB"
   },
   {
     "ShowID": "9a0245132200",
@@ -23299,7 +23299,7 @@
     "VideoKbps": "16838",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "6.77 GB",
+    "ShowSizeHuman": "6.30 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -23351,7 +23351,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "15",
-    "ShowSizeHuman": "3.27 GB"
+    "ShowSizeHuman": "3.04 GB"
   },
   {
     "ShowID": "c5e64109f38a",
@@ -23402,7 +23402,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "3",
-    "ShowSizeHuman": "1.06 GB"
+    "ShowSizeHuman": "1010.65 MB"
   },
   {
     "ShowID": "6fca4bf593e1",
@@ -23453,7 +23453,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "14",
-    "ShowSizeHuman": "2.48 GB"
+    "ShowSizeHuman": "2.31 GB"
   },
   {
     "ShowID": "ea1445ea015b",
@@ -23501,7 +23501,7 @@
     "ScanType": "progressive",
     "VideoKbps": "4327",
     "DiscType": "File",
-    "ShowSizeHuman": "2.23 GB"
+    "ShowSizeHuman": "2.08 GB"
   },
   {
     "ShowID": "e0c9cc428b88",
@@ -23552,7 +23552,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "11",
-    "ShowSizeHuman": "2.02 GB"
+    "ShowSizeHuman": "1.88 GB"
   },
   {
     "ShowID": "bf24f4bd16a9",
@@ -23603,7 +23603,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "186.86 MB"
+    "ShowSizeHuman": "178.20 MB"
   },
   {
     "ShowID": "5c3490579885",
@@ -23654,7 +23654,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "812.36 MB"
+    "ShowSizeHuman": "774.73 MB"
   },
   {
     "ShowID": "c9eb5f8fb872",
@@ -23705,7 +23705,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "1.12 GB"
+    "ShowSizeHuman": "1.04 GB"
   },
   {
     "ShowID": "2654be8c7c7b",
@@ -23757,7 +23757,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "11",
-    "ShowSizeHuman": "3.89 GB"
+    "ShowSizeHuman": "3.62 GB"
   },
   {
     "ShowID": "63d8f4bd1abb",
@@ -23807,7 +23807,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "1.01 GB",
+    "ShowSizeHuman": "962.25 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -23858,7 +23858,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "15",
-    "ShowSizeHuman": "3.30 GB",
+    "ShowSizeHuman": "3.07 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -23910,7 +23910,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "13",
-    "ShowSizeHuman": "2.02 GB"
+    "ShowSizeHuman": "1.88 GB"
   },
   {
     "ShowID": "2e852d28a98c",
@@ -23961,7 +23961,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "16",
-    "ShowSizeHuman": "1.95 GB"
+    "ShowSizeHuman": "1.82 GB"
   },
   {
     "ShowID": "87a9cbe74bbc",
@@ -24012,7 +24012,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "18",
-    "ShowSizeHuman": "4.25 GB"
+    "ShowSizeHuman": "3.96 GB"
   },
   {
     "ShowID": "427a4ede09f9",
@@ -24061,7 +24061,7 @@
     "VideoKbps": "7101",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "1.56 GB"
+    "ShowSizeHuman": "1.46 GB"
   },
   {
     "ShowID": "66b84010357f",
@@ -24113,7 +24113,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "717.63 MB"
+    "ShowSizeHuman": "684.38 MB"
   },
   {
     "ShowID": "13cc22485f09",
@@ -24164,7 +24164,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "3",
-    "ShowSizeHuman": "846.04 MB"
+    "ShowSizeHuman": "806.85 MB"
   },
   {
     "ShowID": "845b72e244f9",
@@ -24215,7 +24215,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "9",
-    "ShowSizeHuman": "3.93 GB"
+    "ShowSizeHuman": "3.66 GB"
   },
   {
     "ShowID": "4097355be92c",
@@ -24266,7 +24266,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "18",
-    "ShowSizeHuman": "3.89 GB"
+    "ShowSizeHuman": "3.63 GB"
   },
   {
     "ShowID": "4a8a9804b2bb",
@@ -24316,7 +24316,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "34",
-    "ShowSizeHuman": "4.08 GB",
+    "ShowSizeHuman": "3.80 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -24368,7 +24368,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "20",
-    "ShowSizeHuman": "4.54 GB",
+    "ShowSizeHuman": "4.23 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, AudioTracks, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -24420,7 +24420,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "1",
-    "ShowSizeHuman": "2.63 GB"
+    "ShowSizeHuman": "2.45 GB"
   },
   {
     "ShowID": "897f9f4dce50",
@@ -24471,7 +24471,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "15",
-    "ShowSizeHuman": "3.31 GB"
+    "ShowSizeHuman": "3.09 GB"
   },
   {
     "ShowID": "a7e1cae13d4a",
@@ -24519,7 +24519,7 @@
     "VideoKbps": "13612",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "2.81 GB",
+    "ShowSizeHuman": "2.62 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -24571,7 +24571,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "11",
-    "ShowSizeHuman": "1.57 GB"
+    "ShowSizeHuman": "1.46 GB"
   },
   {
     "ShowID": "f8b74659e7ee",
@@ -24718,7 +24718,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "3",
-    "ShowSizeHuman": "662.25 MB"
+    "ShowSizeHuman": "631.57 MB"
   },
   {
     "ShowID": "28f98d6e616e",
@@ -24769,7 +24769,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "2.84 GB"
+    "ShowSizeHuman": "2.64 GB"
   },
   {
     "ShowID": "513daeed98a6",
@@ -24819,7 +24819,7 @@
     "AudioKbps": "256",
     "AudioTracks": "2",
     "DiscType": "File",
-    "ShowSizeHuman": "4.11 GB"
+    "ShowSizeHuman": "3.83 GB"
   },
   {
     "ShowID": "7d363366827f",
@@ -24870,7 +24870,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "14",
-    "ShowSizeHuman": "1.99 GB"
+    "ShowSizeHuman": "1.86 GB"
   },
   {
     "ShowID": "e5d279ecdaa6",
@@ -24919,7 +24919,7 @@
     "AudioKbps": "192",
     "AudioTracks": "2",
     "DiscType": "File",
-    "ShowSizeHuman": "9.02 GB",
+    "ShowSizeHuman": "8.40 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, AudioTracks, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -25018,7 +25018,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "28",
-    "ShowSizeHuman": "3.11 GB"
+    "ShowSizeHuman": "2.89 GB"
   },
   {
     "ShowID": "f8ddbb171e91",
@@ -25069,7 +25069,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "10",
-    "ShowSizeHuman": "2.97 GB"
+    "ShowSizeHuman": "2.76 GB"
   },
   {
     "ShowID": "022f4c871291",
@@ -25120,7 +25120,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "7",
-    "ShowSizeHuman": "1.12 GB"
+    "ShowSizeHuman": "1.05 GB"
   },
   {
     "ShowID": "b9466699c137",
@@ -25170,7 +25170,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "979.00 MB",
+    "ShowSizeHuman": "933.65 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -25221,7 +25221,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "6",
-    "ShowSizeHuman": "784.52 MB",
+    "ShowSizeHuman": "748.17 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -25273,7 +25273,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "3.33 GB"
+    "ShowSizeHuman": "3.10 GB"
   },
   {
     "ShowID": "7b3cf3b073a7",
@@ -25428,7 +25428,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "4",
-    "ShowSizeHuman": "1.48 GB"
+    "ShowSizeHuman": "1.38 GB"
   },
   {
     "ShowID": "7428458cd8f5",
@@ -25527,7 +25527,7 @@
     "DiscType": "DVD-9",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "5.57 GB"
+    "ShowSizeHuman": "5.19 GB"
   },
   {
     "ShowID": "82f63234f573",
@@ -25579,7 +25579,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "15",
-    "ShowSizeHuman": "4.38 GB"
+    "ShowSizeHuman": "4.08 GB"
   },
   {
     "ShowID": "d4fcfb3bbaec",
@@ -25630,7 +25630,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "7",
-    "ShowSizeHuman": "2.09 GB"
+    "ShowSizeHuman": "1.94 GB"
   },
   {
     "ShowID": "298bcfd8c24a",
@@ -25681,7 +25681,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "243.64 MB"
+    "ShowSizeHuman": "232.35 MB"
   },
   {
     "ShowID": "12b966f9af83",
@@ -25732,7 +25732,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "16",
-    "ShowSizeHuman": "3.22 GB"
+    "ShowSizeHuman": "3.00 GB"
   },
   {
     "ShowID": "2408539ca72d",
@@ -25783,7 +25783,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "7",
-    "ShowSizeHuman": "684.90 MB"
+    "ShowSizeHuman": "653.17 MB"
   },
   {
     "ShowID": "6c78eb88e2be",
@@ -25834,7 +25834,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "14",
-    "ShowSizeHuman": "1.48 GB"
+    "ShowSizeHuman": "1.37 GB"
   },
   {
     "ShowID": "cc4f1e4227b4",
@@ -25885,7 +25885,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "3.02 GB"
+    "ShowSizeHuman": "2.81 GB"
   },
   {
     "ShowID": "4d7dd675cdbe",
@@ -25985,7 +25985,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "2.01 GB"
+    "ShowSizeHuman": "1.87 GB"
   },
   {
     "ShowID": "563e83aafbd1",
@@ -26036,7 +26036,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "6",
-    "ShowSizeHuman": "1.88 GB"
+    "ShowSizeHuman": "1.75 GB"
   },
   {
     "ShowID": "e07c1f8dc021",
@@ -26086,7 +26086,7 @@
     "AudioKbps": "448",
     "AudioTracks": "2",
     "DiscType": "File",
-    "ShowSizeHuman": "755.11 MB"
+    "ShowSizeHuman": "720.13 MB"
   },
   {
     "ShowID": "d270427cd4b7",
@@ -26135,7 +26135,7 @@
     "VideoKbps": "5868",
     "AudioKbps": "256",
     "DiscType": "File",
-    "ShowSizeHuman": "285.79 MB"
+    "ShowSizeHuman": "272.55 MB"
   },
   {
     "ShowID": "91cd0689d66f",
@@ -26281,7 +26281,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "3.06 GB",
+    "ShowSizeHuman": "2.85 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -26333,7 +26333,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "15",
-    "ShowSizeHuman": "4.21 GB"
+    "ShowSizeHuman": "3.92 GB"
   },
   {
     "ShowID": "76ab1d938779",
@@ -26383,7 +26383,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "6",
-    "ShowSizeHuman": "1.42 GB",
+    "ShowSizeHuman": "1.32 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -26912,7 +26912,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "1.92 GB"
+    "ShowSizeHuman": "1.79 GB"
   },
   {
     "ShowID": "d2335e202920",
@@ -26963,7 +26963,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "18",
-    "ShowSizeHuman": "3.65 GB"
+    "ShowSizeHuman": "3.40 GB"
   },
   {
     "ShowID": "20c74379e8a5",
@@ -27014,7 +27014,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "18",
-    "ShowSizeHuman": "2.04 GB"
+    "ShowSizeHuman": "1.90 GB"
   },
   {
     "ShowID": "6a96b5eed5cc",
@@ -27064,7 +27064,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "9",
-    "ShowSizeHuman": "1.26 GB",
+    "ShowSizeHuman": "1.17 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -27116,7 +27116,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "19",
-    "ShowSizeHuman": "1.93 GB"
+    "ShowSizeHuman": "1.79 GB"
   },
   {
     "ShowID": "883213274e7e",
@@ -27166,7 +27166,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "10",
-    "ShowSizeHuman": "1.51 GB",
+    "ShowSizeHuman": "1.41 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -27221,7 +27221,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "494.77 MB"
+    "ShowSizeHuman": "471.85 MB"
   },
   {
     "ShowID": "fad7893d78bf",
@@ -27323,7 +27323,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "296.84 MB"
+    "ShowSizeHuman": "283.09 MB"
   },
   {
     "ShowID": "cc2199576107",
@@ -27377,7 +27377,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "299.27 MB"
+    "ShowSizeHuman": "285.40 MB"
   },
   {
     "ShowID": "755f4422dd93",
@@ -27431,7 +27431,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "323.44 MB"
+    "ShowSizeHuman": "308.46 MB"
   },
   {
     "ShowID": "dfbfc73dd3b8",
@@ -27485,7 +27485,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "321.61 MB"
+    "ShowSizeHuman": "306.71 MB"
   },
   {
     "ShowID": "76f28e4fd69a",
@@ -27539,7 +27539,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "319.82 MB"
+    "ShowSizeHuman": "305.01 MB"
   },
   {
     "ShowID": "120f74f37cd4",
@@ -27593,7 +27593,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "281.16 MB"
+    "ShowSizeHuman": "268.13 MB"
   },
   {
     "ShowID": "be584e79f694",
@@ -27647,7 +27647,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "277.53 MB"
+    "ShowSizeHuman": "264.68 MB"
   },
   {
     "ShowID": "1f56ee3d363c",
@@ -27701,7 +27701,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "304.10 MB"
+    "ShowSizeHuman": "290.01 MB"
   },
   {
     "ShowID": "041b3381f033",
@@ -27755,7 +27755,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "296.86 MB"
+    "ShowSizeHuman": "283.11 MB"
   },
   {
     "ShowID": "24b7c85a58ff",
@@ -27810,7 +27810,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "230.47 MB"
+    "ShowSizeHuman": "219.79 MB"
   },
   {
     "ShowID": "df08f4d155bb",
@@ -27864,7 +27864,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "316.17 MB"
+    "ShowSizeHuman": "301.53 MB"
   },
   {
     "ShowID": "0b6b50987081",
@@ -27918,7 +27918,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "305.33 MB"
+    "ShowSizeHuman": "291.19 MB"
   },
   {
     "ShowID": "62ab37f599a5",
@@ -27972,7 +27972,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "284.80 MB"
+    "ShowSizeHuman": "271.61 MB"
   },
   {
     "ShowID": "1f8dc32056d6",
@@ -28026,7 +28026,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "629.87 MB"
+    "ShowSizeHuman": "600.70 MB"
   },
   {
     "ShowID": "20a3dbb8da3b",
@@ -28128,7 +28128,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "282.36 MB"
+    "ShowSizeHuman": "269.28 MB"
   },
   {
     "ShowID": "cad089064294",
@@ -28182,7 +28182,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "459.73 MB"
+    "ShowSizeHuman": "438.43 MB"
   },
   {
     "ShowID": "021abd271574",
@@ -28236,7 +28236,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "621.45 MB"
+    "ShowSizeHuman": "592.66 MB"
   },
   {
     "ShowID": "a7bc10173237",
@@ -28290,7 +28290,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "296.88 MB"
+    "ShowSizeHuman": "283.12 MB"
   },
   {
     "ShowID": "38c3f2d33de7",
@@ -28344,7 +28344,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "576.87 MB"
+    "ShowSizeHuman": "550.14 MB"
   },
   {
     "ShowID": "79fceea4e49f",
@@ -28399,7 +28399,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "337.90 MB"
+    "ShowSizeHuman": "322.24 MB"
   },
   {
     "ShowID": "19b752205441",
@@ -28453,7 +28453,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "220.83 MB"
+    "ShowSizeHuman": "210.60 MB"
   },
   {
     "ShowID": "4b9ee8388ea0",
@@ -28507,7 +28507,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "279.95 MB"
+    "ShowSizeHuman": "266.98 MB"
   },
   {
     "ShowID": "576613f92aff",
@@ -28561,7 +28561,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "249.76 MB"
+    "ShowSizeHuman": "238.19 MB"
   },
   {
     "ShowID": "0088116e981a",
@@ -28615,7 +28615,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "351.15 MB"
+    "ShowSizeHuman": "334.88 MB"
   },
   {
     "ShowID": "2a442cf27ccf",
@@ -28717,7 +28717,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "298.05 MB"
+    "ShowSizeHuman": "284.24 MB"
   },
   {
     "ShowID": "8aca7bf92b54",
@@ -28771,7 +28771,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "321.01 MB"
+    "ShowSizeHuman": "306.14 MB"
   },
   {
     "ShowID": "a35aa7592daa",
@@ -28825,7 +28825,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "284.79 MB"
+    "ShowSizeHuman": "271.60 MB"
   },
   {
     "ShowID": "440afb02254f",
@@ -28879,7 +28879,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "280.61 MB"
+    "ShowSizeHuman": "267.61 MB"
   },
   {
     "ShowID": "ea24aed3de8d",
@@ -28933,7 +28933,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "293.26 MB"
+    "ShowSizeHuman": "279.68 MB"
   },
   {
     "ShowID": "aa290a2f72e8",
@@ -28987,7 +28987,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "323.44 MB"
+    "ShowSizeHuman": "308.46 MB"
   },
   {
     "ShowID": "192b1aac370c",
@@ -29041,7 +29041,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "295.63 MB"
+    "ShowSizeHuman": "281.94 MB"
   },
   {
     "ShowID": "5850d67ca905",
@@ -29095,7 +29095,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "271.53 MB"
+    "ShowSizeHuman": "258.96 MB"
   },
   {
     "ShowID": "ed427456071d",
@@ -29149,7 +29149,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "273.94 MB"
+    "ShowSizeHuman": "261.25 MB"
   },
   {
     "ShowID": "5fdd0e0e8aa2",
@@ -29203,7 +29203,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "328.23 MB"
+    "ShowSizeHuman": "313.02 MB"
   },
   {
     "ShowID": "ad3b48a2cd75",
@@ -29257,7 +29257,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "293.25 MB"
+    "ShowSizeHuman": "279.66 MB"
   },
   {
     "ShowID": "c11889b3a320",
@@ -29311,7 +29311,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "337.88 MB"
+    "ShowSizeHuman": "322.23 MB"
   },
   {
     "ShowID": "b1a19e05d09b",
@@ -29361,7 +29361,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "3.66 GB",
+    "ShowSizeHuman": "3.41 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -29413,7 +29413,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "13",
-    "ShowSizeHuman": "2.74 GB"
+    "ShowSizeHuman": "2.55 GB"
   },
   {
     "ShowID": "9832ebd234dd",
@@ -29461,7 +29461,7 @@
     "VideoKbps": "13699",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "380.14 MB",
+    "ShowSizeHuman": "362.53 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -29510,7 +29510,7 @@
     "VideoKbps": "11369",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "2.59 GB",
+    "ShowSizeHuman": "2.41 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -29559,7 +29559,7 @@
     "VideoKbps": "16748",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "495.03 MB",
+    "ShowSizeHuman": "472.10 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -29608,7 +29608,7 @@
     "VideoKbps": "11906",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "353.73 MB",
+    "ShowSizeHuman": "337.34 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -29657,7 +29657,7 @@
     "VideoKbps": "13132",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "2.76 GB",
+    "ShowSizeHuman": "2.57 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -29705,7 +29705,7 @@
     "ScanType": "interlaced",
     "VideoKbps": "6092",
     "DiscType": "File",
-    "ShowSizeHuman": "159.47 MB",
+    "ShowSizeHuman": "152.08 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -29755,7 +29755,7 @@
     "VideoKbps": "12192",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "342.20 MB"
+    "ShowSizeHuman": "326.35 MB"
   },
   {
     "ShowID": "6ea62cc35350",
@@ -29803,7 +29803,7 @@
     "VideoKbps": "12035",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "352.52 MB",
+    "ShowSizeHuman": "336.19 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -29852,7 +29852,7 @@
     "VideoKbps": "11663",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "371.32 MB",
+    "ShowSizeHuman": "354.12 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -29901,7 +29901,7 @@
     "VideoKbps": "18618",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "596.24 MB",
+    "ShowSizeHuman": "568.62 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -29950,7 +29950,7 @@
     "ScanType": "progressive",
     "VideoKbps": "3496",
     "DiscType": "File",
-    "ShowSizeHuman": "2.14 GB"
+    "ShowSizeHuman": "1.99 GB"
   },
   {
     "ShowID": "4f17c51143ec",
@@ -29998,7 +29998,7 @@
     "VideoKbps": "12586",
     "AudioKbps": "448",
     "DiscType": "File",
-    "ShowSizeHuman": "625.96 MB",
+    "ShowSizeHuman": "596.96 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -30095,7 +30095,7 @@
     "VideoKbps": "8709",
     "AudioKbps": "448",
     "DiscType": "File",
-    "ShowSizeHuman": "5.04 GB"
+    "ShowSizeHuman": "4.70 GB"
   },
   {
     "ShowID": "36d494487e43",
@@ -30143,7 +30143,7 @@
     "VideoKbps": "13086",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "466.14 MB",
+    "ShowSizeHuman": "444.54 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -30192,7 +30192,7 @@
     "VideoKbps": "11670",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "5.29 GB",
+    "ShowSizeHuman": "4.93 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -30244,7 +30244,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "2.90 GB"
+    "ShowSizeHuman": "2.70 GB"
   },
   {
     "ShowID": "77b7389d796c",
@@ -30295,7 +30295,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "16",
-    "ShowSizeHuman": "2.96 GB"
+    "ShowSizeHuman": "2.76 GB"
   },
   {
     "ShowID": "a503aef0d18c",
@@ -30394,7 +30394,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "1.72 GB"
+    "ShowSizeHuman": "1.60 GB"
   },
   {
     "ShowID": "807a47d7790c",
@@ -30445,7 +30445,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "2.65 GB"
+    "ShowSizeHuman": "2.47 GB"
   },
   {
     "ShowID": "357343d7a78f",
@@ -30495,7 +30495,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "12",
-    "ShowSizeHuman": "2.60 GB",
+    "ShowSizeHuman": "2.42 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -30547,7 +30547,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "17",
-    "ShowSizeHuman": "3.90 GB"
+    "ShowSizeHuman": "3.63 GB"
   },
   {
     "ShowID": "965c8a28a225",
@@ -30599,7 +30599,7 @@
     "DiscType": "DVD-9",
     "Menu": "Yes",
     "Chapters": "28",
-    "ShowSizeHuman": "6.74 GB"
+    "ShowSizeHuman": "6.28 GB"
   },
   {
     "ShowID": "4dba0c8ff6ae",
@@ -30650,7 +30650,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "2.79 GB"
+    "ShowSizeHuman": "2.59 GB"
   },
   {
     "ShowID": "c29a692bd561",
@@ -30701,7 +30701,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "4",
-    "ShowSizeHuman": "831.90 MB"
+    "ShowSizeHuman": "793.36 MB"
   },
   {
     "ShowID": "8aa87e778761",
@@ -30752,7 +30752,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "681.78 MB"
+    "ShowSizeHuman": "650.20 MB"
   },
   {
     "ShowID": "37dfde0c1673",
@@ -30803,7 +30803,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "3.03 GB"
+    "ShowSizeHuman": "2.82 GB"
   },
   {
     "ShowID": "ca1570a4f7fe",
@@ -30853,7 +30853,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "11",
-    "ShowSizeHuman": "3.24 GB",
+    "ShowSizeHuman": "3.02 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -30905,7 +30905,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "17",
-    "ShowSizeHuman": "2.76 GB"
+    "ShowSizeHuman": "2.57 GB"
   },
   {
     "ShowID": "94f2cf40812c",
@@ -30955,7 +30955,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "10",
-    "ShowSizeHuman": "2.62 GB",
+    "ShowSizeHuman": "2.44 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -31007,7 +31007,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "18",
-    "ShowSizeHuman": "3.70 GB"
+    "ShowSizeHuman": "3.44 GB"
   },
   {
     "ShowID": "35cb88666e49",
@@ -31054,7 +31054,7 @@
     "VideoKbps": "8333",
     "AudioKbps": "353",
     "DiscType": "File",
-    "ShowSizeHuman": "374.28 MB",
+    "ShowSizeHuman": "356.94 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -31106,7 +31106,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "16",
-    "ShowSizeHuman": "3.15 GB"
+    "ShowSizeHuman": "2.93 GB"
   },
   {
     "ShowID": "f63804ad99a7",
@@ -31155,7 +31155,7 @@
     "VideoKbps": "7716",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "3.73 GB"
+    "ShowSizeHuman": "3.47 GB"
   },
   {
     "ShowID": "724aa3298c4c",
@@ -31203,7 +31203,7 @@
     "VideoKbps": "11338",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "2.28 GB",
+    "ShowSizeHuman": "2.13 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -31255,7 +31255,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "11",
-    "ShowSizeHuman": "2.40 GB"
+    "ShowSizeHuman": "2.24 GB"
   },
   {
     "ShowID": "47b549b70ac5",
@@ -31306,7 +31306,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "17",
-    "ShowSizeHuman": "3.87 GB"
+    "ShowSizeHuman": "3.61 GB"
   },
   {
     "ShowID": "63477f4448be",
@@ -31357,7 +31357,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "10",
-    "ShowSizeHuman": "2.41 GB"
+    "ShowSizeHuman": "2.25 GB"
   },
   {
     "ShowID": "6ec9c2af8839",
@@ -31408,7 +31408,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "3.44 GB"
+    "ShowSizeHuman": "3.20 GB"
   },
   {
     "ShowID": "2b84ea4f9ba2",
@@ -31459,7 +31459,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "3.27 GB"
+    "ShowSizeHuman": "3.04 GB"
   },
   {
     "ShowID": "ca50e8dc2cf8",
@@ -31511,7 +31511,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "16",
-    "ShowSizeHuman": "4.08 GB"
+    "ShowSizeHuman": "3.80 GB"
   },
   {
     "ShowID": "2bd0c65d41ba",
@@ -31562,7 +31562,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "11",
-    "ShowSizeHuman": "2.82 GB"
+    "ShowSizeHuman": "2.63 GB"
   },
   {
     "ShowID": "9a2f19340c67",
@@ -31614,7 +31614,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "8",
-    "ShowSizeHuman": "2.38 GB"
+    "ShowSizeHuman": "2.21 GB"
   },
   {
     "ShowID": "e66e35c544a1",
@@ -31665,7 +31665,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "1.90 GB"
+    "ShowSizeHuman": "1.77 GB"
   },
   {
     "ShowID": "2ef05cefd49b",
@@ -31765,7 +31765,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "2.21 GB"
+    "ShowSizeHuman": "2.05 GB"
   },
   {
     "ShowID": "08fbf7085f45",
@@ -31864,7 +31864,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "7",
-    "ShowSizeHuman": "2.92 GB"
+    "ShowSizeHuman": "2.72 GB"
   },
   {
     "ShowID": "fa2699316abb",
@@ -31915,7 +31915,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "11",
-    "ShowSizeHuman": "3.85 GB"
+    "ShowSizeHuman": "3.59 GB"
   },
   {
     "ShowID": "5ff70f87a576",
@@ -31965,7 +31965,7 @@
     "AudioKbps": "256",
     "AudioTracks": "2",
     "DiscType": "File",
-    "ShowSizeHuman": "9.19 GB"
+    "ShowSizeHuman": "8.56 GB"
   },
   {
     "ShowID": "fb321cdafdbe",
@@ -32701,7 +32701,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "973.15 MB"
+    "ShowSizeHuman": "928.07 MB"
   },
   {
     "ShowID": "07346400f7e5",
@@ -32755,7 +32755,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "928.76 MB"
+    "ShowSizeHuman": "885.74 MB"
   },
   {
     "ShowID": "884a7250626e",
@@ -32857,7 +32857,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "7",
-    "ShowSizeHuman": "1.02 GB"
+    "ShowSizeHuman": "973.34 MB"
   },
   {
     "ShowID": "3167a8083e78",
@@ -32911,7 +32911,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "133.24 MB"
+    "ShowSizeHuman": "127.07 MB"
   },
   {
     "ShowID": "d8ead920a4e6",
@@ -32965,7 +32965,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "90.79 MB"
+    "ShowSizeHuman": "86.58 MB"
   },
   {
     "ShowID": "ae1382d4973c",
@@ -33019,7 +33019,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "264.89 MB"
+    "ShowSizeHuman": "252.62 MB"
   },
   {
     "ShowID": "13f963f522b4",
@@ -33073,7 +33073,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "135.11 MB"
+    "ShowSizeHuman": "128.85 MB"
   },
   {
     "ShowID": "44e20e4e66fd",
@@ -33127,7 +33127,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "6",
-    "ShowSizeHuman": "1.13 GB"
+    "ShowSizeHuman": "1.05 GB"
   },
   {
     "ShowID": "71c78cbca83d",
@@ -33486,7 +33486,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "8",
-    "ShowSizeHuman": "2.30 GB"
+    "ShowSizeHuman": "2.15 GB"
   },
   {
     "ShowID": "5dd71b77a04b",
@@ -33537,7 +33537,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "12",
-    "ShowSizeHuman": "3.68 GB"
+    "ShowSizeHuman": "3.42 GB"
   },
   {
     "ShowID": "961c554b7979",
@@ -33636,7 +33636,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "15",
-    "ShowSizeHuman": "2.12 GB"
+    "ShowSizeHuman": "1.97 GB"
   },
   {
     "ShowID": "a070274d074f",
@@ -33684,7 +33684,7 @@
     "VideoKbps": "10705",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "3.61 GB",
+    "ShowSizeHuman": "3.37 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -33736,7 +33736,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "6",
-    "ShowSizeHuman": "659.57 MB"
+    "ShowSizeHuman": "629.01 MB"
   },
   {
     "ShowID": "70df56249ad8",
@@ -33787,7 +33787,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "6",
-    "ShowSizeHuman": "994.59 MB"
+    "ShowSizeHuman": "948.51 MB"
   },
   {
     "ShowID": "319ac7e613cb",
@@ -33839,7 +33839,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "25",
-    "ShowSizeHuman": "4.63 GB"
+    "ShowSizeHuman": "4.31 GB"
   },
   {
     "ShowID": "29130db263ac",
@@ -33889,7 +33889,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "17",
-    "ShowSizeHuman": "4.24 GB",
+    "ShowSizeHuman": "3.94 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -33941,7 +33941,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "14",
-    "ShowSizeHuman": "2.99 GB"
+    "ShowSizeHuman": "2.79 GB"
   },
   {
     "ShowID": "70a4e9ca548e",
@@ -33993,7 +33993,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "12",
-    "ShowSizeHuman": "1.68 GB"
+    "ShowSizeHuman": "1.56 GB"
   },
   {
     "ShowID": "8e8d56e0a5f7",
@@ -34044,7 +34044,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "1.44 GB"
+    "ShowSizeHuman": "1.34 GB"
   },
   {
     "ShowID": "a096956b26e1",
@@ -34096,7 +34096,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "12",
-    "ShowSizeHuman": "3.85 GB"
+    "ShowSizeHuman": "3.59 GB"
   },
   {
     "ShowID": "cdd7abcd3d24",
@@ -34147,7 +34147,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "16",
-    "ShowSizeHuman": "3.84 GB"
+    "ShowSizeHuman": "3.58 GB"
   },
   {
     "ShowID": "710efdbcd980",
@@ -34199,7 +34199,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "12",
-    "ShowSizeHuman": "2.26 GB"
+    "ShowSizeHuman": "2.10 GB"
   },
   {
     "ShowID": "01323f9385ad",
@@ -34248,7 +34248,7 @@
     "VideoKbps": "16942",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "5.64 GB"
+    "ShowSizeHuman": "5.25 GB"
   },
   {
     "ShowID": "928e74946193",
@@ -34299,7 +34299,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "9",
-    "ShowSizeHuman": "1.34 GB"
+    "ShowSizeHuman": "1.25 GB"
   },
   {
     "ShowID": "6a6269fdb11e",
@@ -34350,7 +34350,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "18",
-    "ShowSizeHuman": "4.29 GB"
+    "ShowSizeHuman": "3.99 GB"
   },
   {
     "ShowID": "e20b80da5964",
@@ -34401,7 +34401,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "3.21 GB"
+    "ShowSizeHuman": "2.99 GB"
   },
   {
     "ShowID": "7ba1c03d5bc3",
@@ -34450,7 +34450,7 @@
     "VideoKbps": "17916",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "3.01 GB"
+    "ShowSizeHuman": "2.81 GB"
   },
   {
     "ShowID": "de6a2de8e2e8",
@@ -34501,7 +34501,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "9",
-    "ShowSizeHuman": "2.77 GB"
+    "ShowSizeHuman": "2.58 GB"
   },
   {
     "ShowID": "450eefa9df76",
@@ -34551,7 +34551,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "14",
-    "ShowSizeHuman": "2.56 GB",
+    "ShowSizeHuman": "2.38 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -34604,7 +34604,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "18",
-    "ShowSizeHuman": "4.37 GB"
+    "ShowSizeHuman": "4.07 GB"
   },
   {
     "ShowID": "7af6be6f7f6a",
@@ -34655,7 +34655,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "9",
-    "ShowSizeHuman": "1.36 GB"
+    "ShowSizeHuman": "1.27 GB"
   },
   {
     "ShowID": "658a586c5724",
@@ -34705,7 +34705,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "4.56 GB",
+    "ShowSizeHuman": "4.25 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -34758,7 +34758,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "23",
-    "ShowSizeHuman": "4.06 GB"
+    "ShowSizeHuman": "3.78 GB"
   },
   {
     "ShowID": "8a3aff5295ed",
@@ -34809,7 +34809,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "4.36 GB"
+    "ShowSizeHuman": "4.06 GB"
   },
   {
     "ShowID": "d48fd15122d5",
@@ -34907,7 +34907,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "9",
-    "ShowSizeHuman": "2.63 GB"
+    "ShowSizeHuman": "2.45 GB"
   },
   {
     "ShowID": "973222a9f7a7",
@@ -34957,7 +34957,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "12",
-    "ShowSizeHuman": "1.97 GB",
+    "ShowSizeHuman": "1.83 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -35009,7 +35009,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "18",
-    "ShowSizeHuman": "4.20 GB"
+    "ShowSizeHuman": "3.91 GB"
   },
   {
     "ShowID": "a939ab1baf17",
@@ -35059,7 +35059,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "10",
-    "ShowSizeHuman": "3.39 GB",
+    "ShowSizeHuman": "3.16 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -35111,7 +35111,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "15",
-    "ShowSizeHuman": "2.66 GB"
+    "ShowSizeHuman": "2.48 GB"
   },
   {
     "ShowID": "c7821268dcef",
@@ -35162,7 +35162,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "13",
-    "ShowSizeHuman": "2.47 GB"
+    "ShowSizeHuman": "2.30 GB"
   },
   {
     "ShowID": "87b69f8144b4",
@@ -35205,7 +35205,7 @@
     "FrameRate": "60",
     "VideoKbps": "4401",
     "DiscType": "File",
-    "ShowSizeHuman": "3.00 GB"
+    "ShowSizeHuman": "2.79 GB"
   },
   {
     "ShowID": "8983de0ab734",
@@ -35256,7 +35256,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "19",
-    "ShowSizeHuman": "2.34 GB"
+    "ShowSizeHuman": "2.18 GB"
   },
   {
     "ShowID": "fd3bd63bf7dc",
@@ -35306,7 +35306,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "17",
-    "ShowSizeHuman": "4.34 GB",
+    "ShowSizeHuman": "4.04 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -35358,7 +35358,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "15",
-    "ShowSizeHuman": "2.24 GB"
+    "ShowSizeHuman": "2.08 GB"
   },
   {
     "ShowID": "81f30a948836",
@@ -35408,7 +35408,7 @@
     "AudioKbps": "384",
     "AudioTracks": "2",
     "DiscType": "File",
-    "ShowSizeHuman": "2.31 GB"
+    "ShowSizeHuman": "2.15 GB"
   },
   {
     "ShowID": "f96bcb64cc3c",
@@ -35456,7 +35456,7 @@
     "VideoKbps": "12697",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "5.36 GB",
+    "ShowSizeHuman": "5.00 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -35504,7 +35504,7 @@
     "ScanType": "progressive",
     "VideoKbps": "3496",
     "DiscType": "File",
-    "ShowSizeHuman": "3.69 GB",
+    "ShowSizeHuman": "3.44 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -35602,7 +35602,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "6",
-    "ShowSizeHuman": "1.15 GB"
+    "ShowSizeHuman": "1.07 GB"
   },
   {
     "ShowID": "081b4bf0711f",
@@ -35654,7 +35654,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "8",
-    "ShowSizeHuman": "2.49 GB"
+    "ShowSizeHuman": "2.32 GB"
   },
   {
     "ShowID": "624eddcec491",
@@ -35705,7 +35705,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "14",
-    "ShowSizeHuman": "3.73 GB"
+    "ShowSizeHuman": "3.47 GB"
   },
   {
     "ShowID": "703d6a71a4e9",
@@ -35756,7 +35756,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "12",
-    "ShowSizeHuman": "3.90 GB"
+    "ShowSizeHuman": "3.63 GB"
   },
   {
     "ShowID": "126d171d49fe",
@@ -35807,7 +35807,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "7",
-    "ShowSizeHuman": "4.18 GB"
+    "ShowSizeHuman": "3.89 GB"
   },
   {
     "ShowID": "6aa99d3915bc",
@@ -35858,7 +35858,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "12",
-    "ShowSizeHuman": "2.38 GB"
+    "ShowSizeHuman": "2.21 GB"
   },
   {
     "ShowID": "3b82b5656ac2",
@@ -35909,7 +35909,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "24",
-    "ShowSizeHuman": "3.44 GB"
+    "ShowSizeHuman": "3.20 GB"
   },
   {
     "ShowID": "b67a50c982a2",
@@ -35960,7 +35960,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "15",
-    "ShowSizeHuman": "4.17 GB"
+    "ShowSizeHuman": "3.88 GB"
   },
   {
     "ShowID": "4e10917e766c",
@@ -36011,7 +36011,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "11",
-    "ShowSizeHuman": "2.20 GB"
+    "ShowSizeHuman": "2.05 GB"
   },
   {
     "ShowID": "cb1798848f6d",
@@ -36062,7 +36062,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "40",
-    "ShowSizeHuman": "4.14 GB"
+    "ShowSizeHuman": "3.85 GB"
   },
   {
     "ShowID": "729c3509cfaf",
@@ -36114,7 +36114,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "12",
-    "ShowSizeHuman": "2.59 GB"
+    "ShowSizeHuman": "2.41 GB"
   },
   {
     "ShowID": "179414bbaa85",
@@ -37536,7 +37536,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "6",
-    "ShowSizeHuman": "474.80 MB"
+    "ShowSizeHuman": "452.80 MB"
   },
   {
     "ShowID": "61e8f50a2fa0",
@@ -37590,7 +37590,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "5",
-    "ShowSizeHuman": "365.27 MB"
+    "ShowSizeHuman": "348.35 MB"
   },
   {
     "ShowID": "786668b819a9",
@@ -37644,7 +37644,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "5",
-    "ShowSizeHuman": "543.58 MB"
+    "ShowSizeHuman": "518.40 MB"
   },
   {
     "ShowID": "19925eda331b",
@@ -37698,7 +37698,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "7",
-    "ShowSizeHuman": "520.60 MB"
+    "ShowSizeHuman": "496.48 MB"
   },
   {
     "ShowID": "80e8c0c7827b",
@@ -37752,7 +37752,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "6",
-    "ShowSizeHuman": "420.83 MB"
+    "ShowSizeHuman": "401.34 MB"
   },
   {
     "ShowID": "6565270b0ec6",
@@ -39130,7 +39130,7 @@
     "VideoKbps": "6105",
     "AudioKbps": "224",
     "DiscType": "File",
-    "ShowSizeHuman": "200.62 MB"
+    "ShowSizeHuman": "191.33 MB"
   },
   {
     "ShowID": "da8c51c15a35",
@@ -39181,7 +39181,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "291.32 MB"
+    "ShowSizeHuman": "277.82 MB"
   },
   {
     "ShowID": "d873a57324a8",
@@ -39230,7 +39230,7 @@
     "VideoKbps": "4189",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "150.48 MB"
+    "ShowSizeHuman": "143.51 MB"
   },
   {
     "ShowID": "8ce9ac7f105b",
@@ -39279,7 +39279,7 @@
     "VideoKbps": "9234",
     "AudioKbps": "256",
     "DiscType": "File",
-    "ShowSizeHuman": "605.11 MB"
+    "ShowSizeHuman": "577.08 MB"
   },
   {
     "ShowID": "e674914ae52e",
@@ -39331,7 +39331,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "3.56 GB"
+    "ShowSizeHuman": "3.32 GB"
   },
   {
     "ShowID": "05e454a59ab8",
@@ -39383,7 +39383,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "16",
-    "ShowSizeHuman": "2.41 GB"
+    "ShowSizeHuman": "2.25 GB"
   },
   {
     "ShowID": "9b4f36a753f5",
@@ -39434,7 +39434,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "18",
-    "ShowSizeHuman": "2.43 GB"
+    "ShowSizeHuman": "2.26 GB"
   },
   {
     "ShowID": "91327b503eac",
@@ -39485,7 +39485,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "20",
-    "ShowSizeHuman": "2.62 GB"
+    "ShowSizeHuman": "2.44 GB"
   },
   {
     "ShowID": "ed1519152d2a",
@@ -39536,7 +39536,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "21",
-    "ShowSizeHuman": "4.28 GB"
+    "ShowSizeHuman": "3.98 GB"
   },
   {
     "ShowID": "b77e1fdad0f6",
@@ -39686,7 +39686,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "12",
-    "ShowSizeHuman": "1.93 GB"
+    "ShowSizeHuman": "1.80 GB"
   },
   {
     "ShowID": "a3b745b81bf3",
@@ -39737,7 +39737,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "24",
-    "ShowSizeHuman": "3.55 GB"
+    "ShowSizeHuman": "3.31 GB"
   },
   {
     "ShowID": "75c5923564c1",
@@ -39787,7 +39787,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "16",
-    "ShowSizeHuman": "3.97 GB",
+    "ShowSizeHuman": "3.70 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -39838,7 +39838,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "12",
-    "ShowSizeHuman": "2.94 GB"
+    "ShowSizeHuman": "2.74 GB"
   },
   {
     "ShowID": "730be7647294",
@@ -39889,7 +39889,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "12",
-    "ShowSizeHuman": "2.73 GB"
+    "ShowSizeHuman": "2.54 GB"
   },
   {
     "ShowID": "2e66dfef9224",
@@ -39939,7 +39939,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "16",
-    "ShowSizeHuman": "4.57 GB",
+    "ShowSizeHuman": "4.26 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -39991,7 +39991,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "14",
-    "ShowSizeHuman": "2.89 GB"
+    "ShowSizeHuman": "2.69 GB"
   },
   {
     "ShowID": "a6ea253f5667",
@@ -40041,7 +40041,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "9",
-    "ShowSizeHuman": "3.07 GB",
+    "ShowSizeHuman": "2.86 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -40140,7 +40140,7 @@
     "DiscType": "DVD-9",
     "Menu": "Yes",
     "Chapters": "22",
-    "ShowSizeHuman": "7.14 GB",
+    "ShowSizeHuman": "6.65 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -40191,7 +40191,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "20",
-    "ShowSizeHuman": "4.15 GB",
+    "ShowSizeHuman": "3.86 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -40241,7 +40241,7 @@
     "VideoKbps": "11171",
     "AudioKbps": "224",
     "DiscType": "File",
-    "ShowSizeHuman": "424.03 MB"
+    "ShowSizeHuman": "404.38 MB"
   },
   {
     "ShowID": "083ef741b14f",
@@ -40870,7 +40870,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "3.34 GB"
+    "ShowSizeHuman": "3.11 GB"
   },
   {
     "ShowID": "9815bd7da2bd",
@@ -40924,7 +40924,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "4.27 GB"
+    "ShowSizeHuman": "3.97 GB"
   },
   {
     "ShowID": "274083cf41d5",
@@ -41336,7 +41336,7 @@
     "VideoKbps": "15855",
     "AudioKbps": "256",
     "DiscType": "File",
-    "ShowSizeHuman": "16.47 GB"
+    "ShowSizeHuman": "15.34 GB"
   },
   {
     "ShowID": "3bae20146454",
@@ -41387,7 +41387,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "7",
-    "ShowSizeHuman": "2.45 GB"
+    "ShowSizeHuman": "2.28 GB"
   },
   {
     "ShowID": "d9b007dd78f2",
@@ -41584,7 +41584,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "1.87 GB"
+    "ShowSizeHuman": "1.74 GB"
   },
   {
     "ShowID": "ff1d8a18ceb6",
@@ -41635,7 +41635,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "3.10 GB"
+    "ShowSizeHuman": "2.89 GB"
   },
   {
     "ShowID": "f358adf36e19",
@@ -41686,7 +41686,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "1",
-    "ShowSizeHuman": "457.58 MB"
+    "ShowSizeHuman": "436.38 MB"
   },
   {
     "ShowID": "a23e1c9668d4",
@@ -41737,7 +41737,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "1",
-    "ShowSizeHuman": "344.55 MB"
+    "ShowSizeHuman": "328.59 MB"
   },
   {
     "ShowID": "6d6ec12acd13",
@@ -41785,7 +41785,7 @@
     "VideoKbps": "14365",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "710.84 MB",
+    "ShowSizeHuman": "677.91 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -41837,7 +41837,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "13",
-    "ShowSizeHuman": "4.32 GB"
+    "ShowSizeHuman": "4.03 GB"
   },
   {
     "ShowID": "b983294f9dfc",
@@ -41889,7 +41889,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "7",
-    "ShowSizeHuman": "1.88 GB"
+    "ShowSizeHuman": "1.75 GB"
   },
   {
     "ShowID": "61ace843b328",
@@ -41988,7 +41988,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "11",
-    "ShowSizeHuman": "2.33 GB"
+    "ShowSizeHuman": "2.17 GB"
   },
   {
     "ShowID": "79d7e8093fe0",
@@ -42039,7 +42039,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "3.37 GB"
+    "ShowSizeHuman": "3.13 GB"
   },
   {
     "ShowID": "1f75bcacf6fb",
@@ -42138,7 +42138,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "7",
-    "ShowSizeHuman": "4.52 GB"
+    "ShowSizeHuman": "4.21 GB"
   },
   {
     "ShowID": "08889466af37",
@@ -42189,7 +42189,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "21",
-    "ShowSizeHuman": "4.68 GB"
+    "ShowSizeHuman": "4.36 GB"
   },
   {
     "ShowID": "358ce862860c",
@@ -42239,7 +42239,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "1.50 GB",
+    "ShowSizeHuman": "1.39 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -42291,7 +42291,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "10",
-    "ShowSizeHuman": "4.06 GB"
+    "ShowSizeHuman": "3.78 GB"
   },
   {
     "ShowID": "683cb3b99c7e",
@@ -42343,7 +42343,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "16",
-    "ShowSizeHuman": "3.67 GB"
+    "ShowSizeHuman": "3.42 GB"
   },
   {
     "ShowID": "7900236e19f1",
@@ -42394,7 +42394,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "10",
-    "ShowSizeHuman": "4.41 GB"
+    "ShowSizeHuman": "4.11 GB"
   },
   {
     "ShowID": "d718df5d7f47",
@@ -42446,7 +42446,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "19",
-    "ShowSizeHuman": "3.38 GB"
+    "ShowSizeHuman": "3.15 GB"
   },
   {
     "ShowID": "c0a88e430eca",
@@ -42547,7 +42547,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "20",
-    "ShowSizeHuman": "4.32 GB"
+    "ShowSizeHuman": "4.02 GB"
   },
   {
     "ShowID": "0e67e7e994f9",
@@ -42646,7 +42646,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "15",
-    "ShowSizeHuman": "4.53 GB"
+    "ShowSizeHuman": "4.22 GB"
   },
   {
     "ShowID": "6894a757d501",
@@ -42697,7 +42697,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "12",
-    "ShowSizeHuman": "2.91 GB"
+    "ShowSizeHuman": "2.71 GB"
   },
   {
     "ShowID": "b735b0e0aba7",
@@ -42745,7 +42745,7 @@
     "VideoKbps": "15230",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "537.99 MB",
+    "ShowSizeHuman": "513.07 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -42844,7 +42844,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "15",
-    "ShowSizeHuman": "2.28 GB"
+    "ShowSizeHuman": "2.13 GB"
   },
   {
     "ShowID": "8bd60acc474c",
@@ -42938,7 +42938,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "31",
-    "ShowSizeHuman": "4.25 GB"
+    "ShowSizeHuman": "3.96 GB"
   },
   {
     "ShowID": "f226dea568ee",
@@ -43085,7 +43085,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "2.98 GB"
+    "ShowSizeHuman": "2.77 GB"
   },
   {
     "ShowID": "7820b08a8afd",
@@ -43136,7 +43136,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "15",
-    "ShowSizeHuman": "2.94 GB"
+    "ShowSizeHuman": "2.74 GB"
   },
   {
     "ShowID": "d0a2e1db13a5",
@@ -43187,7 +43187,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "13",
-    "ShowSizeHuman": "4.49 GB"
+    "ShowSizeHuman": "4.18 GB"
   },
   {
     "ShowID": "de548b326b9c",
@@ -43238,7 +43238,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "16",
-    "ShowSizeHuman": "2.67 GB"
+    "ShowSizeHuman": "2.49 GB"
   },
   {
     "ShowID": "3892c99734cc",
@@ -43288,7 +43288,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "11",
-    "ShowSizeHuman": "3.43 GB",
+    "ShowSizeHuman": "3.19 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -43340,7 +43340,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "8",
-    "ShowSizeHuman": "2.57 GB"
+    "ShowSizeHuman": "2.39 GB"
   },
   {
     "ShowID": "98a0b497a8bc",
@@ -43391,7 +43391,7 @@
     "DiscType": "DVD-9",
     "Menu": "Yes",
     "Chapters": "19",
-    "ShowSizeHuman": "5.68 GB"
+    "ShowSizeHuman": "5.29 GB"
   },
   {
     "ShowID": "dbec191a41c5",
@@ -43442,7 +43442,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "12",
-    "ShowSizeHuman": "2.61 GB"
+    "ShowSizeHuman": "2.43 GB"
   },
   {
     "ShowID": "bfac3916a5f1",
@@ -43493,7 +43493,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "15",
-    "ShowSizeHuman": "4.59 GB"
+    "ShowSizeHuman": "4.27 GB"
   },
   {
     "ShowID": "9130167d7e42",
@@ -43544,7 +43544,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "3.34 GB"
+    "ShowSizeHuman": "3.11 GB"
   },
   {
     "ShowID": "8b8400b53399",
@@ -43595,7 +43595,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "4.66 GB"
+    "ShowSizeHuman": "4.34 GB"
   },
   {
     "ShowID": "34f37ca134a3",
@@ -43645,7 +43645,7 @@
     "VideoKbps": "6303",
     "AudioKbps": "192",
     "DiscType": "File",
-    "ShowSizeHuman": "234.01 MB"
+    "ShowSizeHuman": "223.17 MB"
   },
   {
     "ShowID": "ef5ee815e77e",
@@ -43695,7 +43695,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "6",
-    "ShowSizeHuman": "2.01 GB",
+    "ShowSizeHuman": "1.87 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -43748,7 +43748,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "9",
-    "ShowSizeHuman": "2.40 GB"
+    "ShowSizeHuman": "2.23 GB"
   },
   {
     "ShowID": "afc33e08e173",
@@ -43799,7 +43799,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "12",
-    "ShowSizeHuman": "3.80 GB"
+    "ShowSizeHuman": "3.54 GB"
   },
   {
     "ShowID": "3cbf2c1669ea",
@@ -43850,7 +43850,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "5",
-    "ShowSizeHuman": "857.32 MB"
+    "ShowSizeHuman": "817.60 MB"
   },
   {
     "ShowID": "67729ca10fe1",
@@ -43950,7 +43950,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "174.60 MB"
+    "ShowSizeHuman": "166.51 MB"
   },
   {
     "ShowID": "997088cb50a4",
@@ -44001,7 +44001,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "14",
-    "ShowSizeHuman": "2.66 GB"
+    "ShowSizeHuman": "2.48 GB"
   },
   {
     "ShowID": "82b12f274c5d",
@@ -44049,7 +44049,7 @@
     "VideoKbps": "3275",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "117.17 MB",
+    "ShowSizeHuman": "111.74 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -44101,7 +44101,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "14",
-    "ShowSizeHuman": "3.12 GB"
+    "ShowSizeHuman": "2.91 GB"
   },
   {
     "ShowID": "f3004934ddd3",
@@ -44152,7 +44152,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "3",
-    "ShowSizeHuman": "4.68 GB"
+    "ShowSizeHuman": "4.36 GB"
   },
   {
     "ShowID": "eef227d6df44",
@@ -44203,7 +44203,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "5",
-    "ShowSizeHuman": "825.44 MB"
+    "ShowSizeHuman": "787.20 MB"
   },
   {
     "ShowID": "5795828263c1",
@@ -44254,7 +44254,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "11",
-    "ShowSizeHuman": "3.58 GB"
+    "ShowSizeHuman": "3.33 GB"
   },
   {
     "ShowID": "27743cd98aac",
@@ -44305,7 +44305,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "12",
-    "ShowSizeHuman": "2.65 GB"
+    "ShowSizeHuman": "2.47 GB"
   },
   {
     "ShowID": "ed0287648e21",
@@ -44355,7 +44355,7 @@
     "AudioKbps": "1536",
     "DiscType": "DVD-5",
     "Menu": "No",
-    "ShowSizeHuman": "2.78 GB"
+    "ShowSizeHuman": "2.59 GB"
   },
   {
     "ShowID": "49a9bdb96d61",
@@ -44406,7 +44406,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "949.40 MB"
+    "ShowSizeHuman": "905.42 MB"
   },
   {
     "ShowID": "ef155682f4be",
@@ -44457,7 +44457,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "13",
-    "ShowSizeHuman": "3.21 GB"
+    "ShowSizeHuman": "2.99 GB"
   },
   {
     "ShowID": "0d76008ab8c4",
@@ -44508,7 +44508,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "13",
-    "ShowSizeHuman": "3.84 GB"
+    "ShowSizeHuman": "3.57 GB"
   },
   {
     "ShowID": "d1df2282c677",
@@ -44559,7 +44559,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "19",
-    "ShowSizeHuman": "3.22 GB"
+    "ShowSizeHuman": "3.00 GB"
   },
   {
     "ShowID": "866724a0da11",
@@ -44609,7 +44609,7 @@
     "AudioKbps": "1536",
     "DiscType": "DVD-9",
     "Menu": "No",
-    "ShowSizeHuman": "6.19 GB"
+    "ShowSizeHuman": "5.77 GB"
   },
   {
     "ShowID": "8ebc748c3985",
@@ -44660,7 +44660,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "21",
-    "ShowSizeHuman": "4.23 GB"
+    "ShowSizeHuman": "3.94 GB"
   },
   {
     "ShowID": "14e257100e94",
@@ -44710,7 +44710,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "15",
-    "ShowSizeHuman": "4.52 GB",
+    "ShowSizeHuman": "4.21 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -44762,7 +44762,7 @@
     "DiscType": "DVD-9",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "5.20 GB"
+    "ShowSizeHuman": "4.85 GB"
   },
   {
     "ShowID": "25b66e735613",
@@ -44812,7 +44812,7 @@
     "AudioKbps": "384",
     "DiscType": "DVD-5",
     "Menu": "No",
-    "ShowSizeHuman": "4.61 GB"
+    "ShowSizeHuman": "4.30 GB"
   },
   {
     "ShowID": "f37a8b6368f1",
@@ -44863,7 +44863,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "23",
-    "ShowSizeHuman": "4.53 GB"
+    "ShowSizeHuman": "4.22 GB"
   },
   {
     "ShowID": "3b7c90e983a1",
@@ -44914,7 +44914,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "17",
-    "ShowSizeHuman": "2.97 GB"
+    "ShowSizeHuman": "2.76 GB"
   },
   {
     "ShowID": "31b63a1524eb",
@@ -44965,7 +44965,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "7",
-    "ShowSizeHuman": "1.28 GB"
+    "ShowSizeHuman": "1.19 GB"
   },
   {
     "ShowID": "c85a1526cfa9",
@@ -45207,7 +45207,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "4",
-    "ShowSizeHuman": "838.58 MB"
+    "ShowSizeHuman": "799.73 MB"
   },
   {
     "ShowID": "5071ccb9cb94",
@@ -45255,7 +45255,7 @@
     "VideoKbps": "15901",
     "AudioKbps": "448",
     "DiscType": "File",
-    "ShowSizeHuman": "629.19 MB",
+    "ShowSizeHuman": "600.04 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -45305,7 +45305,7 @@
     "VideoKbps": "12250",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "1.62 GB"
+    "ShowSizeHuman": "1.51 GB"
   },
   {
     "ShowID": "45e72e8f12e5",
@@ -45352,7 +45352,7 @@
     "VideoKbps": "13024",
     "AudioKbps": "192",
     "DiscType": "File",
-    "ShowSizeHuman": "801.70 MB"
+    "ShowSizeHuman": "764.56 MB"
   },
   {
     "ShowID": "6ba8d09333cf",
@@ -45449,7 +45449,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "6",
-    "ShowSizeHuman": "1.85 GB",
+    "ShowSizeHuman": "1.72 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -45500,7 +45500,7 @@
     "AudioKbps": "256",
     "DiscType": "DVD-5",
     "Menu": "No",
-    "ShowSizeHuman": "1.94 GB"
+    "ShowSizeHuman": "1.80 GB"
   },
   {
     "ShowID": "7b39465b7858",
@@ -45552,7 +45552,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "3.39 GB"
+    "ShowSizeHuman": "3.15 GB"
   },
   {
     "ShowID": "99bec2714736",
@@ -45603,7 +45603,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "13",
-    "ShowSizeHuman": "2.10 GB"
+    "ShowSizeHuman": "1.95 GB"
   },
   {
     "ShowID": "32791c5e78eb",
@@ -45653,7 +45653,7 @@
     "VideoKbps": "7839",
     "AudioKbps": "224",
     "DiscType": "File",
-    "ShowSizeHuman": "878.26 MB"
+    "ShowSizeHuman": "837.57 MB"
   },
   {
     "ShowID": "d2acb0bab9b6",
@@ -45752,7 +45752,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "4",
-    "ShowSizeHuman": "1.03 GB"
+    "ShowSizeHuman": "981.28 MB"
   },
   {
     "ShowID": "dee9d2ea0729",
@@ -45801,7 +45801,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "1",
-    "ShowSizeHuman": "222.29 MB"
+    "ShowSizeHuman": "211.99 MB"
   },
   {
     "ShowID": "ec383da82763",
@@ -45850,7 +45850,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "1",
-    "ShowSizeHuman": "149.74 MB"
+    "ShowSizeHuman": "142.80 MB"
   },
   {
     "ShowID": "1a20715aaebe",
@@ -45901,7 +45901,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "15",
-    "ShowSizeHuman": "2.95 GB"
+    "ShowSizeHuman": "2.75 GB"
   },
   {
     "ShowID": "67275f13da60",
@@ -45950,7 +45950,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "7",
-    "ShowSizeHuman": "1.33 GB"
+    "ShowSizeHuman": "1.24 GB"
   },
   {
     "ShowID": "168278751d18",
@@ -46002,7 +46002,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "3.09 GB"
+    "ShowSizeHuman": "2.88 GB"
   },
   {
     "ShowID": "77c4bdcab4a1",
@@ -46050,7 +46050,7 @@
     "VideoKbps": "15716",
     "AudioKbps": "448",
     "DiscType": "File",
-    "ShowSizeHuman": "555.37 MB",
+    "ShowSizeHuman": "529.64 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -46102,7 +46102,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "4.16 GB"
+    "ShowSizeHuman": "3.87 GB"
   },
   {
     "ShowID": "a53a4da97ee7",
@@ -46200,7 +46200,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "6",
-    "ShowSizeHuman": "1.80 GB",
+    "ShowSizeHuman": "1.68 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -46253,7 +46253,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "3.56 GB"
+    "ShowSizeHuman": "3.31 GB"
   },
   {
     "ShowID": "a760e0fab141",
@@ -46396,7 +46396,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "2.49 GB"
+    "ShowSizeHuman": "2.32 GB"
   },
   {
     "ShowID": "bf2e34763bf0",
@@ -46447,7 +46447,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "8",
-    "ShowSizeHuman": "1.12 GB"
+    "ShowSizeHuman": "1.04 GB"
   },
   {
     "ShowID": "1bd1a4f07dfa",
@@ -46498,7 +46498,7 @@
     "DiscType": "DVD-9",
     "Menu": "Yes",
     "Chapters": "18",
-    "ShowSizeHuman": "4.96 GB"
+    "ShowSizeHuman": "4.62 GB"
   },
   {
     "ShowID": "3f73e639a3d0",
@@ -46594,7 +46594,7 @@
     "VideoKbps": "15808",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "1.64 GB"
+    "ShowSizeHuman": "1.53 GB"
   },
   {
     "ShowID": "81f4fd56b836",
@@ -46646,7 +46646,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "15",
-    "ShowSizeHuman": "3.67 GB"
+    "ShowSizeHuman": "3.42 GB"
   },
   {
     "ShowID": "c71f9a91e51f",
@@ -46695,7 +46695,7 @@
     "VideoKbps": "12252",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "5.12 GB"
+    "ShowSizeHuman": "4.77 GB"
   },
   {
     "ShowID": "d446eb3e0f2c",
@@ -46744,7 +46744,7 @@
     "VideoKbps": "8491",
     "AudioKbps": "259",
     "DiscType": "File",
-    "ShowSizeHuman": "5.25 GB"
+    "ShowSizeHuman": "4.89 GB"
   },
   {
     "ShowID": "024f42aee9e0",
@@ -46795,7 +46795,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "12",
-    "ShowSizeHuman": "4.19 GB"
+    "ShowSizeHuman": "3.90 GB"
   },
   {
     "ShowID": "3b826194fc5e",
@@ -46844,7 +46844,7 @@
     "VideoKbps": "4640",
     "AudioKbps": "256",
     "DiscType": "File",
-    "ShowSizeHuman": "163.37 MB"
+    "ShowSizeHuman": "155.80 MB"
   },
   {
     "ShowID": "056da82ce5f2",
@@ -46946,7 +46946,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "12",
-    "ShowSizeHuman": "2.40 GB"
+    "ShowSizeHuman": "2.23 GB"
   },
   {
     "ShowID": "4032e1370f2f",
@@ -47000,7 +47000,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "6",
-    "ShowSizeHuman": "665.34 MB"
+    "ShowSizeHuman": "634.51 MB"
   },
   {
     "ShowID": "ba53c9dac7e0",
@@ -47051,7 +47051,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "12",
-    "ShowSizeHuman": "2.26 GB"
+    "ShowSizeHuman": "2.10 GB"
   },
   {
     "ShowID": "cbbd0db7ed58",
@@ -47102,7 +47102,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "1",
-    "ShowSizeHuman": "157.69 MB"
+    "ShowSizeHuman": "150.38 MB"
   },
   {
     "ShowID": "19864ce04a03",
@@ -47153,7 +47153,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "7",
-    "ShowSizeHuman": "2.32 GB"
+    "ShowSizeHuman": "2.16 GB"
   },
   {
     "ShowID": "f4445e77f8e6",
@@ -47204,7 +47204,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "15",
-    "ShowSizeHuman": "2.45 GB"
+    "ShowSizeHuman": "2.28 GB"
   },
   {
     "ShowID": "b530090f54b9",
@@ -47255,7 +47255,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "15",
-    "ShowSizeHuman": "3.36 GB"
+    "ShowSizeHuman": "3.13 GB"
   },
   {
     "ShowID": "ab8c251d90a5",
@@ -47306,7 +47306,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "20",
-    "ShowSizeHuman": "3.22 GB"
+    "ShowSizeHuman": "3.00 GB"
   },
   {
     "ShowID": "cf0be1320251",
@@ -47357,7 +47357,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "14",
-    "ShowSizeHuman": "2.10 GB"
+    "ShowSizeHuman": "1.96 GB"
   },
   {
     "ShowID": "c244252d4619",
@@ -47408,7 +47408,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "19",
-    "ShowSizeHuman": "2.57 GB"
+    "ShowSizeHuman": "2.40 GB"
   },
   {
     "ShowID": "b7c22abd9564",
@@ -47459,7 +47459,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "10",
-    "ShowSizeHuman": "1.48 GB"
+    "ShowSizeHuman": "1.37 GB"
   },
   {
     "ShowID": "d49898598a65",
@@ -47510,7 +47510,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "6",
-    "ShowSizeHuman": "1.34 GB"
+    "ShowSizeHuman": "1.25 GB"
   },
   {
     "ShowID": "9e376cfb4fce",
@@ -47561,7 +47561,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "13",
-    "ShowSizeHuman": "2.09 GB"
+    "ShowSizeHuman": "1.95 GB"
   },
   {
     "ShowID": "58f30a100117",
@@ -47612,7 +47612,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "1",
-    "ShowSizeHuman": "4.04 GB"
+    "ShowSizeHuman": "3.76 GB"
   },
   {
     "ShowID": "c30affa1a53c",
@@ -47663,7 +47663,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "11",
-    "ShowSizeHuman": "1.74 GB"
+    "ShowSizeHuman": "1.62 GB"
   },
   {
     "ShowID": "ff2ebcf16cd1",
@@ -47714,7 +47714,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "14",
-    "ShowSizeHuman": "4.28 GB"
+    "ShowSizeHuman": "3.98 GB"
   },
   {
     "ShowID": "b4200d0a129d",
@@ -47765,7 +47765,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "2.74 GB"
+    "ShowSizeHuman": "2.55 GB"
   },
   {
     "ShowID": "934521a246c3",
@@ -47816,7 +47816,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "10",
-    "ShowSizeHuman": "2.55 GB"
+    "ShowSizeHuman": "2.37 GB"
   },
   {
     "ShowID": "665609ca66ae",
@@ -47867,7 +47867,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "12",
-    "ShowSizeHuman": "2.12 GB"
+    "ShowSizeHuman": "1.97 GB"
   },
   {
     "ShowID": "1407e9f4ed4a",
@@ -47916,7 +47916,7 @@
     "VideoKbps": "4674",
     "AudioKbps": "256",
     "DiscType": "File",
-    "ShowSizeHuman": "2.15 GB"
+    "ShowSizeHuman": "2.00 GB"
   },
   {
     "ShowID": "dcbb16c641a8",
@@ -47967,7 +47967,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "782.69 MB"
+    "ShowSizeHuman": "746.43 MB"
   },
   {
     "ShowID": "b9529e76acc4",
@@ -48113,7 +48113,7 @@
     "AudioKbps": "96",
     "AudioTracks": "4",
     "DiscType": "File",
-    "ShowSizeHuman": "108.23 MB"
+    "ShowSizeHuman": "103.21 MB"
   },
   {
     "ShowID": "7ba32801defb",
@@ -48260,7 +48260,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "1.14 GB"
+    "ShowSizeHuman": "1.06 GB"
   },
   {
     "ShowID": "184b5da6ac26",
@@ -48356,7 +48356,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "1.54 GB"
+    "ShowSizeHuman": "1.43 GB"
   },
   {
     "ShowID": "cb7723aececb",
@@ -48453,7 +48453,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "12",
-    "ShowSizeHuman": "3.04 GB"
+    "ShowSizeHuman": "2.83 GB"
   },
   {
     "ShowID": "1f3deeb4ce4a",
@@ -48544,7 +48544,7 @@
     "VideoKbps": "11841",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "345.09 MB",
+    "ShowSizeHuman": "329.11 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -48596,7 +48596,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "4.53 GB"
+    "ShowSizeHuman": "4.22 GB"
   },
   {
     "ShowID": "99f95947574a",
@@ -48647,7 +48647,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "301.57 MB"
+    "ShowSizeHuman": "287.60 MB"
   },
   {
     "ShowID": "452ded3fcc53",
@@ -48698,7 +48698,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "286.70 MB"
+    "ShowSizeHuman": "273.42 MB"
   },
   {
     "ShowID": "0205c0024275",
@@ -48797,7 +48797,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "12",
-    "ShowSizeHuman": "3.55 GB"
+    "ShowSizeHuman": "3.31 GB"
   },
   {
     "ShowID": "190ab0f19f23",
@@ -48848,7 +48848,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "14",
-    "ShowSizeHuman": "3.14 GB"
+    "ShowSizeHuman": "2.93 GB"
   },
   {
     "ShowID": "301137b7aeed",
@@ -48899,7 +48899,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "20",
-    "ShowSizeHuman": "3.72 GB"
+    "ShowSizeHuman": "3.47 GB"
   },
   {
     "ShowID": "aff5faa963c0",
@@ -48950,7 +48950,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "4",
-    "ShowSizeHuman": "1.07 GB"
+    "ShowSizeHuman": "1.00 GB"
   },
   {
     "ShowID": "07a38624de12",
@@ -49001,7 +49001,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "13",
-    "ShowSizeHuman": "2.46 GB"
+    "ShowSizeHuman": "2.29 GB"
   },
   {
     "ShowID": "1058b1ef8dc3",
@@ -49052,7 +49052,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "17",
-    "ShowSizeHuman": "4.24 GB"
+    "ShowSizeHuman": "3.95 GB"
   },
   {
     "ShowID": "99a0c8040db1",
@@ -49103,7 +49103,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "2.67 GB"
+    "ShowSizeHuman": "2.48 GB"
   },
   {
     "ShowID": "ffdc5c38ee79",
@@ -49154,7 +49154,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "4.28 GB"
+    "ShowSizeHuman": "3.98 GB"
   },
   {
     "ShowID": "5f66b8868c8c",
@@ -49205,7 +49205,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "8",
-    "ShowSizeHuman": "2.40 GB"
+    "ShowSizeHuman": "2.24 GB"
   },
   {
     "ShowID": "ac9aea292913",
@@ -49256,7 +49256,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "2.25 GB"
+    "ShowSizeHuman": "2.10 GB"
   },
   {
     "ShowID": "42c8d5e0d1d5",
@@ -49305,7 +49305,7 @@
     "VideoKbps": "9251",
     "AudioKbps": "256",
     "DiscType": "File",
-    "ShowSizeHuman": "3.02 GB"
+    "ShowSizeHuman": "2.81 GB"
   },
   {
     "ShowID": "8aa0ddb340c2",
@@ -49356,7 +49356,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "18",
-    "ShowSizeHuman": "4.30 GB"
+    "ShowSizeHuman": "4.00 GB"
   },
   {
     "ShowID": "b291af34fff6",
@@ -49407,7 +49407,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "2.67 GB"
+    "ShowSizeHuman": "2.48 GB"
   },
   {
     "ShowID": "c5d471ff88e4",
@@ -49458,7 +49458,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "1.50 GB"
+    "ShowSizeHuman": "1.39 GB"
   },
   {
     "ShowID": "dd79fc9fc305",
@@ -49509,7 +49509,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "19",
-    "ShowSizeHuman": "1.39 GB"
+    "ShowSizeHuman": "1.30 GB"
   },
   {
     "ShowID": "98192f75db94",
@@ -49607,7 +49607,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "14",
-    "ShowSizeHuman": "2.90 GB"
+    "ShowSizeHuman": "2.70 GB"
   },
   {
     "ShowID": "67f13a9cd249",
@@ -49706,7 +49706,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "3.64 GB"
+    "ShowSizeHuman": "3.39 GB"
   },
   {
     "ShowID": "b0d29b5bb8ca",
@@ -49805,7 +49805,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "17",
-    "ShowSizeHuman": "2.75 GB"
+    "ShowSizeHuman": "2.56 GB"
   },
   {
     "ShowID": "2723282cd672",
@@ -49903,7 +49903,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "2.20 GB"
+    "ShowSizeHuman": "2.05 GB"
   },
   {
     "ShowID": "0de346f329d8",
@@ -50002,7 +50002,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "16",
-    "ShowSizeHuman": "2.87 GB"
+    "ShowSizeHuman": "2.68 GB"
   },
   {
     "ShowID": "5e2b4d4a2606",
@@ -50053,7 +50053,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "15",
-    "ShowSizeHuman": "2.79 GB"
+    "ShowSizeHuman": "2.59 GB"
   },
   {
     "ShowID": "0cf5430416b2",
@@ -50104,7 +50104,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "32",
-    "ShowSizeHuman": "4.57 GB"
+    "ShowSizeHuman": "4.26 GB"
   },
   {
     "ShowID": "117ca5387868",
@@ -50203,7 +50203,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "19",
-    "ShowSizeHuman": "4.23 GB"
+    "ShowSizeHuman": "3.94 GB"
   },
   {
     "ShowID": "6490d964f992",
@@ -50254,7 +50254,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "3.91 GB"
+    "ShowSizeHuman": "3.64 GB"
   },
   {
     "ShowID": "f340567b6898",
@@ -50305,7 +50305,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "3.17 GB"
+    "ShowSizeHuman": "2.95 GB"
   },
   {
     "ShowID": "a92352a7831f",
@@ -50356,7 +50356,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "15",
-    "ShowSizeHuman": "2.53 GB"
+    "ShowSizeHuman": "2.35 GB"
   },
   {
     "ShowID": "2a246186863d",
@@ -50407,7 +50407,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "15",
-    "ShowSizeHuman": "4.10 GB"
+    "ShowSizeHuman": "3.81 GB"
   },
   {
     "ShowID": "354380f71926",
@@ -50456,7 +50456,7 @@
     "VideoKbps": "8172",
     "AudioKbps": "1536",
     "DiscType": "File",
-    "ShowSizeHuman": "5.13 GB"
+    "ShowSizeHuman": "4.78 GB"
   },
   {
     "ShowID": "0aca034b296c",
@@ -50508,7 +50508,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "1.84 GB"
+    "ShowSizeHuman": "1.71 GB"
   },
   {
     "ShowID": "f4d8412e839b",
@@ -50607,7 +50607,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "14",
-    "ShowSizeHuman": "4.25 GB"
+    "ShowSizeHuman": "3.95 GB"
   },
   {
     "ShowID": "2386fcbc5576",
@@ -50658,7 +50658,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "43",
-    "ShowSizeHuman": "4.05 GB"
+    "ShowSizeHuman": "3.78 GB"
   },
   {
     "ShowID": "9aa539603fb3",
@@ -50709,7 +50709,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "3.37 GB"
+    "ShowSizeHuman": "3.13 GB"
   },
   {
     "ShowID": "f58054c63222",
@@ -50760,7 +50760,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "11",
-    "ShowSizeHuman": "2.51 GB"
+    "ShowSizeHuman": "2.34 GB"
   },
   {
     "ShowID": "6e8ed1361752",
@@ -50811,7 +50811,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "3.46 GB"
+    "ShowSizeHuman": "3.22 GB"
   },
   {
     "ShowID": "4ac7bf3fd61b",
@@ -50862,7 +50862,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "12",
-    "ShowSizeHuman": "3.97 GB"
+    "ShowSizeHuman": "3.69 GB"
   },
   {
     "ShowID": "5ebfe93b19c9",
@@ -50913,7 +50913,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "11",
-    "ShowSizeHuman": "4.02 GB"
+    "ShowSizeHuman": "3.74 GB"
   },
   {
     "ShowID": "ccd7ed3c2fa4",
@@ -50964,7 +50964,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "565.50 MB"
+    "ShowSizeHuman": "539.30 MB"
   },
   {
     "ShowID": "afe8655f1236",
@@ -51015,7 +51015,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "1.73 GB"
+    "ShowSizeHuman": "1.62 GB"
   },
   {
     "ShowID": "3620031b5215",
@@ -51066,7 +51066,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "17",
-    "ShowSizeHuman": "2.87 GB"
+    "ShowSizeHuman": "2.67 GB"
   },
   {
     "ShowID": "88814a4a7fff",
@@ -51117,7 +51117,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "23",
-    "ShowSizeHuman": "3.93 GB"
+    "ShowSizeHuman": "3.66 GB"
   },
   {
     "ShowID": "7d6c1462c8cb",
@@ -51168,7 +51168,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "15",
-    "ShowSizeHuman": "4.54 GB"
+    "ShowSizeHuman": "4.23 GB"
   },
   {
     "ShowID": "91d644194a4c",
@@ -51219,7 +51219,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "4.53 GB"
+    "ShowSizeHuman": "4.22 GB"
   },
   {
     "ShowID": "5bc4706b8ef5",
@@ -51271,7 +51271,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "3.35 GB"
+    "ShowSizeHuman": "3.12 GB"
   },
   {
     "ShowID": "7a560b04c0fb",
@@ -51322,7 +51322,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "10",
-    "ShowSizeHuman": "2.59 GB"
+    "ShowSizeHuman": "2.41 GB"
   },
   {
     "ShowID": "8a75c2612623",
@@ -51372,7 +51372,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "9",
-    "ShowSizeHuman": "2.42 GB",
+    "ShowSizeHuman": "2.25 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -51424,7 +51424,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "12",
-    "ShowSizeHuman": "2.27 GB"
+    "ShowSizeHuman": "2.12 GB"
   },
   {
     "ShowID": "97a38840a60a",
@@ -51522,7 +51522,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "550.53 MB"
+    "ShowSizeHuman": "525.03 MB"
   },
   {
     "ShowID": "5267dc887fd7",
@@ -51573,7 +51573,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "17",
-    "ShowSizeHuman": "4.57 GB"
+    "ShowSizeHuman": "4.25 GB"
   },
   {
     "ShowID": "8881b67da9c5",
@@ -51623,7 +51623,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "1.72 GB",
+    "ShowSizeHuman": "1.60 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -51672,7 +51672,7 @@
     "VideoKbps": "12041",
     "AudioKbps": "224",
     "DiscType": "File",
-    "ShowSizeHuman": "2.74 GB"
+    "ShowSizeHuman": "2.55 GB"
   },
   {
     "ShowID": "b6accff42dc0",
@@ -51720,7 +51720,7 @@
     "ScanType": "progressive",
     "VideoKbps": "8261",
     "DiscType": "File",
-    "ShowSizeHuman": "3.18 GB"
+    "ShowSizeHuman": "2.96 GB"
   },
   {
     "ShowID": "f4847fe8b1db",
@@ -51770,7 +51770,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "13",
-    "ShowSizeHuman": "2.21 GB",
+    "ShowSizeHuman": "2.05 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -51822,7 +51822,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "1.55 GB"
+    "ShowSizeHuman": "1.45 GB"
   },
   {
     "ShowID": "a33cc65486d8",
@@ -51873,7 +51873,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "2.81 GB"
+    "ShowSizeHuman": "2.61 GB"
   },
   {
     "ShowID": "a84229b82962",
@@ -51924,7 +51924,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "10",
-    "ShowSizeHuman": "1.04 GB"
+    "ShowSizeHuman": "994.80 MB"
   },
   {
     "ShowID": "40e0f0edb6ca",
@@ -51975,7 +51975,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "19",
-    "ShowSizeHuman": "1.51 GB"
+    "ShowSizeHuman": "1.41 GB"
   },
   {
     "ShowID": "db6859f65c40",
@@ -52024,7 +52024,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "2",
-    "ShowSizeHuman": "240.20 MB"
+    "ShowSizeHuman": "229.07 MB"
   },
   {
     "ShowID": "14f712b69dd7",
@@ -52075,7 +52075,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "1.05 GB"
+    "ShowSizeHuman": "999.88 MB"
   },
   {
     "ShowID": "443a55fc53ef",
@@ -52126,7 +52126,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "11",
-    "ShowSizeHuman": "2.87 GB"
+    "ShowSizeHuman": "2.68 GB"
   },
   {
     "ShowID": "5658a7df1bb4",
@@ -52547,7 +52547,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "15",
-    "ShowSizeHuman": "4.43 GB"
+    "ShowSizeHuman": "4.13 GB"
   },
   {
     "ShowID": "ae9e52012a3d",
@@ -52985,7 +52985,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "11",
-    "ShowSizeHuman": "3.13 GB",
+    "ShowSizeHuman": "2.92 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -53037,7 +53037,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "20",
-    "ShowSizeHuman": "3.83 GB"
+    "ShowSizeHuman": "3.57 GB"
   },
   {
     "ShowID": "95b085bd4427",
@@ -53089,7 +53089,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "23",
-    "ShowSizeHuman": "4.59 GB"
+    "ShowSizeHuman": "4.28 GB"
   },
   {
     "ShowID": "1237e2d8595f",
@@ -53140,7 +53140,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "11",
-    "ShowSizeHuman": "2.85 GB"
+    "ShowSizeHuman": "2.65 GB"
   },
   {
     "ShowID": "51043bc3f917",
@@ -53191,7 +53191,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "15",
-    "ShowSizeHuman": "3.09 GB"
+    "ShowSizeHuman": "2.88 GB"
   },
   {
     "ShowID": "cbdd3d511de7",
@@ -53242,7 +53242,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "4",
-    "ShowSizeHuman": "1.37 GB"
+    "ShowSizeHuman": "1.28 GB"
   },
   {
     "ShowID": "42b5aadeed6a",
@@ -53293,7 +53293,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "16",
-    "ShowSizeHuman": "4.21 GB"
+    "ShowSizeHuman": "3.92 GB"
   },
   {
     "ShowID": "6dcd6519aef4",
@@ -53344,7 +53344,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "11",
-    "ShowSizeHuman": "3.12 GB"
+    "ShowSizeHuman": "2.91 GB"
   },
   {
     "ShowID": "6ce3ce73eeb3",
@@ -53395,7 +53395,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "14",
-    "ShowSizeHuman": "3.46 GB"
+    "ShowSizeHuman": "3.22 GB"
   },
   {
     "ShowID": "7aed5561a4a0",
@@ -53446,7 +53446,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "13",
-    "ShowSizeHuman": "2.99 GB"
+    "ShowSizeHuman": "2.79 GB"
   },
   {
     "ShowID": "55311bac65d6",
@@ -53497,7 +53497,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "9",
-    "ShowSizeHuman": "2.20 GB"
+    "ShowSizeHuman": "2.05 GB"
   },
   {
     "ShowID": "80e923f19bb8",
@@ -53688,7 +53688,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "11",
-    "ShowSizeHuman": "3.15 GB"
+    "ShowSizeHuman": "2.93 GB"
   },
   {
     "ShowID": "3f6a4b4e6166",
@@ -53737,7 +53737,7 @@
     "VideoKbps": "17648",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "951.45 MB"
+    "ShowSizeHuman": "907.37 MB"
   },
   {
     "ShowID": "3864ee5754b1",
@@ -53788,7 +53788,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "16",
-    "ShowSizeHuman": "2.37 GB"
+    "ShowSizeHuman": "2.21 GB"
   },
   {
     "ShowID": "19e3ce93b3d2",
@@ -53839,7 +53839,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "1.09 GB"
+    "ShowSizeHuman": "1.01 GB"
   },
   {
     "ShowID": "0f63a29e8a15",
@@ -53889,7 +53889,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "17",
-    "ShowSizeHuman": "4.01 GB",
+    "ShowSizeHuman": "3.73 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -53989,7 +53989,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "19",
-    "ShowSizeHuman": "2.59 GB"
+    "ShowSizeHuman": "2.41 GB"
   },
   {
     "ShowID": "2cb56fa0a506",
@@ -54040,7 +54040,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "4",
-    "ShowSizeHuman": "518.83 MB"
+    "ShowSizeHuman": "494.79 MB"
   },
   {
     "ShowID": "1c566eed2942",
@@ -54090,7 +54090,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "11",
-    "ShowSizeHuman": "729.06 MB",
+    "ShowSizeHuman": "695.29 MB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -54139,7 +54139,7 @@
     "VideoKbps": "18369",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "1.70 GB",
+    "ShowSizeHuman": "1.58 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -54191,7 +54191,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "12",
-    "ShowSizeHuman": "2.20 GB"
+    "ShowSizeHuman": "2.05 GB"
   },
   {
     "ShowID": "f7c20e185b58",
@@ -54242,7 +54242,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "19",
-    "ShowSizeHuman": "3.60 GB"
+    "ShowSizeHuman": "3.36 GB"
   },
   {
     "ShowID": "03b4497958c0",
@@ -54293,7 +54293,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "6",
-    "ShowSizeHuman": "1.11 GB"
+    "ShowSizeHuman": "1.04 GB"
   },
   {
     "ShowID": "9c0c6f6d123c",
@@ -54344,7 +54344,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "17",
-    "ShowSizeHuman": "3.59 GB"
+    "ShowSizeHuman": "3.34 GB"
   },
   {
     "ShowID": "71c74b87458d",
@@ -54395,7 +54395,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "16",
-    "ShowSizeHuman": "2.38 GB"
+    "ShowSizeHuman": "2.22 GB"
   },
   {
     "ShowID": "e049746f0c26",
@@ -54446,7 +54446,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "19",
-    "ShowSizeHuman": "2.75 GB"
+    "ShowSizeHuman": "2.56 GB"
   },
   {
     "ShowID": "c0dee2ac575f",
@@ -54496,7 +54496,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "16",
-    "ShowSizeHuman": "3.96 GB",
+    "ShowSizeHuman": "3.69 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -54549,7 +54549,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "2.13 GB"
+    "ShowSizeHuman": "1.98 GB"
   },
   {
     "ShowID": "e318a33e1d14",
@@ -54600,7 +54600,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "18",
-    "ShowSizeHuman": "1.97 GB"
+    "ShowSizeHuman": "1.83 GB"
   },
   {
     "ShowID": "73228649be4c",
@@ -54651,7 +54651,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "7",
-    "ShowSizeHuman": "727.71 MB"
+    "ShowSizeHuman": "694.00 MB"
   },
   {
     "ShowID": "181bd1035ccb",
@@ -54700,7 +54700,7 @@
     "VideoKbps": "13649",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "1.48 GB"
+    "ShowSizeHuman": "1.38 GB"
   },
   {
     "ShowID": "7610ef518d8d",
@@ -54749,7 +54749,7 @@
     "AudioKbps": "384",
     "AudioTracks": "2",
     "DiscType": "File",
-    "ShowSizeHuman": "6.99 GB",
+    "ShowSizeHuman": "6.51 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, AudioTracks, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -54801,7 +54801,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "6",
-    "ShowSizeHuman": "1.43 GB"
+    "ShowSizeHuman": "1.33 GB"
   },
   {
     "ShowID": "3c8031d215b3",
@@ -54853,7 +54853,7 @@
     "DiscType": "DVD-9",
     "Menu": "No",
     "Chapters": "16",
-    "ShowSizeHuman": "5.56 GB"
+    "ShowSizeHuman": "5.18 GB"
   },
   {
     "ShowID": "c2b5d45fb4c9",
@@ -54904,7 +54904,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "18",
-    "ShowSizeHuman": "4.05 GB"
+    "ShowSizeHuman": "3.77 GB"
   },
   {
     "ShowID": "476976768c80",
@@ -54953,7 +54953,7 @@
     "VideoKbps": "12852",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "7.50 GB"
+    "ShowSizeHuman": "6.99 GB"
   },
   {
     "ShowID": "f38606f2d035",
@@ -55050,7 +55050,7 @@
     "VideoKbps": "10730",
     "AudioKbps": "256",
     "DiscType": "File",
-    "ShowSizeHuman": "3.58 GB"
+    "ShowSizeHuman": "3.33 GB"
   },
   {
     "ShowID": "d039fdfe37c7",
@@ -55100,7 +55100,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "6",
-    "ShowSizeHuman": "1.81 GB",
+    "ShowSizeHuman": "1.68 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -55152,7 +55152,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "10",
-    "ShowSizeHuman": "3.30 GB"
+    "ShowSizeHuman": "3.08 GB"
   },
   {
     "ShowID": "b4a47b934a4f",
@@ -55203,7 +55203,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "11",
-    "ShowSizeHuman": "3.48 GB"
+    "ShowSizeHuman": "3.24 GB"
   },
   {
     "ShowID": "268a6f93dd7c",
@@ -55254,7 +55254,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "11",
-    "ShowSizeHuman": "3.48 GB"
+    "ShowSizeHuman": "3.24 GB"
   },
   {
     "ShowID": "49431c01d4cb",
@@ -55305,7 +55305,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "2.81 GB"
+    "ShowSizeHuman": "2.61 GB"
   },
   {
     "ShowID": "a7374f241ee5",
@@ -55356,7 +55356,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "3.28 GB"
+    "ShowSizeHuman": "3.06 GB"
   },
   {
     "ShowID": "f13328ea97a7",
@@ -55407,7 +55407,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "17",
-    "ShowSizeHuman": "3.09 GB"
+    "ShowSizeHuman": "2.88 GB"
   },
   {
     "ShowID": "9b4d67be96cf",
@@ -55458,7 +55458,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "6",
-    "ShowSizeHuman": "2.42 GB"
+    "ShowSizeHuman": "2.26 GB"
   },
   {
     "ShowID": "c0108f42ea7a",
@@ -55510,7 +55510,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "715.14 MB"
+    "ShowSizeHuman": "682.01 MB"
   },
   {
     "ShowID": "baabba0f9cc0",
@@ -55612,7 +55612,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "1.98 GB"
+    "ShowSizeHuman": "1.85 GB"
   },
   {
     "ShowID": "2aaf06909d4a",
@@ -55715,7 +55715,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "11",
-    "ShowSizeHuman": "2.19 GB"
+    "ShowSizeHuman": "2.04 GB"
   },
   {
     "ShowID": "c95d6539e886",
@@ -55814,7 +55814,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "20",
-    "ShowSizeHuman": "3.15 GB"
+    "ShowSizeHuman": "2.93 GB"
   },
   {
     "ShowID": "c21dc2b62e6c",
@@ -55865,7 +55865,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "19",
-    "ShowSizeHuman": "4.68 GB"
+    "ShowSizeHuman": "4.36 GB"
   },
   {
     "ShowID": "ebe1d4e73a01",
@@ -55960,7 +55960,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "15",
-    "ShowSizeHuman": "3.70 GB"
+    "ShowSizeHuman": "3.45 GB"
   },
   {
     "ShowID": "2df0ccdf1350",
@@ -56012,7 +56012,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "5",
-    "ShowSizeHuman": "1.60 GB"
+    "ShowSizeHuman": "1.49 GB"
   },
   {
     "ShowID": "0d534483e97c",
@@ -56063,7 +56063,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "11",
-    "ShowSizeHuman": "3.84 GB"
+    "ShowSizeHuman": "3.57 GB"
   },
   {
     "ShowID": "6d6d66ea7409",
@@ -56113,7 +56113,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "3.27 GB",
+    "ShowSizeHuman": "3.05 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -56213,7 +56213,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "3",
-    "ShowSizeHuman": "981.02 MB"
+    "ShowSizeHuman": "935.58 MB"
   },
   {
     "ShowID": "04484eb00966",
@@ -56467,7 +56467,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "1.51 GB"
+    "ShowSizeHuman": "1.41 GB"
   },
   {
     "ShowID": "a0907d3657a0",
@@ -56518,7 +56518,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "16",
-    "ShowSizeHuman": "3.63 GB"
+    "ShowSizeHuman": "3.38 GB"
   },
   {
     "ShowID": "5899f9c592d9",
@@ -56569,7 +56569,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "5",
-    "ShowSizeHuman": "814.78 MB"
+    "ShowSizeHuman": "777.04 MB"
   },
   {
     "ShowID": "80ef8fd86cc6",
@@ -56620,7 +56620,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "6",
-    "ShowSizeHuman": "1.57 GB"
+    "ShowSizeHuman": "1.46 GB"
   },
   {
     "ShowID": "d9bb2abcb12f",
@@ -56671,7 +56671,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "14",
-    "ShowSizeHuman": "2.77 GB"
+    "ShowSizeHuman": "2.58 GB"
   },
   {
     "ShowID": "701785cd550e",
@@ -56723,7 +56723,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "17",
-    "ShowSizeHuman": "4.06 GB"
+    "ShowSizeHuman": "3.78 GB"
   },
   {
     "ShowID": "149b5245f6b9",
@@ -56774,7 +56774,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "17",
-    "ShowSizeHuman": "2.13 GB"
+    "ShowSizeHuman": "1.99 GB"
   },
   {
     "ShowID": "a0553c4c6dc9",
@@ -56825,7 +56825,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "1",
-    "ShowSizeHuman": "2.80 GB"
+    "ShowSizeHuman": "2.61 GB"
   },
   {
     "ShowID": "08f60b537518",
@@ -56875,7 +56875,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "12",
-    "ShowSizeHuman": "3.82 GB",
+    "ShowSizeHuman": "3.56 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -56927,7 +56927,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "22",
-    "ShowSizeHuman": "4.58 GB"
+    "ShowSizeHuman": "4.27 GB"
   },
   {
     "ShowID": "f0c80a7a53a2",
@@ -56977,7 +56977,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "11",
-    "ShowSizeHuman": "1.47 GB",
+    "ShowSizeHuman": "1.37 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -57028,7 +57028,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "11",
-    "ShowSizeHuman": "2.61 GB",
+    "ShowSizeHuman": "2.43 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -57080,7 +57080,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "12",
-    "ShowSizeHuman": "3.04 GB"
+    "ShowSizeHuman": "2.84 GB"
   },
   {
     "ShowID": "88b30e27e380",
@@ -57130,7 +57130,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "839.42 MB"
+    "ShowSizeHuman": "800.54 MB"
   },
   {
     "ShowID": "f0516c90fab9",
@@ -57178,7 +57178,7 @@
     "VideoKbps": "14159",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "8.14 GB"
+    "ShowSizeHuman": "7.59 GB"
   },
   {
     "ShowID": "864ba0fb6931",
@@ -57226,7 +57226,7 @@
     "VideoKbps": "17753",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "6.78 GB"
+    "ShowSizeHuman": "6.31 GB"
   },
   {
     "ShowID": "7df1b178e2a2",
@@ -57322,7 +57322,7 @@
     "VideoKbps": "8474",
     "AudioKbps": "259",
     "DiscType": "File",
-    "ShowSizeHuman": "5.80 GB",
+    "ShowSizeHuman": "5.40 GB",
     "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
   },
   {
@@ -57373,7 +57373,7 @@
     "AudioKbps": "384",
     "AudioTracks": "2",
     "DiscType": "File",
-    "ShowSizeHuman": "2.48 GB"
+    "ShowSizeHuman": "2.31 GB"
   },
   {
     "ShowID": "e3e4d5a49ab8",
@@ -57422,7 +57422,7 @@
     "VideoKbps": "8503",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "2.78 GB"
+    "ShowSizeHuman": "2.59 GB"
   },
   {
     "ShowID": "3183e8f1241c",
@@ -57471,7 +57471,7 @@
     "VideoKbps": "4704",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "167.06 MB"
+    "ShowSizeHuman": "159.32 MB"
   },
   {
     "ShowID": "f1306d7aaed8",
@@ -57520,7 +57520,7 @@
     "VideoKbps": "3949",
     "AudioKbps": "448",
     "DiscType": "File",
-    "ShowSizeHuman": "667.35 MB"
+    "ShowSizeHuman": "636.44 MB"
   },
   {
     "ShowID": "b5c29d6baea8",
@@ -57574,7 +57574,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "17",
-    "ShowSizeHuman": "375.72 MB"
+    "ShowSizeHuman": "358.31 MB"
   },
   {
     "ShowID": "53ab1e48902a",
@@ -57625,7 +57625,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "6",
-    "ShowSizeHuman": "1.80 GB"
+    "ShowSizeHuman": "1.67 GB"
   },
   {
     "ShowID": "edf18a8aa29e",
@@ -57770,7 +57770,7 @@
     "VideoKbps": "6803",
     "AudioKbps": "256",
     "DiscType": "File",
-    "ShowSizeHuman": "136.13 MB"
+    "ShowSizeHuman": "129.83 MB"
   },
   {
     "ShowID": "7454c8b21d9a",
@@ -57819,7 +57819,7 @@
     "VideoKbps": "8199",
     "AudioKbps": "256",
     "DiscType": "File",
-    "ShowSizeHuman": "1.57 GB"
+    "ShowSizeHuman": "1.46 GB"
   },
   {
     "ShowID": "5319b693f66c",
@@ -57868,7 +57868,7 @@
     "VideoKbps": "13012",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "460.49 MB"
+    "ShowSizeHuman": "439.16 MB"
   },
   {
     "ShowID": "f628cc13d2f0",
@@ -57917,7 +57917,7 @@
     "VideoKbps": "4600",
     "AudioKbps": "256",
     "DiscType": "File",
-    "ShowSizeHuman": "300.60 MB"
+    "ShowSizeHuman": "286.68 MB"
   },
   {
     "ShowID": "666af9d3e462",
@@ -58114,7 +58114,7 @@
     "VideoKbps": "1025",
     "AudioKbps": "126",
     "DiscType": "File",
-    "ShowSizeHuman": "938.36 MB"
+    "ShowSizeHuman": "894.89 MB"
   },
   {
     "ShowID": "a0b31315121f",
@@ -58163,7 +58163,7 @@
     "VideoKbps": "1013",
     "AudioKbps": "130",
     "DiscType": "File",
-    "ShowSizeHuman": "243.66 MB"
+    "ShowSizeHuman": "232.38 MB"
   },
   {
     "ShowID": "e5929eb5f358",
@@ -58212,7 +58212,7 @@
     "VideoKbps": "8616",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "368.24 MB"
+    "ShowSizeHuman": "351.18 MB"
   },
   {
     "ShowID": "43605838e364",
@@ -58261,7 +58261,7 @@
     "VideoKbps": "3823",
     "AudioKbps": "192",
     "DiscType": "File",
-    "ShowSizeHuman": "1.19 GB"
+    "ShowSizeHuman": "1.11 GB"
   },
   {
     "ShowID": "0d346f8decb8",
@@ -58309,7 +58309,7 @@
     "ScanType": "progressive",
     "VideoKbps": "8844",
     "DiscType": "File",
-    "ShowSizeHuman": "4.08 GB"
+    "ShowSizeHuman": "3.80 GB"
   },
   {
     "ShowID": "8975601a7790",
@@ -58455,7 +58455,7 @@
     "VideoKbps": "1009",
     "AudioKbps": "128",
     "DiscType": "File",
-    "ShowSizeHuman": "732.13 MB"
+    "ShowSizeHuman": "698.21 MB"
   },
   {
     "ShowID": "ad7e533dd790",
@@ -58506,7 +58506,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "5",
-    "ShowSizeHuman": "1.33 GB"
+    "ShowSizeHuman": "1.24 GB"
   },
   {
     "ShowID": "3a96a7ccf97a",
@@ -58557,7 +58557,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "5",
-    "ShowSizeHuman": "1.37 GB"
+    "ShowSizeHuman": "1.28 GB"
   },
   {
     "ShowID": "bc823312e8f8",
@@ -58608,7 +58608,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "1",
-    "ShowSizeHuman": "251.79 MB"
+    "ShowSizeHuman": "240.12 MB"
   },
   {
     "ShowID": "8aa0469c0797",
@@ -58659,7 +58659,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "1",
-    "ShowSizeHuman": "170.38 MB"
+    "ShowSizeHuman": "162.49 MB"
   },
   {
     "ShowID": "cc936661297a",
@@ -58711,7 +58711,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "13",
-    "ShowSizeHuman": "906.96 MB"
+    "ShowSizeHuman": "864.94 MB"
   },
   {
     "ShowID": "de1c6497ccfb",
@@ -58759,7 +58759,7 @@
     "ScanType": "progressive",
     "VideoKbps": "6130",
     "DiscType": "File",
-    "ShowSizeHuman": "5.06 GB"
+    "ShowSizeHuman": "4.72 GB"
   },
   {
     "ShowID": "14b4c26142e9",
@@ -58807,7 +58807,7 @@
     "VideoKbps": "13095",
     "AudioKbps": "192",
     "DiscType": "File",
-    "ShowSizeHuman": "6.21 GB"
+    "ShowSizeHuman": "5.79 GB"
   },
   {
     "ShowID": "e3ee5902aa80",
@@ -58949,7 +58949,7 @@
     "VideoKbps": "285",
     "AudioKbps": "22",
     "DiscType": "File",
-    "ShowSizeHuman": "29.80 MB"
+    "ShowSizeHuman": "28.42 MB"
   },
   {
     "ShowID": "eba9bd34a4ec",
@@ -58997,7 +58997,7 @@
     "VideoKbps": "668",
     "AudioKbps": "126",
     "DiscType": "File",
-    "ShowSizeHuman": "221.99 MB"
+    "ShowSizeHuman": "211.71 MB"
   },
   {
     "ShowID": "e3f727720042",
@@ -59046,7 +59046,7 @@
     "VideoKbps": "7283",
     "AudioKbps": "192",
     "DiscType": "File",
-    "ShowSizeHuman": "181.49 MB"
+    "ShowSizeHuman": "173.08 MB"
   },
   {
     "ShowID": "c6df652ec260",
@@ -59095,7 +59095,7 @@
     "VideoKbps": "2538",
     "AudioKbps": "224",
     "DiscType": "File",
-    "ShowSizeHuman": "103.34 MB"
+    "ShowSizeHuman": "98.55 MB"
   },
   {
     "ShowID": "8d29cd97967a",
@@ -59196,7 +59196,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "21",
-    "ShowSizeHuman": "2.00 GB"
+    "ShowSizeHuman": "1.86 GB"
   },
   {
     "ShowID": "6462a2558798",
@@ -59294,7 +59294,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "4",
-    "ShowSizeHuman": "1.01 GB"
+    "ShowSizeHuman": "966.67 MB"
   },
   {
     "ShowID": "c126cf45bae5",
@@ -59345,7 +59345,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "285.96 MB"
+    "ShowSizeHuman": "272.71 MB"
   },
   {
     "ShowID": "ebb19cbf559a",
@@ -59396,7 +59396,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "671.61 MB"
+    "ShowSizeHuman": "640.50 MB"
   },
   {
     "ShowID": "a88ae759f32b",
@@ -59447,7 +59447,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "8",
-    "ShowSizeHuman": "1.92 GB"
+    "ShowSizeHuman": "1.78 GB"
   },
   {
     "ShowID": "64acb2e18470",
@@ -59498,7 +59498,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "8",
-    "ShowSizeHuman": "1.77 GB"
+    "ShowSizeHuman": "1.65 GB"
   },
   {
     "ShowID": "ff6b0c88d556",
@@ -59597,7 +59597,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "9",
-    "ShowSizeHuman": "3.02 GB"
+    "ShowSizeHuman": "2.82 GB"
   },
   {
     "ShowID": "26f108f01d60",
@@ -59648,7 +59648,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "13",
-    "ShowSizeHuman": "1.83 GB"
+    "ShowSizeHuman": "1.71 GB"
   },
   {
     "ShowID": "8703aa37f28b",
@@ -59699,7 +59699,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "1.59 GB"
+    "ShowSizeHuman": "1.48 GB"
   },
   {
     "ShowID": "e1bbfbfb21c2",
@@ -59750,7 +59750,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "463.67 MB"
+    "ShowSizeHuman": "442.19 MB"
   },
   {
     "ShowID": "c31c90dd95d3",
@@ -59801,7 +59801,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "1",
-    "ShowSizeHuman": "391.82 MB"
+    "ShowSizeHuman": "373.67 MB"
   },
   {
     "ShowID": "c603a61f10b7",
@@ -59850,7 +59850,7 @@
     "VideoKbps": "17989",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "6.00 GB"
+    "ShowSizeHuman": "5.58 GB"
   },
   {
     "ShowID": "ef6b301c77d2",
@@ -59902,7 +59902,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "339.52 MB"
+    "ShowSizeHuman": "323.79 MB"
   },
   {
     "ShowID": "b7807f75a4f3",
@@ -60001,7 +60001,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "13",
-    "ShowSizeHuman": "880.12 MB"
+    "ShowSizeHuman": "839.35 MB"
   },
   {
     "ShowID": "2ded2b06d498",
@@ -60052,7 +60052,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "3",
-    "ShowSizeHuman": "375.43 MB"
+    "ShowSizeHuman": "358.04 MB"
   },
   {
     "ShowID": "6aac8365b126",
@@ -60103,7 +60103,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "3",
-    "ShowSizeHuman": "121.57 MB"
+    "ShowSizeHuman": "115.94 MB"
   },
   {
     "ShowID": "fc5e342a442c",
@@ -60154,7 +60154,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "5",
-    "ShowSizeHuman": "563.36 MB"
+    "ShowSizeHuman": "537.26 MB"
   },
   {
     "ShowID": "57334aedf949",
@@ -60205,7 +60205,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "5",
-    "ShowSizeHuman": "619.56 MB"
+    "ShowSizeHuman": "590.86 MB"
   },
   {
     "ShowID": "ce4828402e24",
@@ -60256,7 +60256,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "1",
-    "ShowSizeHuman": "1.45 GB"
+    "ShowSizeHuman": "1.35 GB"
   },
   {
     "ShowID": "28693c60abfb",
@@ -60307,7 +60307,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "6",
-    "ShowSizeHuman": "866.25 MB"
+    "ShowSizeHuman": "826.12 MB"
   },
   {
     "ShowID": "12029520c27b",
@@ -60359,7 +60359,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "4",
-    "ShowSizeHuman": "313.00 MB"
+    "ShowSizeHuman": "298.50 MB"
   },
   {
     "ShowID": "7447148ad2b0",
@@ -60410,7 +60410,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "4",
-    "ShowSizeHuman": "456.48 MB"
+    "ShowSizeHuman": "435.33 MB"
   },
   {
     "ShowID": "1702ffadcd0f",
@@ -60461,7 +60461,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "7",
-    "ShowSizeHuman": "731.32 MB"
+    "ShowSizeHuman": "697.44 MB"
   },
   {
     "ShowID": "cb3320f24e70",
@@ -60512,7 +60512,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "7",
-    "ShowSizeHuman": "880.12 MB"
+    "ShowSizeHuman": "839.35 MB"
   },
   {
     "ShowID": "6b0a6fb86176",
@@ -60563,7 +60563,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "3",
-    "ShowSizeHuman": "467.89 MB"
+    "ShowSizeHuman": "446.22 MB"
   },
   {
     "ShowID": "472c08215d6f",
@@ -60615,7 +60615,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "2",
-    "ShowSizeHuman": "931.30 MB"
+    "ShowSizeHuman": "888.16 MB"
   },
   {
     "ShowID": "4c31239ff260",
@@ -60666,7 +60666,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "12",
-    "ShowSizeHuman": "2.18 GB"
+    "ShowSizeHuman": "2.03 GB"
   },
   {
     "ShowID": "8293d9d38e91",
@@ -60769,7 +60769,7 @@
     "VideoKbps": "12012",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "4.18 GB"
+    "ShowSizeHuman": "3.89 GB"
   },
   {
     "ShowID": "0ea36fe37b0e",
@@ -60818,7 +60818,7 @@
     "VideoKbps": "11987",
     "AudioKbps": "224",
     "DiscType": "File",
-    "ShowSizeHuman": "2.41 GB"
+    "ShowSizeHuman": "2.24 GB"
   },
   {
     "ShowID": "d962ce794ac1",
@@ -60869,7 +60869,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "253.72 MB"
+    "ShowSizeHuman": "241.96 MB"
   },
   {
     "ShowID": "7e56c289edd0",
@@ -60920,7 +60920,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "2",
-    "ShowSizeHuman": "638.73 MB"
+    "ShowSizeHuman": "609.14 MB"
   },
   {
     "ShowID": "85c7cdadf843",
@@ -60971,7 +60971,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "301.89 MB"
+    "ShowSizeHuman": "287.90 MB"
   },
   {
     "ShowID": "2a322eae4f66",
@@ -61022,7 +61022,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "4",
-    "ShowSizeHuman": "1.26 GB"
+    "ShowSizeHuman": "1.17 GB"
   },
   {
     "ShowID": "12addbc53178",
@@ -61071,7 +61071,7 @@
     "VideoKbps": "9120",
     "AudioKbps": "256",
     "DiscType": "File",
-    "ShowSizeHuman": "331.94 MB"
+    "ShowSizeHuman": "316.57 MB"
   },
   {
     "ShowID": "320d2f07661d",
@@ -61120,7 +61120,7 @@
     "VideoKbps": "10006",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "372.83 MB"
+    "ShowSizeHuman": "355.56 MB"
   },
   {
     "ShowID": "999e65cef533",
@@ -61169,7 +61169,7 @@
     "VideoKbps": "9084",
     "AudioKbps": "256",
     "DiscType": "File",
-    "ShowSizeHuman": "341.18 MB"
+    "ShowSizeHuman": "325.37 MB"
   },
   {
     "ShowID": "661ac1594f53",
@@ -61218,7 +61218,7 @@
     "VideoKbps": "6101",
     "AudioKbps": "224",
     "DiscType": "File",
-    "ShowSizeHuman": "209.09 MB"
+    "ShowSizeHuman": "199.41 MB"
   },
   {
     "ShowID": "1749a3a2043a",
@@ -61267,7 +61267,7 @@
     "VideoKbps": "6017",
     "AudioKbps": "224",
     "DiscType": "File",
-    "ShowSizeHuman": "164.88 MB"
+    "ShowSizeHuman": "157.24 MB"
   },
   {
     "ShowID": "7ca5eaaee71e",
@@ -61316,7 +61316,7 @@
     "VideoKbps": "6070",
     "AudioKbps": "224",
     "DiscType": "File",
-    "ShowSizeHuman": "218.98 MB"
+    "ShowSizeHuman": "208.84 MB"
   },
   {
     "ShowID": "270ca2b7990f",
@@ -61365,7 +61365,7 @@
     "VideoKbps": "5199",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "144.77 MB"
+    "ShowSizeHuman": "138.06 MB"
   },
   {
     "ShowID": "d3d93da9e61f",
@@ -61414,7 +61414,7 @@
     "VideoKbps": "809",
     "AudioKbps": "95",
     "DiscType": "File",
-    "ShowSizeHuman": "34.20 MB"
+    "ShowSizeHuman": "32.62 MB"
   },
   {
     "ShowID": "a72381a2f5ac",
@@ -61463,7 +61463,7 @@
     "ScanType": "interlaced",
     "VideoKbps": "7998",
     "DiscType": "File",
-    "ShowSizeHuman": "831.39 MB"
+    "ShowSizeHuman": "792.88 MB"
   },
   {
     "ShowID": "79ce68375392",
@@ -61514,7 +61514,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "7",
-    "ShowSizeHuman": "1.28 GB"
+    "ShowSizeHuman": "1.19 GB"
   },
   {
     "ShowID": "aeb5981985ec",
@@ -61565,7 +61565,7 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "4",
-    "ShowSizeHuman": "1.41 GB"
+    "ShowSizeHuman": "1.32 GB"
   },
   {
     "ShowID": "90c54e21e6ba",
@@ -61616,7 +61616,7 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "7",
-    "ShowSizeHuman": "323.59 MB"
+    "ShowSizeHuman": "308.60 MB"
   },
   {
     "ShowID": "3db5cf9e3cc6",
@@ -61667,6 +61667,6 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "3",
-    "ShowSizeHuman": "377.16 MB"
+    "ShowSizeHuman": "359.69 MB"
   }
 ]

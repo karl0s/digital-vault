@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { Show } from '../App';
-import { dateName, lengthName, quality, sourceName, songCount } from '../src/lib/specs';
+import { dateName, kbpsName, lengthName, quality, sourceName, songCount } from '../src/lib/specs';
 
 interface ShowListProps {
   shows: Show[];
@@ -16,7 +16,7 @@ interface ShowListProps {
  * A real table. Columns join as the screen widens: on a phone, date, the
  * artist with the event and place under it, and quality and length; from md,
  * event, place, quality, length; from lg, venue, PAL/NTSC and songs; from xl,
- * source and folder size. Copies of one show sit together whenever the sort is
+ * source, size (the show's own, else its folder's) and video bitrate. Copies of one show sit together whenever the sort is
  * by date. A row opens its show; its artist is the button, so the keyboard
  * reaches every row and focus comes back to it when the show closes.
  *
@@ -37,6 +37,7 @@ export const ShowList = memo(function ShowList({ shows, onShowClick }: ShowListP
           <th scope="col" className="hidden py-2 pr-3 font-semibold lg:table-cell print:table-cell">Std</th>
           <th scope="col" className="hidden py-2 pr-3 text-right font-semibold md:table-cell">Length</th>
           <th scope="col" className="hidden py-2 pr-3 text-right font-semibold xl:table-cell print:table-cell">Size</th>
+          <th scope="col" className="hidden py-2 pr-3 text-right font-semibold xl:table-cell print:table-cell">Video</th>
           <th scope="col" className="hidden py-2 text-right font-semibold lg:table-cell print:table-cell">Songs</th>
         </tr>
       </thead>
@@ -90,7 +91,8 @@ function Row({ show, onShowClick }: { show: Show; onShowClick: (show: Show) => v
         {quality(show)?.tier === 'hd' ? '' : show.TVStandard}
       </td>
       <td className="hidden whitespace-nowrap py-2 pr-3 text-right tabular-nums text-gray-200 md:table-cell print:text-black">{length}</td>
-      <td className="hidden whitespace-nowrap py-2 pr-3 text-right tabular-nums text-gray-300 xl:table-cell print:table-cell print:text-black">{show.TotalSizeHuman}</td>
+      <td className="hidden whitespace-nowrap py-2 pr-3 text-right tabular-nums text-gray-300 xl:table-cell print:table-cell print:text-black">{show.ShowSizeHuman || show.TotalSizeHuman}</td>
+      <td className="hidden whitespace-nowrap py-2 pr-3 text-right tabular-nums text-gray-300 xl:table-cell print:table-cell print:text-black">{kbpsName(show.VideoKbps)}</td>
       <td className="hidden py-2 text-right tabular-nums text-gray-300 lg:table-cell print:table-cell print:text-black">{songs || ''}</td>
     </tr>
   );

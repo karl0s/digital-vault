@@ -15,7 +15,8 @@ REPO = Path(__file__).resolve().parent.parent.parent
 
 
 def human(n):
-    for unit, size in (('GB', 1e9), ('MB', 1e6)):
+    """As TotalSizeHuman writes it: binary units under the usual names (2.91e9 bytes is "2.71 GB")."""
+    for unit, size in (('GB', 1024 ** 3), ('MB', 1024 ** 2)):
         if n >= size:
             return f'{n / size:.2f} {unit}'
     return f'{n} B'

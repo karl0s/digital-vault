@@ -45,6 +45,7 @@ tools/
   missing-setlists/     ← every show with no setlist + twins that have one; build.py renders ~/VaultShots/reports/missing-setlists.html
   taper-redaction/      ← removes tapers' names, contacts and links from shows.json; apply.mjs captures them to private/ first (see Tapers are never named)
   date-precision/       ← shows dated the 1st of a month: build.py renders ~/VaultShots/reports/date-precision.html (real date or month only?); apply.py writes Karl's pasted picks
+  drive-scan/           ← reads each record's own files on Live Music (scan.py, hashfind.py), reviews (page.py, sizes.py) and adds the specs (apply.py); read-only on the drive
   source-review/        ← records with no RecordingType: build.py renders ~/VaultShots/reports/source-review.html (two stills and a clue each); apply.py writes Karl's pasted picks
 scripts/
   health-check.py       ← integrity validator (pre-push hook, and the deploy)
@@ -146,6 +147,7 @@ Flat JSON array of show objects. Key fields:
 | `ParentShowID` | ShowID or absent | Set on a record cut from a multi-artist **master** recording (festival broadcast, talk-show compilation). The drawer links to the master ("Part of …"); the master's drawer lists its records under "On this recording". One level only; the master must not be hidden. Checked by the health check |
 | `SegmentStart` / `SegmentEnd` | `H:MM:SS` | Where that linked record sits on the master's timeline. Always set together with `ParentShowID` |
 | `DatePrecision` | `"month"`, `"day"`, `"year"` or absent | How much of `ShowDate` is known where its convention can't tell — see *ShowDate* below |
+| `FrameRate`, `ScanType`, `VideoKbps`, `AudioKbps`, `AudioTracks`, `DiscType`, `Menu`, `Chapters`, `ShowSizeHuman` | strings or absent | Read from the record's own files by the drive scan (`tools/drive-scan`, 2026-10-18; added, never overwriting). Bitrates are averages from size and length; `Chapters` only where the record is its titleset's whole programme; `ShowSizeHuman` only where the files are its own, in `TotalSizeHuman`'s units (binary, "GB"). Re-run: `scan.py` → `page.py` (review) → `apply.py` |
 | `AddedOn` | `YYYY-MM-DD` or absent | When the recording joined the site; drives "Recently added". **Set on every new record** — see *AddedOn* below |
 
 ### Notes and PrivateNotes

@@ -22,8 +22,8 @@
 | | Done | Partly | To do | |
 |---|---|---|---|---|
 | **The 8 trader jobs** (scripted run) | **8 pass** | — | — | At the review: 1 pass, 4 partial, 3 fail |
-| **The 18 findings** (F1–F18) | **17** ✅ | **1** 🟡 | **0** ⬜ | F1 partly: frame rate and bitrate wait on the drive scan |
-| **The 24 scored fixes** | **23** ✅ | — | **1** ⬜ | Left: the drive scan |
+| **The 18 findings** (F1–F18) | **18** ✅ | — | — | All done (2026-10-18) |
+| **The 24 scored fixes** | **24** ✅ | — | — | All done |
 | **Source on blank records** | **329** | — | **0** | All done (2026-10-17): every show says Pro-shot (1,164) or Audience (49) |
 
 **Live on the site:** everything above (pushed 2026-10-17).
@@ -52,6 +52,9 @@
 - [x] **Source on all 329 blank records** — 54 from another copy of the same show, 275 on your
   review page (2026-10-17): every show now says Pro-shot or Audience *(data)*
 - [x] **Source filter** — Pro-shot / Audience, first in More filters *(F12)*
+- [x] **Drive scan** — frame rate and scan, bitrate, disc, menu, chapters and the show's own
+  size on 1,204 records, shown in the drawer, the copies comparison, the list and the CSV; 16
+  picture sizes corrected *(F1)*
 - [x] **Date precision** — a month-only date reads "May 2001 (day unknown)"; every show dated the
   1st settled: 92 corrected to the right day, 22 confirmed, 30 month only, 1 not found *(F7)*
 - [x] **A page per show** — a link pasted into WhatsApp, iMessage or a forum previews that show's
@@ -69,8 +72,9 @@
   with three tasks from [04-test-plan.md](04-test-plan.md) to two or three traders you already
   email; their answers re-score the list
 - [ ] **1. The 432 missing setlists**, in their own review
-- [ ] **2. Drive scan** — frame rate, bitrate, chapters, the show's own size, broadcaster *(needs
-  Live Music mounted)*
+- [ ] **2. Broadcaster** (BBC, MTV, WDR…) — drafted from notes and folder names, for your review
+- [ ] **3. With Live Music mounted:** re-check Alice in Chains and Smashing Pumpkins (1996)
+  against their own files; look again for the 7 shows the scan couldn't find
 
 **Small leftovers from finished items** (not scheduled; say if one matters):
 search tips under the field, not only when nothing is found (F6) · small events such as Fuji Rock
@@ -83,7 +87,7 @@ be contrast-checked automatically (F13).
 
 | # | Finding | Status | Done so far | Still to do |
 |---|---|---|---|---|
-| [F1](#f1--which-copy-is-better-cant-be-answered) | Which copy is better | 🟡 | Generation and Lineage in the drawer (`1cffc551`), cleaned of tapers first (`0b538a57`). Batch A: quality badge (HD 1080 / HD 720 / SD 576 / SD 480 / Low-res), Resolution row, PAL/NTSC on SD only, codecs and containers in traders' words, size and file count as one "Folder" row. Source on every record (2026-10-17) | Frame rate, bitrate, chapters (drive scan) |
+| [F1](#f1--which-copy-is-better-cant-be-answered) | Which copy is better | ✅ | Generation and Lineage in the drawer (`1cffc551`), cleaned of tapers first (`0b538a57`). Batch A: quality badge (HD 1080 / HD 720 / SD 576 / SD 480 / Low-res), Resolution row, PAL/NTSC on SD only, codecs and containers in traders' words, size and file count as one "Folder" row. Source on every record (2026-10-17). The drive scan (2026-10-18): frame rate and scan, average video and audio bitrate, disc type, menu and chapters, the show's own size, on 1,204 records; in the drawer, the copies comparison ("25i · MPEG-2 8.9 Mb/s"), the list and the CSV; 16 picture sizes corrected from the source | Two records to re-check with the drive mounted (Alice in Chains, Smashing Pumpkins, 1996); 7 not found on it |
 | [F2](#f2--recordings-of-the-same-show-arent-grouped-and-their-cards-are-identical) | Copies of one show not grouped | ✅ | Batch D: cards carry a quiet spec line, the full date and the quality (`2010-06-05 · HD 1080`), and an "N copies" badge when the show is held more than once (131 shows, 311 records); the drawer lists "N recordings of this show", longest first, with quality, length, source, codecs, container, audio, PAL/NTSC, size and song count, one click to each | — |
 | [F3](#f3--nothing-can-be-linked-and-back-leaves-the-site) | No show links; Back leaves the site | ✅ | Batch C: every show has a link (`?show=`); Back and the phone's back gesture close the show, Forward reopens it; a pasted link opens the show; the tab names it; page description and preview image for pasted links; an analytics seam for show views. 2026-10-17: **a page per show** (`show/<ShowID>/`, 1,213 built with the site), so a pasted link previews that show's still, name, date and quality; Copy link hands it out; an old link to a re-keyed show still lands in the site (404.html) | — |
 | [F4](#f4--pointing-at-one-exact-recording-is-hard) | Pointing at one exact recording | ✅ | Batch C: a Share pill (share sheet on phones, "Copy link" elsewhere): the link alone as plain text (pastes into an address bar or chat), and as rich text `Artist · date · event · quality · length` linked to the show (pastes into an email by name) | — |
@@ -102,7 +106,7 @@ be contrast-checked automatically (F13).
 | [F17](#low) | Truncation and formats | ✅ | Batch D: one length format everywhere (`1h 05m`, `42 min`); "Pro-shot"; "Undated" in the drawer as on cards; a card's full name, place and specs on hover | — |
 | [F18](#low) | Phone header height | ✅ | Batch H (2026-10-17): on a phone the count, layout and sort row folds away while scrolling down and returns on the way up; nothing on the page moves | — |
 | — | [Taper redaction](#publishing-lineage-and-generation-without-exposing-tapers) | ✅ | Names, contacts and links captured to `private/`, then removed from `shows.json`; pipeline archives out of git; the site stops publishing folder names; health-check guard (`e2d03953`, `0b538a57`) | Old text stays in git history (accepted) |
-| — | [Drive scan](#planned-a-drive-scan-for-the-missing-specs) | 📅 | Plan agreed (2026-10-16) | Frame rate, bitrate, menus and chapters, show size: with Live Music mounted. Broadcaster can start now |
+| — | [Drive scan](#planned-a-drive-scan-for-the-missing-specs) | ✅ | 2026-10-18: 1,206 of 1,213 found on Live Music (by name, exact size or content hash); specs added to 1,204, nothing overwritten; 16 picture sizes corrected, each checked against its still (`tools/drive-scan`) | Broadcaster (no drive needed); the two held back and the 7 not found, next time the drive is mounted |
 | — | [Data quality](#data-quality--the-metadata-is-the-product) | 🟡 | Source on all 329 blank records (2026-10-16/17): 1,164 Pro-shot, 51 Audience | 432 setlists; date precision |
 
 ### The traders' jobs, then and now
@@ -113,13 +117,13 @@ The review's walkthrough tasks, run again on the live site after batches A–E w
 | Job | At the review | Now | Still missing |
 |---|---|---|---|
 | J1 Do you have it? | 🟡 Partial | 🟢 **Pass** | — (a year-only date now reads as the year everywhere) |
-| J2 Is yours better? | 🔴 Fail | 🟢 **Pass** | No broadcaster; frame rate and bitrate (drive scan) |
+| J2 Is yours better? | 🔴 Fail | 🟢 **Pass** | No broadcaster yet |
 | J3 Artist audit | 🟡 Partial | 🟢 **Pass** | — |
 | J4 Song hunt | 🟢 Pass | 🟢 Pass | — (the song is lit in the setlist; `songs:` works) |
 | J5 Event dig | 🟡 Partial | 🟢 **Pass** | Small events (Fuji Rock) only by search |
 | J6 Share and request | 🔴 Fail | 🟢 **Pass** | — (a pasted link previews the show itself) |
 | J7 What's new | 🔴 Fail | 🟢 **Pass** (from 2026-10-16) | Fills as you add shows; nothing before that day is marked |
-| J8 Evidence check | 🟡 Partial | 🟢 **Pass** | Frame rate and bitrate (drive scan) |
+| J8 Evidence check | 🟡 Partial | 🟢 **Pass** | — |
 
 **At the review: 1 pass, 4 partial, 3 fail. Now: all 8 pass** (J3 with the list view and CSV, J7 with What's new, 2026-10-16; J7 fills as shows are added). Both jobs traders
 come for, J1 and J2, now pass.
@@ -146,7 +150,7 @@ come for, J1 and J2, now pass.
 - [x] Size labelled as the folder's, with its file count
 - [x] Source (Pro-shot, Audience) on every record (was blank on 329)
 - [ ] No broadcaster field (BBC, MTV, Rockpalast…)
-- [ ] Frame rate, bitrate, the show's own size (drive scan)
+- [x] Frame rate, bitrate, the show's own size, side by side in the copies list (drive scan)
 
 **J3 — What do you have that I don't?**
 - [x] The A–Z show counts readable (1.7 → 5.3:1)
@@ -186,7 +190,7 @@ come for, J1 and J2, now pass.
 - [x] Stills open at full size, in a new tab
 - [x] The NFO text in full, larger (13px)
 - [x] Lineage, resolution and codecs beside the stills
-- [ ] Frame rate and bitrate (drive scan)
+- [x] Frame rate and bitrate (drive scan)
 
 </details>
 
@@ -195,8 +199,8 @@ come for, J1 and J2, now pass.
 **Now (2026-10-17).** All eight trader jobs pass in the scripted run. A trader can find a show
 however they type it, see which copy is better and why, compare the copies side by side, take the
 list away as a spreadsheet, send a link to one exact recording, and see what's been added. What's
-left is the **432 missing setlists** and the **drive scan** (frame rate, bitrate, chapters); every
-show now says how it was filmed and dates no day nobody knows. None of it has been tried by a real
+left is the **432 missing setlists** and a **broadcaster** field; every show now says how it was
+filmed, dates no day nobody knows, and carries its frame rate and bitrate. None of it has been tried by a real
 trader yet.
 
 **At the review (2026-10-16):** The Vault is **fast, handsome and better at song search than most trading lists**. The stills are
@@ -261,7 +265,7 @@ use. The highest score goes first. Where two items touch the same code they are 
 | 15 | List view and CSV download | [F10](#f10--no-dense-list-export-or-useful-sort-for-reconciling-a-trading-list) | 2 | 2 | 0.8 | 2 | **1.6** | Predicted from how traders keep lists; not yet seen | ✅ batch F |
 | 16 | "Recently added" | [F11](#f11--returning-traders-cant-see-whats-new) | 2 | 2 | 0.8 | 2 | **1.6** | Returning visitors; predicted. Your call: start from today (git history can't tell new from re-filed) | ✅ batch G |
 | 17 | "More filters" (agreed) | [F12](#f12--filters-dont-cover-what-traders-decide-by) | 2 | 2 | 0.8 | 2 | **1.6** | Predicted; search covers part of it today. A source filter waited for #20: with 27% blank it would have hidden shows | ✅ batch F, source 2026-10-17 |
-| 18 | Drive scan: frame rate, bitrate, chapters, show size | [Plan](#planned-a-drive-scan-for-the-missing-specs) | 2 | 3 | 1.0 | 4 | **1.5** | Needs Live Music mounted | 📅 |
+| 18 | Drive scan: frame rate, bitrate, chapters, show size | [Plan](#planned-a-drive-scan-for-the-missing-specs) | 2 | 3 | 1.0 | 4 | **1.5** | Needs Live Music mounted | ✅ 2026-10-18 |
 | 19 | Date precision ("2001, exact date unknown") | [F7](#f7--placeholder-dates-look-like-real-dates) | 2 | 2 | 1.0 | 4 | **1.0** | 257 records; mostly data work | ✅ 2026-10-17 |
 | 20 | Fill in Source on 329 records | [Data](#data-quality--the-metadata-is-the-product) | 2 | 2 | 1.0 | 2 | **2.0** | Re-scored 2026-10-16: 126 of the 329 have a clue in their own notes or event, so a review page settles them quickly (Effort 4 → 2); the other ~200 need their stills looked at | ✅ all 329 (2026-10-17) |
 | 21 | Setlists: 32 non-song entries; encore as a divider; highlight the searched song | [F15](#f15--setlists-non-songs-counted-as-songs-the-searched-song-isnt-highlighted) | 1 | 1 | 1.0 | 1 | **1.0** | Small | ✅ batch H; the entries stay, your call (2026-10-17) |
@@ -291,7 +295,7 @@ A batch's place comes from its best score.
 | **H. Polish** ✅ | 21, 22, 23 | Setlist non-songs and the encore as a divider, the searched song highlighted; phone header shrinks on scroll; one line saying what the site is | Small, independent |
 | Page per show ✅ | F3 leftover | A link to one show previews that show in chats and forums | Needs a build step; matters once traders share links among themselves |
 | Data | 19 ✅ | Date precision; the missing setlists | Your review pages, record by record |
-| Drive | 18 | Frame rate, bitrate, chapters, show size | When Live Music is mounted |
+| Drive ✅ | 18 | Frame rate, bitrate, chapters, show size | Done 2026-10-18 |
 
 ### What would change the order
 

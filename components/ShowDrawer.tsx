@@ -6,7 +6,7 @@ import { CloseButton } from './CloseButton';
 import type { ImageUrlGetter } from '../src/hooks/useShows';
 import { scrollContainerToTop } from '../src/lib/motion';
 import { showLink } from '../src/lib/url';
-import { quality, videoName, audioName, containerName, channelsName, aspectName, sampleRateName, lengthName, sourceName, dateName, dateCaveat, songCount } from '../src/lib/specs';
+import { quality, videoName, audioName, containerName, channelsName, aspectName, sampleRateName, lengthName, sourceName, dateName, dateCaveat, songCount, frameName, frameShort, kbpsName, discName } from '../src/lib/specs';
 import { copiesOf } from '../src/lib/copies';
 import { ADDED_LABEL, addedKind } from '../src/lib/added';
 import type { SongHit } from '../src/search/searchIndex';
@@ -307,16 +307,23 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
   // folder, which can hold more than this show, so the row says so.
   const q = quality(show);
   // String(): a few records store their counts as numbers, not text.
+  // The average over the show, from the drive scan: "8.9 Mb/s video · 384 kb/s audio".
+  const bitrate = [kbpsName(show.VideoKbps) && `${kbpsName(show.VideoKbps)} video`, kbpsName(show.AudioKbps) && `${kbpsName(show.AudioKbps)} audio`].filter(Boolean).join(' · ');
   const folder = [show.TotalSizeHuman, show.FileCount && `${show.FileCount} ${String(show.FileCount) === '1' ? 'file' : 'files'}`].filter(Boolean).join(' · ');
   const techRows = [
     show.VideoCodec  && { label: 'Video',       value: videoName(show.VideoCodec),            mono: false },
     q                && { label: 'Resolution',  value: q.resolution,                          mono: false },
+    frameName(show)  && { label: 'Frame rate',  value: frameName(show),                       mono: false },
     show.AspectRatio && { label: 'Aspect',      value: aspectName(show.AspectRatio),          mono: false },
     q?.tier !== 'hd' && show.TVStandard && { label: 'Standard', value: show.TVStandard,       mono: false },
     show.Container   && { label: 'Container',   value: containerName(show.Container),         mono: false },
-    show.AudioCodec  && { label: 'Audio',       value: audioName(show.AudioCodec),            mono: false },
+    discName(show)   && { label: 'Disc',        value: discName(show),                        mono: false },
+    show.AudioCodec  && { label: 'Audio',       value: [audioName(show.AudioCodec), parseInt(show.AudioTracks || '', 10) > 1 && `${show.AudioTracks} tracks`].filter(Boolean).join(' · '), mono: false },
     channelsName(show.AudioChannels) && { label: 'Channels', value: channelsName(show.AudioChannels), mono: false },
     sampleRateName(show.AudioSampleRate) && { label: 'Sample rate', value: sampleRateName(show.AudioSampleRate), mono: false },
+    bitrate          && { label: 'Bitrate',     value: bitrate,                               mono: false },
+    // This show's own files, where they differ from the folder they sit in.
+    show.ShowSizeHuman && show.ShowSizeHuman !== show.TotalSizeHuman && { label: 'Show size', value: show.ShowSizeHuman, mono: false },
     folder           && { label: 'Folder',      value: folder,                                mono: false },
     // When it joined the collection, and whether it was an upgrade (F11).
     show.AddedOn     && { label: 'Added',       value: `${show.AddedOn}${addedKind(show) === 'new' ? '' : ` · ${ADDED_LABEL[addedKind(show)].toLowerCase()}`}`, mono: false },
@@ -349,13 +356,16 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
   const copies = copiesOf(show);
   const copySpecs = (c: Show) => {
     const cq = quality(c);
+    // What ranks one copy against another (F1): source, frame rate and scan,
+    // codec at its bitrate, then the rest; the show's own size where known.
     return [
       sourceName(c.RecordingType),
-      videoName(c.VideoCodec),
+      frameShort(c),
+      [videoName(c.VideoCodec), kbpsName(c.VideoKbps)].filter(Boolean).join(' '),
       containerName(c.Container),
       [audioName(c.AudioCodec), channelsName(c.AudioChannels)].filter(Boolean).join(' '),
       cq?.tier !== 'hd' && c.TVStandard,
-      c.TotalSizeHuman,
+      c.ShowSizeHuman || c.TotalSizeHuman,
       c.ParentShowID && 'excerpt',
     ].filter(Boolean).join(' · ');
   };

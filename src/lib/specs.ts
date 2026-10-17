@@ -101,6 +101,37 @@ export function lengthName(durationSec?: string): string {
   return hours ? `${hours}h ${String(total % 60).padStart(2, '0')}m` : `${total} min`;
 }
 
+// ─── From the drive scan (tools/drive-scan, 2026-10-18; docs/ux-research F1) ───
+
+type Scanned = Pick<Show, 'FrameRate' | 'ScanType' | 'DiscType' | 'Menu' | 'Chapters'>;
+
+/** "25 fps, interlaced", "59.94 fps, progressive"; empty when unknown. */
+export function frameName(show: Scanned): string {
+  if (!show.FrameRate) return '';
+  return [`${show.FrameRate} fps`, show.ScanType].filter(Boolean).join(', ');
+}
+
+/** The trader's shorthand for the copies list: "25i", "29.97i", "50p". */
+export function frameShort(show: Scanned): string {
+  if (!show.FrameRate) return '';
+  return `${show.FrameRate}${show.ScanType === 'interlaced' ? 'i' : show.ScanType === 'progressive' ? 'p' : ' fps'}`;
+}
+
+/** "8.9 Mb/s", "384 kb/s"; empty when unknown. */
+export function kbpsName(kbps?: string): string {
+  const n = parseInt(kbps || '', 10);
+  if (!n) return '';
+  return n >= 1000 ? `${(n / 1000).toFixed(1)} Mb/s` : `${n} kb/s`;
+}
+
+/** "DVD-5 · menu · 8 chapters", "Blu-ray"; empty for a plain file, whose container says it. */
+export function discName(show: Scanned): string {
+  if (!show.DiscType || show.DiscType === 'File') return '';
+  const chapters = parseInt(show.Chapters || '', 10);
+  return [show.DiscType, show.Menu === 'Yes' ? 'menu' : show.Menu === 'No' ? 'no menu' : '',
+    chapters ? `${chapters} ${chapters === 1 ? 'chapter' : 'chapters'}` : ''].filter(Boolean).join(' · ');
+}
+
 /** Songs in a setlist, "Encore break" not counted. */
 export const songCount = (setlist?: string): number =>
   setlist ? setlist.split(';').map(s => s.trim()).filter(s => s && s !== 'Encore break').length : 0;

@@ -297,6 +297,8 @@ const TRADER: { query: string; exactly?: Show[]; includes?: Show[]; artist?: str
   { query: 'artist:pearl year:2000', exactly: shows.filter(s => s.Artist.toLowerCase().includes('pearl') && s.ShowDate.includes('2000')), note: 'two fields at once' },
   { query: 'venue:"brixton academy"', exactly: shows.filter(s => s.VenueName.toLowerCase().includes('brixton academy')), note: 'a quoted value' },
   { query: 'pinkpop artist:pearl jam', exactly: shows.filter(s => s.Artist === 'Pearl Jam' && s.EventOrFestival === 'Pinkpop'), note: 'free words and a field' },
+  { query: 'progressive', exactly: shows.filter(s => s.ScanType === 'progressive'), note: 'scan, from the drive scan' },
+  { query: 'dvd9', exactly: shows.filter(s => s.DiscType === 'DVD-9'), note: 'disc type, from the drive scan' },
   { query: 'songs:creep', exactly: shows.filter(s => (s.Setlist || '').toLowerCase().includes('creep')), note: 'a plural field name (F6)' },
   { query: 'festival:pinkpop', exactly: shows.filter(s => (s.EventOrFestival || '').toLowerCase().includes('pinkpop')), note: 'festival: is event:' },
 ];

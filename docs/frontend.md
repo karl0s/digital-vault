@@ -196,7 +196,8 @@ named for the search and filters (`the-vault-pearl-jam-2026-10-16.csv`); **Downl
 beside All artists gives the whole collection, A–Z. Columns: Artist, Date (`isoDate`: "2001",
 "2001-05" or "2001-05-24", so partial dates still sort), Event,
 Venue, City, Country, Type (Live, Excerpt, Documentary), Source, Quality, Resolution, Standard
-(SD only), Video, Audio, Container, Length (min, a number), Folder size, Generation, Lineage,
+(SD only), Video, Audio, Container, Frame rate, Scan, Video kbps, Audio kbps, Disc, Menu, Chapters,
+Show size (the drive scan's), Length (min, a number), Folder size, Generation, Lineage,
 Songs, Setlist, Link (`showLink`). UTF-8 with a BOM and CRLF, so Excel reads the accents; a cell
 starting with `= + - @` is prefixed with `'`. Only published fields — never one in `DROPPED` or
 `PRIVATE`.
@@ -377,9 +378,11 @@ strip, an "On this recording" list of linked records with time windows and song 
 Drive/folder/file metadata is not shown.
 
 **Recordings of this show** (F2, 2026-10-16) — when `copiesOf(show)` holds more than one: a row
-per copy, longest first, giving quality, length, and the specs that tell copies apart (source,
-video, container, audio and channels, PAL/NTSC for SD, folder size, "excerpt"), with the song
-count from md. The open copy is a plain row marked "This copy" (`aria-current`); the others are
+per copy, longest first, giving quality, length, and the specs that tell copies apart, in the order
+a trader ranks them: source, frame rate and scan in shorthand ("25i", "29.97i", "50p",
+`frameShort`), the video codec at its bitrate ("MPEG-2 8.9 Mb/s"), container, audio and
+channels, PAL/NTSC for SD, the show's own size (else its folder's), "excerpt"; the song count from
+md. The open copy is a plain row marked "This copy" (`aria-current`); the others are
 buttons that swap the drawer to that copy, as the links above do. `src/lib/copies.ts` groups the
 visible shows once per catalogue load (useShows) on CLAUDE.md's duplicate rule — artist, date,
 event, venue, city and country — plus `ContentType`, so a backstage documentary from the night is
@@ -401,8 +404,12 @@ records have no copies. Module state, not a prop, so the memoised cards keep the
   nor counts (F15, 2026-10-17). Opened from a song search, the matched song is lit: App passes the
   search's `songHits` for this show, and that row gets a tint and the typed letters in bold, as on
   the card, with "(the song you searched for)" for screen readers.
-- Technical: `techRows` of `{ label, value, mono }` — Video, Resolution, Aspect, Standard (SD
-  only), Container, Audio, Channels, Sample rate, Folder; label `w-16 text-xs text-gray-400`, value
+- Technical: `techRows` of `{ label, value, mono }` — Video, Resolution, Frame rate ("25 fps,
+  interlaced"), Aspect, Standard (SD only), Container, Disc ("DVD-5 · menu · 8 chapters"; none
+  for a plain file), Audio (with "2 tracks" where several), Channels, Sample rate, Bitrate ("8.9
+  Mb/s video · 384 kb/s audio"), Show size (only where it differs from the folder), Folder,
+  Added. Frame rate, disc and bitrate come from the drive scan (`tools/drive-scan`, 2026-10-18;
+  `frameName`, `discName`, `kbpsName` in `src/lib/specs.ts`); label `w-16 text-xs text-gray-400`, value
   `text-gray-200`; only rows with a value, and no panel when there are none. Values are in traders'
   words, from `src/lib/specs.ts` (MPEG-2, H.264, Dolby Digital (AC-3), LPCM, DVD-Video (VOB),
   MPEG-TS, Stereo, 5.1, 48 kHz; "(native)" dropped from the aspect); an unknown codec shows as
