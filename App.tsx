@@ -151,12 +151,11 @@ export default function App() {
     : null;
 
   // What the site is, for a first visit (F16): counted from the data, so it never goes stale.
-  const collectionSummary = useMemo(() => {
-    if (shows.length === 0) return '';
-    const years = shows.map(s => parseInt(s.ShowDate, 10)).filter(y => y > 0);
-    const artists = new Set(shows.map(s => s.Artist)).size;
-    return `A private collection of ${shows.length.toLocaleString('en')} concert videos by ${artists} artists, ${Math.min(...years)}–${Math.max(...years)}`;
-  }, [shows]);
+  // Kept short (owner, 2026-10-18): the artist count and years read as too much.
+  const collectionSummary = useMemo(
+    () => (shows.length ? `A private collection of ${shows.length.toLocaleString('en')} live shows` : ''),
+    [shows],
+  );
 
   // The results on screen as a spreadsheet (F10), named for the search and filters.
   const downloadResults = () => downloadCsv(results, [filterState.q, ...filterLabels].join(' '));
