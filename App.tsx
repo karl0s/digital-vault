@@ -151,9 +151,9 @@ export default function App() {
     : null;
 
   // What the site is, for a first visit (F16): counted from the data, so it never goes stale.
-  // Kept to the count (owner, 2026-10-18): artists, years and "a private collection" read as too much.
+  // Kept short (owner, 2026-10-18): the artist count and years read as too much.
   const collectionSummary = useMemo(
-    () => (shows.length ? `${shows.length.toLocaleString('en')} live shows` : ''),
+    () => (shows.length ? `A private collection of ${shows.length.toLocaleString('en')} live shows` : ''),
     [shows],
   );
 
