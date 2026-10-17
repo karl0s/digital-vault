@@ -22,12 +22,11 @@
 | | Done | Partly | To do | |
 |---|---|---|---|---|
 | **The 8 trader jobs** (scripted run) | **8 pass** | — | — | At the review: 1 pass, 4 partial, 3 fail |
-| **The 18 findings** (F1–F18) | **16** ✅ | **2** 🟡 | **0** ⬜ | F1 and F7 partly: they wait on the drive scan and date precision |
-| **The 24 scored fixes** | **22** ✅ | — | **2** ⬜ | Left: date precision, the drive scan |
+| **The 18 findings** (F1–F18) | **17** ✅ | **1** 🟡 | **0** ⬜ | F1 partly: frame rate and bitrate wait on the drive scan |
+| **The 24 scored fixes** | **23** ✅ | — | **1** ⬜ | Left: the drive scan |
 | **Source on blank records** | **329** | — | **0** | All done (2026-10-17): every show says Pro-shot (1,164) or Audience (49) |
 
-**Live on the site:** everything above, up to the page per show (pushed 2026-10-17).
-**Committed, not yet live:** every show's source (2026-10-17) and the Source filter.
+**Live on the site:** everything above (pushed 2026-10-17).
 
 ### Done
 
@@ -53,6 +52,8 @@
 - [x] **Source on all 329 blank records** — 54 from another copy of the same show, 275 on your
   review page (2026-10-17): every show now says Pro-shot or Audience *(data)*
 - [x] **Source filter** — Pro-shot / Audience, first in More filters *(F12)*
+- [x] **Date precision** — a month-only date reads "May 2001 (day unknown)"; every show dated the
+  1st settled: 92 corrected to the right day, 22 confirmed, 30 month only, 1 not found *(F7)*
 - [x] **A page per show** — a link pasted into WhatsApp, iMessage or a forum previews that show's
   still, name, date and quality; Copy link hands it out *(F3)*
 - [x] **H. Polish** — the searched song lit in the setlist, the encore a divider; the phone's
@@ -67,11 +68,8 @@
 - [ ] **Alongside the rest: real traders.** Everything left is predicted, not seen. Send the link
   with three tasks from [04-test-plan.md](04-test-plan.md) to two or three traders you already
   email; their answers re-score the list
-- [ ] **1. Date precision: your review page** (`~/VaultShots/reports/date-precision.html`): 11
-  real dates confirmed; 132 shows dated the 1st of a month still open — 8 suggested month only,
-  2 New Year's Day, 122 with no evidence *(F7)*
-- [ ] **2. The 432 missing setlists**, in their own review
-- [ ] **3. Drive scan** — frame rate, bitrate, chapters, the show's own size, broadcaster *(needs
+- [ ] **1. The 432 missing setlists**, in their own review
+- [ ] **2. Drive scan** — frame rate, bitrate, chapters, the show's own size, broadcaster *(needs
   Live Music mounted)*
 
 **Small leftovers from finished items** (not scheduled; say if one matters):
@@ -91,7 +89,7 @@ be contrast-checked automatically (F13).
 | [F4](#f4--pointing-at-one-exact-recording-is-hard) | Pointing at one exact recording | ✅ | Batch C: a Share pill (share sheet on phones, "Copy link" elsewhere): the link alone as plain text (pastes into an address bar or chat), and as rich text `Artist · date · event · quality · length` linked to the show (pastes into an email by name) | — |
 | [F5](#f5--escape-erases-the-search-behind-an-open-show) | Escape erases the search | ✅ | Batch A: Escape closes only the show; the results stay, so the next copy is one click away | — |
 | [F6](#f6--search-doesnt-match-how-traders-type) | Search misses how traders type | ✅ | Batch B: dates in every common format (and two-digit years); artist initials (RATM, FNM, KOL, 30STM…), no wrong "Did you mean"; countries, cities and events by other names (uk, brasil, koln, titp…); tech terms (hd, 1080, pal, pro shot, lpcm…); several field filters at once, quoted values; search tips in the empty state; 43 new search tests. Batch H: plural field names and `festival:` (`songs:creep`) | Tips appear when a search finds nothing, not under the field |
-| [F7](#f7--placeholder-dates-look-like-real-dates) | Placeholder dates look real | 🟡 | Batch D: cards show a year-only date (`YYYY-01-01`) as the year; then the drawer, share line and tab title too. 2026-10-17: a `DatePrecision` field ("month", "day") the site and health check read: "May 2001 (day unknown)", "2001 (date unknown)" in the drawer, partial ISO dates in the CSV; a review page for the 144 shows dated the 1st of a month (`tools/date-precision`) | 11 shows (13 records) confirmed real dates, 2026-10-17. Left on the review page: 8 suggested month only, 2 New Year's Day, 122 with no evidence |
+| [F7](#f7--placeholder-dates-look-like-real-dates) | Placeholder dates look real | ✅ | Batch D: cards show a year-only date (`YYYY-01-01`) as the year; then the drawer, share line and tab title too. 2026-10-17: a `DatePrecision` field ("month", "day") the site and health check read: "May 2001 (day unknown)", "2001 (date unknown)" in the drawer, partial ISO dates in the CSV; a review page for the 144 shows dated the 1st of a month (`tools/date-precision`) Then (2026-10-17) every show dated the 1st was settled: 11 confirmed from their folders, and the other 133 researched online, one fetched source each by your word — 92 had the wrong day (festival sets now on the day the act played), 11 were real 1sts, 30 are month only; 141 records changed, each with its source in PrivateNotes | One show not found (Aerosmith, Japan 2002), left as it is. Year-only dates (YYYY-01-01) read as the year, as before |
 | [F8](#f8--empty-results-blame-spelling-when-a-filter-is-the-cause) | Empty results blame spelling | ✅ | Batch B: names the filters that hide the results and offers "Show N without the filter" | — |
 | [F9](#f9--the-drawer-hides-venue-and-city-for-festival-and-tv-shows) | Venue and city hidden | ✅ | Batch A: `Date · Event · Venue · City, Country` under the name for every show | — |
 | [F10](#f10--no-dense-list-export-or-useful-sort-for-reconciling-a-trading-list) | No list view or export | ✅ | Batch F (2026-10-16): a Grid / List toggle kept in the link; the list a dense table (date, artist, event, venue, place, source, quality, PAL/NTSC, length, size, songs); **CSV** of the results on screen and **Download the full list** (21 columns, opens in Excel with accents intact, a link per show); sort by length; prints black on white | — |
@@ -197,8 +195,9 @@ come for, J1 and J2, now pass.
 **Now (2026-10-17).** All eight trader jobs pass in the scripted run. A trader can find a show
 however they type it, see which copy is better and why, compare the copies side by side, take the
 list away as a spreadsheet, send a link to one exact recording, and see what's been added. What's
-left is mostly **data** (Source on 275 records, date precision, missing setlists, the drive scan)
-and **polish**, and none of it has been tried by a real trader yet.
+left is the **432 missing setlists** and the **drive scan** (frame rate, bitrate, chapters); every
+show now says how it was filmed and dates no day nobody knows. None of it has been tried by a real
+trader yet.
 
 **At the review (2026-10-16):** The Vault is **fast, handsome and better at song search than most trading lists**. The stills are
 real frames with the channel logos intact, which is exactly the evidence traders use.
@@ -263,7 +262,7 @@ use. The highest score goes first. Where two items touch the same code they are 
 | 16 | "Recently added" | [F11](#f11--returning-traders-cant-see-whats-new) | 2 | 2 | 0.8 | 2 | **1.6** | Returning visitors; predicted. Your call: start from today (git history can't tell new from re-filed) | ✅ batch G |
 | 17 | "More filters" (agreed) | [F12](#f12--filters-dont-cover-what-traders-decide-by) | 2 | 2 | 0.8 | 2 | **1.6** | Predicted; search covers part of it today. A source filter waited for #20: with 27% blank it would have hidden shows | ✅ batch F, source 2026-10-17 |
 | 18 | Drive scan: frame rate, bitrate, chapters, show size | [Plan](#planned-a-drive-scan-for-the-missing-specs) | 2 | 3 | 1.0 | 4 | **1.5** | Needs Live Music mounted | 📅 |
-| 19 | Date precision ("2001, exact date unknown") | [F7](#f7--placeholder-dates-look-like-real-dates) | 2 | 2 | 1.0 | 4 | **1.0** | 257 records; mostly data work | ⬜ |
+| 19 | Date precision ("2001, exact date unknown") | [F7](#f7--placeholder-dates-look-like-real-dates) | 2 | 2 | 1.0 | 4 | **1.0** | 257 records; mostly data work | ✅ 2026-10-17 |
 | 20 | Fill in Source on 329 records | [Data](#data-quality--the-metadata-is-the-product) | 2 | 2 | 1.0 | 2 | **2.0** | Re-scored 2026-10-16: 126 of the 329 have a clue in their own notes or event, so a review page settles them quickly (Effort 4 → 2); the other ~200 need their stills looked at | ✅ all 329 (2026-10-17) |
 | 21 | Setlists: 32 non-song entries; encore as a divider; highlight the searched song | [F15](#f15--setlists-non-songs-counted-as-songs-the-searched-song-isnt-highlighted) | 1 | 1 | 1.0 | 1 | **1.0** | Small | ✅ batch H; the entries stay, your call (2026-10-17) |
 | 22 | Phone header shrinks while scrolling | [F18](#low) | 1 | 1 | 0.8 | 1 | **0.8** | Polish | ✅ batch H |
@@ -291,7 +290,7 @@ A batch's place comes from its best score.
 | **G. What's new** ✅ | 16 | An added-on date per record, a "Recently added" row and sort | Ties with F; your call: start from today |
 | **H. Polish** ✅ | 21, 22, 23 | Setlist non-songs and the encore as a divider, the searched song highlighted; phone header shrinks on scroll; one line saying what the site is | Small, independent |
 | Page per show ✅ | F3 leftover | A link to one show previews that show in chats and forums | Needs a build step; matters once traders share links among themselves |
-| Data | 19 | Date precision; the missing setlists | Your review pages, record by record |
+| Data | 19 ✅ | Date precision; the missing setlists | Your review pages, record by record |
 | Drive | 18 | Frame rate, bitrate, chapters, show size | When Live Music is mounted |
 
 ### What would change the order
