@@ -139,6 +139,10 @@ export const songCount = (setlist?: string): number =>
 /** How the record was filmed, as traders write it: "Pro-shot", "Audience". */
 export const sourceName = (type?: string) => (type === 'Proshot' ? 'Pro-shot' : type || '');
 
+/** The source with its channel where known: "Pro-shot · BBC Three". */
+export const sourceWithChannel = (show: Pick<Show, 'RecordingType' | 'Broadcaster'>) =>
+  [sourceName(show.RecordingType), show.Broadcaster].filter(Boolean).join(' · ');
+
 export type DatePrecision = 'year' | 'month' | 'day';
 
 /**

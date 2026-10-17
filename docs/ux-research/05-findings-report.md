@@ -52,6 +52,8 @@
 - [x] **Source on all 329 blank records** — 54 from another copy of the same show, 275 on your
   review page (2026-10-17): every show now says Pro-shot or Audience *(data)*
 - [x] **Source filter** — Pro-shot / Audience, first in More filters *(F12)*
+- [x] **Broadcaster** — the channel beside the source ("Pro-shot · BBC Three") on 394 records,
+  in the drawer, the copies comparison, the list, the CSV and search *(F1, J2)*
 - [x] **Drive scan** — frame rate and scan, bitrate, disc, menu, chapters and the show's own
   size on 1,204 records, shown in the drawer, the copies comparison, the list and the CSV; 16
   picture sizes corrected *(F1)*
@@ -72,7 +74,8 @@
   with three tasks from [04-test-plan.md](04-test-plan.md) to two or three traders you already
   email; their answers re-score the list
 - [ ] **1. The 432 missing setlists**, in their own review
-- [ ] **2. Broadcaster** (BBC, MTV, WDR…) — drafted from notes and folder names, for your review
+- [ ] **2. Broadcaster, the rest** — 394 named from the records themselves (2026-10-18); 233 more
+  that only the private notes name wait on the review page (`~/VaultShots/reports/broadcaster.html`)
 - [ ] **3. With Live Music mounted:** re-check Alice in Chains and Smashing Pumpkins (1996)
   against their own files; look again for the 7 shows the scan couldn't find
 
@@ -117,7 +120,7 @@ The review's walkthrough tasks, run again on the live site after batches A–E w
 | Job | At the review | Now | Still missing |
 |---|---|---|---|
 | J1 Do you have it? | 🟡 Partial | 🟢 **Pass** | — (a year-only date now reads as the year everywhere) |
-| J2 Is yours better? | 🔴 Fail | 🟢 **Pass** | No broadcaster yet |
+| J2 Is yours better? | 🔴 Fail | 🟢 **Pass** | Broadcaster on 394 records so far ("Pro-shot · BBC Three"); 233 more to review |
 | J3 Artist audit | 🟡 Partial | 🟢 **Pass** | — |
 | J4 Song hunt | 🟢 Pass | 🟢 Pass | — (the song is lit in the setlist; `songs:` works) |
 | J5 Event dig | 🟡 Partial | 🟢 **Pass** | Small events (Fuji Rock) only by search |
@@ -149,7 +152,7 @@ come for, J1 and J2, now pass.
 - [x] Escape closes the show and keeps the results
 - [x] Size labelled as the folder's, with its file count
 - [x] Source (Pro-shot, Audience) on every record (was blank on 329)
-- [ ] No broadcaster field (BBC, MTV, Rockpalast…)
+- [x] The broadcaster beside the source, in the drawer and the copies list (394 records; 233 more to review)
 - [x] Frame rate, bitrate, the show's own size, side by side in the copies list (drive scan)
 
 **J3 — What do you have that I don't?**

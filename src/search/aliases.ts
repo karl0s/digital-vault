@@ -104,6 +104,8 @@ export function techAliases(show: Show): string {
     show.RecordingType === 'Proshot' && 'pro shot proshot',
     show.RecordingType === 'Audience' && 'aud',
     show.ContentType === 'Documentary' && 'doc',
+    // The channel, so "bbc three" or "wdr" finds its broadcasts.
+    show.Broadcaster?.toLowerCase(),
     // From the drive scan: "interlaced", "progressive", "dvd9", "bluray".
     show.ScanType === 'interlaced' && 'interlaced',
     show.ScanType === 'progressive' && 'progressive',

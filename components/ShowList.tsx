@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { Show } from '../App';
-import { dateName, kbpsName, lengthName, quality, sourceName, songCount } from '../src/lib/specs';
+import { dateName, kbpsName, lengthName, quality, songCount, sourceWithChannel } from '../src/lib/specs';
 
 interface ShowListProps {
   shows: Show[];
@@ -82,7 +82,7 @@ function Row({ show, onShowClick }: { show: Show; onShowClick: (show: Show) => v
         {show.VenueName !== show.EventOrFestival ? show.VenueName : ''}
       </td>
       <td className="hidden py-2 pr-3 text-gray-300 md:table-cell print:text-black">{place}</td>
-      <td className="hidden whitespace-nowrap py-2 pr-3 text-gray-300 xl:table-cell print:table-cell print:text-black">{sourceName(show.RecordingType)}</td>
+      <td className="hidden whitespace-nowrap py-2 pr-3 text-gray-300 xl:table-cell print:table-cell print:text-black">{sourceWithChannel(show)}</td>
       <td className="whitespace-nowrap py-2 pr-3 text-gray-200 print:text-black">
         {q}
         <span className="block text-xs tabular-nums text-gray-400 md:hidden">{length}</span>

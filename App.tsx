@@ -67,6 +67,8 @@ export interface Show {
    * kb/s, audio tracks where several, "DVD-5" / "DVD-9" / "Blu-ray" / "File", a DVD's menu
    * ("Yes"/"No") and chapters, and the show's own size where its files are its own.
    */
+  /** The channel a pro-shot recording came from, as traders name it ("BBC Three", "WDR"); tools/broadcaster, 2026-10-18. */
+  Broadcaster?: string;
   FrameRate?: string;
   ScanType?: string;
   VideoKbps?: string;

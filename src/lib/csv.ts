@@ -23,6 +23,7 @@ const COLUMNS: [string, (s: Show) => string | number][] = [
   ['Country', s => s.Country || ''],
   ['Type', s => (s.ContentType === 'Documentary' ? 'Documentary' : s.ParentShowID ? 'Excerpt' : 'Live')],
   ['Source', s => sourceName(s.RecordingType)],
+  ['Broadcaster', s => s.Broadcaster || ''],
   ['Quality', s => quality(s)?.label ?? ''],
   ['Resolution', s => quality(s)?.resolution.replace(' × ', 'x') ?? ''],
   // As the drawer: on HD records the field is unreliable.

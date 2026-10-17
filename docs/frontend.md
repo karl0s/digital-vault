@@ -195,7 +195,7 @@ pill are `print:hidden`, the shell and table go black on white, every column pri
 named for the search and filters (`the-vault-pearl-jam-2026-10-16.csv`); **Download the full list**
 beside All artists gives the whole collection, A–Z. Columns: Artist, Date (`isoDate`: "2001",
 "2001-05" or "2001-05-24", so partial dates still sort), Event,
-Venue, City, Country, Type (Live, Excerpt, Documentary), Source, Quality, Resolution, Standard
+Venue, City, Country, Type (Live, Excerpt, Documentary), Source, Broadcaster, Quality, Resolution, Standard
 (SD only), Video, Audio, Container, Frame rate, Scan, Video kbps, Audio kbps, Disc, Menu, Chapters,
 Show size (the drive scan's), Length (min, a number), Folder size, Generation, Lineage,
 Songs, Setlist, Link (`showLink`). UTF-8 with a BOM and CRLF, so Excel reads the accents; a cell
@@ -337,7 +337,8 @@ EventOrFestival · VenueName · City, Country`, each part only when set and once
 dropped when it repeats the event or the city). The date is `dateName`, as on the cards, and says
 outright when it is partial (`dateCaveat`, F7): "2001 (date unknown)", "May 2001 (day unknown)". The place shows for
 festival and TV shows too (owner, 2026-10-16; it was hidden on ~700). Badge pills —
-`ContentType` (violet), `RecordingType` as traders write it (`sourceName`: "Pro-shot"), Duration
+`ContentType` (violet), `RecordingType` as traders write it with its channel where known
+(`sourceWithChannel`: "Pro-shot · BBC Three"; `Broadcaster`, tools/broadcaster, 2026-10-18), Duration
 (Clock icon + `lengthName`), the
 quality label (`quality()` in `src/lib/specs.ts`: HD 1080, HD 720, SD 576, SD 480, Low-res; the
 resolution as its `title`), and `TVStandard` for SD and low-res copies only — on HD records the
@@ -379,7 +380,7 @@ Drive/folder/file metadata is not shown.
 
 **Recordings of this show** (F2, 2026-10-16) — when `copiesOf(show)` holds more than one: a row
 per copy, longest first, giving quality, length, and the specs that tell copies apart, in the order
-a trader ranks them: source, frame rate and scan in shorthand ("25i", "29.97i", "50p",
+a trader ranks them: source and broadcaster, frame rate and scan in shorthand ("25i", "29.97i", "50p",
 `frameShort`), the video codec at its bitrate ("MPEG-2 8.9 Mb/s"), container, audio and
 channels, PAL/NTSC for SD, the show's own size (else its folder's), "excerpt"; the song count from
 md. The open copy is a plain row marked "This copy" (`aria-current`); the others are

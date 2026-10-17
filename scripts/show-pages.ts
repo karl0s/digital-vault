@@ -15,7 +15,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import sharp from 'sharp';
 import type { Show } from '../App';
-import { dateName, lengthName, quality, sourceName } from '../src/lib/specs';
+import { dateName, lengthName, quality, sourceWithChannel } from '../src/lib/specs';
 
 export const SHOW_DIR = 'show';
 const SHOW_ID = /^[0-9a-f]{12}$/;
@@ -44,7 +44,7 @@ export function showDescription(show: Show): string {
   const venue = show.VenueName && show.VenueName !== show.EventOrFestival && show.VenueName !== show.City ? show.VenueName : '';
   const place = [show.EventOrFestival, venue, [show.City, show.Country].filter(Boolean).join(', ')].filter(Boolean).join(' · ');
   const kind = show.ContentType === 'Documentary' ? 'Documentary' : show.ParentShowID ? 'Excerpt' : '';
-  const specs = [quality(show)?.label, lengthName(show.DurationSec), sourceName(show.RecordingType), kind].filter(Boolean).join(' · ');
+  const specs = [quality(show)?.label, lengthName(show.DurationSec), sourceWithChannel(show), kind].filter(Boolean).join(' · ');
   return [place && `${place}.`, specs && `${specs}.`].filter(Boolean).join(' ') || 'A concert video in The Vault.';
 }
 

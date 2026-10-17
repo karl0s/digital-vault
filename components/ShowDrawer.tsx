@@ -6,7 +6,7 @@ import { CloseButton } from './CloseButton';
 import type { ImageUrlGetter } from '../src/hooks/useShows';
 import { scrollContainerToTop } from '../src/lib/motion';
 import { showLink } from '../src/lib/url';
-import { quality, videoName, audioName, containerName, channelsName, aspectName, sampleRateName, lengthName, sourceName, dateName, dateCaveat, songCount, frameName, frameShort, kbpsName, discName } from '../src/lib/specs';
+import { quality, videoName, audioName, containerName, channelsName, aspectName, sampleRateName, lengthName, sourceName, sourceWithChannel, dateName, dateCaveat, songCount, frameName, frameShort, kbpsName, discName } from '../src/lib/specs';
 import { copiesOf } from '../src/lib/copies';
 import { ADDED_LABEL, addedKind } from '../src/lib/added';
 import type { SongHit } from '../src/search/searchIndex';
@@ -360,6 +360,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
     // codec at its bitrate, then the rest; the show's own size where known.
     return [
       sourceName(c.RecordingType),
+      c.Broadcaster,
       frameShort(c),
       [videoName(c.VideoCodec), kbpsName(c.VideoKbps)].filter(Boolean).join(' '),
       containerName(c.Container),
@@ -637,7 +638,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                 )}
                 {show.RecordingType && (
                   <span className={`px-2.5 py-0.5 rounded text-xs font-medium ${getRecordingBadgeStyle(show.RecordingType)}`}>
-                    {sourceName(show.RecordingType)}
+                    {sourceWithChannel(show)}
                   </span>
                 )}
                 {durationFormatted && (
