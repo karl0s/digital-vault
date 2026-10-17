@@ -669,9 +669,9 @@
     "entries": [
       "Waiting For the Sun",
       "Best",
-      "Bobfather"
+      "sha1:a6d0e4091086fa191481f58bc393930b4d36d657"
     ],
-    "why": "Not songs: the sidecar's sign-off, 'Best / Bobfather' (the taper's name), imported as two entries. Rebuilt to the sidecar's 17 songs. 'Waiting For the Sun' is not removed but renamed to 'Waiting for the Sun' (title case); the guard matches exact strings, so the old form is listed here."
+    "why": "Not songs: the sidecar's sign-off, 'Best / [taper]' (the taper's name), imported as two entries. Rebuilt to the sidecar's 17 songs. 'Waiting For the Sun' is not removed but renamed to 'Waiting for the Sun' (title case); the guard matches exact strings, so the old form is listed here."
   },
   "884da8e9cd6f": {
     "artist": "Soundgarden",
@@ -1780,5 +1780,15 @@
       "sha1:3374fe11478e01d5586875c005479637634121f4"
     ],
     "why": "A credit line imported into Setlist as if it were a song; taper names are not published (owner, 2026-10-16). The text is in the owner's private record."
+  },
+  "5bc4706b8ef5": {
+    "artist": "Stone Temple Pilots",
+    "show": "Batschkapp 1993-04-01",
+    "entries": [
+      "Buy their back catalogue....they did great records",
+      "Best",
+      "sha1:a6d0e4091086fa191481f58bc393930b4d36d657"
+    ],
+    "why": "The sidecar's sign-off, not songs: a line about buying the band's records, 'Best', and the uploader's name ([taper], hashed). Cleared 2026-10-17."
   }
 }
