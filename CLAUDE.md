@@ -149,6 +149,7 @@ Flat JSON array of show objects. Key fields:
 | `Hidden` | `"Yes"` or absent | Keeps the record in `shows.json` but off the site (filtered in `src/hooks/useShows.ts`). For two records of one recording where only one should show: set `DuplicateOf` to the shown record and say why in `PrivateNotes`. `DuplicateOf` alone does **not** hide (Jay-Z and Jack White carry it and are meant to show) |
 | `ParentShowID` | ShowID or absent | Set on a record cut from a multi-artist **master** recording (festival broadcast, talk-show compilation). The drawer links to the master ("Part of …"); the master's drawer lists its records under "On this recording". One level only; the master must not be hidden. Checked by the health check |
 | `SegmentStart` / `SegmentEnd` | `H:MM:SS` | Where that linked record sits on the master's timeline. Always set together with `ParentShowID` |
+| `Lineage` / `Generation` | string or absent | **Public.** The transfer chain (`TV > VHS(1) > DVDR`, two chains joined with ` \| `) and the copy's generation (`Master`, `1st Gen`, `2nd Gen`), from the show's own sidecar, never naming a taper (*Tapers are never named*). Chains the first scan missed were added on review, 2026-10-18/19 (`tools/lineage`, `tools/generation`) |
 | `DatePrecision` | `"month"`, `"day"`, `"year"` or absent | How much of `ShowDate` is known where its convention can't tell — see *ShowDate* below |
 | `Broadcaster` | string or absent | The channel a pro-shot recording came from, as traders name it ("BBC Three", "WDR", "NBC"). Drafted from the record's own sidecar, folder name, programme or private notes and confirmed by the owner, or typed by the owner from the channel's logo on the stills (`tools/broadcaster`, 2026-10-18). A record he left blank says so in `PrivateNotes`, and the review never asks again. Shown with the source ("Pro-shot · BBC Three") |
 | `FrameRate`, `ScanType`, `VideoKbps`, `AudioKbps`, `AudioTracks`, `DiscType`, `Menu`, `Chapters`, `ShowSizeHuman` | strings or absent | Read from the record's own files by the drive scan (`tools/drive-scan`, 2026-10-18; added, never overwriting). Bitrates are averages from size and length; `Chapters` only where the record is its titleset's whole programme; `ShowSizeHuman` only where the files are its own, in `TotalSizeHuman`'s units (binary, "GB"). Re-run: `scan.py` → `page.py` (review) → `apply.py` |
@@ -187,6 +188,14 @@ Lineage and Generation are published; the people in them are not.
   tracked file, a code comment or a commit message. Write `[taper]`.
 - Exempt: `FolderName`, `FolderPath`, `RepVideoFiles` — the tools find folders on the drive by
   them — and never published on the site (`PRIVATE` in `scripts/site-data.mjs`).
+- **The rules miss credits written in unusual ways** ("DVD-R by …", "Reauthored by …", "thanks
+  much to …"; 11 more names came out on 2026-10-19). Add the name to `private/taper-names.json` and
+  re-run `apply.mjs --apply`: it is then removed in every show and its hash joins the check. A name
+  under 3 characters can't go on that list (its hash would match ordinary words, "SD"): remove it
+  by hand, saving the original text to `private/taper-originals.json` first.
+- **The check reads each step of a lineage chain**: a step with no word it knows (`TECH` in
+  `tools/taper-redaction/redact.mjs`) reads as a person. New lineage can trip it on a tool or a
+  channel ("CapDVHS", "NBCHD"): make sure the word names no one, then add it to `TECH`.
 
 ### AddedOn — what's new
 **The owner's rule (2026-10-16): "Recently added" starts from that day.** The 1,214 records then

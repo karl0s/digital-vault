@@ -92,7 +92,9 @@ set `status: proposed`, render, open. **The owner decides which acts get records
   health check blocks a new record with neither.
 - **Specs from the drive**, once the records are written: `python3 tools/drive-scan/scan.py --resume`,
   review with `page.py`, then `apply.py --apply`. Linked records take the master's frame rate, scan
-  and disc type, never a size or bitrate of their own (CLAUDE.md → the drive-scan fields).
+  and disc type, never a size or bitrate of their own (CLAUDE.md → the drive-scan fields). The
+  sidecar's channel, lineage chain and Generation section go on review with `tools/broadcaster`,
+  `tools/lineage` and `tools/generation`.
 - **Set `ContentType` on every new record, master and linked alike** (CLAUDE.md → Documentaries):
   `"Documentary"` when half or more of that record's runtime is people talking or narration over
   footage — an interview segment, a making-of, a behind-the-scenes piece — otherwise absent. A

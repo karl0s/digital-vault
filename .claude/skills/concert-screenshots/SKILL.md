@@ -981,7 +981,9 @@ separable at file level").
   --resume` (reads only records not scanned yet), `python3 tools/drive-scan/page.py` (review), then
   `python3 tools/drive-scan/apply.py --apply` — new fields only, never an existing value (CLAUDE.md →
   the drive-scan fields). A pro-shot record whose sidecar names its channel can take `Broadcaster`
-  from `tools/broadcaster`.
+  from `tools/broadcaster`; a sidecar's lineage chain and Generation section go on review with
+  `tools/lineage/build.py` and `tools/generation/build.py` (then the taper check: a new chain can
+  trip it on a tool's name — CLAUDE.md → Tapers are never named).
 - Set `ContentType`: `"Documentary"` when half or more of **that titleset's** runtime is people talking
   or narration over footage (interviews, making-of, behind-the-scenes, Cribs-style tours,
   rockumentaries, TV biographies), otherwise absent. Storytellers, Unplugged and concert films with
