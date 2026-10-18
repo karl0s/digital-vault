@@ -7,13 +7,14 @@ picks.txt is the review page's "Copy for Claude Code" export (tools/broadcaster/
 accepted row's channel goes into `Broadcaster`, only where the record has none; the evidence
 is re-drafted from the record, so the note says where the name came from. A channel Karl typed
 from a still's logo ("SET TO") is written as he typed it; a single character is a stray key and
-is not. A row he left blank gets a note in PrivateNotes, so the page doesn't ask again. Nothing
-else changes.
+is not, and a name the page doesn't know (a half-typed "nt") is held back and listed until he
+confirms it: `--allow="NTR"` (repeatable) writes it. A row he left blank gets a note in
+PrivateNotes, so the page doesn't ask again. Nothing else changes.
 """
 import datetime, json, os, re, sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from build import LEFT_BLANK, REPO, draft  # noqa: E402
+from build import CHANNELS, LEFT_BLANK, REPO, SHOWS as PROGRAMMES, draft  # noqa: E402
 
 SHOWS = os.path.join(REPO, 'public', 'shows.json')
 
@@ -43,6 +44,16 @@ def main():
     if json.dumps(shows, indent=2, ensure_ascii=False) + '\n' != raw:
         sys.exit('shows.json is not in its usual format; not touching it')
     today = datetime.date.today().isoformat()
+    # Names the page offered (its datalist), any already on a record, and those confirmed here.
+    allowed = [a.split('=', 1)[1] for a in sys.argv if a.startswith('--allow=')]
+    known = {n.lower(): n for n in [n for _, n in CHANNELS if n] + [f'France {k}' for k in '234'] + list(PROGRAMMES.values())
+             + [x['Broadcaster'] for x in shows if x.get('Broadcaster')] + allowed}
+    for sid, name in list(typed.items()):
+        if name.lower() in known:
+            typed[sid] = known[name.lower()]
+        else:
+            print(f'  held, not a channel the page knows: {sid}  {name!r}')
+            del typed[sid]
     plan = []
     for s in shows:
         if s.get('Broadcaster'):

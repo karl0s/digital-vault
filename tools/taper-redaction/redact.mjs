@@ -433,7 +433,8 @@ function scrubNames(text, names, changes, joiner, anyCase = new Set()) {
       after = `---- ${h[1].replace(rx, '').replace(/\(\s*\)|\[\s*\]/g, '').replace(/\s+(\.\w+)$/, '$1').replace(/\s{2,}/g, ' ').trim()} ----`;
     } else if (line.trim().split(/\s+/).length >= 12) {
       // Prose: the sentences that mention the person go.
-      after = line.split(/(?<=[.!?]["')]?)\s+(?=["'(]?[A-Z])/).filter(p => { rx.lastIndex = 0; return !rx.test(p); }).join(' ');
+      // ("Mr. Foo" is one name, not the end of a sentence.)
+      after = line.split(/(?<=[.!?]["')]?)(?<!\b(?:Mr|Mrs|Ms|Dr|St)\.)\s+(?=["'(]?[A-Z])/).filter(p => { rx.lastIndex = 0; return !rx.test(p); }).join(' ');
     } else {
       after = line.replace(rx, ' ')
         .replace(/\(\s*\)|\[\s*\]/g, '')

@@ -111,7 +111,7 @@ h2{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#9ca3af;mar
 """
 
 SCRIPT = r"""
-const KEY='vault-broadcaster-round-2'; let picks={}; try{picks=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+const KEY='vault-broadcaster-round-3'; let picks={}; try{picks=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(picks))}catch(e){}}; const rows=[...document.querySelectorAll('.row')];
 function paint(){for(const r of rows){const v=picks[r.dataset.id]||'';r.classList.toggle('done',!!v);r.querySelectorAll('.opt').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
 const o=r.querySelector('.other');o.classList.toggle('on',v.startsWith('set:'));if(document.activeElement!==o)o.value=v.startsWith('set:')?v.slice(4):''}
