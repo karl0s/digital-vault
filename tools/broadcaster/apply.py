@@ -5,7 +5,8 @@
 
 picks.txt is the review page's "Copy for Claude Code" export (tools/broadcaster/build.py). Each
 accepted row's channel goes into `Broadcaster`, only where the record has none; the evidence
-is re-drafted from the record, so the note says where the name came from. Nothing else changes.
+is re-drafted from the record, so the note says where the name came from. A channel Karl typed
+from a still's logo ("SET TO") is written as he typed it. Nothing else changes.
 """
 import datetime, json, os, re, sys
 
@@ -18,15 +19,20 @@ SHOWS = os.path.join(REPO, 'public', 'shows.json')
 def main():
     if len(sys.argv) < 2:
         sys.exit(__doc__)
-    accepted, section = set(), None
+    accepted, typed, section = set(), {}, None
     for line in open(sys.argv[1], encoding='utf-8').read().splitlines():
-        head = re.match(r'^(ACCEPT|LEAVE BLANK)', line.strip())
+        head = re.match(r'^(ACCEPT|SET TO|LEAVE BLANK)', line.strip())
         if head:
             section = head.group(1)
             continue
         m = re.match(r'^([0-9a-f]{12})\s', line.strip() + ' ')
         if m and section == 'ACCEPT':
             accepted.add(m.group(1))
+        elif m and section == 'SET TO':
+            # "<ShowID>  <channel>  <Artist · date>": two spaces apart, as the page writes it.
+            name = line.strip().split('  ')[1].strip()
+            if name:
+                typed[m.group(1)] = name
     raw = open(SHOWS, encoding='utf-8').read()
     shows = json.loads(raw)
     if json.dumps(shows, indent=2, ensure_ascii=False) + '\n' != raw:
@@ -34,19 +40,24 @@ def main():
     today = datetime.date.today().isoformat()
     plan = []
     for s in shows:
-        if s['ShowID'] in accepted and not s.get('Broadcaster'):
+        if s.get('Broadcaster'):
+            continue
+        if s['ShowID'] in typed:
+            plan.append((s, dict(name=typed[s['ShowID']], where='')))
+        elif s['ShowID'] in accepted:
             d = draft(s)
             if d and d['name']:
                 plan.append((s, d))
     for s, d in plan[:5]:
-        print(f"  {s['ShowID']}  {s['Artist']}  ->  {d['name']}  ({d['where']})")
+        print(f"  {s['ShowID']}  {s['Artist']}  ->  {d['name']}  ({d['where'] or 'typed from the stills'})")
     print(f'{len(plan)} to write' + (' (first five shown)' if len(plan) > 5 else ''))
     if '--apply' not in sys.argv:
         print('Dry run. Add --apply to write.')
         return
     for s, d in plan:
         s['Broadcaster'] = d['name']
-        note = f"BROADCASTER ({today}): {d['name']}, the owner's pick on the broadcaster review; named in the record's {d['where'].lower()}."
+        note = (f"BROADCASTER ({today}): {d['name']}, the owner's pick on the broadcaster review; named in the record's {d['where'].lower()}."
+                if d['where'] else f"BROADCASTER ({today}): {d['name']}, typed by the owner from the logo on the record's stills (broadcaster review).")
         prev = (s.get('PrivateNotes') or '').rstrip()
         s['PrivateNotes'] = f'{prev}\n\n{note}' if prev else note
     out = json.dumps(shows, indent=2, ensure_ascii=False) + '\n'
