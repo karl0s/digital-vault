@@ -25146,7 +25146,7 @@
     "DuplicateOf": "",
     "Setlist": "Uprising; Supermassive Black Hole; Hysteria; New Born; United States of Eurasia; Feeling Good; Starlight; Undisclosed Desires; Time Is Running Out; Unnatural Selection; The Man With the Harmonica; Knights of Cydonia",
     "Notes": "---- muse.teignmouth_05092009.m6hd.txt ----\nMUSE\n05 September 2009\nThe Den,\nTeignmouth, UK\n\nDVD #1/1\n-----------------\n01. Uprising\n02. Supermassive Black Hole\n03. Hysteria\n04. New Born\n05. United States of Eurasia\n06. Feeling Good\n07. Starlight\n08. Undisclosed Desires\n09. Time Is Running Out\n10. Unnatural Selection\n11. The Man With the Harmonica\n12. Knights of Cydonia \n\nGENERATION\n----------\nTNT HD > .TS [1080i]\n\nTRANSFERT\n---------\nFreebox (TNT Mode) > TS Doctor 1.0.4 > H264_cutter\n\nNOTES\n-----\nThis is a real HD stream, not some upscaling. The picture is gorgeous ...\nAnd its a glitch free dvb-t hd recording with bitrate going up to 13Mbps sometimes.\n\nVideo Stream   : MPEG4, 1440x1080i, 16:9 \nAudio Stream 1 : E-AC3, 48kHz, 256kbps (5.1)\nAudio Stream 2 : E-AC3, 48kHZ, 128kbps (2.0)\n\nMD5\n---\ne809bb4f6e7572afa3c6819b7c8957f7 *muse.teignmouth_05092009.m6hd.ts\n\nDO NOT DOWNCONVERT THIS RECORDING, USE THE SD W9 BROADCAST TO MAKE A DVD.\nDO NOT POST THIS ON MUSELIVE, MUSEMESSENGER, OR WHATEVER 'FAN' WEBSITE.",
-    "PrivateNotes": "Dated 2009-09-05: the same French TV programme exists as two records, the M6 HD transport stream (513daeed98a6) and the W9 SD DVD (7d363366827f) - same 12-song running order, runtimes one second apart. Muse played The Den on 4 and 5 Sept 2009. Feeling Good, which is in this programme, was only played on the 5th (MuseWiki and setlist.fm setlists for both nights), and the M6 sidecar says 05 September. The DVD sidecar's '2009-09-04 + 2009-09-05' suggests the broadcast edit may also draw on the 4th.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, AudioTracks, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.\n\nLINEAGE (2026-10-18): from the record's own sidecar text (Notes), the owner's pick on the lineage review.",
+    "PrivateNotes": "Dated 2009-09-05: the same French TV programme exists as two records, the M6 HD transport stream (513daeed98a6) and the W9 SD DVD (7d363366827f) - same 12-song running order, runtimes one second apart. Muse played The Den on 4 and 5 Sept 2009. Feeling Good, which is in this programme, was only played on the 5th (MuseWiki and setlist.fm setlists for both nights), and the M6 sidecar says 05 September. The DVD sidecar's '2009-09-04 + 2009-09-05' suggests the broadcast edit may also draw on the 4th.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, AudioTracks, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.\n\nLINEAGE (2026-10-18): from the record's own sidecar text (Notes), the owner's pick on the lineage review.\n\nBROADCASTER (2026-10-19): M6, read off the logo on the record's stills and confirmed by the owner (broadcaster review).",
     "LastScannedAt": "2025-11-06 09:25:29",
     "ExtractionWarnings": "loc:comma",
     "SourceCatalog": "Seagate",
@@ -25159,7 +25159,8 @@
     "AudioKbps": "256",
     "AudioTracks": "2",
     "DiscType": "File",
-    "ShowSizeHuman": "3.83 GB"
+    "ShowSizeHuman": "3.83 GB",
+    "Broadcaster": "M6"
   },
   {
     "ShowID": "7d363366827f",
@@ -25196,7 +25197,7 @@
     "DuplicateOf": "",
     "Setlist": "Uprising; Supermassive Black Hole; Hysteria; New Born; United States of Eurasia; Feeling Good; Starlight; Undisclosed Desires; Time Is Running Out; Unnatural Selection; The Man With the Harmonica; Knights of Cydonia",
     "Notes": "---- EXTRAS_TS/info.txt ----\nMuse\n2009-09-04 + 2009-09-05\nThe Den, Teignmouth, England\n\nFrench channel W9 DVB-T Broadcast.\n\nLineage: DVB-T > Freebox > .TS > VideoRedo (cut) > .MPG > TMPGEnc DVD Author > DVD files\n\nVideo: MPEG2 Video 720x576 (16:9) 25.00fps\nAudio: MPEG Audio 48000Hz stereo 256Kbps\n\n01. Uprising\n02. Supermassive Black Hole\n03. Hysteria\n04. New Born\n05. United States of Eurasia\n06. Feeling Good\n07. Starlight\n08. Undisclosed Desires\n09. Time Is Running Out\n10. Unnatural Selection\n11. The Man With the Harmonica\n12. Knights of Cydonia\n\nChapters/no menu.",
-    "PrivateNotes": "Dated 2009-09-05: the same French TV programme exists as two records, the M6 HD transport stream (513daeed98a6) and the W9 SD DVD (7d363366827f) - same 12-song running order, runtimes one second apart. Muse played The Den on 4 and 5 Sept 2009. Feeling Good, which is in this programme, was only played on the 5th (MuseWiki and setlist.fm setlists for both nights), and the M6 sidecar says 05 September. The DVD sidecar's '2009-09-04 + 2009-09-05' suggests the broadcast edit may also draw on the 4th.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.",
+    "PrivateNotes": "Dated 2009-09-05: the same French TV programme exists as two records, the M6 HD transport stream (513daeed98a6) and the W9 SD DVD (7d363366827f) - same 12-song running order, runtimes one second apart. Muse played The Den on 4 and 5 Sept 2009. Feeling Good, which is in this programme, was only played on the 5th (MuseWiki and setlist.fm setlists for both nights), and the M6 sidecar says 05 September. The DVD sidecar's '2009-09-04 + 2009-09-05' suggests the broadcast edit may also draw on the 4th.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.\n\nBROADCASTER (2026-10-19): W9, read off the logo on the record's stills and confirmed by the owner (broadcaster review).",
     "LastScannedAt": "2025-11-05 17:19:12",
     "ExtractionWarnings": "loc:comma",
     "SourceCatalog": "BigDaddy",
@@ -25210,7 +25211,8 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "14",
-    "ShowSizeHuman": "1.86 GB"
+    "ShowSizeHuman": "1.86 GB",
+    "Broadcaster": "W9"
   },
   {
     "ShowID": "e5d279ecdaa6",
@@ -30959,7 +30961,7 @@
     "DuplicateOf": "",
     "Setlist": "Drain You; Aneurysm; School; Floyd the Barber; Smells Like Teen Spirit; About a Girl; Polly; Lithium; Sliver; Come as You Are; Breed; Been a Son; Negative Creep; On a Plain; Blew; Encore break; Rape Me; Spank Thru; Territorial Pissings",
     "Notes": "",
-    "PrivateNotes": "---- SIDECAR RE-SCAN (2026-10-05) ----\n- DurationSec 864 -> 3213 (0:53:33). Read from the disc's own index (VTS_01)\n\nSOURCE (2026-10-17): RecordingType set to Proshot, the owner's pick on the source review (tools/source-review), from the stills and the record's own clues.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.",
+    "PrivateNotes": "---- SIDECAR RE-SCAN (2026-10-05) ----\n- DurationSec 864 -> 3213 (0:53:33). Read from the disc's own index (VTS_01)\n\nSOURCE (2026-10-17): RecordingType set to Proshot, the owner's pick on the source review (tools/source-review), from the stills and the record's own clues.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.\n\nBROADCASTER (2026-10-19): Videomusic, read off the logo on the record's stills and confirmed by the owner (broadcaster review).",
     "LastScannedAt": "2025-11-06 09:25:32",
     "ExtractionWarnings": "loc:folder",
     "SourceCatalog": "Seagate",
@@ -30973,7 +30975,8 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "17",
-    "ShowSizeHuman": "3.63 GB"
+    "ShowSizeHuman": "3.63 GB",
+    "Broadcaster": "Videomusic"
   },
   {
     "ShowID": "965c8a28a225",
@@ -31526,7 +31529,7 @@
     "DuplicateOf": "",
     "Setlist": "Bad Habit; All I Want; Pretty Fly (For a White Guy); Million Miles Away; Gone Away; Have You Ever; Gotta Get Away; Happy Birthday Greg K; Staring At The Sun; Dammit, I Changed Again; Original Prankster; Intermission; The Kids Aren't Alright; Self Esteem; Come Out And Play; Want You Bad",
     "Notes": "---- infos.txt ----\nThe OFFSPRING\nWembley Arena\nLondon (England)\nJanuary 20, 2001\n\n\nLineage : ProShot video PAL (master VHS HiFi stereo recorded on french cable TV MCM in 2001)\nmaster VHS tape read on Panasonic MV-HS820 to LG DVD Recorder (RH7500) on DVD-R (HQ) > DVD > TMPGEnc DVD Author 3 (menu & chapters) > DVD fully authored\nvideo stream : PAL system MPEG2 (7820 kbps) - 720x576 - 25 f/s - 4:3 \nAudio stream : AC3 - 48000Hz - 224 kb/s - stereo\n\n\nSetlist : \n01. Bad Habit\n02. All I Want\n03. Pretty Fly (For a White Guy)\n04. Million Miles Away\n05. Gone Away\n06. Have You Ever\n07. Gotta Get Away\n08. Happy Birthday Greg K\n09. Staring At The Sun\n10. Dammit, I Changed Again\n11. Original Prankster\n12. Intermission\n13. The Kids Aren't Alright\n14. Self Esteem\n15. Come Out And Play\n16. Want You Bad\n\n16 tracks\ntotal time: 50'36\"\n\n\nNotes : new transfert of \"The OFFSPRING wembley show\" from the same vhs tape uploaded in July 2008 ... but now, the dvd is fully authored\nand artwork is included in the torrent files\n\n\nArtwork : yes \n\n\nLine-up :\nDexter Holland - vocals, guitar\nNoddles - guitar, vocals\nGreg Special 'K' - bass, vocals\nRon Welty  - drums\n\n\nmd5 :\nd7f3d0cfee556211149d13268e004400 *VIDEO_TS\\VIDEO_TS.BUP\nd7f3d0cfee556211149d13268e004400 *VIDEO_TS\\VIDEO_TS.IFO\nb92315e8ffd4f51ba09c22b30c326709 *VIDEO_TS\\VIDEO_TS.VOB\n0a26ca18eb44b92ed78703f5d8c37161 *VIDEO_TS\\VTS_01_0.BUP\n0a26ca18eb44b92ed78703f5d8c37161 *VIDEO_TS\\VTS_01_0.IFO\naeb3033e633e367d99f4a4af29a8f94e *VIDEO_TS\\VTS_01_0.VOB\ne5da36ae8c6c794d0500d4b478e806d1 *VIDEO_TS\\VTS_01_1.VOB\nf6b69c2c3eddde45f54106c0ab34f22c *VIDEO_TS\\VTS_01_2.VOB\n5aa1e7b3d8790511c66ced9f86a08e21 *VIDEO_TS\\VTS_01_3.VOB\n\nNo errors occured.\n\n\n\n.............................................................................................. enjoy it all OFFSPRING fans !! ..............................................................................................",
-    "PrivateNotes": "---- SIDECAR RE-SCAN (2026-10-05) ----\n- VenueName blank -> 'Wembley Arena'. infos.txt: 'Wembley Arena, London (England)'\n- Setlist 'Bad Habit; All I Want; Pretty Fly (For a White Guy); Million...' -> see field. infos.txt in the folder: adds Dammit, I Changed Again (No. 10), dropped at import\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by content). Nothing existing changed.\n\nLINEAGE (2026-10-18): from the record's own sidecar text (Notes), the owner's pick on the lineage review; was \"ProShot video PAL (master VHS HiFi stereo recorded on french cable TV MCM in 2001)\".",
+    "PrivateNotes": "---- SIDECAR RE-SCAN (2026-10-05) ----\n- VenueName blank -> 'Wembley Arena'. infos.txt: 'Wembley Arena, London (England)'\n- Setlist 'Bad Habit; All I Want; Pretty Fly (For a White Guy); Million...' -> see field. infos.txt in the folder: adds Dammit, I Changed Again (No. 10), dropped at import\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by content). Nothing existing changed.\n\nLINEAGE (2026-10-18): from the record's own sidecar text (Notes), the owner's pick on the lineage review; was \"ProShot video PAL (master VHS HiFi stereo recorded on french cable TV MCM in 2001)\".\n\nBROADCASTER (2026-10-19): MCM, read off the logo on the record's stills and confirmed by the owner (broadcaster review).",
     "LastScannedAt": "2025-11-05 14:40:24",
     "ExtractionWarnings": "loc:folder",
     "SourceCatalog": "BigDaddy",
@@ -31540,7 +31543,8 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "16",
-    "ShowSizeHuman": "2.93 GB"
+    "ShowSizeHuman": "2.93 GB",
+    "Broadcaster": "MCM"
   },
   {
     "ShowID": "f63804ad99a7",
@@ -34030,7 +34034,7 @@
     "DuplicateOf": "",
     "Setlist": "Bless My Soul; My Happiness; Passenger; These Days; Love Your Way; Like a Dog; (Baby I've Got You) On My Mind (incomplete)",
     "Notes": "",
-    "PrivateNotes": "The disc (61 min) holds more than the WaveAid set (2005-01-29, Sydney Cricket Ground, about the first 20 minutes, WaveAid bug in the corner). It continues with Channel [V] Big Day Out coverage ('The Big Day In!' bug): stage footage, a sofa interview with two band members, then an older Powderfinger festival set under a '[V] Vault' Big Day Out bug, with Bernard Fanning in a short haircut. Those later segments are not covered by this record. The container's timestamps are not reliable - a time-windowed capture landed in the wrong segment - so the stills were hand-picked from a whole-disc capture, all showing the WaveAid bug. DurationSec corrected from 97250 to 3670.\n\nSOURCE (2026-10-17): RecordingType set to Proshot, the owner's pick on the source review (tools/source-review), from the stills and the record's own clues.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, AudioKbps, DiscType, Menu, Chapters added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.\n\nDRIVE SCAN (2026-10-18): Chapters taken back out: the disc's chapter count is its whole titleset's, and this record's length differs from the titleset's (a slice of it, or a different programme), so the count would not be this show's.",
+    "PrivateNotes": "The disc (61 min) holds more than the WaveAid set (2005-01-29, Sydney Cricket Ground, about the first 20 minutes, WaveAid bug in the corner). It continues with Channel [V] Big Day Out coverage ('The Big Day In!' bug): stage footage, a sofa interview with two band members, then an older Powderfinger festival set under a '[V] Vault' Big Day Out bug, with Bernard Fanning in a short haircut. Those later segments are not covered by this record. The container's timestamps are not reliable - a time-windowed capture landed in the wrong segment - so the stills were hand-picked from a whole-disc capture, all showing the WaveAid bug. DurationSec corrected from 97250 to 3670.\n\nSOURCE (2026-10-17): RecordingType set to Proshot, the owner's pick on the source review (tools/source-review), from the stills and the record's own clues.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, AudioKbps, DiscType, Menu, Chapters added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.\n\nDRIVE SCAN (2026-10-18): Chapters taken back out: the disc's chapter count is its whole titleset's, and this record's length differs from the titleset's (a slice of it, or a different programme), so the count would not be this show's.\n\nBROADCASTER (2026-10-19): left blank by the owner on the broadcaster review.",
     "LastScannedAt": "2025-11-06 09:25:53",
     "ExtractionWarnings": "loc:folder",
     "SourceCatalog": "Seagate",
@@ -34438,7 +34442,7 @@
     "DuplicateOf": "",
     "Setlist": "Era Vulgaris; Sick, Sick, Sick; Go With the Flow; Do It Again; Misfit Love; Burn the Witch; Turnin' on the Screw; Monsters in the Parasol; You Can't Quit Me Baby; You Think I Ain't Worth a Dollar, but I Feel Like a Millionaire; Little Sister; Make It Wit Chu; No One Knows",
     "Notes": "---- info.txt ----\nQUEENS OF THE STONE AGE\nJune 1, 2008\nMegaland\nLandgraaf, Netherlands (Pinkpop 2008 festival)\n\nTRACKS:\n\nSick, Sick, Sick / Go With the Flow / Do It Again / Misfit Love / Burn the Witch / Turnin' on the Screw / Monsters in the Parasol / You Think I Ain't Worth a Dollar, but I Feel Like a Millionaire / Little Sister / Make It Wit Chu / No One Knows\n\nLENGTH: 48:34\n\nTRANSFER: Cultura 24 broadcast > Humax HD PVR > TS file > PC > TMPGEnc Authoring Works 4 > DVD\nRECORDED & EDITED BY: dION1983",
-    "PrivateNotes": "---- correction 2026-08-25 ----\nNotes was empty even though this sidecar sits in the folder; added. RecordingType was blank and is set to Proshot.\nThe record's Setlist holds 13 songs where the sidecar lists 11, the extras being 'Era Vulgaris' and \"You Can't Quit Me Baby\". Left as it stands: the record is a superset and nothing in it conflicts with the sidecar.\nThe drive folder is DOUBLED - the VOBs sit at '<folder>/<same folder name>/VIDEO_TS/'. The outer shell holds no media, so capture must target the inner directory.\n\nDATE PRECISION (2026-10-17): the day is real (DatePrecision day), the owner's call on the date-precision review (tools/date-precision).\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.\n\nLINEAGE (2026-10-18): from the record's own sidecar text (Notes), the owner's pick on the lineage review.",
+    "PrivateNotes": "---- correction 2026-08-25 ----\nNotes was empty even though this sidecar sits in the folder; added. RecordingType was blank and is set to Proshot.\nThe record's Setlist holds 13 songs where the sidecar lists 11, the extras being 'Era Vulgaris' and \"You Can't Quit Me Baby\". Left as it stands: the record is a superset and nothing in it conflicts with the sidecar.\nThe drive folder is DOUBLED - the VOBs sit at '<folder>/<same folder name>/VIDEO_TS/'. The outer shell holds no media, so capture must target the inner directory.\n\nDATE PRECISION (2026-10-17): the day is real (DatePrecision day), the owner's call on the date-precision review (tools/date-precision).\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.\n\nLINEAGE (2026-10-18): from the record's own sidecar text (Notes), the owner's pick on the lineage review.\n\nBROADCASTER (2026-10-19): NTR, read off the logo on the record's stills and confirmed by the owner (broadcaster review).",
     "LastScannedAt": "2025-11-05 16:25:03",
     "ExtractionWarnings": "loc:folder",
     "SourceCatalog": "BigDaddy",
@@ -34453,7 +34457,8 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "12",
-    "ShowSizeHuman": "1.56 GB"
+    "ShowSizeHuman": "1.56 GB",
+    "Broadcaster": "NTR"
   },
   {
     "ShowID": "8e8d56e0a5f7",
@@ -40256,7 +40261,7 @@
     "DuplicateKey": "ea479123e78627b49102dac33bb9c31ad0aaf8a8",
     "IsPrimary": "Yes",
     "PrimaryCatalog": "BigDaddy",
-    "PrivateNotes": "SOURCE (2026-10-17): RecordingType set to Proshot, the owner's pick on the source review (tools/source-review), from the stills and the record's own clues.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.",
+    "PrivateNotes": "SOURCE (2026-10-17): RecordingType set to Proshot, the owner's pick on the source review (tools/source-review), from the stills and the record's own clues.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.\n\nBROADCASTER (2026-10-19): MCM, read off the logo on the record's stills and confirmed by the owner (broadcaster review).",
     "FrameRate": "25",
     "ScanType": "interlaced",
     "VideoKbps": "5439",
@@ -40264,7 +40269,8 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "24",
-    "ShowSizeHuman": "3.31 GB"
+    "ShowSizeHuman": "3.31 GB",
+    "Broadcaster": "MCM"
   },
   {
     "ShowID": "75c5923564c1",
@@ -40610,7 +40616,7 @@
     "DuplicateOf": "",
     "Setlist": "Intro Jam; Can't Stop; Dani California; Scar Tissue; Charlie; Readymade; S.O.S (John); Higher Ground; She's Only 18; Right On Time; Californication; By The Way; Give It Away (incomplete)",
     "Notes": "---- rhcp2007-06-26dvd.txt ----\nRED HOT CHILI PEPPERS\nJune 26, 2007\nTuborg Green Festival\nIndjija, Serbia\n\nIntro Jam\nCan't Stop\nDani California\nScar Tissue\nCharlie\nReadymade\nS.O.S (John)\nHigher Ground\nShe's Only 18\nRight On Time\nCalifornication\nFlea singing\nBy The Way\nGive It Away\n\nExtras: AMT shots of the missing songs: Throw Away Your Television, Snow ((Hey Oh)) and Don't Forget Me.\n\n[PRO #1] - professional video\nEquipment: ?\nComplete: no\nFormat: DVD\nTaper: -",
-    "PrivateNotes": "Setlist from the folder's own rhcp2007-06-26dvd.txt, which marks the show incomplete; its 'Flea singing' entry (between Californication and By The Way) is a moment, not a song, so it sits here.\n\nDurationSec was 402 s; measured 4849 s by demux at capture time (2026-09-25).\n\n---- SIDECAR RE-SCAN (2026-10-05) ----\n- DurationSec 4849 -> 5420 (1:30:20). Read from the disc's own index (VTS_01)\n\nSOURCE (2026-10-17): RecordingType Audience -> Proshot, the owner's correction.\n\nDRIVE SCAN (2026-10-18): FrameRate, AudioKbps, AudioTracks, DiscType, Menu, Chapters added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.\n\nDRIVE SCAN (2026-10-18): Chapters taken back out: the disc's chapter count is its whole titleset's, and this record's length differs from the titleset's (a slice of it, or a different programme), so the count would not be this show's.",
+    "PrivateNotes": "Setlist from the folder's own rhcp2007-06-26dvd.txt, which marks the show incomplete; its 'Flea singing' entry (between Californication and By The Way) is a moment, not a song, so it sits here.\n\nDurationSec was 402 s; measured 4849 s by demux at capture time (2026-09-25).\n\n---- SIDECAR RE-SCAN (2026-10-05) ----\n- DurationSec 4849 -> 5420 (1:30:20). Read from the disc's own index (VTS_01)\n\nSOURCE (2026-10-17): RecordingType Audience -> Proshot, the owner's correction.\n\nDRIVE SCAN (2026-10-18): FrameRate, AudioKbps, AudioTracks, DiscType, Menu, Chapters added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.\n\nDRIVE SCAN (2026-10-18): Chapters taken back out: the disc's chapter count is its whole titleset's, and this record's length differs from the titleset's (a slice of it, or a different programme), so the count would not be this show's.\n\nBROADCASTER (2026-10-19): RTS 2, read off the logo on the record's stills and confirmed by the owner (broadcaster review).",
     "LastScannedAt": "2025-11-05 18:32:33",
     "ExtractionWarnings": "loc:folder",
     "SourceCatalog": "BigDaddy",
@@ -40621,7 +40627,8 @@
     "AudioKbps": "1536",
     "AudioTracks": "2",
     "DiscType": "DVD-5",
-    "Menu": "Yes"
+    "Menu": "Yes",
+    "Broadcaster": "RTS 2"
   },
   {
     "ShowID": "5f274a7dfda6",
@@ -42512,7 +42519,7 @@
     "DuplicateOf": "",
     "Setlist": "",
     "Notes": "",
-    "PrivateNotes": "---- 2026-08-26 ----\nDurationSec corrected from 1609 s to 3720 s / 62:00, measured by decoding and counting frames.\nCONTENT WARNING for stills: this is a MUSIC-VIDEO COMPILATION taped off Max (Australia), not a performance, and the commercials were left in - there is a Fiat Punto car advert at 23:00. It also contains title cards and animation. Every slot must be hand-picked (SKILL.md 6.2d, 6.2d-00).\n\nSOURCE (2026-10-17): RecordingType set to Proshot, the owner's pick on the source review (tools/source-review), from the stills and the record's own clues.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.",
+    "PrivateNotes": "---- 2026-08-26 ----\nDurationSec corrected from 1609 s to 3720 s / 62:00, measured by decoding and counting frames.\nCONTENT WARNING for stills: this is a MUSIC-VIDEO COMPILATION taped off Max (Australia), not a performance, and the commercials were left in - there is a Fiat Punto car advert at 23:00. It also contains title cards and animation. Every slot must be hand-picked (SKILL.md 6.2d, 6.2d-00).\n\nSOURCE (2026-10-17): RecordingType set to Proshot, the owner's pick on the source review (tools/source-review), from the stills and the record's own clues.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.\n\nBROADCASTER (2026-10-19): MAX, read off the logo on the record's stills and confirmed by the owner (broadcaster review).",
     "LastScannedAt": "2025-11-05 19:13:26",
     "ExtractionWarnings": "loc:folder",
     "SourceCatalog": "BigDaddy",
@@ -42526,7 +42533,8 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "11",
-    "ShowSizeHuman": "2.17 GB"
+    "ShowSizeHuman": "2.17 GB",
+    "Broadcaster": "MAX"
   },
   {
     "ShowID": "79d7e8093fe0",
@@ -44752,7 +44760,7 @@
     "DuplicateOf": "",
     "Setlist": "Zero; Where Boys Fear To Tread; Fuck You (An Ode To No-one); To Forgive; Tonight, Tonight",
     "Notes": "---- SP - 1996-05-04_DVD.txt ----\nSMASHING PUMPKINS\n\n\"1996-05-04 - Parque del Soto, Madrid, ES\"\n\nDVDR > Hard Drive > Trader's Little Helper\n\nSMASHING PUMPKINS\n\n\"1996-05-04 - Parque del Soto, Madrid, ES\"\n\nDVDR > Hard Drive > Trader's Little Helper\n\nZero\nWhere Boys Fear To Tread\nFuck You (An Ode To No-one)\nTo Forgive \nTonight, Tonight\n\nNotes:\n\nStraight copied to HD from DVDR, with logfile included.\n\n* All credits to the original creators *\n\n\\m/ HAPPY HALLOWEEN 2009 \\m/\n\nSeeded Torrents 31/10/09 by daZeychain",
-    "PrivateNotes": "Venue, city and country were all blank and are taken from the folder's own sidecar, which reads '1996-05-04 - Parque del Soto, Madrid, ES'. Setlist previously opened with 'SMASHING PUMPKINS', which is not a song, and was missing Tonight, Tonight.\n\nSOURCE (2026-10-17): RecordingType set to Proshot, the owner's pick on the source review (tools/source-review), from the stills and the record's own clues.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.\n\nLINEAGE (2026-10-18): from the record's own sidecar text (Notes), the owner's pick on the lineage review.",
+    "PrivateNotes": "Venue, city and country were all blank and are taken from the folder's own sidecar, which reads '1996-05-04 - Parque del Soto, Madrid, ES'. Setlist previously opened with 'SMASHING PUMPKINS', which is not a song, and was missing Tonight, Tonight.\n\nSOURCE (2026-10-17): RecordingType set to Proshot, the owner's pick on the source review (tools/source-review), from the stills and the record's own clues.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.\n\nLINEAGE (2026-10-18): from the record's own sidecar text (Notes), the owner's pick on the lineage review.\n\nBROADCASTER (2026-10-19): TVE, typed by the owner from the logo on the record's stills (broadcaster review).",
     "LastScannedAt": "2025-11-05 19:21:12",
     "ExtractionWarnings": "loc:folder",
     "SourceCatalog": "BigDaddy",
@@ -44766,7 +44774,8 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "5",
-    "ShowSizeHuman": "787.20 MB"
+    "ShowSizeHuman": "787.20 MB",
+    "Broadcaster": "TVE"
   },
   {
     "ShowID": "5795828263c1",
@@ -51327,7 +51336,7 @@
     "DuplicateKey": "55d649c43d19c26accf0a21542adf80e2115f4e9",
     "IsPrimary": "Yes",
     "PrimaryCatalog": "BigDaddy",
-    "PrivateNotes": "SOURCE (2026-10-17): RecordingType set to Proshot, the owner's pick on the source review (tools/source-review), from the stills and the record's own clues.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.",
+    "PrivateNotes": "SOURCE (2026-10-17): RecordingType set to Proshot, the owner's pick on the source review (tools/source-review), from the stills and the record's own clues.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.\n\nBROADCASTER (2026-10-19): Star!, read off the logo on the record's stills and confirmed by the owner (broadcaster review).",
     "FrameRate": "25",
     "ScanType": "interlaced",
     "VideoKbps": "8014",
@@ -51335,7 +51344,8 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "1",
-    "ShowSizeHuman": "3.13 GB"
+    "ShowSizeHuman": "3.13 GB",
+    "Broadcaster": "Star!"
   },
   {
     "ShowID": "f58054c63222",
@@ -52005,7 +52015,8 @@
     "Menu": "Yes",
     "Chapters": "9",
     "ShowSizeHuman": "2.25 GB",
-    "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed."
+    "PrivateNotes": "DRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.\n\nBROADCASTER (2026-10-19): SIC Radical, read off the logo on the record's stills and confirmed by the owner (broadcaster review).",
+    "Broadcaster": "SIC Radical"
   },
   {
     "ShowID": "64a0e8b2bdaa",
@@ -52708,7 +52719,7 @@
     "DuplicateKey": "64627d87a831dfc4c563cfadaba2ce84b7601ca9",
     "IsPrimary": "Yes",
     "PrimaryCatalog": "BigDaddy",
-    "PrivateNotes": "SOURCE (2026-10-17): RecordingType set to Proshot, the owner's pick on the source review (tools/source-review), from the stills and the record's own clues.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.",
+    "PrivateNotes": "SOURCE (2026-10-17): RecordingType set to Proshot, the owner's pick on the source review (tools/source-review), from the stills and the record's own clues.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.\n\nBROADCASTER (2026-10-19): Viewsic, read off the logo on the record's stills and confirmed by the owner (broadcaster review).",
     "FrameRate": "29.97",
     "ScanType": "interlaced",
     "VideoKbps": "6582",
@@ -52716,7 +52727,8 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "5",
-    "ShowSizeHuman": "999.88 MB"
+    "ShowSizeHuman": "999.88 MB",
+    "Broadcaster": "Viewsic"
   },
   {
     "ShowID": "443a55fc53ef",
@@ -53775,7 +53787,7 @@
     "DuplicateOf": "",
     "Setlist": "Lenny; Mansize Rooster; I'd Like to Know; Time; Odd?; Melanie Davis; Alright; Going Out; Strange Ones; Caught by the Fuzz",
     "Notes": "",
-    "PrivateNotes": "Event, venue and city added 2026-08-27. Hollywood Rock 1996 ran at Praca da Apoteose, Rio de Janeiro, on 26 January 1996 - corroborated by setlist.fm and by concert archives for the other acts on the same bill that night. Runtime 39:46 by demux.\n\n---- SIDECAR RE-SCAN (2026-10-05) ----\n- DurationSec 2386 -> 2286 (0:38:06). Read from the disc's own index (VTS_01)\n\nSOURCE (2026-10-17): RecordingType set to Proshot, the owner's pick on the source review (tools/source-review), from the stills and the record's own clues.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.",
+    "PrivateNotes": "Event, venue and city added 2026-08-27. Hollywood Rock 1996 ran at Praca da Apoteose, Rio de Janeiro, on 26 January 1996 - corroborated by setlist.fm and by concert archives for the other acts on the same bill that night. Runtime 39:46 by demux.\n\n---- SIDECAR RE-SCAN (2026-10-05) ----\n- DurationSec 2386 -> 2286 (0:38:06). Read from the disc's own index (VTS_01)\n\nSOURCE (2026-10-17): RecordingType set to Proshot, the owner's pick on the source review (tools/source-review), from the stills and the record's own clues.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.\n\nBROADCASTER (2026-10-19): MTV, typed by the owner from the logo on the record's stills (broadcaster review).",
     "LastScannedAt": "2025-11-05 23:50:39",
     "ExtractionWarnings": "loc:folder",
     "SourceCatalog": "BigDaddy",
@@ -53789,7 +53801,8 @@
     "DiscType": "DVD-5",
     "Menu": "No",
     "Chapters": "11",
-    "ShowSizeHuman": "2.65 GB"
+    "ShowSizeHuman": "2.65 GB",
+    "Broadcaster": "MTV"
   },
   {
     "ShowID": "51043bc3f917",
@@ -54084,7 +54097,7 @@
     "DuplicateOf": "",
     "Setlist": "Lenny; Richard III; Lose It; Rush Hour Soul; Strange Ones; Caught By The Fuzz (acoustic); Late In The Day (acoustic); Kiss Of Life; Pumping On Your Stereo; Grace; Alright; Moving; Sun Hits The Sky",
     "Notes": "---- supergrass brussels 2004.txt ----\n{\\rtf1\\ansi\\ansicpg1252\\cocoartf1038\\cocoasubrtf250\n{\\fonttbl\\f0\\fswiss\\fcharset0 ArialMT;}\n{\\colortbl;\\red255\\green255\\blue255;}\n\\paperw11900\\paperh16840\\margl1440\\margr1440\\vieww9000\\viewh8400\\viewkind0\n\\deftab720\n\\pard\\pardeftab720\\ql\\qnatural\n\n\\f0\\fs26 \\cf0 SUPERGRASS\\\nBRUSSELS MARCONI STUDIO (HD-TV)\\\nBELGIUM\\\n24 JUNE 2004\\\n \\\nLENNY\\\nRICHARD III\\\nLOSE IT\\\nRUSH HOUR SOUL\\\nSTRANGE ONES\\\nCAUGHT BY THE FUZZ - acustic\\\nLATE IN THE DAY - acustic\\\nKISS OF LIFE\\\nPUMPING ON YOUR STEREO\\\nGRACE\\\nALRIGHT\\\nMOVING\\\nSUN HITS THE SKY\\\n\\\n\\\nLength 47:25 \\\n\\\n\\\nVideo: \\\n224 MPEG-2, 720 \\'d7 576, 4:3, 25 fps, 8.00 Mbps, upper field first \\\n\\\nAudio: \\\n128 AC3 2/0, 48 kHz, 256 kbps \\\n\\\nTrade DVD-R \\\n\\\nThis is the second of two excellent tv broadcast I received in trade some years ago. They are from the \"Supergrass Is Ten\" anniversary shows and greatest hits compilation album of 2004. I have some more but is there anyone else out there as well? \\\n}",
-    "PrivateNotes": "Venue, city and country added 2026-08-27 from the folder's own sidecar, which heads the tracklist 'SUPERGRASS / BRUSSELS MARCONI STUDIO (HD-TV) / BELGIUM / 24 JUNE 2004'. setlist.fm records the venue as 'VRT Radio Marconi Studio, Schaarbeek / Schaerbeek, Belgium' - Schaarbeek is a municipality of Brussels, and the sidecar's own wording is kept for the city. This is the first Belgium record in the collection. Stated length 47:25 matches the demuxed runtime exactly.\n\nAspectRatio corrected 2026-08-27 from '4:3 (native)' to '16:9 (native)'. The disc declares SAR 16:15 / DAR 4:3 and is internally consistent, so no automated gate caught it, and there is no letterbox - the picture fills the frame. It is a widescreen broadcast squeezed into a 4:3 DVD frame, which the sidecar's own header implies: 'BRUSSELS MARCONI STUDIO (HD-TV)'. Karl reported the first set of stills as visibly squashed. Measured off defocused point lights: 376 isolated blobs, median height/width 1.444 (IQR 1.17-1.62), against 1.422 required for 16:9 and 1.067 for 4:3 - within 1.5% of 16:9. Renders 1024x576.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.",
+    "PrivateNotes": "Venue, city and country added 2026-08-27 from the folder's own sidecar, which heads the tracklist 'SUPERGRASS / BRUSSELS MARCONI STUDIO (HD-TV) / BELGIUM / 24 JUNE 2004'. setlist.fm records the venue as 'VRT Radio Marconi Studio, Schaarbeek / Schaerbeek, Belgium' - Schaarbeek is a municipality of Brussels, and the sidecar's own wording is kept for the city. This is the first Belgium record in the collection. Stated length 47:25 matches the demuxed runtime exactly.\n\nAspectRatio corrected 2026-08-27 from '4:3 (native)' to '16:9 (native)'. The disc declares SAR 16:15 / DAR 4:3 and is internally consistent, so no automated gate caught it, and there is no letterbox - the picture fills the frame. It is a widescreen broadcast squeezed into a 4:3 DVD frame, which the sidecar's own header implies: 'BRUSSELS MARCONI STUDIO (HD-TV)'. Karl reported the first set of stills as visibly squashed. Measured off defocused point lights: 376 isolated blobs, median height/width 1.444 (IQR 1.17-1.62), against 1.422 required for 16:9 and 1.067 for 4:3 - within 1.5% of 16:9. Renders 1024x576.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.\n\nBROADCASTER (2026-10-19): NEXT, read off the logo on the record's stills and confirmed by the owner (broadcaster review).",
     "LastScannedAt": "2025-11-06 00:02:46",
     "ExtractionWarnings": "",
     "SourceCatalog": "BigDaddy",
@@ -54098,7 +54111,8 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "13",
-    "ShowSizeHuman": "2.79 GB"
+    "ShowSizeHuman": "2.79 GB",
+    "Broadcaster": "NEXT"
   },
   {
     "ShowID": "55311bac65d6",
@@ -57207,7 +57221,7 @@
     "DuplicateKey": "4340b51b3bb11f3caac6da067b19f1c944883dbe",
     "IsPrimary": "Yes",
     "PrimaryCatalog": "BigDaddy",
-    "PrivateNotes": "SOURCE (2026-10-17): RecordingType set to Proshot, the owner's pick on the source review (tools/source-review), from the stills and the record's own clues.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.",
+    "PrivateNotes": "SOURCE (2026-10-17): RecordingType set to Proshot, the owner's pick on the source review (tools/source-review), from the stills and the record's own clues.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, Menu, Chapters, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.\n\nBROADCASTER (2026-10-19): ZTV, read off the logo on the record's stills and confirmed by the owner (broadcaster review).",
     "FrameRate": "25",
     "ScanType": "interlaced",
     "VideoKbps": "7985",
@@ -57215,7 +57229,8 @@
     "DiscType": "DVD-5",
     "Menu": "Yes",
     "Chapters": "16",
-    "ShowSizeHuman": "3.38 GB"
+    "ShowSizeHuman": "3.38 GB",
+    "Broadcaster": "ZTV"
   },
   {
     "ShowID": "5899f9c592d9",
@@ -61509,7 +61524,7 @@
     "DuplicateOf": "",
     "Setlist": "",
     "Notes": "",
-    "PrivateNotes": "Created 2026-09-25: loose file at the drive root with no record. A&E 'Biography' documentary (on-screen Biography title card), 720p59.94, 44:59. A documentary with no performance date, so ShowDate is empty per the house rule. ChecksumSHA1 is sha1 of the whole file.  CONTENT TYPE (2026-10-04): Documentary. A&E Biography episode: interviews with the band and those around them, press photos and archive; the live clips illustrate the story. A 48-frame sweep across the programme put talking at about 70%.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.",
+    "PrivateNotes": "Created 2026-09-25: loose file at the drive root with no record. A&E 'Biography' documentary (on-screen Biography title card), 720p59.94, 44:59. A documentary with no performance date, so ShowDate is empty per the house rule. ChecksumSHA1 is sha1 of the whole file.  CONTENT TYPE (2026-10-04): Documentary. A&E Biography episode: interviews with the band and those around them, press photos and archive; the live clips illustrate the story. A 48-frame sweep across the programme put talking at about 70%.\n\nDRIVE SCAN (2026-10-18): FrameRate, ScanType, VideoKbps, AudioKbps, DiscType, ShowSizeHuman added, read from its own files on Live Music (tools/drive-scan; matched by name). Nothing existing changed.\n\nBROADCASTER (2026-10-19): A&E, read off the logo on the record's stills and confirmed by the owner (broadcaster review).",
     "LastScannedAt": "",
     "ExtractionWarnings": "",
     "SourceCatalog": "",
@@ -61521,7 +61536,8 @@
     "VideoKbps": "12012",
     "AudioKbps": "384",
     "DiscType": "File",
-    "ShowSizeHuman": "3.89 GB"
+    "ShowSizeHuman": "3.89 GB",
+    "Broadcaster": "A&E"
   },
   {
     "ShowID": "0ea36fe37b0e",

@@ -76,7 +76,8 @@ def main():
     for s, d in plan:
         s['Broadcaster'] = d['name']
         note = (f"BROADCASTER ({today}): {d['name']}, the owner's pick on the broadcaster review; named in the record's {d['where'].lower()}."
-                if d['where'] else f"BROADCASTER ({today}): {d['name']}, typed by the owner from the logo on the record's stills (broadcaster review).")
+                if d['where'] else f"BROADCASTER ({today}): {d['name']}, read off the logo on the record's stills and confirmed by the owner (broadcaster review)."
+                if d['name'] in allowed else f"BROADCASTER ({today}): {d['name']}, typed by the owner from the logo on the record's stills (broadcaster review).")
         prev = (s.get('PrivateNotes') or '').rstrip()
         s['PrivateNotes'] = f'{prev}\n\n{note}' if prev else note
     for s in left:
