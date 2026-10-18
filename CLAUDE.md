@@ -48,6 +48,7 @@ tools/
   drive-scan/           ← reads each record's own files on Live Music (scan.py, hashfind.py), reviews (page.py, sizes.py) and adds the specs (apply.py); read-only on the drive
   broadcaster/          ← drafts each pro-shot record's channel from its own sidecar, folder or programme, beside every still for the logo (build.py → ~/VaultShots/reports/broadcaster.html); apply.py writes Karl's picks
   lineage/              ← lineage chains (->, >, →) in a show's own sidecar text that its Lineage lacks or has cut off: build.py renders ~/VaultShots/reports/lineage.html; apply.py writes Karl's picks
+  generation/           ← shows whose sidecar has a Generation section and no Generation: build.py renders ~/VaultShots/reports/generation.html (a label read off the chain's markers); apply.py writes Karl's picks
   source-review/        ← records with no RecordingType: build.py renders ~/VaultShots/reports/source-review.html (two stills and a clue each); apply.py writes Karl's pasted picks
 scripts/
   health-check.py       ← integrity validator (pre-push hook, and the deploy)
