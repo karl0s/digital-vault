@@ -79,7 +79,10 @@
   Pilots "setlist" that was sidecar junk has since gone)
 - [ ] **2. Broadcaster, the rest** — 293 pro-shot records that name no channel anywhere wait on the
   review page with their stills, to read the logo from (`~/VaultShots/reports/broadcaster.html`)
-- [ ] **3. With Live Music mounted:** re-check Alice in Chains and Smashing Pumpkins (1996)
+- [ ] **3. Lineage from the sidecars** — 137 shows whose own info file has a lineage chain the
+  Lineage field lacks (93), has cut off at a line break (15) or has only part of (29), on the
+  review page (`~/VaultShots/reports/lineage.html`, 2026-10-18)
+- [ ] **4. With Live Music mounted:** re-check Alice in Chains and Smashing Pumpkins (1996)
   against their own files; look again for the 7 shows the scan couldn't find
 
 **Small leftovers from finished items** (not scheduled; say if one matters):
