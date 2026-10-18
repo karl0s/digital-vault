@@ -977,6 +977,11 @@ separable at file level").
 - Set `AddedOn` to today (`YYYY-MM-DD`): the site's "Recently added" reads it (CLAUDE.md → AddedOn).
   A record split or re-keyed from one already on the site is not new: its ShowID goes in
   `scripts/collection-at-launch.json` instead. The health check blocks a new record with neither.
+- Once the run's records are written, add their specs from the drive: `python3 tools/drive-scan/scan.py
+  --resume` (reads only records not scanned yet), `python3 tools/drive-scan/page.py` (review), then
+  `python3 tools/drive-scan/apply.py --apply` — new fields only, never an existing value (CLAUDE.md →
+  the drive-scan fields). A pro-shot record whose sidecar names its channel can take `Broadcaster`
+  from `tools/broadcaster`.
 - Set `ContentType`: `"Documentary"` when half or more of **that titleset's** runtime is people talking
   or narration over footage (interviews, making-of, behind-the-scenes, Cribs-style tours,
   rockumentaries, TV biographies), otherwise absent. Storytellers, Unplugged and concert films with

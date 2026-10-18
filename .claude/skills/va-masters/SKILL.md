@@ -90,6 +90,9 @@ set `status: proposed`, render, open. **The owner decides which acts get records
   record carved from one already on the site — a linked record cut from an existing master, a
   split, a re-key — is not new: add its ShowID to `scripts/collection-at-launch.json` instead. The
   health check blocks a new record with neither.
+- **Specs from the drive**, once the records are written: `python3 tools/drive-scan/scan.py --resume`,
+  review with `page.py`, then `apply.py --apply`. Linked records take the master's frame rate, scan
+  and disc type, never a size or bitrate of their own (CLAUDE.md → the drive-scan fields).
 - **Set `ContentType` on every new record, master and linked alike** (CLAUDE.md → Documentaries):
   `"Documentary"` when half or more of that record's runtime is people talking or narration over
   footage — an interview segment, a making-of, a behind-the-scenes piece — otherwise absent. A

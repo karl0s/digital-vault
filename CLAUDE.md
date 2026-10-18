@@ -44,7 +44,7 @@ tools/
   artist-portraits/     ← picker for the artist tiles' pictures; build.py renders ~/VaultShots/reports/artist-portraits.html
   missing-setlists/     ← every show with no setlist + twins that have one; build.py renders ~/VaultShots/reports/missing-setlists.html
   taper-redaction/      ← removes tapers' names, contacts and links from shows.json; apply.mjs captures them to private/ first (see Tapers are never named)
-  date-precision/       ← shows dated the 1st of a month: build.py renders ~/VaultShots/reports/date-precision.html (real date or month only?); apply.py writes Karl's pasted picks
+  date-precision/       ← shows dated the 1st of a month: build.py renders ~/VaultShots/reports/date-precision.html (real date or month only?); apply.py writes Karl's pasted picks; research.py reviews and applies dates researched online
   drive-scan/           ← reads each record's own files on Live Music (scan.py, hashfind.py), reviews (page.py, sizes.py) and adds the specs (apply.py); read-only on the drive
   broadcaster/          ← drafts each pro-shot record's channel from its own sidecar, folder or programme (build.py → ~/VaultShots/reports/broadcaster.html); apply.py writes Karl's picks
   source-review/        ← records with no RecordingType: build.py renders ~/VaultShots/reports/source-review.html (two stills and a clue each); apply.py writes Karl's pasted picks
@@ -592,6 +592,9 @@ Research rules:
 - **A search engine's summary is not a source — only a page you fetched and read is.** It can point
   at where to look; it never counts toward the two.
 - With one source, or a conflict, leave the field unchanged and tell the owner.
+- **One exception, not a precedent:** for the 2026-10-17 date-precision research the owner said
+  one fetched source per date was enough (`tools/date-precision/research.py`). Every other field,
+  and any new research, still needs two.
 
 Workflow: scan the artist's records → research → present **all** proposed changes as one numbered
 batch on a review page with an A (keep) / B (change) choice per row → write only what the owner

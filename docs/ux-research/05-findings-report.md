@@ -15,7 +15,7 @@
 
 ## Progress tracker
 
-*Updated with every change that touches a finding. Last update: 2026-10-17 (batch G, What's new).*
+*Updated with every change that touches a finding. Last update: 2026-10-18 (drive scan, broadcaster, the masthead line).*
 
 ### Where it stands
 
@@ -26,7 +26,7 @@
 | **The 24 scored fixes** | **24** ✅ | — | — | All done |
 | **Source on blank records** | **329** | — | **0** | All done (2026-10-17): every show says Pro-shot (1,164) or Audience (49) |
 
-**Live on the site:** everything above (pushed 2026-10-17).
+**Live on the site:** everything above (pushed 2026-10-18).
 
 ### Done
 
