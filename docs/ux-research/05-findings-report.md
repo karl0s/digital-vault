@@ -73,7 +73,8 @@
 - [ ] **Alongside the rest: real traders.** Everything left is predicted, not seen. Send the link
   with three tasks from [04-test-plan.md](04-test-plan.md) to two or three traders you already
   email; their answers re-score the list
-- [ ] **1. The 432 missing setlists**, in their own review
+- [ ] **1. The 433 missing setlists**, in their own review (432 at the review; a 1993 Stone Temple
+  Pilots "setlist" that was sidecar junk has since gone)
 - [ ] **2. Broadcaster, the rest** — 394 named from the records themselves (2026-10-18); 233 more
   that only the private notes name wait on the review page (`~/VaultShots/reports/broadcaster.html`)
 - [ ] **3. With Live Music mounted:** re-check Alice in Chains and Smashing Pumpkins (1996)
@@ -109,8 +110,8 @@ be contrast-checked automatically (F13).
 | [F17](#low) | Truncation and formats | ✅ | Batch D: one length format everywhere (`1h 05m`, `42 min`); "Pro-shot"; "Undated" in the drawer as on cards; a card's full name, place and specs on hover | — |
 | [F18](#low) | Phone header height | ✅ | Batch H (2026-10-17): on a phone the count, layout and sort row folds away while scrolling down and returns on the way up; nothing on the page moves | — |
 | — | [Taper redaction](#publishing-lineage-and-generation-without-exposing-tapers) | ✅ | Names, contacts and links captured to `private/`, then removed from `shows.json`; pipeline archives out of git; the site stops publishing folder names; health-check guard (`e2d03953`, `0b538a57`) | Old text stays in git history (accepted) |
-| — | [Drive scan](#planned-a-drive-scan-for-the-missing-specs) | ✅ | 2026-10-18: 1,206 of 1,213 found on Live Music (by name, exact size or content hash); specs added to 1,204, nothing overwritten; 16 picture sizes corrected, each checked against its still (`tools/drive-scan`) | Broadcaster (no drive needed); the two held back and the 7 not found, next time the drive is mounted |
-| — | [Data quality](#data-quality--the-metadata-is-the-product) | 🟡 | Source on all 329 blank records (2026-10-16/17): 1,164 Pro-shot, 51 Audience | 432 setlists; date precision |
+| — | [Drive scan](#planned-a-drive-scan-for-the-missing-specs) | ✅ | 2026-10-18: 1,206 of 1,213 found on Live Music (by name, exact size or content hash); specs added to 1,204, nothing overwritten; 16 picture sizes corrected, each checked against its still (`tools/drive-scan`) | The two held back and the 7 not found, next time the drive is mounted (broadcaster: Still to do, 2) |
+| — | [Data quality](#data-quality--the-metadata-is-the-product) | 🟡 | Source on all 329 blank records (2026-10-16/17): 1,164 Pro-shot, 49 Audience; every date on the 1st of a month settled (2026-10-17); broadcaster on 394 and specs on 1,204 (2026-10-18) | 433 setlists; 233 broadcasters to review; venue blank on 347, city on 161; 85 undated |
 
 ### The traders' jobs, then and now
 
@@ -160,7 +161,7 @@ come for, J1 and J2, now pass.
 - [x] Date and quality on every card
 - [x] A dense list view to scan a run of shows (Grid / List, kept in the link)
 - [x] CSV download of the results, or of the whole collection
-- [x] Sort by length (size isn't the show's own: it waits for the drive scan)
+- [x] Sort by length
 - [x] A printable list
 
 **J4 — Where was this song played?**
@@ -199,12 +200,12 @@ come for, J1 and J2, now pass.
 
 ## Bottom line
 
-**Now (2026-10-17).** All eight trader jobs pass in the scripted run. A trader can find a show
+**Now (2026-10-18).** All eight trader jobs pass in the scripted run. A trader can find a show
 however they type it, see which copy is better and why, compare the copies side by side, take the
-list away as a spreadsheet, send a link to one exact recording, and see what's been added. What's
-left is the **432 missing setlists** and a **broadcaster** field; every show now says how it was
-filmed, dates no day nobody knows, and carries its frame rate and bitrate. None of it has been tried by a real
-trader yet.
+list away as a spreadsheet, send a link to one exact recording, and see what's been added. Every
+show says how it was filmed, dates no day nobody knows, and carries its frame rate and bitrate;
+394 name their broadcaster. What's left is data: the **433 missing setlists** and **233
+broadcasters** to review. None of it has been tried by a real trader yet.
 
 **At the review (2026-10-16):** The Vault is **fast, handsome and better at song search than most trading lists**. The stills are
 real frames with the channel logos intact, which is exactly the evidence traders use.
