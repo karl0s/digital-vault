@@ -10,12 +10,13 @@ interface HeroSearchProps {
    * page scrolls to it, and the jump would land short.
    */
   instant?: boolean;
-  /** One plain line on what the site is (F16), counted from the data by App. */
+  /** The tagline, with the count from the data (F16): "1,213 live shows worth reliving." */
   summary?: string;
 }
 
 /**
- * Landing masthead: wordmark, tagline, and one line saying what the site is.
+ * Landing masthead: the wordmark, and one line that is both the tagline and
+ * what the site is: "1,213 live shows worth reliving.".
  *
  * This is the only place the brand appears. Search and the filters live in
  * the filter bar directly below it, and the Featured grid is the landing's
@@ -62,24 +63,18 @@ export function HeroSearch({ isSearching = false, instant = false, summary }: He
             <HalationLogo scale={1} style={{ width: '70%', height: 'auto' }} />
           </motion.div>
 
+          {/* One line, the tagline and what the site is (owner, 2026-10-18):
+              "1,213 live shows worth reliving." It fades in once the data has
+              counted the shows; until then the line holds its place unseen,
+              so nothing moves and the old wording never flashes. */}
           <motion.p
             className="-mt-2 text-sm uppercase tracking-widest text-gray-400 md:text-base"
             style={{ letterSpacing: '0.25em' }}
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            animate={{ opacity: summary ? 1 : 0 }}
             transition={{ duration: 0.4, delay: 0.15 }}
           >
-            Live music worth reliving.
-          </motion.p>
-          {/* Under the tagline, quieter: a forwarded link's reader learns what
-              this is before scrolling (F16). Empty until the data loads. */}
-          <motion.p
-            className="mt-3 min-h-5 text-sm text-gray-400"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: summary ? 1 : 0 }}
-            transition={{ duration: 0.4, delay: 0.25 }}
-          >
-            {summary}
+            {summary || 'Live shows worth reliving.'}
           </motion.p>
         </div>
       </div>

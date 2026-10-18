@@ -313,10 +313,10 @@ no `flushSync`. Keep the pattern for any input that does mount on tap. Mobile in
 `font-size` 16px (`text-base`) or larger, or iOS zooms the page on focus.
 
 ### Masthead (HeroSearch)
-Wordmark (`HalationLogo`), tagline, and one quiet line saying what the site is (F16,
-2026-10-17; shortened by the owner 2026-10-18): "A private collection of 1,213 live shows", counted
-from the shows by App (`collectionSummary`), so it never goes stale; it fades in when the data
-loads. The one place the brand appears. Always mounted,
+Wordmark (`HalationLogo`) and one line that is both the tagline and what the site is (F16;
+owner, 2026-10-18): "1,213 live shows worth reliving.", in the tagline's spaced capitals, counted
+from the shows by App (`collectionSummary`) so it never goes stale. It fades in once the data has
+loaded; until then it holds its place unseen. The one place the brand appears. Always mounted,
 animating to `height: 0 / opacity: 0` while filtering (`isSearching={filtered}` from App). It uses
 motion's `animate` prop, not `AnimatePresence`, so the search field in the bar below keeps its
 place and focus mid-keystroke. `instant` skips the animation for the jump to the artist list.
