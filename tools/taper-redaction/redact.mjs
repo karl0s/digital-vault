@@ -71,6 +71,8 @@ seller bootleg trade trader trading torrent net internet online download downloa
 image project nerorecode recode dvdrecorder mjpeg tools editor wizard suite xpress express
 video audio professional digital analog analogue betacam tape tapes videotape videoplayer vidicraft detailer tbc procamp basf maxell tdk
 file files folder transport program programme scene selection selected stereo mono hi-fi hifi nicam surround
+capdvhs compressor dvdlabpro dvdmaestro dvdrw dvr-ms h264_cutter ieee mpeg-ts eac3to demux govideo imovie mpeg2cut mpeg2repair utorrent
+trader's vhs-m webstreaming antenna letterbox abchd nbchd cbshd
 `.trim().split(/\s+/));
 
 // Countries (and the words in their names) are places, not people.
@@ -91,6 +93,7 @@ acoustic cover covers artwork menu thanks thank enjoy share please do not sell d
 n na minutes minute min mins hours hour seconds sec reading watching listening sharing downloading viewing help patience support
 lot lots bunch much very really again always everything anything nothing
 creator creators s uploaders authors tapers originally shared posted
+choice
 `.trim().split(/\s+/));
 
 export const clean = s => s.replace(/^[\s"'“”‘’`(\[{<*•·#~\\-]+|[\s"'“”‘’`)\]}>*•·.,;:!?~\\-]+$/g, '');
