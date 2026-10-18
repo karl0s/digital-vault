@@ -9,7 +9,8 @@ every change must pass are in `CLAUDE.md` (Front-end performance, Checks).
 ## Breakpoints
 
 Defined once, in `styles/globals.css` (`@theme`): Tailwind's defaults minus `sm`, plus `3xl`. Use
-only these prefixes, and test a layout change at each tier's size.
+only these prefixes, and test a layout change at each tier's size. One exception: the card grid
+drops to a single column below 400px (`min-[25rem]:`, owner, 2026-10-19; see Grids).
 
 | Tier | Prefix | From | Test at | Typical screens |
 |---|---|---|---|---|
@@ -215,11 +216,13 @@ the empty state. Options keep the file's order, never by count: they are scales.
 md, one on a phone.
 
 **Grids.** `GRID_COLS` (exported by `FeaturedRows.tsx`) is the one column set for every grid:
-2 → md 4 → lg 5 → xl 6, six at most (owner, 2026-10-15), with a 14px row gap since a card carries no
-caption below it. `ShowGrid` is memoised and deliberately unanimated;
+1 below 400px → 2 → md 3 (lg too) → xl 4 → 2xl 5 → 3xl 6 (owner, 2026-10-19, picked on
+`~/VaultShots/reports/card-columns.html`, made by `~/VaultShots/card_columns.py`), with a 14px row gap
+since a card carries no caption below it. `min-[25rem]:` is the one width outside the six tiers. `ShowGrid` is memoised and deliberately unanimated;
 `SearchResultsGrid` has its own header and the "N more shows feature a song called …" suggestion;
 for free text it renders the groups in order — **Artists** as tiles (round portrait, name, count,
-chevron; each spans two `GRID_TRACKS` columns so its edges meet the cards'; six, then Show all),
+chevron; one card wide from md so its edges meet the cards' and no row leaves a hole, the full
+width on a phone, a long name on two lines; six, then Show all),
 then **Shows** and **Songs** as card grids — or the Did you mean. A tile's portrait is the owner's
 pick in `ARTIST_PORTRAITS` (`src/lib/portraits.ts`), else the newest show's slot 1, whatever the
 filters or sort; picks are made on `tools/artist-portraits/build.py`'s page and pasted back. Under

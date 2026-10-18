@@ -695,8 +695,8 @@ deploy runs it too.
 
 ## Featured shows
 Above them, **Recently added** (same file): records with an `AddedOn` in the last 60 days, absent
-until there are any (see AddedOn). `components/FeaturedRows.tsx` → `FEATURED_IDS`: 12 hand-picked ShowIDs (two full rows at six
-columns; owner, 2026-10-15), shuffled once per load, shown on Browse only while nothing filters. A missing ID
+until there are any (see AddedOn). `components/FeaturedRows.tsx` → `FEATURED_IDS`: 12 hand-picked ShowIDs (owner, 2026-10-15; the
+grid's columns, 1 to 6 by width, are `GRID_TRACKS` in the same file), shuffled once per load, shown on Browse only while nothing filters. A missing ID
 drops out silently. The comment beside each ID says why that copy was chosen — keep doing that.
 
 ---

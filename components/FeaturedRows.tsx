@@ -21,13 +21,15 @@ import { sortShows } from '../src/search/facets';
 
 /**
  * Shared with SearchResultsGrid — if these diverge the landing stops matching
- * the results again. Six columns at most (owner, 2026-10-15): the Cinematic
- * card carries its text on the picture, so it wants to be wide. The row gap
- * is tight for the same reason — there is no caption under a card. GRID_TRACKS
- * is the columns alone, for the artist tiles above search results, which span
- * two of them.
+ * the results again. The owner's columns (2026-10-19, picked on
+ * ~/VaultShots/reports/card-columns.html): one under 400px, two on other phones,
+ * three on tablets and small laptops, four on laptops, five on desktops, six
+ * from 1920px. The Cinematic card carries its text on the picture, so it wants
+ * to be wide; 400px (25rem) is the one width the site's breakpoints don't name. The row
+ * gap is tight for the same reason — there is no caption under a card.
+ * GRID_TRACKS is the columns alone, for the artist tiles above search results.
  */
-export const GRID_TRACKS = 'grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6';
+export const GRID_TRACKS = 'grid grid-cols-1 min-[25rem]:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6';
 export const GRID_COLS = `${GRID_TRACKS} gap-x-3 gap-y-3.5`;
 
 /**

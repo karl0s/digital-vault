@@ -263,8 +263,9 @@ interface ArtistTilesProps {
 /**
  * Artists as tiles, not cards: a round portrait, the name and a count, and a
  * chevron, because a tile goes somewhere (the artist) where a card opens a
- * show. Each spans two card columns of the grid below, so their edges line up
- * with the cards at every size.
+ * show. A tile is one card wide from md, so its edges line up with the cards
+ * below and a row never leaves a hole at three or five columns; on a phone it
+ * is the full width. A long name takes two lines rather than being cut.
  */
 function ArtistTiles({ artists, onSelect, getImageUrl, preview }: ArtistTilesProps) {
   const [expanded, setExpanded] = useState(false);
@@ -301,7 +302,7 @@ function ArtistTile({ artist, onSelect, getImageUrl }: { artist: ArtistMatch; on
     <button
       type="button"
       onClick={() => onSelect(artist.name)}
-      className="group col-span-2 flex cursor-pointer items-center gap-3 rounded-xl border border-white/6 bg-white/4 p-2 pr-4 text-left transition-colors duration-150 hover:border-white/12 hover:bg-white/8 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+      className="group col-span-1 flex cursor-pointer items-center gap-3 min-[25rem]:col-span-2 md:col-span-1 rounded-xl border border-white/6 bg-white/4 p-2 pr-4 text-left transition-colors duration-150 hover:border-white/12 hover:bg-white/8 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
     >
       {portrait ? (
         <LazyImage
@@ -317,7 +318,7 @@ function ArtistTile({ artist, onSelect, getImageUrl }: { artist: ArtistMatch; on
         </span>
       )}
       <span className="min-w-0 flex-1">
-        <span className="block truncate text-[15px] font-medium leading-snug text-white">{artist.name}</span>
+        <span className="line-clamp-2 text-[15px] font-medium leading-snug text-white">{artist.name}</span>
         <span className="block text-xs tabular-nums text-gray-400">{plural(artist.shows.length, 'show', 'shows')}</span>
       </span>
       <ChevronRight

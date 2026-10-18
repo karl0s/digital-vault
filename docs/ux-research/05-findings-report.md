@@ -56,6 +56,9 @@
   in the drawer, the copies comparison, the list, the CSV and search: 394 named by the records
   themselves, then on your review (2026-10-18/19) 233 from the private notes and 155 read off
   the logo on the stills; 382 left blank by your choice. Every pro-shot record answered *(F1, J2)*
+- [x] **Card columns** — fewer, larger cards, your picks per breakpoint (2026-10-19): one under
+  400px, two on other phones, three on tablets and small laptops, four on laptops, five on
+  desktops, six from 1920px; the artist tiles one card wide, long names on two lines *(F13)*
 - [x] **Lineage from the sidecars** — 136 shows given the chain their own info file holds, on
   your review (2026-10-18): 92 that had none, 15 cut off at a line break, 29 with the transfer
   or editing steps added. Lineage now on 329 shows, was 237 *(F1, J2)*
