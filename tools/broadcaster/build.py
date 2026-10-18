@@ -14,6 +14,8 @@ import collections, html, json, os, re
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = os.path.expanduser('~/VaultShots/reports/broadcaster.html')
+# Written into PrivateNotes for a row Karl left blank (apply.py), so the page never asks twice.
+LEFT_BLANK = 'left blank by the owner on the broadcaster review'
 
 # (pattern, name as traders write it). Specific before general: "BBC Three" before "BBC".
 CHANNELS = [
@@ -109,7 +111,7 @@ h2{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#9ca3af;mar
 """
 
 SCRIPT = r"""
-const KEY='vault-broadcaster-2026-10-18'; let picks={}; try{picks=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+const KEY='vault-broadcaster-round-2'; let picks={}; try{picks=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(picks))}catch(e){}}; const rows=[...document.querySelectorAll('.row')];
 function paint(){for(const r of rows){const v=picks[r.dataset.id]||'';r.classList.toggle('done',!!v);r.querySelectorAll('.opt').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
 const o=r.querySelector('.other');o.classList.toggle('on',v.startsWith('set:'));if(document.activeElement!==o)o.value=v.startsWith('set:')?v.slice(4):''}
@@ -148,7 +150,7 @@ def stills(s, manifest):
 def main():
     all_shows = json.load(open(os.path.join(REPO, 'public', 'shows.json'), encoding='utf-8'))
     manifest = json.load(open(os.path.join(REPO, 'public', 'image-manifest.json')))
-    shows = [s for s in all_shows if s.get('Hidden') != 'Yes' and not s.get('Broadcaster')]
+    shows = [s for s in all_shows if s.get('Hidden') != 'Yes' and not s.get('Broadcaster') and LEFT_BLANK not in (s.get('PrivateNotes') or '')]
     rows = [(s, d) for s in shows for d in [draft(s)] if d]
     # Names for the "another channel" box, so a typed pick is spelt as the others are.
     known = sorted({n for _, n in CHANNELS if n} | {f'France {k}' for k in '234'} | set(SHOWS.values())

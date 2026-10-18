@@ -52,8 +52,10 @@
 - [x] **Source on all 329 blank records** — 54 from another copy of the same show, 275 on your
   review page (2026-10-17): every show now says Pro-shot or Audience *(data)*
 - [x] **Source filter** — Pro-shot / Audience, first in More filters *(F12)*
-- [x] **Broadcaster** — the channel beside the source ("Pro-shot · BBC Three") on 394 records,
-  in the drawer, the copies comparison, the list, the CSV and search *(F1, J2)*
+- [x] **Broadcaster** — the channel beside the source ("Pro-shot · BBC Three") on 704 records,
+  in the drawer, the copies comparison, the list, the CSV and search: 394 named by the records
+  themselves, then on your review (2026-10-18) 233 from the private notes and 77 you typed from
+  the logo on the stills; 167 left blank by your choice *(F1, J2)*
 - [x] **Drive scan** — frame rate and scan, bitrate, disc, menu, chapters and the show's own
   size on 1,204 records, shown in the drawer, the copies comparison, the list and the CSV; 16
   picture sizes corrected *(F1)*
@@ -75,8 +77,8 @@
   email; their answers re-score the list
 - [ ] **1. The 433 missing setlists**, in their own review (432 at the review; a 1993 Stone Temple
   Pilots "setlist" that was sidecar junk has since gone)
-- [ ] **2. Broadcaster, the rest** — 394 named from the records themselves (2026-10-18); 233 more
-  that only the private notes name wait on the review page (`~/VaultShots/reports/broadcaster.html`)
+- [ ] **2. Broadcaster, the rest** — 293 pro-shot records that name no channel anywhere wait on the
+  review page with their stills, to read the logo from (`~/VaultShots/reports/broadcaster.html`)
 - [ ] **3. With Live Music mounted:** re-check Alice in Chains and Smashing Pumpkins (1996)
   against their own files; look again for the 7 shows the scan couldn't find
 
@@ -111,7 +113,7 @@ be contrast-checked automatically (F13).
 | [F18](#low) | Phone header height | ✅ | Batch H (2026-10-17): on a phone the count, layout and sort row folds away while scrolling down and returns on the way up; nothing on the page moves | — |
 | — | [Taper redaction](#publishing-lineage-and-generation-without-exposing-tapers) | ✅ | Names, contacts and links captured to `private/`, then removed from `shows.json`; pipeline archives out of git; the site stops publishing folder names; health-check guard (`e2d03953`, `0b538a57`) | Old text stays in git history (accepted) |
 | — | [Drive scan](#planned-a-drive-scan-for-the-missing-specs) | ✅ | 2026-10-18: 1,206 of 1,213 found on Live Music (by name, exact size or content hash); specs added to 1,204, nothing overwritten; 16 picture sizes corrected, each checked against its still (`tools/drive-scan`) | The two held back and the 7 not found, next time the drive is mounted (broadcaster: Still to do, 2) |
-| — | [Data quality](#data-quality--the-metadata-is-the-product) | 🟡 | Source on all 329 blank records (2026-10-16/17): 1,164 Pro-shot, 49 Audience; every date on the 1st of a month settled (2026-10-17); broadcaster on 394 and specs on 1,204 (2026-10-18) | 433 setlists; 233 broadcasters to review; venue blank on 347, city on 161; 85 undated |
+| — | [Data quality](#data-quality--the-metadata-is-the-product) | 🟡 | Source on all 329 blank records (2026-10-16/17): 1,164 Pro-shot, 49 Audience; every date on the 1st of a month settled (2026-10-17); broadcaster on 704 and specs on 1,204 (2026-10-18) | 433 setlists; 293 broadcasters to review; venue blank on 347, city on 161; 85 undated |
 
 ### The traders' jobs, then and now
 
@@ -121,7 +123,7 @@ The review's walkthrough tasks, run again on the live site after batches A–E w
 | Job | At the review | Now | Still missing |
 |---|---|---|---|
 | J1 Do you have it? | 🟡 Partial | 🟢 **Pass** | — (a year-only date now reads as the year everywhere) |
-| J2 Is yours better? | 🔴 Fail | 🟢 **Pass** | Broadcaster on 394 records so far ("Pro-shot · BBC Three"); 233 more to review |
+| J2 Is yours better? | 🔴 Fail | 🟢 **Pass** | Broadcaster on 704 records ("Pro-shot · BBC Three"); 293 more to review |
 | J3 Artist audit | 🟡 Partial | 🟢 **Pass** | — |
 | J4 Song hunt | 🟢 Pass | 🟢 Pass | — (the song is lit in the setlist; `songs:` works) |
 | J5 Event dig | 🟡 Partial | 🟢 **Pass** | Small events (Fuji Rock) only by search |
@@ -153,7 +155,7 @@ come for, J1 and J2, now pass.
 - [x] Escape closes the show and keeps the results
 - [x] Size labelled as the folder's, with its file count
 - [x] Source (Pro-shot, Audience) on every record (was blank on 329)
-- [x] The broadcaster beside the source, in the drawer and the copies list (394 records; 233 more to review)
+- [x] The broadcaster beside the source, in the drawer and the copies list (704 records; 293 more to review)
 - [x] Frame rate, bitrate, the show's own size, side by side in the copies list (drive scan)
 
 **J3 — What do you have that I don't?**
@@ -204,7 +206,7 @@ come for, J1 and J2, now pass.
 however they type it, see which copy is better and why, compare the copies side by side, take the
 list away as a spreadsheet, send a link to one exact recording, and see what's been added. Every
 show says how it was filmed, dates no day nobody knows, and carries its frame rate and bitrate;
-394 name their broadcaster. What's left is data: the **433 missing setlists** and **233
+704 name their broadcaster. What's left is data: the **433 missing setlists** and **293
 broadcasters** to review. None of it has been tried by a real trader yet.
 
 **At the review (2026-10-16):** The Vault is **fast, handsome and better at song search than most trading lists**. The stills are
