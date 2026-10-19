@@ -84,8 +84,9 @@
 - [ ] **Alongside the rest: real traders.** Everything left is predicted, not seen. Send the link
   with three tasks from [04-test-plan.md](04-test-plan.md) to two or three traders you already
   email; their answers re-score the list
-- [ ] **1. The 433 missing setlists**, in their own review (432 at the review; a 1993 Stone Temple
-  Pilots "setlist" that was sidecar junk has since gone)
+- [ ] **1. The 382 missing setlists** (433 at the start of 2026-10-19's research): 51 added from
+  web research on your review, two independent sources each. The rest: a second research round is
+  running, then the missing-setlists report's 17 answers (`~/VaultShots/reports/setlists-report.html`)
 - [ ] **2. With Live Music mounted:** re-check Alice in Chains and Smashing Pumpkins (1996)
   against their own files; look again for the 7 shows the scan couldn't find
 
@@ -213,7 +214,7 @@ come for, J1 and J2, now pass.
 however they type it, see which copy is better and why, compare the copies side by side, take the
 list away as a spreadsheet, send a link to one exact recording, and see what's been added. Every
 show says how it was filmed, dates no day nobody knows, and carries its frame rate and bitrate;
-782 name their broadcaster. What's left is data: the **433 missing setlists**. None of it has been tried by a real trader yet.
+782 name their broadcaster. What's left is data: the **382 missing setlists**, under research. None of it has been tried by a real trader yet.
 
 **At the review (2026-10-16):** The Vault is **fast, handsome and better at song search than most trading lists**. The stills are
 real frames with the channel logos intact, which is exactly the evidence traders use.

@@ -63,7 +63,9 @@ for (const s of shows) {
     }
   }
   for (const f of ['Lineage', 'Notes', 'SourceEquipment', 'Setlist', 'PrivateNotes']) {
-    for (const line of (s[f] || '').split('\n')) if (line && knownName(line)) { report(s, f, 'a known taper or uploader', line); break; }
+    // A setlist's "(Stevie Wonder cover)" names the song's original artist, never a taper.
+    const text = f === 'Setlist' ? (s[f] || '').replace(/\([^()]*\bcover\)/gi, '') : (s[f] || '');
+    for (const line of text.split('\n')) if (line && knownName(line)) { report(s, f, 'a known taper or uploader', line); break; }
   }
 }
 

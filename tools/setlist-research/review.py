@@ -15,7 +15,7 @@ An earlier session's reason for leaving a show blank is shown beside it. Karl ad
 songs if he likes) or leaves each, and pastes "Copy for Claude Code"; apply_review.py writes it.
 A show with nothing found needs no answer. Read-only.
 """
-import html, json, os, re
+import hashlib, html, json, os, re
 from urllib.parse import urlparse
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -25,6 +25,11 @@ TALK = {'David Letterman', 'Jay Leno', 'Jimmy Fallon', "Conan O'Brien", 'Jimmy K
 ANSWERED = "the owner's call in the setlist research review"
 PRIOR = re.compile(r"(?i)setlist (?:deliberately )?left (?:empty|blank)|left (?:empty|blank) deliberately|no setlist is given|no setlist could be sourced|Setlist NOT copied")
 MIN_PER_SONG = 4.2
+
+
+def fingerprint(r):
+    """Six characters that change whenever a show's research result changes."""
+    return hashlib.sha1(json.dumps(r, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:6]
 
 
 def mins(s):
@@ -99,9 +104,16 @@ def main():
         except ValueError:
             continue
         s = by.get(r.get('ShowID'))
-        # Not a show any more, given a setlist since, or already answered on this page.
-        if not s or (s.get('Setlist') or '').strip() or ANSWERED in (s.get('PrivateNotes') or ''):
+        # Not a show any more, or given a setlist since.
+        if not s or (s.get('Setlist') or '').strip():
             continue
+        # Left blank on this page before: hidden while the research is the one it was judged on,
+        # shown again, as new evidence, once a later round has changed it.
+        notes = s.get('PrivateNotes') or ''
+        judged = re.findall(r'research ([0-9a-f]{6}):', notes) if ANSWERED in notes else []
+        if judged and judged[-1] == fingerprint(r):
+            continue
+        r = dict(r, _new=bool(judged))
         results.append((s, r, *advise(s, r)))
     E = html.escape
     groups = [('add', 'Recommended: add', 'Two or more independent sources agree, and the recording can hold the songs.'),
@@ -127,7 +139,7 @@ def main():
             p = prior(s)
             parts.append(f'''<section class="row" data-id="{s['ShowID']}" data-label="{E(s['Artist'] + ' · ' + (s.get('ShowDate') or 'Undated'))}">
 <div class="pic"><img loading="lazy" src="{E(a)}" onerror="this.onerror=null;this.src='{E(b)}'" alt=""></div>
-<div class="body"><div class="art">{E(s['Artist'])} <span class="sub">{E(place)} · {mins(s)} min · {kind}</span></div>
+<div class="body"><div class="art">{E(s['Artist'])} <span class="sub">{E(place)} · {mins(s)} min · {kind}</span>{'<span class="newev">new evidence since you left it blank</span>' if r.get('_new') else ''}</div>
 {f'<div class="prior">Left blank on purpose before: “…{E(p)}…”</div>' if p else ''}
 <textarea class="prop" rows="2">{E('; '.join(x.strip() for x in songs if x.strip()))}</textarea>
 <div class="why"><b>Why {"add" if choice == "add" else "leave"}:</b> {E(why)}</div>
@@ -153,7 +165,7 @@ h2{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#9ca3af;mar
 .row{display:flex;gap:16px;padding:16px 12px;border-bottom:1px solid var(--line)} .row.done{background:rgba(167,139,250,.06)} body.hide .row.done{display:none}
 .pic{width:200px;flex:none} .pic img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;display:block;background:#222}
 .body{flex:1;min-width:0} .art{font-weight:600;font-size:15px} .sub{color:#9ca3af;font-weight:400;font-size:13px} .dim{color:#9ca3af}
-.prior{color:#fde68a;font-size:12.5px;margin:6px 0}
+.prior{color:#fde68a;font-size:12.5px;margin:6px 0} .newev{margin-left:8px;font-size:11px;font-weight:700;background:#065f46;color:#d1fae5;border-radius:999px;padding:2px 8px}
 .prop{width:100%;margin-top:8px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);border-radius:8px;padding:8px 10px;font-size:14px;color:#fde68a;resize:vertical}
 .why{font-size:13px;color:#d1d5db;margin-top:6px} .why b{color:#fff}
 ul.src{margin:6px 0 0;padding-left:18px;font-size:12.5px;color:#d1d5db} ul.src li.no{color:#9ca3af} ul.src a{color:#93c5fd} .kind{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:#9ca3af;margin:0 4px}
