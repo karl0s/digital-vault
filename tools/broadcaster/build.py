@@ -76,7 +76,11 @@ def draft(s):
             return dict(name=hits[0][0], also=[h[0] for h in hits[1:]], where=label, quote=hits[0][2], strength='strong')
     event = s.get('EventOrFestival') or ''
     if event in SHOWS:
-        return dict(name=SHOWS[event], also=[], where='Programme', quote=f'{event} is a {SHOWS[event]} programme', strength='strong')
+        name = SHOWS[event]
+        # Letterman was NBC's Late Night until 25 June 1993; the Late Show on CBS from 30 August.
+        if event == 'David Letterman' and (s.get('ShowDate') or '9999') < '1993-08-30':
+            name = 'NBC'
+        return dict(name=name, also=[], where='Programme', quote=f'{event} was a {name} programme then', strength='strong')
     hits = found_in(s.get('PrivateNotes') or '')
     if hits:
         return dict(name=hits[0][0], also=[h[0] for h in hits[1:]], where='Private notes', quote=hits[0][2], strength='weak')
