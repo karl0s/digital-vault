@@ -34,6 +34,9 @@ const PRIV = join(REPO, 'private');
 const ORIGINALS = join(PRIV, 'taper-originals.json');
 const NAMES = join(PRIV, 'taper-names.json');
 const RECORD = join(PRIV, 'taper-contacts.md');
+// Names removed by hand, too short for the every-show list ("sd" would match ordinary words):
+// the owner's notes on them, kept apart so each run can rebuild the record without losing them.
+const BY_HAND = join(PRIV, 'taper-contacts-by-hand.md');
 const HASHES = join(REPO, 'scripts/taper-names.sha1.json');
 const APPROVALS = join(REPO, 'scripts/setlist-removals-approved.json');
 const APPLY = process.argv.includes('--apply');
@@ -191,7 +194,7 @@ originals._approvals = originals._approvals || [];
 for (const a of approvalChanges) originals._approvals.push(a);
 writeFileSync(ORIGINALS, JSON.stringify(originals, null, 2) + '\n');
 writeFileSync(NAMES, JSON.stringify(everywhere, null, 2) + '\n');
-writeFileSync(RECORD, record(originals, everywhere));
+writeFileSync(RECORD, record(originals, everywhere) + (existsSync(BY_HAND) ? `\n${readFileSync(BY_HAND, 'utf8')}` : ''));
 // The capture must exist before the source text goes.
 for (const f of [ORIGINALS, NAMES, RECORD]) if (!existsSync(f)) throw new Error(`capture missing: ${f}`);
 const ignored = execSync(`git check-ignore -q "${RECORD}" && echo yes || echo no`, { cwd: REPO }).toString().trim();
