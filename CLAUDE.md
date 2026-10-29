@@ -61,7 +61,7 @@ scripts/
   vite-plugin-*         ← wire thumbs.mjs, site-data.mjs and show-pages.ts into vite.config.ts
   show-pages.ts         ← a page per show for link previews, and 404.html (npm run check:pages)
   setlist-removals-approved.json ← deliberate setlist removals the health check accepts
-  collection-at-launch.json ← the ShowIDs before "Recently added" began (2026-10-16): no AddedOn needed
+  collection-at-launch.json ← the ShowIDs before AddedOn began (2026-10-16): no AddedOn needed
   check-taper.mjs       ← blocks tapers' names, contacts, links and tracker names in shows.json (run by the health check)
   taper-names.sha1.json ← hashes of known handles, for check-taper.mjs (the names themselves stay in private/)
 private/                ← Karl's own records, gitignored, never committed: taper contacts captured before redaction
@@ -153,7 +153,7 @@ Flat JSON array of show objects. Key fields:
 | `DatePrecision` | `"month"`, `"day"`, `"year"` or absent | How much of `ShowDate` is known where its convention can't tell — see *ShowDate* below |
 | `Broadcaster` | string or absent | The channel a pro-shot recording came from, as traders name it ("BBC Three", "WDR", "NBC"). Drafted from the record's own sidecar, folder name, programme or private notes and confirmed by the owner, or typed by the owner from the channel's logo on the stills (`tools/broadcaster`, 2026-10-18). A record he left blank says so in `PrivateNotes`, and the review never asks again. Shown with the source ("Pro-shot · BBC Three") |
 | `FrameRate`, `ScanType`, `VideoKbps`, `AudioKbps`, `AudioTracks`, `DiscType`, `Menu`, `Chapters`, `ShowSizeHuman` | strings or absent | Read from the record's own files by the drive scan (`tools/drive-scan`, 2026-10-18; added, never overwriting). Bitrates are averages from size and length; `Chapters` only where the record is its titleset's whole programme; `ShowSizeHuman` only where the files are its own, in `TotalSizeHuman`'s units (binary, "GB"). Re-run: `scan.py` → `page.py` (review) → `apply.py` |
-| `AddedOn` | `YYYY-MM-DD` or absent | When the recording joined the site; drives "Recently added". **Set on every new record** — see *AddedOn* below |
+| `AddedOn` | `YYYY-MM-DD` or absent | When the recording joined the site; drives the New badge and the "Recently added" sort. **Set on every new record** — see *AddedOn* below |
 
 ### Notes and PrivateNotes
 **The owner's rule (2026-10-07): `Notes` is public and holds only sidecar text; everything else
@@ -333,7 +333,10 @@ no longer in the manifest** (replacing 4 with 3 always leaves one); delete the t
 
 ## Temp checksum stubs
 A record created before its files were scanned gets a random 40-char placeholder checksum, marked
-by `"TEMP CHECKSUM - update when files are scanned"` in `PrivateNotes`. None remain; list any with:
+by `"TEMP CHECKSUM - update when files are scanned"` in `PrivateNotes`. **A downloaded file not on the
+drive yet is never a stub**: its checksum is the SHA1 of the file itself, which moving it to Live
+Music doesn't change, and its `FolderPath` is where it is expected (the drive root) — the
+`concert-screenshots` skill §13b (2026-10-29). None remain; list any with:
 
 ```bash
 python3 -c "
@@ -586,6 +589,8 @@ for anything that is not a show, and run the taper redaction.
 Expansion Drive` or `Big Daddy`). **The whole collection now lives on one drive, `Live Music`**
 (`/Volumes/Live Music`), which every capture and audit script reads; because records still carry
 their original `FolderPath`, the tools resolve folders by name and content hash, not stored path.
+Shows added from `~/Downloads` before the owner moves them carry the path they are expected at
+(`/Volumes/Live Music/<file name>`); `fix_paths.py` corrects it if they land elsewhere.
 
 ---
 

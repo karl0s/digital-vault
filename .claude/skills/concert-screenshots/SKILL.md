@@ -974,7 +974,7 @@ separable at file level").
 - Take `Width`/`Height`/`AspectRatio`/`TVStandard`/`DurationSec` from **that titleset's** ffprobe.
 - Each record gets **its own stills from its own titleset** — never shared.
 - `Artist` is the stored spelling, no leading "The" (§17 step 0).
-- Set `AddedOn` to today (`YYYY-MM-DD`): the site's "Recently added" reads it (CLAUDE.md → AddedOn).
+- Set `AddedOn` to today (`YYYY-MM-DD`): the site's New badge and "Recently added" sort read it (CLAUDE.md → AddedOn).
   A record split or re-keyed from one already on the site is not new: its ShowID goes in
   `scripts/collection-at-launch.json` instead. The health check blocks a new record with neither.
 - Once the run's records are written, add their specs from the drive: `python3 tools/drive-scan/scan.py
@@ -1227,6 +1227,37 @@ Technical fields from `ffprobe` (container, codecs, width, height, duration, `As
 (CLAUDE.md → ShowDate). `Artist`, `AddedOn` and `ContentType` exactly as §10b step 5. **Validate
 before writing:** ShowID and checksum unique, `ShowDate` empty or exactly `YYYY-MM-DD`, and the record
 count up by exactly the number added. Split bills get a derived checksum for the second act (§2).
+
+### 13b. Files not on Live Music yet — downloads (owner, 2026-10-29)
+The owner downloads shows to `~/Downloads` (MakeMKV rips, DVB/TS broadcasts, archive.org files) and
+has them added from there; he moves them to the drive later. The run is the usual one, with four
+differences:
+
+1. **Checksum first.** `shasum -a 1 <file>` against every `ChecksumSHA1`: one download (STP MTV
+   Unplugged 1993) was byte-identical to a record already held. Then look for a twin — same artist
+   and date or programme, a running time within a minute or two.
+2. **Prove a twin before calling it one show.** `python3 twin_match.py --src <file> --twins <ShowID> …`
+   finds each of the twin's site stills inside the file and writes `reports/twins/<slug>/pairs.jpg`.
+   Look at the pairs; a score alone misleads (0.5–0.7 is a nearby shot or a miss). A title card
+   outranks the room: Nirvana "Unseen" looked like Paradiso 1991 and its own card said "live from
+   the mtv studio" (MTV Studios 1992-01-10, already held). Copy the twin's five identity fields,
+   offer its setlist and broadcaster on the review page, and choose stills at moments **away from**
+   the match times (two copies of one broadcast need different moments).
+3. **Plan with `plan_files.py`** (§18), then `./run_artist_noplan.sh "<label>"`. A stream flagged
+   interlaced whose picture idet measures progressive (an MTV HD TS) takes `"progressive": "<why>"`.
+   `aspect_ab.py` uses the planned ShowDate while the record is unwritten.
+4. **The record** follows §13 with the drive path the file is expected at: `FolderPath`
+   `/Volumes/Live Music/<file name>` (loose files sit at the drive root), ShowID = sha1 of that path
+   [:12], `ChecksumSHA1` = sha1 of the file itself (the move doesn't change it — never a temp stub),
+   `FolderName` = `RepVideoFiles` = the file name, `MasterDriveName` Live Music, `DiscType` File,
+   `AddedOn` today; specs from the file (`VideoKbps` from the video packets, `ScanType` by idet).
+   `PrivateNotes` says it was catalogued from Downloads; after the move `fix_paths.py` corrects
+   `FolderPath` if it landed elsewhere — the ShowID stays.
+
+Hand the owner the picks page **and** one records page: an A/B row per open question — identity
+from research (two fetched sources each, or the recording's own title card), copies from twins,
+broadcaster, corrections a twin needs (a year-only date, a venue's name at the time). Write nothing
+to `shows.json` before he answers.
 
 ---
 
@@ -1485,6 +1516,7 @@ python3 plan_subset.py --label L --ids ids.json   # plan only listed ShowIDs; RE
 python3 plan_files.py --label L --files f.json    # loose files NOT on Live Music yet (downloads): path, ShowID,
                                                   # Checksum, ShowDate; "progressive": why, for a stream flagged
                                                   # interlaced that idet measures progressive. Same gates as plan
+python3 twin_match.py --src F --twins ID [ID ...] # is F a copy of a held show? finds each twin still in F (§13b)
 ./showpicks.sh "<Artist>"                     # materialise, verify links, open for the owner
 python3 hero_gate.py                          # refuse promotion until every hero is verified
 python3 aspect_ab.py                          # 4:3-flagged, bar-free, post-2000 sources at both shapes

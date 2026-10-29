@@ -181,7 +181,7 @@ if len(ERRORS) == _ct_before:
 
 # ── 4c2. Added date (What's new) ─────────────────────────────────────────────
 # AddedOn (YYYY-MM-DD) dates when a recording joined the collection; the site's
-# "Recently added" row and badge read it (src/lib/added.ts). The owner started
+# New badge and "Recently added" sort read it (src/lib/added.ts). The owner started
 # it on 2026-10-16: the records then are the collection at launch, listed in
 # scripts/collection-at-launch.json, and carry none. Every other record needs
 # one, or it never shows as new. A record split or re-filed from one already
