@@ -191,12 +191,17 @@ section('Added date (AddedOn)')
 LAUNCH_JSON = os.path.join(ROOT, 'scripts', 'collection-at-launch.json')
 _launch = json.load(open(LAUNCH_JSON, encoding='utf-8'))
 _launch_ids, _launch_date = set(_launch['ShowIDs']), _launch['date']
+# "Today" allows one day ahead: the owner dates records in New Zealand (UTC+12/13)
+# and the deploy runs in UTC, where it is still yesterday until 1 pm there. A record
+# added on 2026-10-30 at 10 am NZ failed the deploy as a future date.
+from datetime import timedelta as _timedelta
+_added_latest = (_date.today() + _timedelta(days=1)).isoformat()
 _added_before = len(ERRORS)
 for s in shows:
     sid, added = s.get('ShowID'), s.get('AddedOn')
     if added is not None:
         try:
-            _ok = bool(re.fullmatch(r'\d{4}-\d{2}-\d{2}', added)) and _launch_date <= added <= _date.today().isoformat() \
+            _ok = bool(re.fullmatch(r'\d{4}-\d{2}-\d{2}', added)) and _launch_date <= added <= _added_latest \
                 and _date.fromisoformat(added) is not None
         except ValueError:
             _ok = False
