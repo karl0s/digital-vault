@@ -205,7 +205,8 @@ re-filings). Every record created since gets `AddedOn` = the day it was added, t
 VA-master procedures included. A record carved from one already on the site — a split, a re-key, a
 linked record cut from an existing master — is not new: add its ShowID to the launch list instead.
 The health check blocks a record with neither. The site works out the rest (`src/lib/added.ts`):
-**New**, or **New copy** when the show was already held, from its other copies. **Never a label
+a card badge **New** for 30 days (a new show or a new copy alike: no room on the card), and in the
+drawer "Added … · new copy" when the show was already held, from its other copies. **Never a label
 that ranks one copy above another** ("Better copy" was removed, owner 2026-10-29).
 
 ### Documentaries — `ContentType`

@@ -6,7 +6,7 @@ import type { ImageUrlGetter } from '../src/hooks/useShows';
 import type { SongHit } from '../src/search/searchIndex';
 import { quality, lengthName, dateName } from '../src/lib/specs';
 import { copyCount } from '../src/lib/copies';
-import { ADDED_LABEL, BADGE_DAYS, addedKind, addedWithin } from '../src/lib/added';
+import { BADGE_DAYS, addedWithin } from '../src/lib/added';
 
 interface ShowCardProps {
   show: Show;
@@ -61,8 +61,9 @@ const getColorFromString = (str: string): string => {
  */
 function exceptions(show: Show): { label: string; tone: string; title?: string }[] {
   const out: { label: string; tone: string; title?: string }[] = [];
-  // Added in the last month (F11): New, or a Better / New copy of a show already held.
-  if (addedWithin(show, BADGE_DAYS)) out.push({ label: ADDED_LABEL[addedKind(show)], tone: 'bg-emerald-300 text-[#052e1c]', title: `Added ${show.AddedOn}` });
+  // Added in the last month (F11): "New" for a new show and a new copy alike — the card
+  // has no room for more (owner, 2026-10-29); the drawer's Added line says which.
+  if (addedWithin(show, BADGE_DAYS)) out.push({ label: 'New', tone: 'bg-emerald-300 text-[#052e1c]', title: `Added ${show.AddedOn}` });
   if (show.ContentType === 'Documentary') out.push({ label: 'Documentary', tone: 'bg-violet-400/95 text-[#160c2e]' });
   if (show.ParentShowID) out.push({ label: 'Excerpt', tone: 'bg-white/90 text-[#111]', title: 'Cut from a longer broadcast' });
   const copies = copyCount(show);

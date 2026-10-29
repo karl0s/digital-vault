@@ -178,8 +178,9 @@ longest first**, or **recently added** (`AddedOn`, the collection at launch afte
 records added since carry `AddedOn` (CLAUDE.md → AddedOn). **No "Recently added" row** on the
 landing (owner, 2026-10-29: Featured only for now; how to bring it back is commented in
 `FeaturedRows.tsx`). A card carries a badge for 30 days: **New** when the show wasn't held,
-otherwise **New copy** — worked out from `copiesOf`, never stored. **No label judges one copy
-against another**: "Better copy" was removed (owner, 2026-10-29). The drawer's Technical panel
+and **New** too for a copy of a show already held (the card has no room for "New copy", owner
+2026-10-29); the drawer's Added line tells them apart, worked out from `copiesOf`, never stored.
+**No label judges one copy against another**: "Better copy" was removed (owner, 2026-10-29). The drawer's Technical panel
 gives the date ("Added 2026-10-29 · new copy"), and the CSV an Added column.
 
 **List layout** (`components/ShowList.tsx`, docs/ux-research F10): the same results in the same
@@ -268,7 +269,7 @@ Traders are mostly 40–60 (docs/ux-research). The floor, everywhere:
 - The button's `title` holds the whole name, place and spec line, for what a narrow card cuts short.
 - One row across the top: badges left, the length right (`lengthName`: `1h 42m`, `24 min`, the one
   length format on the site); badges wrap under each other rather than run beneath the length. A
-  badge only when the record is not a plain live show: **New** or **New copy**
+  badge only when the record is not a plain live show: **New**
   (emerald) for 30 days after its `AddedOn` (`src/lib/added.ts`), Documentary (`ContentType`) or
   Excerpt (`ParentShowID`) — and, dark and quieter, **N copies** when the collection holds the show more
   than once (`copyCount` in `src/lib/copies.ts`, below), so look-alike cards say why. How it was
