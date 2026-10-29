@@ -175,12 +175,12 @@ in the URL, after `sort`), **CSV** (from md) and the sort — newest, oldest, ar
 longest first**, or **recently added** (`AddedOn`, the collection at launch after).
 
 **What's new** (`src/lib/added.ts`, docs/ux-research F11; owner 2026-10-16, "start from today"):
-records added since carry `AddedOn` (CLAUDE.md → AddedOn). Above Featured shows, **Recently
-added** lists those added in the last 60 days, newest first, two rows at most, and is absent
-while there are none. A card carries a badge for 30 days: **New** when the show wasn't held,
-**Better copy** when its picture (HD, SD, low-res, then lines) beats every copy held before it,
-otherwise **New copy** — worked out from `copiesOf`, never stored. The drawer's Technical panel
-gives the date ("Added 2026-10-20 · better copy"), and the CSV an Added column.
+records added since carry `AddedOn` (CLAUDE.md → AddedOn). **No "Recently added" row** on the
+landing (owner, 2026-10-29: Featured only for now; how to bring it back is commented in
+`FeaturedRows.tsx`). A card carries a badge for 30 days: **New** when the show wasn't held,
+otherwise **New copy** — worked out from `copiesOf`, never stored. **No label judges one copy
+against another**: "Better copy" was removed (owner, 2026-10-29). The drawer's Technical panel
+gives the date ("Added 2026-10-29 · new copy"), and the CSV an Added column.
 
 **List layout** (`components/ShowList.tsx`, docs/ux-research F10): the same results in the same
 order as a dense table, for scanning an artist's run or reconciling a spreadsheet. A real `<table>`
@@ -268,7 +268,7 @@ Traders are mostly 40–60 (docs/ux-research). The floor, everywhere:
 - The button's `title` holds the whole name, place and spec line, for what a narrow card cuts short.
 - One row across the top: badges left, the length right (`lengthName`: `1h 42m`, `24 min`, the one
   length format on the site); badges wrap under each other rather than run beneath the length. A
-  badge only when the record is not a plain live show: **New**, **Better copy** or **New copy**
+  badge only when the record is not a plain live show: **New** or **New copy**
   (emerald) for 30 days after its `AddedOn` (`src/lib/added.ts`), Documentary (`ContentType`) or
   Excerpt (`ParentShowID`) — and, dark and quieter, **N copies** when the collection holds the show more
   than once (`copyCount` in `src/lib/copies.ts`, below), so look-alike cards say why. How it was

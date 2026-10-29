@@ -6,16 +6,15 @@
  * without a date). Git history can't stand in: most records first seen in
  * October 2026 were splits and re-filings, not new recordings.
  *
- * Whether an addition is a new show or an upgrade isn't stored: it is worked
- * out from the show's other copies (src/lib/copies.ts) — a better copy when
- * its picture beats every copy held before it.
+ * Whether an addition is a new show or another copy of one isn't stored: it is
+ * worked out from the show's other copies (src/lib/copies.ts). No label judges
+ * one copy against another — "Better copy" was removed (owner, 2026-10-29).
  */
 
 import type { Show } from '../../App';
 import { copiesOf } from './copies';
-import { quality } from './specs';
 
-/** How long a show stays in the "Recently added" row. */
+/** How long a show stays in the "Recently added" row (hidden for now: FeaturedRows.tsx). */
 export const RECENT_DAYS = 60;
 /** How long its card carries the badge. */
 export const BADGE_DAYS = 30;
@@ -33,30 +32,17 @@ export const addedWithin = (show: Pick<Show, 'AddedOn'>, days: number, now = Dat
   return d !== null && d >= 0 && d < days;
 };
 
-export type AddedKind = 'new' | 'better-copy' | 'new-copy';
+export type AddedKind = 'new' | 'new-copy';
 
 export const ADDED_LABEL: Record<AddedKind, string> = {
   new: 'New',
-  'better-copy': 'Better copy',
   'new-copy': 'New copy',
 };
 
-/** HD over SD over low-res, then more lines: the order traders rank a picture. */
-function pictureRank(show: Show): number {
-  const q = quality(show);
-  if (!q) return 0;
-  return (q.tier === 'hd' ? 3 : q.tier === 'sd' ? 2 : 1) * 10_000 + (parseInt(show.Height, 10) || 0);
-}
-
-/**
- * A new show, or another copy of one already held — a better one when its
- * picture beats every copy that was here before it. Copies added the same day
- * or later don't count against it.
- */
+/** A new show, or another copy of one already held. Copies added the same day or later don't count. */
 export function addedKind(show: Show): AddedKind {
   const before = copiesOf(show).filter(c => c !== show && (!c.AddedOn || (show.AddedOn && c.AddedOn < show.AddedOn)));
-  if (before.length === 0) return 'new';
-  return pictureRank(show) > Math.max(...before.map(pictureRank)) ? 'better-copy' : 'new-copy';
+  return before.length === 0 ? 'new' : 'new-copy';
 }
 
 /** Newest additions first; the collection at launch after them, newest show first. */

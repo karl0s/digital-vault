@@ -242,7 +242,7 @@ console.log("\nWhat's new (F11): AddedOn, labels and the sort, on copies of real
   const all = [sd, sdTwin, hdCopy, sdCopy, fresh];
   indexCopies(all);
   ok('a show not held before is New', addedKind(fresh) === 'new');
-  ok('an HD copy of an SD show is a Better copy', addedKind(hdCopy) === 'better-copy');
+  ok('an HD copy of an SD show is a New copy, never "better" (owner, 2026-10-29)', addedKind(hdCopy) === 'new-copy');
   ok('another SD copy is a New copy', addedKind(sdCopy) === 'new-copy');
   const now = Date.parse('2026-11-20T12:00:00Z');
   ok('inside 30 days it is recent', addedWithin(fresh, 30, now));

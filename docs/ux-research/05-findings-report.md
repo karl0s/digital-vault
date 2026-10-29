@@ -48,7 +48,7 @@
   CSV, a length sort, a printable list *(F10)*
 - [x] **G. What's new** — from 2026-10-16 by your choice: an added date on every new record
   (enforced), a "Recently added" row, New / Better copy / New copy badges, a sort, a CSV column
-  *(F11)*
+  *(F11)*. 2026-10-29, the owner: the row hidden (Featured only for now) and "Better copy" removed
 - [x] **Source on all 329 blank records** — 54 from another copy of the same show, 275 on your
   review page (2026-10-17): every show now says Pro-shot or Audience *(data)*
 - [x] **Source filter** — Pro-shot / Audience, first in More filters *(F12)*
@@ -111,7 +111,7 @@ be contrast-checked automatically (F13).
 | [F8](#f8--empty-results-blame-spelling-when-a-filter-is-the-cause) | Empty results blame spelling | ✅ | Batch B: names the filters that hide the results and offers "Show N without the filter" | — |
 | [F9](#f9--the-drawer-hides-venue-and-city-for-festival-and-tv-shows) | Venue and city hidden | ✅ | Batch A: `Date · Event · Venue · City, Country` under the name for every show | — |
 | [F10](#f10--no-dense-list-export-or-useful-sort-for-reconciling-a-trading-list) | No list view or export | ✅ | Batch F (2026-10-16): a Grid / List toggle kept in the link; the list a dense table (date, artist, event, venue, place, source, quality, PAL/NTSC, length, size, songs); **CSV** of the results on screen and **Download the full list** (21 columns, opens in Excel with accents intact, a link per show); sort by length; prints black on white | — |
-| [F11](#f11--returning-traders-cant-see-whats-new) | No "what's new" | ✅ | Batch G (2026-10-16), from today by your choice: `AddedOn` on every new record, enforced by the health check (`scripts/collection-at-launch.json` lists the 1,214 before); a "Recently added" row above Featured (last 60 days); New / Better copy / New copy badges for 30 days; the date in the drawer; a "Recently added" sort; an Added column in the CSV | RSS (optional). Shows only once records are added |
+| [F11](#f11--returning-traders-cant-see-whats-new) | No "what's new" | ✅ | Batch G (2026-10-16), from today by your choice: `AddedOn` on every new record, enforced by the health check (`scripts/collection-at-launch.json` lists the 1,214 before); a "Recently added" row above Featured (last 60 days; **hidden 2026-10-29**, Featured only for now); New / New copy badges for 30 days ("Better copy" removed 2026-10-29, owner); the date in the drawer; a "Recently added" sort; an Added column in the CSV | RSS (optional). Shows only once records are added |
 | [F12](#f12--filters-dont-cover-what-traders-decide-by) | Filters miss trader dimensions | ✅ | "More filters" beside Event (2026-10-16): Quality (HD 1080, HD 720, SD, Low-res), Standard (PAL, NTSC), Length (five bands), Setlist (has one, none yet), with live counts, chips and links; **Source** (Pro-shot, Audience) added 2026-10-17 once every record had one | — |
 | [F13](#f13--too-faint-and-too-small-for-eyes-aged-4060) | Too faint, too small | ✅ | Batch E: every text passes 4.5:1, measured on the rendered page in 12 views (A–Z counts 1.7 → 5.3:1, heading counts 2.3/3.8 → 5.3:1, "No setlist yet" 3.8 → 6.8:1); nothing under 12px but the cards' badges (9.5 → 11px); the drawer's section labels 10 → 12px; Notes 12 → 13px; tab bar and year axis 10 → 12px; layout holds at 150% and 200% zoom | Text over the stills (cards, drawer header) is protected by the gradients but can't be measured automatically |
 | [F14](#f14--stills-cant-be-inspected-closely) | Stills can't be inspected | ✅ | Batch A: "Open full size" in the screenshot viewer (the original, at 100%, in a new tab) | — |
@@ -197,7 +197,7 @@ come for, J1 and J2, now pass.
 
 **J7 — What's new?**
 - [x] A date each record was added (from 2026-10-16; the health check makes sure)
-- [x] A "Recently added" row, badges that say New, Better copy or New copy, and a sort
+- [x] A "Recently added" row (hidden 2026-10-29), badges that say New or New copy ("Better copy" removed 2026-10-29), and a sort
 - [ ] RSS (optional)
 
 **J8 — Evidence check**
@@ -236,7 +236,7 @@ copies of one show is the HD one) couldn't be made from anything on screen.
 | J4 Song hunt | 🟢 Pass | (Song not highlighted in the setlist) | 🟢 Pass | Batch H: the song lit in the setlist |
 | J5 Event dig | 🟡 Partial | Empty results blame spelling when a filter is the cause | 🟢 Pass | Batch B: empty results name the filter; F: More filters |
 | J6 Share and request | 🔴 Fail | No per-show link; Back leaves the site | 🟢 Pass | Batch C: links, Back, Copy link |
-| J7 What's new | 🔴 Fail | Nothing marks what's new | 🟢 Pass | Batch G: Recently added (fills as shows are added) |
+| J7 What's new | 🔴 Fail | Nothing marks what's new | 🟡 Partial | Batch G: Recently added (fills as shows are added); the row hidden 2026-10-29 (owner) — the New badges and the sort remain |
 | J8 Evidence check | 🟡 Partial | Stills can't be viewed at native size | 🟢 Pass | Batch A: Open full size |
 
 Still the scripted run's verdict, not real people's: [04-test-plan.md](04-test-plan.md) confirms it.

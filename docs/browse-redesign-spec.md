@@ -23,8 +23,9 @@ the A–Z artist list on it; the filter bar is Years · Country · Event · **Mo
 PAL/NTSC, length, setlist); URL params, in order, `q, from, to, undated, country, festival,
 quality, standard, length, setlist, sort, layout`, then `show`; sorts `year-desc`, `year-asc`,
 `artist`, `length`, `added`; a Grid / List layout and CSV download; the open show in the URL and a
-page per show for link previews; card badges New / Better copy / New copy, Documentary, Excerpt and
-"N copies" (the RecordingType badge went on 2026-10-15); a "Recently added" row above Featured.
+page per show for link previews; card badges New / New copy, Documentary, Excerpt and
+"N copies" (the RecordingType badge went on 2026-10-15; "Better copy" removed 2026-10-29); no
+"Recently added" row above Featured (hidden 2026-10-29, owner).
 The research behind these is `docs/ux-research/`.
 
 Checked against the code on 2026-10-05.

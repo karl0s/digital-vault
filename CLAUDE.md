@@ -205,7 +205,8 @@ re-filings). Every record created since gets `AddedOn` = the day it was added, t
 VA-master procedures included. A record carved from one already on the site — a split, a re-key, a
 linked record cut from an existing master — is not new: add its ShowID to the launch list instead.
 The health check blocks a record with neither. The site works out the rest (`src/lib/added.ts`):
-**New**, or **Better copy** / **New copy** when the show was already held, from its other copies.
+**New**, or **New copy** when the show was already held, from its other copies. **Never a label
+that ranks one copy above another** ("Better copy" was removed, owner 2026-10-29).
 
 ### Documentaries — `ContentType`
 **The owner's rule: a record is a Documentary when half or more of its runtime is people talking
@@ -703,8 +704,8 @@ deploy runs it too.
 ---
 
 ## Featured shows
-Above them, **Recently added** (same file): records with an `AddedOn` in the last 60 days, absent
-until there are any (see AddedOn). `components/FeaturedRows.tsx` → `FEATURED_IDS`: 12 hand-picked ShowIDs (owner, 2026-10-15; the
+**No "Recently added" row** above them (owner, 2026-10-29: Featured only for now; the way back is
+commented in the file). `components/FeaturedRows.tsx` → `FEATURED_IDS`: 12 hand-picked ShowIDs (owner, 2026-10-15; the
 grid's columns, 1 to 6 by width, are `GRID_TRACKS` in the same file), shuffled once per load, shown on Browse only while nothing filters. A missing ID
 drops out silently. The comment beside each ID says why that copy was chosen — keep doing that.
 
