@@ -1482,6 +1482,9 @@ python3 promote.py --apply                    # write images + manifest
 ./run_artist.sh "<Artist>"                    # plan -> capture -> score -> autopick -> picks
 ./run_artist_noplan.sh "<Label>"              # same, without plan, for a pruned or subset state.json
 python3 plan_subset.py --label L --ids ids.json   # plan only listed ShowIDs; REFUSES if any yields no unit
+python3 plan_files.py --label L --files f.json    # loose files NOT on Live Music yet (downloads): path, ShowID,
+                                                  # Checksum, ShowDate; "progressive": why, for a stream flagged
+                                                  # interlaced that idet measures progressive. Same gates as plan
 ./showpicks.sh "<Artist>"                     # materialise, verify links, open for the owner
 python3 hero_gate.py                          # refuse promotion until every hero is verified
 python3 aspect_ab.py                          # 4:3-flagged, bar-free, post-2000 sources at both shapes

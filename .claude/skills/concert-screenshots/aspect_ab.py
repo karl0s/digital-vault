@@ -76,7 +76,10 @@ for s in st["shows"]:
         continue                                   # already 16:9 (or overridden)
     if s["ShowID"] in confirmed:
         continue                                   # owner already judged it
-    date = (shows.get(s["ShowID"], {}).get("ShowDate") or "")
+    # A run can capture shows whose records are written only after sign-off (plan_files.py):
+    # until then the planned ShowDate in state.json is the only date there is.
+    rec = shows.get(s["ShowID"])
+    date = ((rec.get("ShowDate") if rec else s.get("ShowDate")) or "")
     if date and date[:4] < "2000":
         continue
     frames = sorted((VS / "work" / s["key"]).glob("*.jpg"))
