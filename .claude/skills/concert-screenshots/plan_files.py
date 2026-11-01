@@ -3,7 +3,8 @@
 
     python3 plan_files.py --label "Downloads 2026-10-29" --files files.json
 
-files.json is a list of {"path", "ShowID", "Checksum", "ShowDate"} plus optional
+files.json is a list of {"path", "ShowID", "Checksum", "ShowDate"} - path a file or a disc folder,
+"vts": ["01"] to take one titleset - plus optional
 "progressive": "<why>" for a stream FLAGGED interlaced whose picture idet measures as
 progressive (deinterlacing a progressive picture only softens it - SKILL.md 4.6).
 Each file is planned exactly as discover()/cmd_plan() would plan a loose file on the
@@ -28,9 +29,11 @@ recs = {s["ShowID"]: s for s in json.loads((shots.REPO / "public/shows.json").re
 units, bad = [], []
 for e in want:
     p = Path(e["path"])
-    if not p.is_file():
-        bad.append((p.name, "not a file")); continue
-    src, kind, files = shots.pick_source(p)
+    if not (p.is_file() or p.is_dir()):        # a loose file, or a disc folder (pick_source reads its VOBs)
+        bad.append((p.name, "not on disk")); continue
+    src, kind, files = shots.pick_source(p, e.get("vts"))
+    if not src:
+        bad.append((p.name, "no media")); continue
     info, err = shots.ffprobe_stream(src)
     if not info:
         bad.append((p.name, err)); continue
@@ -59,7 +62,7 @@ for e in want:
     units.append({
         "key": "%s__%s" % (slug, hashlib.sha1(p.name.encode()).hexdigest()[:6]),
         "ShowID": e["ShowID"], "Checksum": e.get("Checksum", ""),
-        "vts": [], "vobs": [], "files": [], "t0": 0.0, "decode": "",
+        "vts": e.get("vts") or [], "vobs": [], "files": [], "t0": 0.0, "decode": "",
         "FolderName": p.name, "rel": p.name, "ShowDate": e.get("ShowDate", ""),
         "link": "file:%s" % p.parent, "src": src, "kind": kind, "duration": dur, "n": n, **t,
     })
