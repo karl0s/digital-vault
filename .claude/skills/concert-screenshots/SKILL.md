@@ -1251,8 +1251,11 @@ differences:
    [:12], `ChecksumSHA1` = sha1 of the file itself (the move doesn't change it — never a temp stub),
    `FolderName` = `RepVideoFiles` = the file name, `MasterDriveName` Live Music, `DiscType` File,
    `AddedOn` today; specs from the file (`VideoKbps` from the video packets, `ScanType` by idet).
-   `PrivateNotes` says it was catalogued from Downloads; after the move `fix_paths.py` corrects
-   `FolderPath` if it landed elsewhere — the ShowID stays.
+   `PrivateNotes` says it was catalogued from Downloads. After the move, find the file on Live
+   Music by exact size (six of the first twenty landed under a different name) and correct
+   `FolderPath`, `FolderName` and `RepVideoFiles` together — the ShowID stays. Not with
+   `fix_paths.py`: it also rewrites split records' `FolderName`s and `MasterDriveName`
+   (CLAUDE.md → Drives).
 
 Hand the owner the picks page **and** one records page: an A/B row per open question — identity
 from research (two fetched sources each, or the recording's own title card), copies from twins,

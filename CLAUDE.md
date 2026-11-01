@@ -586,11 +586,17 @@ for anything that is not a show, and run the taper redaction.
 
 ### Drives
 `MasterDriveName` is the drive a record was **originally catalogued from** (mostly `Seagate
-Expansion Drive` or `Big Daddy`). **The whole collection now lives on one drive, `Live Music`**
-(`/Volumes/Live Music`), which every capture and audit script reads; because records still carry
-their original `FolderPath`, the tools resolve folders by name and content hash, not stored path.
+Expansion Drive` or `Big Daddy`) and never changes. **The whole collection now lives on one drive,
+`Live Music`** (`/Volumes/Live Music`), which every capture and audit script reads. **`FolderPath`
+is the record's folder (or loose file) on Live Music** (owner, 2026-11-01: 1,140 records re-pointed
+from the drive scan's matches, each verified by its own `RepVideoFiles`; the old paths are in git
+history and `private/folderpaths-2026-11-01.json`). The 21 whose files could not be verified keep
+their old path; the tools still resolve folders by name and content hash, so those work as before.
 Shows added from `~/Downloads` before the owner moves them carry the path they are expected at
-(`/Volumes/Live Music/<file name>`); `fix_paths.py` corrects it if they land elsewhere.
+(`/Volumes/Live Music/<file name>`); after the move, find each file by exact size and correct
+`FolderPath`, `FolderName` and `RepVideoFiles` (a loose file's name is all three). Not with
+`fix_paths.py` as it stands: it overwrites split records' distinct `FolderName`s and sets
+`MasterDriveName` to Live Music.
 
 ---
 
