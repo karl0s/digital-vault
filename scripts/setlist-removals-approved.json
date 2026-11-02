@@ -1790,5 +1790,14 @@
       "sha1:a6d0e4091086fa191481f58bc393930b4d36d657"
     ],
     "why": "The sidecar's sign-off, not songs: a line about buying the band's records, 'Best', and the uploader's name ([taper], hashed). Cleared 2026-10-17."
+  },
+  "acede40f98f5": {
+    "artist": "Jane's Addiction",
+    "show": "Hammerstein Ballroom 1997-10-31 (DVD master)",
+    "entries": [
+      "Hava Nagila",
+      "Encore break"
+    ],
+    "why": "The owner chose the track list the master's own maker gives for this copy (twelve songs, 2026-11-03). The list had been copied from another copy of the show (c25d46fbd7ca) and carried Hava Nagila and an encore break, neither on this master's list."
   }
 }
