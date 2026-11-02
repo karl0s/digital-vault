@@ -154,6 +154,7 @@ Flat JSON array of show objects. Key fields:
 | `Broadcaster` | string or absent | The channel a pro-shot recording came from, as traders name it ("BBC Three", "WDR", "NBC"). Drafted from the record's own sidecar, folder name, programme or private notes and confirmed by the owner, or typed by the owner from the channel's logo on the stills (`tools/broadcaster`, 2026-10-18). A record he left blank says so in `PrivateNotes`, and the review never asks again. Shown with the source ("Pro-shot · BBC Three") |
 | `FrameRate`, `ScanType`, `VideoKbps`, `AudioKbps`, `AudioTracks`, `DiscType`, `Menu`, `Chapters`, `ShowSizeHuman` | strings or absent | Read from the record's own files by the drive scan (`tools/drive-scan`, 2026-10-18; added, never overwriting). Bitrates are averages from size and length; `Chapters` only where the record is its titleset's whole programme; `ShowSizeHuman` only where the files are its own, in `TotalSizeHuman`'s units (binary, "GB"). Re-run: `scan.py` → `page.py` (review) → `apply.py` |
 | `AddedOn` | `YYYY-MM-DD` or absent | When the recording joined the site; drives the New badge and the "Recently added" sort. **Set on every new record** — see *AddedOn* below |
+| `Title` | string or absent | The name of a record that is not one show — a compilation or a film — as it is titled ("Pro Concert TV Clips 1994–1996"; owner, 2026-11-03). Shown where the event goes (`eventName` in `src/lib/specs.ts`), searched as its event; an undated record with a `Title` shows "Compilation" instead of "Undated" (documentaries excepted). Never in `EventOrFestival`, which lists only events |
 | `NFT` | `"Yes"` or absent | Not for trade: a copy the owner agreed not to pass on (2026-11-02: ten traded from one taper, on his channel or labelled NFT by him). The card, list and drawer show a quiet **NFT** badge ("Not for trade" on hover). Say why in `PrivateNotes`, and name no one — the taper is `[taper]` |
 
 ### Notes and PrivateNotes
@@ -462,6 +463,7 @@ scan for duplicates whenever you edit any of these fields.
   `DatePrecision` that disagrees with its date. Undecided 1sts of the month are on
   `tools/date-precision` (F7, 2026-10-17).
 - Compilations, documentaries, rockumentaries and TV-only specials with no air/performance date → `""`.
+  A compilation's name goes in `Title`; the site then says "Compilation", not "Undated".
 
 ### Text encoding
 No U+FFFD (mojibake) in any field. Read a latin-1 or cp1252 sidecar in its true encoding before
@@ -510,7 +512,7 @@ name (table above). Leave blank for a standard headline show with no named event
 - An edition with its own name keeps it: `Rock in Rio Lisboa`, `Rock in Rio Madrid`,
   `Lollapalooza Brasil`. One name per series, no year: `Woodstock`, `MTV Spring Break`, `MTV $2 Bill`.
 - Never a release, compilation or film title (`Live in Japan`, `TV Compilation 2`, `Thank You DVD`) —
-  leave it blank. The site labels this field **Event** (owner, 2026-10-13).
+  leave it blank; that name goes in `Title`. The site labels this field **Event** (owner, 2026-10-13).
 
 ### Setlist format
 **Always** one semicolon-separated string — never newlines, numbers or bullets:

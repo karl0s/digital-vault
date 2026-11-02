@@ -10,14 +10,14 @@
  */
 
 import type { Show } from '../../App';
-import { audioName, channelsName, containerName, isoDate, quality, songCount, sourceName, videoName } from './specs';
+import { audioName, channelsName, containerName, eventName, isoDate, quality, songCount, sourceName, videoName } from './specs';
 import { showLink, slugify } from './url';
 
 const COLUMNS: [string, (s: Show) => string | number][] = [
   ['Artist', s => s.Artist],
   // Partial dates as "2001" or "2001-05", so the column still sorts (F7).
   ['Date', s => isoDate(s)],
-  ['Event', s => s.EventOrFestival || ''],
+  ['Event', s => eventName(s)],
   ['Venue', s => s.VenueName || ''],
   ['City', s => s.City || ''],
   ['Country', s => s.Country || ''],

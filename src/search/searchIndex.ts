@@ -74,7 +74,8 @@ function toSearchDoc(show: Show): SearchDoc {
     city: show.City,
     country: show.Country,
     type: [show.RecordingType, show.ContentType].filter(Boolean).join(' '),
-    event: show.EventOrFestival || '',
+    // A compilation's or film's Title is searched as its event ("relapse").
+    event: show.EventOrFestival || show.Title || '',
     aka: placeAliases(show),
     tech: techAliases(show),
     // Setlist is indexed so shows can be found by song.

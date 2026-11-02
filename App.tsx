@@ -19,7 +19,7 @@ import { useBrowseResults } from './src/hooks/useBrowseResults';
 import { FACET_KEYS, isFiltered as computeIsFiltered, LEGACY_VIEW_PARAM, readShowParam, withShowParam } from './src/lib/url';
 import { useFilterStore, initFilterUrlSync, selectFilterState } from './src/store/filters';
 import { startHoverPreload } from './src/lib/hoverPreload';
-import { dateName } from './src/lib/specs';
+import { dateName, eventName } from './src/lib/specs';
 import { useShallow } from 'zustand/react/shallow';
 
 export interface Show {
@@ -82,6 +82,8 @@ export interface Show {
   AddedOn?: string;
   /** 'Yes' when the owner may not trade this copy; the card, list and drawer show an NFT badge. */
   NFT?: string;
+  /** The name of a record that is not one show (a compilation, a film), shown where the event goes (`eventName`). */
+  Title?: string;
   /**
    * Set on a record cut from a longer multi-artist recording (a festival
    * broadcast, a talk-show compilation): the ShowID of that master recording.
@@ -360,7 +362,7 @@ export default function App() {
   useEffect(() => {
     const base = 'The Vault — Live Concert Archive';
     document.title = selectedShow
-      ? `${selectedShow.Artist} · ${[dateName(selectedShow), selectedShow.EventOrFestival || selectedShow.VenueName].filter(Boolean).join(' · ')} — The Vault`
+      ? `${selectedShow.Artist} · ${[dateName(selectedShow), eventName(selectedShow) || selectedShow.VenueName].filter(Boolean).join(' · ')} — The Vault`
       : base;
   }, [selectedShow]);
 

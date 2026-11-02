@@ -265,7 +265,9 @@ Traders are mostly 40–60 (docs/ux-research). The floor, everywhere:
   year differ (`dateName` in `src/lib/specs.ts`, the site's one date format: cards, list, drawer,
   share line, tab title, link previews): as much of the date as is known — "2010-06-05", "May 2001"
   for a `DatePrecision` of month, "2001" for `YYYY-01-01` (unless marked a real day) — and
-  "Undated". The quality is `quality()`'s label, as in the drawer.
+  "Undated", or "Compilation" for an undated record with a `Title`. A compilation's or film's `Title`
+  stands where the event goes, on the card, the list, the drawer, the CSV and link previews
+  (`eventName`, 2026-11-03). The quality is `quality()`'s label, as in the drawer.
 - The button's `title` holds the whole name, place and spec line, for what a narrow card cuts short.
 - One row across the top: badges left, the length right (`lengthName`: `1h 42m`, `24 min`, the one
   length format on the site); badges wrap under each other rather than run beneath the length. A

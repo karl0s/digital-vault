@@ -4,7 +4,7 @@ import { Show } from '../App';
 import { LazyImage } from './LazyImage';
 import type { ImageUrlGetter } from '../src/hooks/useShows';
 import type { SongHit } from '../src/search/searchIndex';
-import { quality, lengthName, dateName } from '../src/lib/specs';
+import { quality, lengthName, dateName, eventName } from '../src/lib/specs';
 import { copyCount } from '../src/lib/copies';
 import { BADGE_DAYS, addedWithin } from '../src/lib/added';
 
@@ -115,11 +115,11 @@ export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, se
   // so the event leads; everywhere else, the artist.
   const location = [show.City, show.Country].filter(Boolean).join(', ');
   const title = searchMode === 'artist'
-    ? (show.EventOrFestival || show.VenueName || location || show.Artist)
+    ? (eventName(show) || show.VenueName || location || show.Artist)
     : show.Artist;
   const sub = searchMode === 'artist'
-    ? (show.EventOrFestival ? (show.VenueName || show.City) : show.VenueName ? show.City : '')
-    : (show.EventOrFestival || show.VenueName || show.City || show.Country);
+    ? (eventName(show) ? (show.VenueName || show.City) : show.VenueName ? show.City : '')
+    : (eventName(show) || show.VenueName || show.City || show.Country);
 
   const artistInitials = show.Artist
     .split(' ')
@@ -165,7 +165,7 @@ export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, se
       data-hover-src={secondThumb || secondOriginal || undefined}
       className="group relative z-0 block w-full cursor-pointer text-left focus-visible:outline-none"
       // The whole name, place and date on hover: a narrow card cuts them short (F17).
-      title={`${show.Artist} — ${[show.EventOrFestival, show.VenueName, location].filter(Boolean).join(', ')} · ${spec}${show.NFT === 'Yes' ? ' · Not for trade' : ''}`}
+      title={`${show.Artist} — ${[eventName(show), show.VenueName, location].filter(Boolean).join(', ')} · ${spec}${show.NFT === 'Yes' ? ' · Not for trade' : ''}`}
       onClick={() => onSelect(show)}
       onMouseEnter={warm}
       onFocus={warm}

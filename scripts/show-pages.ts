@@ -15,7 +15,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import sharp from 'sharp';
 import type { Show } from '../App';
-import { dateName, lengthName, quality, sourceWithChannel } from '../src/lib/specs';
+import { dateName, eventName, lengthName, quality, sourceWithChannel } from '../src/lib/specs';
 
 export const SHOW_DIR = 'show';
 const SHOW_ID = /^[0-9a-f]{12}$/;
@@ -36,13 +36,13 @@ export function visibleShows(root: string): Show[] {
 
 /** "30 Seconds to Mars · 2010-06-05 · Rock am Ring": the tab title's words. */
 export function showTitle(show: Show): string {
-  return [show.Artist, dateName(show), show.EventOrFestival || show.VenueName].filter(Boolean).join(' · ');
+  return [show.Artist, dateName(show), eventName(show) || show.VenueName].filter(Boolean).join(' · ');
 }
 
 /** "Rock am Ring · Nürburgring · Nürburg, Germany. HD 1080 · 44 min · Pro-shot." */
 export function showDescription(show: Show): string {
   const venue = show.VenueName && show.VenueName !== show.EventOrFestival && show.VenueName !== show.City ? show.VenueName : '';
-  const place = [show.EventOrFestival, venue, [show.City, show.Country].filter(Boolean).join(', ')].filter(Boolean).join(' · ');
+  const place = [eventName(show), venue, [show.City, show.Country].filter(Boolean).join(', ')].filter(Boolean).join(' · ');
   const kind = show.ContentType === 'Documentary' ? 'Documentary' : show.ParentShowID ? 'Excerpt' : '';
   const specs = [quality(show)?.label, lengthName(show.DurationSec), sourceWithChannel(show), kind].filter(Boolean).join(' · ');
   return [place && `${place}.`, specs && `${specs}.`].filter(Boolean).join(' ') || 'A concert video in The Vault.';

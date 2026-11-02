@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { Show } from '../App';
-import { dateName, kbpsName, lengthName, quality, songCount, sourceWithChannel } from '../src/lib/specs';
+import { dateName, eventName, kbpsName, lengthName, quality, songCount, sourceWithChannel } from '../src/lib/specs';
 
 interface ShowListProps {
   shows: Show[];
@@ -77,11 +77,11 @@ function Row({ show, onShowClick }: { show: Show; onShowClick: (show: Show) => v
         )}
         {/* On a phone the event and place sit under the artist. */}
         <span className="block text-xs text-gray-400 md:hidden">
-          {[show.EventOrFestival || show.VenueName, show.City].filter(Boolean).join(' · ')}
+          {[eventName(show) || show.VenueName, show.City].filter(Boolean).join(' · ')}
         </span>
       </td>
       <td className="hidden py-2 pr-3 text-gray-200 md:table-cell print:text-black">
-        {show.EventOrFestival}
+        {eventName(show)}
         {kind && <span className="ml-1.5 text-xs text-gray-400 print:text-gray-600">{kind}</span>}
       </td>
       <td className="hidden py-2 pr-3 text-gray-300 lg:table-cell print:table-cell print:text-black">

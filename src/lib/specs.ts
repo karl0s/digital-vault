@@ -164,13 +164,25 @@ const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
  * A show's date as the site shows it — card, list, drawer, share line, tab
  * title, link preview: "2010-06-05", "May 2001", "2001", or "Undated". In
  * full, so two shows in one year differ (F2), and never a day nobody knows (F7).
+ * An undated record with a `Title` is a compilation (owner, 2026-11-03), unless
+ * it is a documentary: "Compilation", its title saying the span.
  */
-export function dateName(show: Pick<Show, 'ShowDate' | 'DatePrecision'>): string {
+export function dateName(show: Pick<Show, 'ShowDate' | 'DatePrecision'> & Partial<Pick<Show, 'Title' | 'ContentType'>>): string {
   const p = datePrecision(show);
-  if (!p) return 'Undated';
+  if (!p) return show.Title && show.ContentType !== 'Documentary' ? 'Compilation' : 'Undated';
   if (p === 'year') return show.ShowDate.slice(0, 4);
   if (p === 'month') return `${MONTHS[parseInt(show.ShowDate.slice(5, 7), 10) - 1]} ${show.ShowDate.slice(0, 4)}`;
   return show.ShowDate;
+}
+
+/**
+ * What a record is called after its artist: the event, or — for a record that
+ * is not one show, a compilation or a film — its `Title` ("Pro Concert TV Clips
+ * 1994–1996"). Event stays an event: titles never go in EventOrFestival, so the
+ * Event filter lists only events.
+ */
+export function eventName(show: Partial<Pick<Show, 'EventOrFestival' | 'Title'>>): string {
+  return show.EventOrFestival || show.Title || '';
 }
 
 /** The drawer's word on a partial date: "date unknown", "day unknown", or nothing. */

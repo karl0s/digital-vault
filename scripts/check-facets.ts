@@ -13,7 +13,7 @@ import { EMPTY_FILTERS, FACET_KEYS, FacetKey, FilterState, NONE } from '../src/l
 import { applyFilters, computeFacetCounts, computeYearHistogram, deriveAll, listedOptions, sortShows } from '../src/search/facets';
 import { indexCopies } from '../src/lib/copies';
 import { addedKind, addedWithin } from '../src/lib/added';
-import { dateCaveat, dateName, datePrecision, isoDate } from '../src/lib/specs';
+import { dateCaveat, dateName, datePrecision, eventName, isoDate } from '../src/lib/specs';
 
 const shows: Show[] = JSON.parse(readFileSync('public/shows.json', 'utf8'));
 const derived = deriveAll(shows);
@@ -262,6 +262,13 @@ console.log('\ndate precision (F7): what a date shows');
   ok('month only: "May 2001 (day unknown)"', dateName(d('2001-05-01', 'month')) === 'May 2001' && dateCaveat(d('2001-05-01', 'month')) === 'day unknown');
   ok('an unmarked 1st of the month shows in full until reviewed', dateName(d('2001-05-01')) === '2001-05-01');
   ok('undated', dateName(d('')) === 'Undated' && datePrecision(d('')) === null && isoDate(d('')) === '');
+  ok('an undated record with a Title is a compilation; a documentary stays undated',
+    dateName({ ShowDate: '', Title: 'Pro Concert TV Clips 1994–1996' }) === 'Compilation'
+    && dateName({ ShowDate: '', Title: 'A Film', ContentType: 'Documentary' }) === 'Undated'
+    && dateName({ ShowDate: '1997-01-01', Title: 'Fall 1997 US "Relapse" Tour' }) === '1997');
+  ok('the title stands where the event goes, an event first',
+    eventName({ Title: 'Pro Concert TV Clips 1994–1996' }) === 'Pro Concert TV Clips 1994–1996'
+    && eventName({ EventOrFestival: 'Rock am Ring', Title: 'X' }) === 'Rock am Ring' && eventName({}) === '');
   ok('the CSV keeps partial dates sortable', isoDate(d('2001-01-01')) === '2001' && isoDate(d('2001-05-01', 'month')) === '2001-05' && isoDate(d('2010-06-05')) === '2010-06-05');
   const marked = shows.filter(s => s.DatePrecision);
   ok(`every DatePrecision in the data agrees with its date (${marked.length} marked)`, marked.every(s =>
