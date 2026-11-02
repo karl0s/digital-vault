@@ -85,6 +85,12 @@ export interface Show {
   /** The name of a record that is not one show (a compilation, a film), shown where the event goes (`eventName`). */
   Title?: string;
   /**
+   * A compilation's parts, one line per show it draws on: "date | name | place | songs"
+   * (`compilationParts`). The drawer groups the setlist by part; the date reads
+   * "Compilation 1994–1996".
+   */
+  Parts?: string;
+  /**
    * Set on a record cut from a longer multi-artist recording (a festival
    * broadcast, a talk-show compilation): the ShowID of that master recording.
    * The drawer links back to it, and the master lists every record pointing at it.

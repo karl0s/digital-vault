@@ -164,10 +164,15 @@ const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
  * A show's date as the site shows it — card, list, drawer, share line, tab
  * title, link preview: "2010-06-05", "May 2001", "2001", or "Undated". In
  * full, so two shows in one year differ (F2), and never a day nobody knows (F7).
- * An undated record with a `Title` is a compilation (owner, 2026-11-03), unless
- * it is a documentary: "Compilation", its title saying the span.
+ * A compilation says so, with the years its parts span (owner, 2026-11-03):
+ * "Compilation 1994–1996" from its `Parts`, or "Compilation" for an undated
+ * record with a `Title` that is not a documentary.
  */
-export function dateName(show: Pick<Show, 'ShowDate' | 'DatePrecision'> & Partial<Pick<Show, 'Title' | 'ContentType'>>): string {
+export function dateName(show: Pick<Show, 'ShowDate' | 'DatePrecision'> & Partial<Pick<Show, 'Title' | 'ContentType' | 'Parts'>>): string {
+  if (show.Parts) {
+    const span = compilationSpan(show);
+    return span ? `Compilation ${span}` : 'Compilation';
+  }
   const p = datePrecision(show);
   if (!p) return show.Title && show.ContentType !== 'Documentary' ? 'Compilation' : 'Undated';
   if (p === 'year') return show.ShowDate.slice(0, 4);
@@ -185,8 +190,40 @@ export function eventName(show: Partial<Pick<Show, 'EventOrFestival' | 'Title'>>
   return show.EventOrFestival || show.Title || '';
 }
 
+/** One part of a compilation: the show a run of its songs comes from. */
+export interface Part {
+  date: string;
+  name: string;
+  place: string;
+  songs: string[];
+}
+
+/**
+ * A compilation's `Parts` (owner, 2026-11-03): one line per show it draws on,
+ * "date | name | place | songs" — "1994-02-08 | Sony Music TV Special · Club
+ * Citta | Kawasaki, Japan | Spoonman; Fell on Black Days". Any field may be
+ * blank. Its songs, in order, are the record's Setlist (check-facets holds them
+ * equal), so search and song counts read the Setlist as for any show.
+ */
+export function compilationParts(show: Partial<Pick<Show, 'Parts'>>): Part[] {
+  if (!show.Parts) return [];
+  return show.Parts.split('\n').map(line => line.trim()).filter(Boolean).map(line => {
+    const [date = '', name = '', place = '', songs = ''] = line.split('|').map(field => field.trim());
+    return { date, name, place, songs: songs.split(';').map(song => song.trim()).filter(Boolean) };
+  });
+}
+
+/** The years a compilation's parts span: "1994–1996", "1997", or '' with no dated part. */
+export function compilationSpan(show: Partial<Pick<Show, 'Parts'>>): string {
+  const years = compilationParts(show).map(part => part.date.slice(0, 4)).filter(year => /^\d{4}$/.test(year)).sort();
+  if (!years.length) return '';
+  return years[0] === years[years.length - 1] ? years[0] : `${years[0]}–${years[years.length - 1]}`;
+}
+
 /** The drawer's word on a partial date: "date unknown", "day unknown", or nothing. */
-export function dateCaveat(show: Pick<Show, 'ShowDate' | 'DatePrecision'>): string {
+export function dateCaveat(show: Pick<Show, 'ShowDate' | 'DatePrecision'> & Partial<Pick<Show, 'Parts'>>): string {
+  // A compilation's label already gives its years; its own date is a placeholder.
+  if (show.Parts) return '';
   const p = datePrecision(show);
   return p === 'year' ? 'date unknown' : p === 'month' ? 'day unknown' : '';
 }

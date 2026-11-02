@@ -13,7 +13,7 @@ import { EMPTY_FILTERS, FACET_KEYS, FacetKey, FilterState, NONE } from '../src/l
 import { applyFilters, computeFacetCounts, computeYearHistogram, deriveAll, listedOptions, sortShows } from '../src/search/facets';
 import { indexCopies } from '../src/lib/copies';
 import { addedKind, addedWithin } from '../src/lib/added';
-import { dateCaveat, dateName, datePrecision, eventName, isoDate } from '../src/lib/specs';
+import { compilationParts, compilationSpan, dateCaveat, dateName, datePrecision, eventName, isoDate } from '../src/lib/specs';
 
 const shows: Show[] = JSON.parse(readFileSync('public/shows.json', 'utf8'));
 const derived = deriveAll(shows);
@@ -266,6 +266,22 @@ console.log('\ndate precision (F7): what a date shows');
     dateName({ ShowDate: '', Title: 'Pro Concert TV Clips 1994–1996' }) === 'Compilation'
     && dateName({ ShowDate: '', Title: 'A Film', ContentType: 'Documentary' }) === 'Undated'
     && dateName({ ShowDate: '1997-01-01', Title: 'Fall 1997 US "Relapse" Tour' }) === '1997');
+  const parts = 'A | B · C | X, Y | One; Two\n1996-09-20 | | | Three\n1994-02-08 | D | | Four';
+  ok('a compilation reads "Compilation" and the years its parts span',
+    dateName({ ShowDate: '', Parts: parts }) === 'Compilation 1994–1996'
+    && dateName({ ShowDate: '1997-01-01', Parts: '1997-11-13 | | Miami | A\n1997-12-08 | | Seattle | B' }) === 'Compilation 1997'
+    && dateCaveat({ ShowDate: '1997-01-01', Parts: '1997-11-13 | | Miami | A' }) === '' && compilationSpan({}) === '');
+  ok('parts read as date, name, place and songs, blanks allowed',
+    compilationParts({ Parts: parts }).map(p => `${p.date}/${p.name}/${p.place}/${p.songs.join('+')}`).join(' ') === 'A/B · C/X, Y/One+Two 1996-09-20///Three 1994-02-08/D//Four');
+  const withParts = shows.filter(s => s.Parts);
+  ok(`every record's Parts list its Setlist, song for song, with real dates (${withParts.length} records)`,
+    withParts.every(s => {
+      const ps = compilationParts(s);
+      const songs = ps.flatMap(p => p.songs);
+      const setlist = (s.Setlist || '').split(';').map(x => x.trim()).filter(Boolean);
+      return songs.length === setlist.length && songs.every((x, i) => x === setlist[i])
+        && ps.every(p => !p.date || (/^\d{4}-\d{2}-\d{2}$/.test(p.date) && !Number.isNaN(Date.parse(p.date))));
+    }));
   ok('the title stands where the event goes, an event first',
     eventName({ Title: 'Pro Concert TV Clips 1994–1996' }) === 'Pro Concert TV Clips 1994–1996'
     && eventName({ EventOrFestival: 'Rock am Ring', Title: 'X' }) === 'Rock am Ring' && eventName({}) === '');

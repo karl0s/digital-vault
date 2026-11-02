@@ -265,7 +265,8 @@ Traders are mostly 40–60 (docs/ux-research). The floor, everywhere:
   year differ (`dateName` in `src/lib/specs.ts`, the site's one date format: cards, list, drawer,
   share line, tab title, link previews): as much of the date as is known — "2010-06-05", "May 2001"
   for a `DatePrecision` of month, "2001" for `YYYY-01-01` (unless marked a real day) — and
-  "Undated", or "Compilation" for an undated record with a `Title`. A compilation's or film's `Title`
+  "Undated", or "Compilation" for an undated record with a `Title` — "Compilation 1994–1996" when it has
+  `Parts` (the years they span; `compilationSpan`). A compilation's or film's `Title`
   stands where the event goes, on the card, the list, the drawer, the CSV and link previews
   (`eventName`, 2026-11-03). The quality is `quality()`'s label, as in the drawer.
 - The button's `title` holds the whole name, place and spec line, for what a narrow card cuts short.
@@ -415,6 +416,8 @@ records have no copies. Module state, not a prop, so the memoised cards keep the
   nor counts (F15, 2026-10-17). Opened from a song search, the matched song is lit: App passes the
   search's `songHits` for this show, and that row gets a tint and the typed letters in bold, as on
   the card, with "(the song you searched for)" for screen readers.
+- A compilation with `Parts` lists the same songs in groups, each under "date · programme · place"
+  (`compilationParts`), numbered on across the groups (owner, 2026-11-03).
 - Technical: `techRows` of `{ label, value, mono }` — Video, Resolution, Frame rate ("25 fps,
   interlaced"), Aspect, Standard (SD only), Container, Disc ("DVD-5 · menu · 8 chapters"; none
   for a plain file), Audio (with "2 tracks" where several), Channels, Sample rate, Bitrate ("8.9

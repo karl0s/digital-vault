@@ -2,6 +2,7 @@ import MiniSearch, { type SearchResult } from 'minisearch';
 import type { Show } from '../../App';
 import { placeAliases, techAliases, KNOWN_TERMS } from './aliases';
 import { extractDates } from './dates';
+import { compilationParts } from '../lib/specs';
 
 /**
  * Pure search logic — no React, no DOM.
@@ -70,8 +71,9 @@ function toSearchDoc(show: Show): SearchDoc {
     id: show.ShowID,
     artist: show.Artist,
     year,
-    venue: show.VenueName,
-    city: show.City,
+    // A compilation's parts (`Parts`) are searched as its venues and places: "club citta".
+    venue: [show.VenueName, ...compilationParts(show).map(part => part.name)].filter(Boolean).join(' '),
+    city: [show.City, ...compilationParts(show).map(part => part.place)].filter(Boolean).join(' '),
     country: show.Country,
     type: [show.RecordingType, show.ContentType].filter(Boolean).join(' '),
     // A compilation's or film's Title is searched as its event ("relapse").

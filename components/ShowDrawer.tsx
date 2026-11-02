@@ -6,7 +6,7 @@ import { CloseButton } from './CloseButton';
 import type { ImageUrlGetter } from '../src/hooks/useShows';
 import { scrollContainerToTop } from '../src/lib/motion';
 import { showLink } from '../src/lib/url';
-import { quality, videoName, audioName, containerName, channelsName, aspectName, sampleRateName, lengthName, sourceName, sourceWithChannel, dateName, dateCaveat, eventName, songCount, frameName, frameShort, kbpsName, discName } from '../src/lib/specs';
+import { quality, videoName, audioName, containerName, channelsName, aspectName, sampleRateName, lengthName, sourceName, sourceWithChannel, dateName, dateCaveat, eventName, compilationParts, songCount, frameName, frameShort, kbpsName, discName } from '../src/lib/specs';
 import { copiesOf } from '../src/lib/copies';
 import { ADDED_LABEL, addedKind } from '../src/lib/added';
 import type { SongHit } from '../src/search/searchIndex';
@@ -291,6 +291,13 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
   let encoreNo = 0;
   const setlistNumbered = setlistItems.map(song =>
     song === 'Encore break' ? { song, n: null, encore: ++encoreNo } : { song, n: ++songNo, encore: 0 });
+  // A compilation: the same songs, grouped under the show each run comes from,
+  // numbered on across the parts.
+  let partSongNo = 0;
+  const partsNumbered = compilationParts(show).map(part => ({
+    heading: [part.date, part.name, part.place].filter(Boolean).join(' · '),
+    songs: part.songs.map(song => ({ song, n: ++partSongNo })),
+  }));
   const hitFor = (song: string) => songHits?.find(h => h.title === song);
 
   // The Setlist heading is always drawn, so a show without songs says so
@@ -827,7 +834,30 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4 flex items-center gap-1.5">
                   <Music className="w-3 h-3" /> Setlist
                 </p>
-                {setlistItems.length > 0 ? (
+                {partsNumbered.length > 0 ? (
+                  // A compilation (`Parts`): each run of songs under its date, programme and place.
+                  <div className="space-y-5">
+                    {partsNumbered.map((part, pi) => (
+                      <div key={pi}>
+                        <p className="mb-2 text-xs leading-snug text-gray-400">{part.heading}</p>
+                        <ol start={part.songs[0]?.n} className="space-y-2">
+                          {part.songs.map(({ song, n }) => (
+                            <li
+                              key={n}
+                              className={`-mx-2 flex items-start gap-3 rounded-md px-2 text-sm ${hitFor(song) ? 'bg-white/10 py-1' : ''}`}
+                            >
+                              <span className="text-gray-400 tabular-nums text-xs w-5 shrink-0 pt-px text-right">{n}</span>
+                              <span className={`leading-snug ${hitFor(song) ? 'text-white' : 'text-gray-200'}`}>
+                                {hitFor(song) ? <MarkedTitle hit={hitFor(song)!} /> : song}
+                              </span>
+                              {hitFor(song) && <span className="sr-only"> (the song you searched for)</span>}
+                            </li>
+                          ))}
+                        </ol>
+                      </div>
+                    ))}
+                  </div>
+                ) : setlistItems.length > 0 ? (
                   // Songs numbered 1..N; "Encore break" is a divider, not a
                   // song, so it neither takes a number nor counts (F15).
                   <ol className="space-y-2">
