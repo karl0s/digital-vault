@@ -165,7 +165,7 @@ export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, se
       data-hover-src={secondThumb || secondOriginal || undefined}
       className="group relative z-0 block w-full cursor-pointer text-left focus-visible:outline-none"
       // The whole name, place and date on hover: a narrow card cuts them short (F17).
-      title={`${show.Artist} — ${[show.EventOrFestival, show.VenueName, location].filter(Boolean).join(', ')} · ${spec}`}
+      title={`${show.Artist} — ${[show.EventOrFestival, show.VenueName, location].filter(Boolean).join(', ')} · ${spec}${show.NFT === 'Yes' ? ' · Not for trade' : ''}`}
       onClick={() => onSelect(show)}
       onMouseEnter={warm}
       onFocus={warm}
@@ -238,8 +238,14 @@ export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, se
         )}
 
         <div className="pointer-events-none absolute inset-x-3 bottom-[11px]">
-          <p className="truncate text-sm font-semibold leading-tight text-white [text-shadow:0_1px_8px_rgb(0_0_0/0.5)] 2xl:text-[15px]">
-            {title}
+          {/* Not for trade: a quiet chip on the title line, kept whole when a long name is cut short. */}
+          <p className="flex items-center gap-1.5 text-sm font-semibold leading-tight text-white [text-shadow:0_1px_8px_rgb(0_0_0/0.5)] 2xl:text-[15px]">
+            <span className="min-w-0 truncate">{title}</span>
+            {show.NFT === 'Yes' && (
+              <span title="Not for trade" className="shrink-0 rounded-[3px] bg-white/12 px-1 pt-[3px] pb-0.5 text-[10px] font-bold leading-none tracking-widest text-white/85 ring-1 ring-inset ring-white/28 [text-shadow:none]">
+                NFT
+              </span>
+            )}
           </p>
           {songHits && songHits.length > 0 && (
             <p className="mt-0.5 flex items-center gap-1 text-xs leading-snug text-white/85">

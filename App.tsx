@@ -80,6 +80,8 @@ export interface Show {
   ShowSizeHuman?: string;
   /** YYYY-MM-DD the recording joined the collection; set from 2026-10-16 (src/lib/added.ts). */
   AddedOn?: string;
+  /** 'Yes' when the owner may not trade this copy; the card, list and drawer show an NFT badge. */
+  NFT?: string;
   /**
    * Set on a record cut from a longer multi-artist recording (a festival
    * broadcast, a talk-show compilation): the ShowID of that master recording.

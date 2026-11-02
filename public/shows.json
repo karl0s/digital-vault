@@ -63517,7 +63517,7 @@
     "DuplicateOf": "",
     "Setlist": "Again; God Am",
     "Notes": "",
-    "PrivateNotes": "ADDED (2026-11-02): downloaded by the owner and moved to Live Music before cataloguing; catalogued from its place on the drive (ShowID = sha1 of FolderPath; ChecksumSHA1 = sha1 of the file itself). Specs read from the file: ffprobe, video bitrate = the overall bitrate less the audio, scan type by idet (the stream's own flag is not trusted). Its SHA1 matches no record.\n\nIDENTITY (2026-11-02): Alice in Chains opening for KISS at Tiger Stadium, Detroit, 1996-06-28 (the reunion tour's first night) - a daylight stadium set, opening on wide shots of the stadium, Layne Staley in sunglasses. Date and venue: setlist.fm, Loudwire, Ultimate Classic Rock and American Songwriter agree.\n\nSETLIST (2026-11-02): Again; God Am - Loudwire and Ultimate Classic Rock describe the known pro footage of this set as those two songs, which fits this 8:26 file (setlist.fm gives the full ten-song set).\n\nSOURCE (2026-11-02): 720x480 NTSC MPEG-2, flagged interlaced but progressive (idet 826 progressive / 75 TFF of 901); stills 720x540.\n\nREVIEW (2026-11-02, the downloads records page): the owner's picks - setlist Again; God Am.",
+    "PrivateNotes": "ADDED (2026-11-02): downloaded by the owner and moved to Live Music before cataloguing; catalogued from its place on the drive (ShowID = sha1 of FolderPath; ChecksumSHA1 = sha1 of the file itself). Specs read from the file: ffprobe, video bitrate = the overall bitrate less the audio, scan type by idet (the stream's own flag is not trusted). Its SHA1 matches no record.\n\nIDENTITY (2026-11-02): Alice in Chains opening for KISS at Tiger Stadium, Detroit, 1996-06-28 (the reunion tour's first night) - a daylight stadium set, opening on wide shots of the stadium, Layne Staley in sunglasses. Date and venue: setlist.fm, Loudwire, Ultimate Classic Rock and American Songwriter agree.\n\nSETLIST (2026-11-02): Again; God Am - Loudwire and Ultimate Classic Rock describe the known pro footage of this set as those two songs, which fits this 8:26 file (setlist.fm gives the full ten-song set).\n\nSOURCE (2026-11-02): 720x480 NTSC MPEG-2, flagged interlaced but progressive (idet 826 progressive / 75 TFF of 901); stills 720x540.\n\nREVIEW (2026-11-02, the downloads records page): the owner's picks - setlist Again; God Am.\n\nNFT (2026-11-02): not for trade, the owner's pick - traded from [taper] (his own Google Drive link, 2026-10-30), labelled NFT by him; the owner agreed on 2026-11-02 not to trade those. The site shows an NFT badge.",
     "LastScannedAt": "",
     "ExtractionWarnings": "",
     "SourceCatalog": "LiveMusic",
@@ -63530,6 +63530,7 @@
     "AudioKbps": "256",
     "DiscType": "File",
     "ShowSizeHuman": "589.94 MB",
+    "NFT": "Yes",
     "AddedOn": "2026-11-02"
   },
   {
@@ -63567,7 +63568,7 @@
     "DuplicateOf": "",
     "Setlist": "",
     "Notes": "",
-    "PrivateNotes": "ADDED (2026-11-02): downloaded by the owner and moved to Live Music before cataloguing; catalogued from its place on the drive (ShowID = sha1 of FolderPath; ChecksumSHA1 = sha1 of the file itself). Specs read from the file: ffprobe, video bitrate = the overall bitrate less the audio, scan type by idet (the stream's own flag is not trusted). Its SHA1 matches no record.\n\nIDENTITY (2026-11-02): the Milan 1990-10-11 performance, the same as 6af0568c517e (Jane's Addiction Milan 1990 VHS-Master): one of that record's stills found in this file frame for frame (0.95), the rest the same shots a moment apart. A clean copy with no channel logo (6af0568c517e carries the Italian channel's logo), 25:52 against its 66 minutes. Jane's Addiction's 2009 box set A Cabinet of Curiosities closes its DVD with 1990 performances taped in Milan for MTV Italy. Identity fields copied from 6af0568c517e.\n\nSETLIST (2026-11-02): not copied from 6af0568c517e - this is a 26-minute cut of a 66-minute show, and which songs it holds is not on screen.\n\nSOURCE (2026-11-02): 720x480 NTSC MPEG-2 in a transport stream, interlaced (idet TFF), LPCM stereo; stills 720x540, deinterlaced.\n\nOTHER COPIES: 6af0568c517e.\n\nREVIEW (2026-11-02, the downloads records page): the owner's picks - the same show as 6af0568c517e (identity copied, Broadcaster MTV as that copy); VenueName City Square on both, from 6af0568c517e's own info file.",
+    "PrivateNotes": "ADDED (2026-11-02): downloaded by the owner and moved to Live Music before cataloguing; catalogued from its place on the drive (ShowID = sha1 of FolderPath; ChecksumSHA1 = sha1 of the file itself). Specs read from the file: ffprobe, video bitrate = the overall bitrate less the audio, scan type by idet (the stream's own flag is not trusted). Its SHA1 matches no record.\n\nIDENTITY (2026-11-02): the Milan 1990-10-11 performance, the same as 6af0568c517e (Jane's Addiction Milan 1990 VHS-Master): one of that record's stills found in this file frame for frame (0.95), the rest the same shots a moment apart. A clean copy with no channel logo (6af0568c517e carries the Italian channel's logo), 25:52 against its 66 minutes. Jane's Addiction's 2009 box set A Cabinet of Curiosities closes its DVD with 1990 performances taped in Milan for MTV Italy. Identity fields copied from 6af0568c517e.\n\nSETLIST (2026-11-02): not copied from 6af0568c517e - this is a 26-minute cut of a 66-minute show, and which songs it holds is not on screen.\n\nSOURCE (2026-11-02): 720x480 NTSC MPEG-2 in a transport stream, interlaced (idet TFF), LPCM stereo; stills 720x540, deinterlaced.\n\nOTHER COPIES: 6af0568c517e.\n\nREVIEW (2026-11-02, the downloads records page): the owner's picks - the same show as 6af0568c517e (identity copied, Broadcaster MTV as that copy); VenueName City Square on both, from 6af0568c517e's own info file.\n\nNFT (2026-11-02): not for trade, the owner's pick - traded from [taper] (his own Google Drive link, 2026-10-30), on his channel; the owner agreed on 2026-11-02 not to trade those. The site shows an NFT badge.",
     "LastScannedAt": "",
     "ExtractionWarnings": "",
     "SourceCatalog": "LiveMusic",
@@ -63581,6 +63582,7 @@
     "DiscType": "File",
     "ShowSizeHuman": "1.44 GB",
     "Broadcaster": "MTV",
+    "NFT": "Yes",
     "AddedOn": "2026-11-02"
   },
   {
@@ -63618,7 +63620,7 @@
     "DuplicateOf": "",
     "Setlist": "",
     "Notes": "",
-    "PrivateNotes": "ADDED (2026-11-02): downloaded by the owner and moved to Live Music before cataloguing; catalogued from its place on the drive (ShowID = sha1 of FolderPath; ChecksumSHA1 = sha1 of the file itself). Specs read from the file: ffprobe, video bitrate = the overall bitrate less the audio, scan type by idet (the stream's own flag is not trusted). Its SHA1 matches no record.\n\nIDENTITY (2026-11-02): 1997 Relapse tour performance footage - Flea on bass, Perry Farrell in the 1997 costumes - from several stops (stages and lighting change through the file). The file is named for Three Days, the 1999 documentary of the 1997 Relapse tour (Wikipedia: Three Days (1999 film)). Year only: no single show is identified, and the tour is the only one Flea played with the band.\n\nCONTENT (2026-11-02): a sweep of the whole file is overwhelmingly performance, with a few backstage moments: not a Documentary, judged from the footage, not the film's title.\n\nSOURCE (2026-11-02): 1920x1080 MPEG-2 at about 25 Mb/s - a 1990s film source scaled up; flagged interlaced but progressive (idet 901 of 901).\n\nREVIEW (2026-11-02, the downloads records page): the owner's picks - 1997, year only; not a Documentary.",
+    "PrivateNotes": "ADDED (2026-11-02): downloaded by the owner and moved to Live Music before cataloguing; catalogued from its place on the drive (ShowID = sha1 of FolderPath; ChecksumSHA1 = sha1 of the file itself). Specs read from the file: ffprobe, video bitrate = the overall bitrate less the audio, scan type by idet (the stream's own flag is not trusted). Its SHA1 matches no record.\n\nIDENTITY (2026-11-02): 1997 Relapse tour performance footage - Flea on bass, Perry Farrell in the 1997 costumes - from several stops (stages and lighting change through the file). The file is named for Three Days, the 1999 documentary of the 1997 Relapse tour (Wikipedia: Three Days (1999 film)). Year only: no single show is identified, and the tour is the only one Flea played with the band.\n\nCONTENT (2026-11-02): a sweep of the whole file is overwhelmingly performance, with a few backstage moments: not a Documentary, judged from the footage, not the film's title.\n\nSOURCE (2026-11-02): 1920x1080 MPEG-2 at about 25 Mb/s - a 1990s film source scaled up; flagged interlaced but progressive (idet 901 of 901).\n\nREVIEW (2026-11-02, the downloads records page): the owner's picks - 1997, year only; not a Documentary.\n\nNFT (2026-11-02): not for trade, the owner's pick - traded from [taper] (his own Google Drive link, 2026-10-30), on his channel; the owner agreed on 2026-11-02 not to trade those. The site shows an NFT badge.",
     "LastScannedAt": "",
     "ExtractionWarnings": "",
     "SourceCatalog": "LiveMusic",
@@ -63631,6 +63633,7 @@
     "AudioKbps": "384",
     "DiscType": "File",
     "ShowSizeHuman": "5.51 GB",
+    "NFT": "Yes",
     "AddedOn": "2026-11-02"
   },
   {
@@ -63668,7 +63671,7 @@
     "DuplicateOf": "",
     "Setlist": "Ocean Size; Ain't No Right; Then She Did...; Stop!; Three Days; Mountain Song; Summertime Rolls; Hava Nagila; Jane Says; Classic Girl; Chip Away; Ted, Just Admit It...; Encore break; I Would for You",
     "Notes": "",
-    "PrivateNotes": "ADDED (2026-11-02): downloaded by the owner and moved to Live Music before cataloguing; catalogued from its place on the drive (ShowID = sha1 of FolderPath; ChecksumSHA1 = sha1 of its representative media (VIDEO_TS/VTS_01_1.VOB; VIDEO_TS/VTS_01_2.VOB; VIDEO_TS/VTS_01_3.VOB; VIDEO_TS/VTS_01_4.VOB; VIDEO_TS/VTS_01_5.VOB)). Specs read from the file: ffprobe, video bitrate = the overall bitrate less the audio, scan type by idet (the stream's own flag is not trusted). Its SHA1 matches no record.\n\nIDENTITY (2026-11-02): the Hammerstein Ballroom show, New York, 1997-10-31 - its caption 'Hammerstein Ballroom / New York City' on screen; stills of all five Hammerstein copies found in this file (c25d46fbd7ca, fa64fa89dba8, ae6d79e09d8d, aa813cc575ee, b8b8ec4a3460; scores 0.7-0.96). The uncut show, 92 minutes. Identity fields copied from c25d46fbd7ca.\n\nSETLIST (2026-11-02): copied from c25d46fbd7ca, the other uncut copy (88 minutes).\n\nSOURCE (2026-11-02): DVD-5, one titleset (VTS_01_1-5), 704x480 NTSC, interlaced (idet TFF); stills 720x540, deinterlaced. Stills chosen away from the moments the other copies use.\n\nOTHER COPIES: c25d46fbd7ca, fa64fa89dba8, ae6d79e09d8d, aa813cc575ee, b8b8ec4a3460.\n\nREVIEW (2026-11-02, the downloads records page): the owner's picks - the same show as the five Hammerstein copies (identity copied, Broadcaster MTV); setlist copied from c25d46fbd7ca.",
+    "PrivateNotes": "ADDED (2026-11-02): downloaded by the owner and moved to Live Music before cataloguing; catalogued from its place on the drive (ShowID = sha1 of FolderPath; ChecksumSHA1 = sha1 of its representative media (VIDEO_TS/VTS_01_1.VOB; VIDEO_TS/VTS_01_2.VOB; VIDEO_TS/VTS_01_3.VOB; VIDEO_TS/VTS_01_4.VOB; VIDEO_TS/VTS_01_5.VOB)). Specs read from the file: ffprobe, video bitrate = the overall bitrate less the audio, scan type by idet (the stream's own flag is not trusted). Its SHA1 matches no record.\n\nIDENTITY (2026-11-02): the Hammerstein Ballroom show, New York, 1997-10-31 - its caption 'Hammerstein Ballroom / New York City' on screen; stills of all five Hammerstein copies found in this file (c25d46fbd7ca, fa64fa89dba8, ae6d79e09d8d, aa813cc575ee, b8b8ec4a3460; scores 0.7-0.96). The uncut show, 92 minutes. Identity fields copied from c25d46fbd7ca.\n\nSETLIST (2026-11-02): copied from c25d46fbd7ca, the other uncut copy (88 minutes).\n\nSOURCE (2026-11-02): DVD-5, one titleset (VTS_01_1-5), 704x480 NTSC, interlaced (idet TFF); stills 720x540, deinterlaced. Stills chosen away from the moments the other copies use.\n\nOTHER COPIES: c25d46fbd7ca, fa64fa89dba8, ae6d79e09d8d, aa813cc575ee, b8b8ec4a3460.\n\nREVIEW (2026-11-02, the downloads records page): the owner's picks - the same show as the five Hammerstein copies (identity copied, Broadcaster MTV); setlist copied from c25d46fbd7ca.\n\nNFT (2026-11-02): not for trade, the owner's pick - traded from [taper] (his own Google Drive link, 2026-10-30), on his channel; the owner agreed on 2026-11-02 not to trade those. The site shows an NFT badge.",
     "LastScannedAt": "",
     "ExtractionWarnings": "",
     "SourceCatalog": "LiveMusic",
@@ -63682,6 +63685,7 @@
     "DiscType": "DVD-5",
     "ShowSizeHuman": "3.25 GB",
     "Broadcaster": "MTV",
+    "NFT": "Yes",
     "AddedOn": "2026-11-02"
   },
   {
@@ -63920,7 +63924,7 @@
     "DuplicateOf": "",
     "Setlist": "",
     "Notes": "",
-    "PrivateNotes": "ADDED (2026-11-02): downloaded by the owner and moved to Live Music before cataloguing; catalogued from its place on the drive (ShowID = sha1 of FolderPath; ChecksumSHA1 = sha1 of the file itself). Specs read from the file: ffprobe, video bitrate = the overall bitrate less the audio, scan type by idet (the stream's own flag is not trusted). Its SHA1 matches no record.\n\nIDENTITY (2026-11-02): KDGE's Edgefest 1992 (the first), Coca-Cola Starplex Amphitheatre, Dallas, 1992-04-19 - '94.5 The Edge / Edge Fest' banners on stage. Date, event and venue: setlist.fm and fivehorizons.com agree; the venue had that name 1988-1998.\n\nCONTENT (2026-11-02): 0:00-9:20 an interview with Eddie Vedder and Jeff Ament, 9:47-15:40 fans and the grounds, the concert from 15:45. The singer on stage wears the navy jacket Vedder wears in the interview, with a backwards cap.\n\nSETLIST (2026-11-02): blank - setlist.fm alone (Even Flow; Why Go; Jeremy; Deep; Alive, incomplete), one source.\n\nSOURCE (2026-11-02): 720x480 NTSC MPEG-2, flagged interlaced but progressive (idet 900 of 901); stills 720x540. One distant camera on the set: no close-up of the singer.\n\nREVIEW (2026-11-02, the downloads records page): the owner's picks - identity as drafted; setlist blank (one source); a live show, not a Documentary; hero the stage shot.",
+    "PrivateNotes": "ADDED (2026-11-02): downloaded by the owner and moved to Live Music before cataloguing; catalogued from its place on the drive (ShowID = sha1 of FolderPath; ChecksumSHA1 = sha1 of the file itself). Specs read from the file: ffprobe, video bitrate = the overall bitrate less the audio, scan type by idet (the stream's own flag is not trusted). Its SHA1 matches no record.\n\nIDENTITY (2026-11-02): KDGE's Edgefest 1992 (the first), Coca-Cola Starplex Amphitheatre, Dallas, 1992-04-19 - '94.5 The Edge / Edge Fest' banners on stage. Date, event and venue: setlist.fm and fivehorizons.com agree; the venue had that name 1988-1998.\n\nCONTENT (2026-11-02): 0:00-9:20 an interview with Eddie Vedder and Jeff Ament, 9:47-15:40 fans and the grounds, the concert from 15:45. The singer on stage wears the navy jacket Vedder wears in the interview, with a backwards cap.\n\nSETLIST (2026-11-02): blank - setlist.fm alone (Even Flow; Why Go; Jeremy; Deep; Alive, incomplete), one source.\n\nSOURCE (2026-11-02): 720x480 NTSC MPEG-2, flagged interlaced but progressive (idet 900 of 901); stills 720x540. One distant camera on the set: no close-up of the singer.\n\nREVIEW (2026-11-02, the downloads records page): the owner's picks - identity as drafted; setlist blank (one source); a live show, not a Documentary; hero the stage shot.\n\nNFT (2026-11-02): not for trade, the owner's pick - traded from [taper] (his own Google Drive link, 2026-10-30), on his channel, and labelled NFT by him; the owner agreed on 2026-11-02 not to trade those. The site shows an NFT badge.",
     "LastScannedAt": "",
     "ExtractionWarnings": "",
     "SourceCatalog": "LiveMusic",
@@ -63933,6 +63937,7 @@
     "AudioKbps": "256",
     "DiscType": "File",
     "ShowSizeHuman": "1.27 GB",
+    "NFT": "Yes",
     "AddedOn": "2026-11-02"
   },
   {
@@ -63970,7 +63975,7 @@
     "DuplicateOf": "",
     "Setlist": "",
     "Notes": "",
-    "PrivateNotes": "ADDED (2026-11-02): downloaded by the owner and moved to Live Music before cataloguing; catalogued from its place on the drive (ShowID = sha1 of FolderPath; ChecksumSHA1 = sha1 of the file itself). Specs read from the file: ffprobe, video bitrate = the overall bitrate less the audio, scan type by idet (the stream's own flag is not trusted). Its SHA1 matches no record.\n\nIDENTITY (2026-11-02): a compilation of 1994-1996 broadcast clips: Club Citta, Kawasaki, 1994-02-08 (caption '2/8 Club Citta' Kawasaki', to about 9:00); an MTV piece with Lollapalooza, Cleveland, 1996-06-26 (captions 'Main Stage, Cleveland, Wed. 26th June 96', to about 17:00); an interview and live piece (to about 21:00); further MTV and stylised clips to the end. Undated as a whole.\n\nSOURCE (2026-11-02): 1920x1080 MPEG-2 scaled up from SD, flagged interlaced but progressive (idet 901 of 901); 4:3 pictures pillarboxed in the frame (bars kept).\n\nREVIEW (2026-11-02, the downloads records page): the owner's picks - one compilation record, undated.",
+    "PrivateNotes": "ADDED (2026-11-02): downloaded by the owner and moved to Live Music before cataloguing; catalogued from its place on the drive (ShowID = sha1 of FolderPath; ChecksumSHA1 = sha1 of the file itself). Specs read from the file: ffprobe, video bitrate = the overall bitrate less the audio, scan type by idet (the stream's own flag is not trusted). Its SHA1 matches no record.\n\nIDENTITY (2026-11-02): a compilation of 1994-1996 broadcast clips: Club Citta, Kawasaki, 1994-02-08 (caption '2/8 Club Citta' Kawasaki', to about 9:00); an MTV piece with Lollapalooza, Cleveland, 1996-06-26 (captions 'Main Stage, Cleveland, Wed. 26th June 96', to about 17:00); an interview and live piece (to about 21:00); further MTV and stylised clips to the end. Undated as a whole.\n\nSOURCE (2026-11-02): 1920x1080 MPEG-2 scaled up from SD, flagged interlaced but progressive (idet 901 of 901); 4:3 pictures pillarboxed in the frame (bars kept).\n\nREVIEW (2026-11-02, the downloads records page): the owner's picks - one compilation record, undated.\n\nNFT (2026-11-02): not for trade, the owner's pick - traded from [taper] (his own Google Drive link, 2026-10-30), on his channel; the owner agreed on 2026-11-02 not to trade those. The site shows an NFT badge.",
     "LastScannedAt": "",
     "ExtractionWarnings": "",
     "SourceCatalog": "LiveMusic",
@@ -63983,6 +63988,7 @@
     "AudioKbps": "384",
     "DiscType": "File",
     "ShowSizeHuman": "4.84 GB",
+    "NFT": "Yes",
     "AddedOn": "2026-11-02"
   },
   {
@@ -64020,7 +64026,7 @@
     "DuplicateOf": "",
     "Setlist": "",
     "Notes": "",
-    "PrivateNotes": "ADDED (2026-11-02): downloaded by the owner and moved to Live Music before cataloguing; catalogued from its place on the drive (ShowID = sha1 of FolderPath; ChecksumSHA1 = sha1 of the file itself). Specs read from the file: ffprobe, video bitrate = the overall bitrate less the audio, scan type by idet (the stream's own flag is not trusted). Its SHA1 matches no record.\n\nIDENTITY (2026-11-02): ABC's In Concert - the 'abc' logo through it. The date is the file's own (7.02.93); STP played Castaic Lake Natural Amphitheater, Castaic, that day (setlist.fm; the Core Super Deluxe live disc, Blabbermouth). That ABC filmed that show is not confirmed by a fetched source; epguides lists STP on the episode aired 1993-07-23.\n\nSETLIST (2026-11-02): blank - which songs this 15-minute broadcast holds is not on screen.\n\nSOURCE (2026-11-02): 1920x1080 H.264, interlaced (idet TFF); a 4:3 picture pillarboxed in the frame - cropdetect 1366-1376x1072-1078 at x=268-272 (bars kept).\n\nREVIEW (2026-11-02, the downloads records page): the owner's picks - VenueName Castaic Lake Natural Amphitheater, from the date.",
+    "PrivateNotes": "ADDED (2026-11-02): downloaded by the owner and moved to Live Music before cataloguing; catalogued from its place on the drive (ShowID = sha1 of FolderPath; ChecksumSHA1 = sha1 of the file itself). Specs read from the file: ffprobe, video bitrate = the overall bitrate less the audio, scan type by idet (the stream's own flag is not trusted). Its SHA1 matches no record.\n\nIDENTITY (2026-11-02): ABC's In Concert - the 'abc' logo through it. The date is the file's own (7.02.93); STP played Castaic Lake Natural Amphitheater, Castaic, that day (setlist.fm; the Core Super Deluxe live disc, Blabbermouth). That ABC filmed that show is not confirmed by a fetched source; epguides lists STP on the episode aired 1993-07-23.\n\nSETLIST (2026-11-02): blank - which songs this 15-minute broadcast holds is not on screen.\n\nSOURCE (2026-11-02): 1920x1080 H.264, interlaced (idet TFF); a 4:3 picture pillarboxed in the frame - cropdetect 1366-1376x1072-1078 at x=268-272 (bars kept).\n\nREVIEW (2026-11-02, the downloads records page): the owner's picks - VenueName Castaic Lake Natural Amphitheater, from the date.\n\nNFT (2026-11-02): not for trade, the owner's pick - traded from [taper] (his own Google Drive link, 2026-10-30), on his channel; the owner agreed on 2026-11-02 not to trade those. The site shows an NFT badge.",
     "LastScannedAt": "",
     "ExtractionWarnings": "",
     "SourceCatalog": "LiveMusic",
@@ -64034,6 +64040,7 @@
     "DiscType": "File",
     "ShowSizeHuman": "2.68 GB",
     "Broadcaster": "ABC",
+    "NFT": "Yes",
     "AddedOn": "2026-11-02"
   },
   {
@@ -64071,7 +64078,7 @@
     "DuplicateOf": "",
     "Setlist": "",
     "Notes": "",
-    "PrivateNotes": "ADDED (2026-11-02): downloaded by the owner and moved to Live Music before cataloguing; catalogued from its place on the drive (ShowID = sha1 of FolderPath; ChecksumSHA1 = sha1 of the file itself). Specs read from the file: ffprobe, video bitrate = the overall bitrate less the audio, scan type by idet (the stream's own flag is not trusted). Its SHA1 matches no record.\n\nIDENTITY (2026-11-02): Reading Festival, 1993-08-27 - a daylight main-stage set, Scott Weiland in a purple 'BEER' T-shirt with a megaphone. setlist.fm and the Core Super Deluxe track list (Blabbermouth) agree on the date.\n\nSETLIST (2026-11-02): blank - a 15-minute cut of an eight-song set (setlist.fm); which songs it holds is not on screen.\n\nSOURCE (2026-11-02): 1920x1080 MPEG-2 scaled up from SD, interlaced (idet TFF).\n\nREVIEW (2026-11-02, the downloads records page): the owner's picks - identity as drafted; setlist blank.",
+    "PrivateNotes": "ADDED (2026-11-02): downloaded by the owner and moved to Live Music before cataloguing; catalogued from its place on the drive (ShowID = sha1 of FolderPath; ChecksumSHA1 = sha1 of the file itself). Specs read from the file: ffprobe, video bitrate = the overall bitrate less the audio, scan type by idet (the stream's own flag is not trusted). Its SHA1 matches no record.\n\nIDENTITY (2026-11-02): Reading Festival, 1993-08-27 - a daylight main-stage set, Scott Weiland in a purple 'BEER' T-shirt with a megaphone. setlist.fm and the Core Super Deluxe track list (Blabbermouth) agree on the date.\n\nSETLIST (2026-11-02): blank - a 15-minute cut of an eight-song set (setlist.fm); which songs it holds is not on screen.\n\nSOURCE (2026-11-02): 1920x1080 MPEG-2 scaled up from SD, interlaced (idet TFF).\n\nREVIEW (2026-11-02, the downloads records page): the owner's picks - identity as drafted; setlist blank.\n\nNFT (2026-11-02): not for trade, the owner's pick - traded from [taper] (his own Google Drive link, 2026-10-30), on his channel; the owner agreed on 2026-11-02 not to trade those. The site shows an NFT badge.",
     "LastScannedAt": "",
     "ExtractionWarnings": "",
     "SourceCatalog": "LiveMusic",
@@ -64084,6 +64091,7 @@
     "AudioKbps": "384",
     "DiscType": "File",
     "ShowSizeHuman": "2.69 GB",
+    "NFT": "Yes",
     "AddedOn": "2026-11-02"
   },
   {
@@ -64171,7 +64179,7 @@
     "DuplicateOf": "",
     "Setlist": "Hunger Strike; Call Me a Dog; All Night Thing; Reach Down",
     "Notes": "",
-    "PrivateNotes": "ADDED (2026-11-02): downloaded by the owner and moved to Live Music before cataloguing; catalogued from its place on the drive (ShowID = sha1 of FolderPath; ChecksumSHA1 = sha1 of the file itself). Specs read from the file: ffprobe, video bitrate = the overall bitrate less the audio, scan type by idet (the stream's own flag is not trusted). Its SHA1 matches no record.\n\nIDENTITY (2026-11-02): Temple of the Dog's set at Pearl Jam's PJ20 weekend, Alpine Valley Music Theatre, East Troy, Wisconsin - Chris Cornell with Pearl Jam, Eddie Vedder singing early in the file. Cornell played both nights; Hunger Strike (the Cornell/Vedder duet) opened the set on 2011-09-04 and closed it on 2011-09-03 (setlist.fm, liveon4legs, JamBase). Vedder's verse comes in the first quarter here, so 2011-09-04.\n\nSETLIST (2026-11-02): the 2011-09-04 set - setlist.fm and JamBase agree.\n\nSOURCE (2026-11-02): 1920x1080 H.264, progressive (idet 662 progressive / 206 BFF / 33 TFF of 901); a director's cut, multi-camera.\n\nREVIEW (2026-11-02, the downloads records page): the owner's picks - 2011-09-04 and its setlist; filed as Temple of the Dog, Event PJ20.",
+    "PrivateNotes": "ADDED (2026-11-02): downloaded by the owner and moved to Live Music before cataloguing; catalogued from its place on the drive (ShowID = sha1 of FolderPath; ChecksumSHA1 = sha1 of the file itself). Specs read from the file: ffprobe, video bitrate = the overall bitrate less the audio, scan type by idet (the stream's own flag is not trusted). Its SHA1 matches no record.\n\nIDENTITY (2026-11-02): Temple of the Dog's set at Pearl Jam's PJ20 weekend, Alpine Valley Music Theatre, East Troy, Wisconsin - Chris Cornell with Pearl Jam, Eddie Vedder singing early in the file. Cornell played both nights; Hunger Strike (the Cornell/Vedder duet) opened the set on 2011-09-04 and closed it on 2011-09-03 (setlist.fm, liveon4legs, JamBase). Vedder's verse comes in the first quarter here, so 2011-09-04.\n\nSETLIST (2026-11-02): the 2011-09-04 set - setlist.fm and JamBase agree.\n\nSOURCE (2026-11-02): 1920x1080 H.264, progressive (idet 662 progressive / 206 BFF / 33 TFF of 901); a director's cut, multi-camera.\n\nREVIEW (2026-11-02, the downloads records page): the owner's picks - 2011-09-04 and its setlist; filed as Temple of the Dog, Event PJ20.\n\nNFT (2026-11-02): not for trade, the owner's pick - traded from [taper] (his own Google Drive link, 2026-10-30), on his channel; the owner agreed on 2026-11-02 not to trade those. The site shows an NFT badge.",
     "LastScannedAt": "",
     "ExtractionWarnings": "",
     "SourceCatalog": "LiveMusic",
@@ -64184,6 +64192,7 @@
     "AudioKbps": "256",
     "DiscType": "File",
     "ShowSizeHuman": "6.91 GB",
+    "NFT": "Yes",
     "AddedOn": "2026-11-02"
   },
   {
@@ -64221,7 +64230,7 @@
     "DuplicateOf": "",
     "Setlist": "Say Hello 2 Heaven; Wooden Jesus; Call Me a Dog; Your Saviour; Stardog Champion (Mother Love Bone cover); Stargazer (Mother Love Bone cover); Seasons; Jump into the Fire (Harry Nilsson cover); Four Walled World; I'm a Mover (Free cover); Pushin Forward Back; Hunger Strike; Quicksand (David Bowie cover); Heartshine (Mother Love Bone cover); River of Deceit (Mad Season cover); Holy Roller (Mother Love Bone cover); Reach Down; Encore break; Man of Golden Words; Times of Trouble; Achilles Last Stand (Led Zeppelin cover); Missing; Fascination Street (The Cure cover); War Pigs (Black Sabbath cover); Encore break; All Night Thing",
     "Notes": "",
-    "PrivateNotes": "ADDED (2026-11-02): downloaded by the owner and moved to Live Music before cataloguing; catalogued from its place on the drive (ShowID = sha1 of FolderPath; ChecksumSHA1 = sha1 of the file itself). Specs read from the file: ffprobe, video bitrate = the overall bitrate less the audio, scan type by idet (the stream's own flag is not trusted). Its SHA1 matches no record.\n\nIDENTITY (2026-11-02): Bill Graham Civic Auditorium, San Francisco - the recording opens on photos of the marquee ('TEMPLE OF THE DOG - NOV 11 12 SOLD OUT') and of the printed stage setlist, which has Quicksand after Hunger Strike and Missing in the encore: the 2016-11-11 set (the 12th had Hey Baby, Baby Lemonade and Holy Holy instead). setlist.fm and CBS San Francisco agree on that set.\n\nSETLIST (2026-11-02): the stage setlist shown in the recording, which matches setlist.fm and CBS San Francisco for the 11th (the taped piano Man of Golden Words that opened the night is not on the sheet).\n\nSOURCE (2026-11-02): 1920x1080 H.264, progressive, 59.94 fps - an audience recording, 2:17:18.\n\nREVIEW (2026-11-02, the downloads records page): the owner's picks - 2016-11-11, Audience, the stage setlist.",
+    "PrivateNotes": "ADDED (2026-11-02): downloaded by the owner and moved to Live Music before cataloguing; catalogued from its place on the drive (ShowID = sha1 of FolderPath; ChecksumSHA1 = sha1 of the file itself). Specs read from the file: ffprobe, video bitrate = the overall bitrate less the audio, scan type by idet (the stream's own flag is not trusted). Its SHA1 matches no record.\n\nIDENTITY (2026-11-02): Bill Graham Civic Auditorium, San Francisco - the recording opens on photos of the marquee ('TEMPLE OF THE DOG - NOV 11 12 SOLD OUT') and of the printed stage setlist, which has Quicksand after Hunger Strike and Missing in the encore: the 2016-11-11 set (the 12th had Hey Baby, Baby Lemonade and Holy Holy instead). setlist.fm and CBS San Francisco agree on that set.\n\nSETLIST (2026-11-02): the stage setlist shown in the recording, which matches setlist.fm and CBS San Francisco for the 11th (the taped piano Man of Golden Words that opened the night is not on the sheet).\n\nSOURCE (2026-11-02): 1920x1080 H.264, progressive, 59.94 fps - an audience recording, 2:17:18.\n\nREVIEW (2026-11-02, the downloads records page): the owner's picks - 2016-11-11, Audience, the stage setlist.\n\nNFT (2026-11-02): not for trade, the owner's pick - traded from [taper] (his own Google Drive link, 2026-10-30), on his channel; the owner agreed on 2026-11-02 not to trade those. The site shows an NFT badge.",
     "LastScannedAt": "",
     "ExtractionWarnings": "",
     "SourceCatalog": "LiveMusic",
@@ -64234,6 +64243,7 @@
     "AudioKbps": "256",
     "DiscType": "File",
     "ShowSizeHuman": "25.27 GB",
+    "NFT": "Yes",
     "AddedOn": "2026-11-02"
   }
 ]

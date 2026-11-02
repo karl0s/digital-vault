@@ -274,6 +274,10 @@ Traders are mostly 40–60 (docs/ux-research). The floor, everywhere:
   Excerpt (`ParentShowID`) — and, dark and quieter, **N copies** when the collection holds the show more
   than once (`copyCount` in `src/lib/copies.ts`, below), so look-alike cards say why. How it was
   filmed gets none: Pro-shot, Audience and HD badges were dropped (owner, 2026-10-15).
+- **NFT** (`NFT: "Yes"`, owner 2026-11-02): not for trade. Not a top badge but a quiet outlined chip on
+  the title line, after the name, which truncates around it; the button's `title` ends "Not for trade".
+  The list view puts the same chip after the artist, and the drawer a larger one beside its title
+  (body face, read as ", not for trade"). Previewed on `~/VaultShots/reports/nft-badge-preview.html`.
 - A song match in search (`songHits`) adds a ♪ line under the title, matched letters lit, and the
   gradient reaches higher (`to-80%`).
 - Hover and keyboard focus crossfade to the show's second still (in 200ms, out 300ms, ease-out, so it

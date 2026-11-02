@@ -616,6 +616,17 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                 style={{ fontFamily: 'var(--font-display)', letterSpacing: '0.04em' }}
               >
                 {show.Artist}
+                {/* Not for trade: in the body face, beside the name; read as ", not for trade". */}
+                {show.NFT === 'Yes' && (
+                  <span
+                    title="Not for trade"
+                    className="ml-3 inline-block rounded border border-white/22 px-[7px] pt-[3px] pb-0.5 align-middle text-xs font-bold leading-tight tracking-[0.14em] text-gray-300 -translate-y-[3px]"
+                    style={{ fontFamily: 'var(--font-body)' }}
+                  >
+                    <span aria-hidden="true">NFT</span>
+                    <span className="sr-only">, not for trade</span>
+                  </span>
+                )}
               </h2>
               <p className="drawer-dock-sub text-gray-400">
                 {/* Date · event · venue · city, country: the place always, event

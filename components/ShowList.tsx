@@ -62,13 +62,19 @@ function Row({ show, onShowClick }: { show: Show; onShowClick: (show: Show) => v
       className="cursor-pointer border-b border-white/6 align-top transition-colors duration-100 hover:bg-white/5 print:break-inside-avoid print:border-black/15"
     >
       <td className="whitespace-nowrap py-2 pr-3 tabular-nums text-gray-300 print:text-black">{dateName(show)}</td>
-      <td className="py-2 pr-3">
+      <td className="py-2 pr-3 md:whitespace-nowrap">
         <button
           type="button"
-          className="cursor-pointer text-left font-medium text-white md:whitespace-nowrap focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70 print:text-black"
+          className="cursor-pointer text-left font-medium text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70 print:text-black"
         >
           {show.Artist}
         </button>
+        {/* Not for trade: the card's chip, kept on the artist's line from md. */}
+        {show.NFT === 'Yes' && (
+          <span title="Not for trade" className="ml-1.5 rounded-[3px] border border-white/18 px-1 pt-px text-[10px] font-bold tracking-widest text-gray-400 align-[1px] print:border-black/30 print:text-gray-600">
+            NFT
+          </span>
+        )}
         {/* On a phone the event and place sit under the artist. */}
         <span className="block text-xs text-gray-400 md:hidden">
           {[show.EventOrFestival || show.VenueName, show.City].filter(Boolean).join(' · ')}
