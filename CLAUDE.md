@@ -43,6 +43,7 @@ tools/
   show-editor/          ← Karl's metadata editor; build.py renders index.html (gitignored)
   artist-portraits/     ← picker for the artist tiles' pictures; build.py renders ~/VaultShots/reports/artist-portraits.html
   missing-setlists/     ← every show with no setlist + twins that have one; build.py renders ~/VaultShots/reports/missing-setlists.html
+  setlist-research/     ← the web research for shows with no setlist: report.py renders ~/VaultShots/reports/setlists-report.html (info files, twins, the checklist), review.py renders setlist-research.html (agents' results, add or leave); apply_report.py / apply_review.py write Karl's picks
   taper-redaction/      ← removes tapers' names, contacts and links from shows.json; apply.mjs captures them to private/ first (see Tapers are never named)
   date-precision/       ← shows dated the 1st of a month: build.py renders ~/VaultShots/reports/date-precision.html (real date or month only?); apply.py writes Karl's pasted picks; research.py reviews and applies dates researched online
   drive-scan/           ← reads each record's own files on Live Music (scan.py, hashfind.py), reviews (page.py, sizes.py) and adds the specs (apply.py); read-only on the drive
