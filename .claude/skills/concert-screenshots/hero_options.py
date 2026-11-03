@@ -16,7 +16,7 @@ Frames come from shots.grab with shots.build_vf_seek on the show's planned unit 
 archived run's state): the same deinterlacer, scaler, size and JPEG settings as every pick (§4.8),
 verified with shots.verify. Output: reports/hero-<ShowID>/ and reports/hero-<ShowID>.html.
 """
-import argparse, glob, html, json, os, shutil, sys
+import argparse, glob, html, json, os, re, shutil, sys
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -56,6 +56,15 @@ def unit_for(showid, rec):
             rule = r
     if rule.get('from') or rule.get('to') or rule.get('subdir'):
         raise SystemExit('%s is a time-window or nested-disc split: plan it with plan_subset.py first' % showid)
+    if not rule:
+        # No rule: follow the record's own files (RepVideoFiles), into a nested disc and its titleset if they say so.
+        rep = [x.strip() for x in str(rec.get('RepVideoFiles') or '').split(';') if x.strip()]
+        sub = {x.split('/VIDEO_TS/')[0] for x in rep if '/VIDEO_TS/' in x and not x.startswith('VIDEO_TS/')}
+        if len(sub) == 1:
+            folder = folder / sub.pop()
+        vts = sorted({m.group(1) for x in rep for m in [re.search(r'VTS_(\d\d)_\d\.VOB', x)] if m})
+        if vts:
+            rule = {'vts': vts}
     src, kind, files = shots.pick_source(folder, rule.get('vts'), rule.get('vobs'), rule.get('files'))
     info, err = shots.ffprobe_stream(src) if src else (None, 'no video files')
     if not info:
@@ -76,6 +85,11 @@ def similar_group(unit, rec, a, groups):
     import subprocess
     temps = [REPO / 'public/images' / ('%s_01.jpg' % rec['ChecksumSHA1'])]
     temps += [VS / 'reports' / ('hero-' + a.showid) / g[2] for g in groups if g[2]]
+    for t in a.like:
+        f = VS / 'reports' / ('hero-' + a.showid) / ('t%s.jpg' % hms(round(secs(t), 2)).replace(':', '-'))
+        if not f.exists():
+            raise SystemExit('--like %s: no rendered frame %s' % (t, f.name))
+        temps.append(f)
     def nv(m):
         m = m - m.mean(axis=-1, keepdims=True)
         return m / (np.linalg.norm(m, axis=-1, keepdims=True) + 1e-6)
@@ -132,6 +146,8 @@ def main():
     ap.add_argument('--moment', action='append', default=[],
                     help='HH:MM:SS.ss of a moment already checked by eye (e.g. kept from a --similar round): shown as its own group')
     ap.add_argument('--moment-title', default='More close-ups across the show (checked)')
+    ap.add_argument('--like', action='append', default=[],
+                    help='HH:MM:SS.ss of a frame already rendered for this show to use as an extra --similar template (e.g. a confirmed close-up)')
     ap.add_argument('--exclude', action='append', default=[],
                     help='HH:MM:SS.ss of a look-alike that is not the singer (a wide, another member): never offered again')
     a = ap.parse_args()
