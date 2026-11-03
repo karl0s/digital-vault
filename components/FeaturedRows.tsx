@@ -97,7 +97,9 @@ const FEATURED_IDS = [
   '3fe2d2713abb', // Lenny Kravitz — MTV Unplugged, 1994 (1.45 GB, dated copy)
   '6cd303bce708', // Rage Against the Machine — Rock am Ring, 1996-05-24
   '730be7647294', // Red Hot Chili Peppers — Madison Square Gardens, 1996-02-09
-  'a939ab1baf17', // Radiohead — New York, 1997-12-19
+  // Pete's disc (3.12 GB of show), with the owner's own Maynard close-up as hero; replaced
+  // Radiohead's 10 Spot 1997 (owner, 2026-11-03).
+  'c305d80f9380', // A Perfect Circle — America West Arena, Phoenix, 2000
   '761b022efa1e', // Beastie Boys — SECC Glasgow, 1999-05-03 (3.15 GB, of four Glasgow copies)
   '4dba0c8ff6ae', // Nirvana — MTV Live & Loud, Pier 48 Seattle, 1993-12-13 (the 38-min broadcast)
   'bfac3916a5f1', // Smashing Pumpkins — Belfort, 1997-07-04 (4.34 GB; EventOrFestival blank)
