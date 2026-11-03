@@ -77,6 +77,111 @@ def unit_for(showid, rec):
     return dict(t, src=src, kind=kind), 'planned now from ' + str(folder)
 
 
+def fps_of(unit):
+    f = str(unit.get('fps') or '30000/1001')
+    n, d = (f.split('/') + ['1'])[:2]
+    return float(n) / float(d or 1)
+
+
+def seek_works(unit, vf, out):
+    """Some discs restart their timestamps in every VOB, so -ss lands nowhere (SKILL.md §5.2): test once."""
+    p = out / '_seektest.jpg'
+    ok = shots.grab(unit['src'], 60.0, vf, p)
+    p.unlink(missing_ok=True)
+    return ok
+
+
+def nv(m):
+    m = m - m.mean(axis=-1, keepdims=True)
+    return m / (np.linalg.norm(m, axis=-1, keepdims=True) + 1e-6)
+
+
+def scan(unit, out, index_mode):
+    """The whole show at 48x36 grey, about twice a second, and the time of each row. Seek mode samples by
+    timestamp (fps=2); index mode by frame number (every K-th decoded frame), because on a disc whose
+    timestamps restart the frame number is the only coordinate (SKILL.md §5.2b). Cached for re-runs."""
+    import subprocess
+    fps = fps_of(unit)
+    K = max(1, round(fps / 2))
+    cache = out / ('scan_48x36_%s.npy' % ('idx%d' % K if index_mode else '2fps'))
+    if cache.exists():
+        F = np.load(cache)
+    else:
+        vf = ("select='not(mod(n\\,%d))',scale=48:36,format=gray" % K) if index_mode else 'fps=2,scale=48:36,format=gray'
+        args = ['ffmpeg', '-hide_banner', '-nostdin', '-v', 'error', '-i', unit['src'], '-an', '-vf', vf]
+        args += (['-vsync', '0'] if index_mode else []) + ['-f', 'rawvideo', '-']
+        raw = subprocess.run(args, capture_output=True).stdout
+        n = len(raw) // (48 * 36)
+        F = nv(np.frombuffer(raw[: n * 48 * 36], np.uint8).reshape(n, 48 * 36).astype(np.float32))
+        np.save(cache, F)
+    t_of = (lambda i: round(i * K / fps, 2)) if index_mode else (lambda i: round(i / 2.0, 2))
+    return F, t_of
+
+
+def render_index(unit, times, out):
+    """Frames by frame NUMBER in one decode: each wanted frame with 4 neighbours either side (a temporal
+    deinterlacer needs consecutive frames, SKILL.md §4.7), the windows merged, deinterlaced, scaled; then
+    each window's middle frame kept. Same settings as every pick (§4.8). Returns {t: path}."""
+    import subprocess, tempfile
+    fps = fps_of(unit)
+    want = sorted({round(t * fps) for t in times})
+    wins = []
+    for n in want:
+        a, b = max(0, n - 4), n + 4
+        if wins and a <= wins[-1][1] + 1:
+            wins[-1][1] = max(wins[-1][1], b)
+        else:
+            wins.append([a, b])
+    seq = [n for a, b in wins for n in range(a, b + 1)]
+    pos = {n: i for i, n in enumerate(seq)}
+    expr = '+'.join('between(n\\,%d\\,%d)' % (a, b) for a, b in wins)
+    head, di, tail = shots.vf_parts(unit, shots.DEFAULT_DEINT)
+    vf = ','.join(x for x in (head, "select='%s'" % expr, di, tail) if x)
+    tmp = Path(tempfile.mkdtemp(dir=str(out)))
+    shots.assert_readonly_target(tmp / 'x.jpg')
+    subprocess.run(['ffmpeg', '-hide_banner', '-nostdin', '-v', 'error', '-y', '-i', unit['src'], '-an', '-vf', vf,
+                    '-vsync', '0', '-q:v', '2', '-pix_fmt', 'yuvj420p', str(tmp / 'f_%06d.jpg')], capture_output=True)
+    got = {}
+    for t in times:
+        n = round(t * fps)
+        f = tmp / ('f_%06d.jpg' % (pos[n] + 1))
+        if f.exists():
+            p = out / ('t%s.jpg' % hms(round(n / fps, 2)).replace(':', '-'))
+            shutil.move(str(f), p)
+            got[round(n / fps, 2)] = p
+    shutil.rmtree(tmp, ignore_errors=True)
+    return got
+
+
+def locate(unit, out, index_mode, img):
+    """Where a still sits in this recording: the best scan row, then frame by frame over 2 s around it."""
+    F, t_of = scan(unit, out, index_mode)
+    v = nv(np.asarray(Image.open(img).convert('L').resize((48, 36)), dtype=np.float32).ravel()[None, :])[0]
+    c = t_of(int(np.argmax(F @ v)))
+    fps = fps_of(unit)
+    ts = [round((round(c * fps) + k) / fps, 2) for k in range(-int(fps), int(fps) + 1)]
+    if index_mode:
+        got = render_index(unit, ts, out)
+    else:
+        vf = shots.build_vf_seek(unit, shots.DEFAULT_DEINT)
+        got = {}
+        for t in ts:
+            p = out / ('t%s.jpg' % hms(t).replace(':', '-'))
+            if p.exists() or shots.grab(unit['src'], t, vf, p):
+                got[t] = p
+    def vec(f):
+        x = np.asarray(Image.open(f).convert('L').resize((96, 72)), dtype=float).ravel()
+        x -= x.mean()
+        return x / (np.linalg.norm(x) + 1e-6)
+    ref = vec(img)
+    best = max(got, key=lambda t: float(ref @ vec(got[t])))
+    for t, p in got.items():
+        if t != best:
+            p.unlink(missing_ok=True)
+    print('located the current hero at %s (match %.3f)' % (hms(best), float(ref @ vec(got[best]))))
+    return best
+
+
 def similar_group(unit, rec, a, groups):
     """Moments across the whole show that look like the hero: the show decoded twice a second at 48x36
     grey, each frame scored by its best normalised correlation with the templates (the current hero,
@@ -90,19 +195,8 @@ def similar_group(unit, rec, a, groups):
         if not f.exists():
             raise SystemExit('--like %s: no rendered frame %s' % (t, f.name))
         temps.append(f)
-    def nv(m):
-        m = m - m.mean(axis=-1, keepdims=True)
-        return m / (np.linalg.norm(m, axis=-1, keepdims=True) + 1e-6)
     T = nv(np.stack([np.asarray(Image.open(t).convert('L').resize((48, 36)), dtype=np.float32).ravel() for t in temps]))
-    cache = VS / 'reports' / ('hero-' + a.showid) / 'scan_48x36_2fps.npy'   # the whole-show decode, kept for re-runs
-    if cache.exists():
-        F = np.load(cache)
-    else:
-        raw = subprocess.run(['ffmpeg', '-hide_banner', '-nostdin', '-v', 'error', '-i', unit['src'], '-an', '-vf',
-                              'fps=2,scale=48:36,format=gray', '-f', 'rawvideo', '-'], capture_output=True).stdout
-        n = len(raw) // (48 * 36)
-        F = nv(np.frombuffer(raw[: n * 48 * 36], np.uint8).reshape(n, 48 * 36).astype(np.float32))
-        np.save(cache, F)
+    F, t_of = scan(unit, VS / 'reports' / ('hero-' + a.showid), a.index_mode)
     n = len(F)
     score = (F @ T.T).max(axis=1)
     lo, hi = int(n * 0.03), int(n * 0.97)                      # not the opening card or the credits
@@ -112,14 +206,14 @@ def similar_group(unit, rec, a, groups):
     for i in np.argsort(-score):
         if not lo <= i < hi:
             continue
-        t = round(i / 2.0, 2)
+        t = t_of(i)
         if any(abs(t - b) <= 3 for b in bad):
             continue
         if all(abs(t - x) >= a.similar_gap for x in picks + taken):
             picks.append(t)
         if len(picks) >= a.similar:
             break
-    print('similar: %d frames scanned, %d moments, scores %.2f-%.2f' % (n, len(picks), score[[int(t * 2) for t in picks]].min(), score[[int(t * 2) for t in picks]].max()))
+    print('similar: %d frames scanned, %d moments' % (n, len(picks)))
     return ('More like the hero, across the show', '%d moments that look most like the current hero%s, at least %gs apart, in show order'
             % (len(picks), ' and the other copies\' heroes' if len(temps) > 1 else '', a.similar_gap), None, sorted(picks))
 
@@ -140,6 +234,7 @@ def main():
     ap.add_argument('--twin-span', type=float, default=2)
     ap.add_argument('--twin-step', type=float, default=0.33)
     ap.add_argument('--match')
+    ap.add_argument('--ref', help='LABEL=PATH: an image (e.g. an old hero from git) shown beside the first --around group')
     ap.add_argument('--similar', type=int, default=0,
                     help='also find N moments across the whole show that look like the current hero (and the twins\' heroes)')
     ap.add_argument('--similar-gap', type=float, default=15, help='seconds between those moments')
@@ -159,14 +254,23 @@ def main():
     out = VS / 'reports' / ('hero-' + a.showid)
     shots.assert_readonly_target(out / 'x.jpg')
     out.mkdir(parents=True, exist_ok=True)
+    a.index_mode = unit.get('decode') == 'single' or not seek_works(unit, vf, out)
+    if a.index_mode:
+        print('seeking fails on this disc: frames are found and rendered by frame number (SKILL.md §5.2b)')
+    cur = REPO / 'public/images' / ('%s_01.jpg' % rec['ChecksumSHA1'])
 
     groups = []   # (title, note, reference image or None, [times]); the scrubs follow the twins' moments
     arounds = []
+    ref_name, ref_caption = None, ''
+    if a.ref:
+        ref_caption, ref_path = a.ref.split('=', 1)
+        ref_name = 'ref_custom.jpg'
+        shutil.copyfile(ref_path, out / ref_name)
     for spec in a.around:
         label, ts = spec.split('=', 1)
-        c = secs(ts)
+        c = locate(unit, out, a.index_mode, cur) if ts.strip() == 'auto' else secs(ts)
         n = int(round(a.span / a.step))
-        arounds.append((label, 'Every %gs, %gs either side of %s' % (a.step, a.span, hms(c)), None,
+        arounds.append((label, 'Every %gs, %gs either side of %s' % (a.step, a.span, hms(c)), ref_name if not arounds else None,
                         [round(c + i * a.step, 2) for i in range(-n, n + 1)]))
     if a.twin and not a.match:
         raise SystemExit('--twin needs --match: the twin_match report made from this recording')
@@ -190,6 +294,9 @@ def main():
         groups.append(similar_group(unit, rec, a, groups))
     if a.moment:
         groups.append((a.moment_title, '%d moments, in show order' % len(a.moment), None, sorted(round(secs(m), 2) for m in a.moment)))
+    if a.index_mode:   # every time snaps to a whole frame, so a page time and its file always agree
+        fps = fps_of(unit)
+        groups = [(g[0], g[1], g[2], [round(round(t * fps) / fps, 2) for t in g[3]]) for g in groups]
     jobs = sorted({t for g in groups for t in g[3]})
     def render(t):
         p = out / ('t%s.jpg' % hms(t).replace(':', '-'))
@@ -197,12 +304,21 @@ def main():
             return t, None, 'grab failed'
         ok, why = shots.verify(p, unit)
         return t, p if ok else None, why
-    with ThreadPoolExecutor(4) as ex:
-        res = {t: (p, why) for t, p, why in ex.map(render, jobs)}
+    if a.index_mode:
+        have = {t: out / ('t%s.jpg' % hms(t).replace(':', '-')) for t in jobs}
+        missing = [t for t, p in have.items() if not p.exists()]
+        if missing:
+            render_index(unit, missing, out)
+        res = {}
+        for t, p in have.items():
+            ok, why = shots.verify(p, unit) if p.exists() else (False, 'not rendered')
+            res[t] = (p if ok else None, why)
+    else:
+        with ThreadPoolExecutor(4) as ex:
+            res = {t: (p, why) for t, p, why in ex.map(render, jobs)}
     bad = [(t, w) for t, (p, w) in res.items() if not p]
     print('rendered %d, failed %d' % (len(jobs) - len(bad), len(bad)), bad[:5])
 
-    cur = REPO / 'public/images' / ('%s_01.jpg' % rec['ChecksumSHA1'])
     shutil.copyfile(cur, out / 'current_01.jpg')
     sharp = {t: sharpness(p) for t, (p, _) in res.items() if p}
 
@@ -229,8 +345,9 @@ def main():
                 % (hms(t), p.name, out.name, p.name, out.name, p.name, hms(t), sharp[t], badge))
     sections = ''
     for title, note, ref, times in groups:
-        refhtml = ('<figure class="ref"><img src="%s/%s" alt=""><figcaption>Their hero now (another copy, for comparison)</figcaption></figure>'
-                   % (out.name, ref)) if ref else ''
+        cap = html.escape(ref_caption) if ref == ref_name else 'Their hero now (another copy, for comparison)'
+        refhtml = ('<figure class="ref"><img src="%s/%s" alt=""><figcaption>%s</figcaption></figure>'
+                   % (out.name, ref, cap)) if ref else ''
         sections += ('<section><h2>%s</h2><p class="note">%s</p><div class="row">%s<div class="grid">%s</div></div></section>'
                      % (html.escape(title), html.escape(note), refhtml, ''.join(card(t) for t in times)))
     name = '%s, %s, %s' % (rec['Artist'], rec.get('VenueName') or '', rec.get('ShowDate') or '')

@@ -1522,7 +1522,14 @@ python3 plan_files.py --label L --files f.json    # loose files NOT on Live Musi
 python3 twin_match.py --src F --twins ID [ID ...] # is F a copy of a held show? finds each twin still in F (§13b)
 python3 hero_options.py --showid ID --match reports/twins/<slug>/match.json --around "Label=HH:MM:SS" [--twin ID ...]
                                                   # one show's hero re-pick: frames around chosen moments (and each twin's hero
-                                                  # moment) rendered as picks are, on reports/hero-<ID>.html for the owner
+                                                  # moment) rendered as picks are, on reports/hero-<ID>.html for the owner.
+                                                  # --similar N finds look-alikes across the show (--like adds confirmed frames
+                                                  # as templates, --exclude drops misses, --moment lists hand-checked ones);
+                                                  # "--around Label=auto" finds the site's hero; --ref shows an image (an old
+                                                  # hero from git) beside it. Where seeking fails (timestamps restart per VOB)
+                                                  # it scans and renders by frame number (§5.2b) on its own.
+python3 compare_copies.py --ref ID --copy ID2=reports/twins/<slug>/match.json  # one moment from every copy of a show,
+                                                  # side by side at equal size and zoomed, for choosing which copy to feature
 ./showpicks.sh "<Artist>"                     # materialise, verify links, open for the owner
 python3 hero_gate.py                          # refuse promotion until every hero is verified
 python3 aspect_ab.py                          # 4:3-flagged, bar-free, post-2000 sources at both shapes
