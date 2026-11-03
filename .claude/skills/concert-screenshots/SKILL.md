@@ -1520,6 +1520,9 @@ python3 plan_files.py --label L --files f.json    # loose files NOT on Live Musi
                                                   # Checksum, ShowDate; "progressive": why, for a stream flagged
                                                   # interlaced that idet measures progressive. Same gates as plan
 python3 twin_match.py --src F --twins ID [ID ...] # is F a copy of a held show? finds each twin still in F (§13b)
+python3 hero_options.py --showid ID --match reports/twins/<slug>/match.json --around "Label=HH:MM:SS" [--twin ID ...]
+                                                  # one show's hero re-pick: frames around chosen moments (and each twin's hero
+                                                  # moment) rendered as picks are, on reports/hero-<ID>.html for the owner
 ./showpicks.sh "<Artist>"                     # materialise, verify links, open for the owner
 python3 hero_gate.py                          # refuse promotion until every hero is verified
 python3 aspect_ab.py                          # 4:3-flagged, bar-free, post-2000 sources at both shapes
