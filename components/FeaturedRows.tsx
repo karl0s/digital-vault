@@ -90,7 +90,9 @@ function FeaturedSection({ title, shows, onShowClick, getImageUrl }: FeaturedSec
 const FEATURED_IDS = [
   // 539 MB copy, chosen deliberately over the three larger ones (up to 3.24 GB).
   'ccd7ed3c2fa4', // Stone Temple Pilots — MTV Unplugged, 1993-11-17
-  '6b3751fea69f', // Jane's Addiction — Brixton Academy, 2003-09-30 (3.60 GB, dated copy)
+  // Steve's master: the uncut 92-min show (3.25 GB), chosen over the MTV broadcast copies;
+  // replaced Brixton 2003 (owner, 2026-11-03).
+  'acede40f98f5', // Jane's Addiction — Hammerstein Ballroom, 1997-10-31
   '3d97ae42ed27', // Soundgarden — MTV Live & Loud, 1996-09-20 (1.72 GB)
   '3fe2d2713abb', // Lenny Kravitz — MTV Unplugged, 1994 (1.45 GB, dated copy)
   '6cd303bce708', // Rage Against the Machine — Rock am Ring, 1996-05-24
