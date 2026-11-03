@@ -49,7 +49,14 @@ def unit_for(showid, rec):
     folder = Path(rec.get('FolderPath') or '')
     if not folder.is_dir():
         raise SystemExit('no planned unit for %s, and its folder is not on the drive: %s' % (showid, folder))
-    src, kind, files = shots.pick_source(folder)
+    # The folder's capture rule (data/splits.json) says which titleset, VOBs or files are this show.
+    rule = {}
+    for r in json.load(open(VS / 'data/splits.json')).get(folder.name, []):
+        if r.get('showid') == showid:
+            rule = r
+    if rule.get('from') or rule.get('to') or rule.get('subdir'):
+        raise SystemExit('%s is a time-window or nested-disc split: plan it with plan_subset.py first' % showid)
+    src, kind, files = shots.pick_source(folder, rule.get('vts'), rule.get('vobs'), rule.get('files'))
     info, err = shots.ffprobe_stream(src) if src else (None, 'no video files')
     if not info:
         raise SystemExit('cannot plan %s: %s' % (showid, err))
@@ -59,6 +66,48 @@ def unit_for(showid, rec):
     if not passed:
         raise SystemExit('gates failed for %s: %s' % (showid, [g for g in glist if not g[1]]))
     return dict(t, src=src, kind=kind), 'planned now from ' + str(folder)
+
+
+def similar_group(unit, rec, a, groups):
+    """Moments across the whole show that look like the hero: the show decoded twice a second at 48x36
+    grey, each frame scored by its best normalised correlation with the templates (the current hero,
+    and any twin's hero), then the best frames taken greedily, at least --similar-gap seconds apart and
+    away from the moments already on the page."""
+    import subprocess
+    temps = [REPO / 'public/images' / ('%s_01.jpg' % rec['ChecksumSHA1'])]
+    temps += [VS / 'reports' / ('hero-' + a.showid) / g[2] for g in groups if g[2]]
+    def nv(m):
+        m = m - m.mean(axis=-1, keepdims=True)
+        return m / (np.linalg.norm(m, axis=-1, keepdims=True) + 1e-6)
+    T = nv(np.stack([np.asarray(Image.open(t).convert('L').resize((48, 36)), dtype=np.float32).ravel() for t in temps]))
+    cache = VS / 'reports' / ('hero-' + a.showid) / 'scan_48x36_2fps.npy'   # the whole-show decode, kept for re-runs
+    if cache.exists():
+        F = np.load(cache)
+    else:
+        raw = subprocess.run(['ffmpeg', '-hide_banner', '-nostdin', '-v', 'error', '-i', unit['src'], '-an', '-vf',
+                              'fps=2,scale=48:36,format=gray', '-f', 'rawvideo', '-'], capture_output=True).stdout
+        n = len(raw) // (48 * 36)
+        F = nv(np.frombuffer(raw[: n * 48 * 36], np.uint8).reshape(n, 48 * 36).astype(np.float32))
+        np.save(cache, F)
+    n = len(F)
+    score = (F @ T.T).max(axis=1)
+    lo, hi = int(n * 0.03), int(n * 0.97)                      # not the opening card or the credits
+    taken = [t for g in groups for t in g[3]]
+    bad = [secs(x) for x in a.exclude]
+    picks = []
+    for i in np.argsort(-score):
+        if not lo <= i < hi:
+            continue
+        t = round(i / 2.0, 2)
+        if any(abs(t - b) <= 3 for b in bad):
+            continue
+        if all(abs(t - x) >= a.similar_gap for x in picks + taken):
+            picks.append(t)
+        if len(picks) >= a.similar:
+            break
+    print('similar: %d frames scanned, %d moments, scores %.2f-%.2f' % (n, len(picks), score[[int(t * 2) for t in picks]].min(), score[[int(t * 2) for t in picks]].max()))
+    return ('More like the hero, across the show', '%d moments that look most like the current hero%s, at least %gs apart, in show order'
+            % (len(picks), ' and the other copies\' heroes' if len(temps) > 1 else '', a.similar_gap), None, sorted(picks))
 
 
 def sharpness(p):
@@ -77,6 +126,14 @@ def main():
     ap.add_argument('--twin-span', type=float, default=2)
     ap.add_argument('--twin-step', type=float, default=0.33)
     ap.add_argument('--match')
+    ap.add_argument('--similar', type=int, default=0,
+                    help='also find N moments across the whole show that look like the current hero (and the twins\' heroes)')
+    ap.add_argument('--similar-gap', type=float, default=15, help='seconds between those moments')
+    ap.add_argument('--moment', action='append', default=[],
+                    help='HH:MM:SS.ss of a moment already checked by eye (e.g. kept from a --similar round): shown as its own group')
+    ap.add_argument('--moment-title', default='More close-ups across the show (checked)')
+    ap.add_argument('--exclude', action='append', default=[],
+                    help='HH:MM:SS.ss of a look-alike that is not the singer (a wide, another member): never offered again')
     a = ap.parse_args()
 
     shows = {s['ShowID']: s for s in json.load(open(REPO / 'public/shows.json', encoding='utf-8'))}
@@ -113,6 +170,10 @@ def main():
                        [round(m['t'] + i * a.twin_step, 2) for i in range(-n, n + 1)]))
 
     groups += arounds
+    if a.similar:
+        groups.append(similar_group(unit, rec, a, groups))
+    if a.moment:
+        groups.append((a.moment_title, '%d moments, in show order' % len(a.moment), None, sorted(round(secs(m), 2) for m in a.moment)))
     jobs = sorted({t for g in groups for t in g[3]})
     def render(t):
         p = out / ('t%s.jpg' % hms(t).replace(':', '-'))
@@ -134,14 +195,19 @@ def main():
         v -= v.mean()
         return v / (np.linalg.norm(v) + 1e-6)
     # The frame that IS the site's current hero, if one was rendered (same pixels, correlation ~1).
+    # Identical pixels score ~1; a hero first captured with another deinterlace window scores ~0.98 at
+    # its own moment. Tag the one best frame when it is that close.
     cv = vec(out / 'current_01.jpg')
-    same = {t for t, (p, _) in res.items() if p and float(cv @ vec(p)) > 0.995}
+    cs = {t: float(cv @ vec(p)) for t, (p, _) in res.items() if p}
+    best = max(cs, key=cs.get) if cs else None
+    same = {best} if best is not None and cs[best] >= 0.97 else set()
+    same_label = 'On the site now' if best is not None and cs[best] > 0.995 else "The site's hero (this moment)"
 
     def card(t):
         p, _ = res[t]
         if not p:
             return ''
-        badge = '<b class="now-tag">On the site now</b>' if t in same else ''
+        badge = '<b class="now-tag">%s</b>' % same_label if t in same else ''
         return ('<label class="c"><input type="radio" name="hero" value="%s" data-file="%s"><a href="%s/%s" target="_blank">'
                 '<img src="%s/%s" loading="lazy" alt=""></a><span>%s · sharp %d %s</span></label>'
                 % (hms(t), p.name, out.name, p.name, out.name, p.name, hms(t), sharp[t], badge))
