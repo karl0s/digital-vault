@@ -38,12 +38,27 @@ def hms(t):
     return '%d:%02d:%05.2f' % (t // 3600, t % 3600 // 60, t % 60)
 
 
-def unit_for(showid):
+def unit_for(showid, rec):
+    """The show's planned unit (state.json, or an archived run's). With none, plan this one show the
+    way shots.py plan does (pick_source, ffprobe, compute_target, apply_override, the gates), in
+    memory: state.json is never written, so another session's run is left alone."""
     for f in [VS / 'data/state.json'] + sorted(Path(p) for p in glob.glob(str(VS / 'archive/*/state.json'))):
         for u in json.load(open(f)).get('shows', []):
             if u.get('ShowID') == showid and u.get('target_w'):
                 return u, f
-    raise SystemExit('no planned unit with a target size for %s' % showid)
+    folder = Path(rec.get('FolderPath') or '')
+    if not folder.is_dir():
+        raise SystemExit('no planned unit for %s, and its folder is not on the drive: %s' % (showid, folder))
+    src, kind, files = shots.pick_source(folder)
+    info, err = shots.ffprobe_stream(src) if src else (None, 'no video files')
+    if not info:
+        raise SystemExit('cannot plan %s: %s' % (showid, err))
+    it = {'rel': folder.name, 'label': folder.name, 'ShowID': showid}
+    t = shots.apply_override(it, shots.compute_target(info['stream']))
+    passed, glist = shots.gates(t, rec.get('AspectRatio'))
+    if not passed:
+        raise SystemExit('gates failed for %s: %s' % (showid, [g for g in glist if not g[1]]))
+    return dict(t, src=src, kind=kind), 'planned now from ' + str(folder)
 
 
 def sharpness(p):
@@ -66,7 +81,7 @@ def main():
 
     shows = {s['ShowID']: s for s in json.load(open(REPO / 'public/shows.json', encoding='utf-8'))}
     rec = shows[a.showid]
-    unit, statefile = unit_for(a.showid)
+    unit, statefile = unit_for(a.showid, rec)
     vf = shots.build_vf_seek(unit, shots.DEFAULT_DEINT)
     out = VS / 'reports' / ('hero-' + a.showid)
     shots.assert_readonly_target(out / 'x.jpg')
