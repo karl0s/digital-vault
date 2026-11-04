@@ -4,7 +4,8 @@
     python3 plan_files.py --label "Downloads 2026-10-29" --files files.json
 
 files.json is a list of {"path", "ShowID", "Checksum", "ShowDate"} - path a file or a disc folder,
-"vts": ["01"] to take one titleset - plus optional
+"vts": ["01"] to take one titleset, "from"/"to" (seconds or "H:MM:SS") to window one
+programme inside the stream - plus optional
 "progressive": "<why>" for a stream FLAGGED interlaced whose picture idet measures as
 progressive (deinterlacing a progressive picture only softens it - SKILL.md 4.6).
 Each file is planned exactly as discover()/cmd_plan() would plan a loose file on the
@@ -45,7 +46,20 @@ for e in want:
         t["override"] = (t.get("override", "") + " progressive picture in an interlaced-flagged stream (%s)" % e["progressive"]).strip()
     try: rep = float(info["format"].get("duration") or 0)
     except Exception: rep = 0.0
-    dur, how = shots.true_duration(src, files, rep)
+    # A multi-part concat: source's container duration is the first part's guess (SKILL.md 5.1):
+    # demux it, as cmd_plan does, or a 2:14 disc plans as 45 min.
+    if str(src).startswith("concat:") and str(src).count("|") >= 1:
+        _d = shots.demux_duration(src)
+        dur, how = (_d, "demuxed") if _d > 1 else shots.true_duration(src, files, rep)
+    else:
+        dur, how = shots.true_duration(src, files, rep)
+    # "from"/"to" window one programme inside a longer stream, exactly as a splits.json
+    # from/to does in cmd_plan: the frame budget and the 5%/95% trim describe the window.
+    t0w, t1w = shots._secs(e.get("from")), shots._secs(e.get("to"))
+    if t0w is not None or t1w is not None:
+        lo, hi = t0w or 0.0, (t1w if t1w else dur)
+        dur = max(1.0, min(hi, dur) - lo)
+        how += " window %d:%02d-%d:%02d" % (int(lo) // 60, int(lo) % 60, int(lo + dur) // 60, int(lo + dur) % 60)
     rec = recs.get(e["ShowID"]) or {}
     passed, glist = shots.gates(t, rec.get("AspectRatio"))
     n = max(120, min(500, int(dur // 5))) if dur > 0 else 120
@@ -58,12 +72,15 @@ for e in want:
         if not good: print("        gate failed: %s (%s)" % (name, detail))
     if not passed:
         bad.append((p.name, "gate")); continue
-    slug = re.sub(r"[^A-Za-z0-9]+", "_", p.name).strip("_")[:48]
+    rel = p.name
+    if e.get("vts"): rel += "_VTS" + "+".join(e["vts"])            # two units of one disc need two keys
+    if t0w is not None or t1w is not None: rel += "_T%d-%d" % (int(t0w or 0), int(t1w or 0))
+    slug = re.sub(r"[^A-Za-z0-9]+", "_", rel).strip("_")[:48]
     units.append({
-        "key": "%s__%s" % (slug, hashlib.sha1(p.name.encode()).hexdigest()[:6]),
+        "key": "%s__%s" % (slug, hashlib.sha1(rel.encode()).hexdigest()[:6]),
         "ShowID": e["ShowID"], "Checksum": e.get("Checksum", ""),
-        "vts": e.get("vts") or [], "vobs": [], "files": [], "t0": 0.0, "decode": "",
-        "FolderName": p.name, "rel": p.name, "ShowDate": e.get("ShowDate", ""),
+        "vts": e.get("vts") or [], "vobs": [], "files": [], "t0": t0w or 0.0, "t1": t1w, "decode": e.get("decode", ""),
+        "FolderName": p.name, "rel": rel, "ShowDate": e.get("ShowDate", ""),
         "link": "file:%s" % p.parent, "src": src, "kind": kind, "duration": dur, "n": n, **t,
     })
 for k in ("key", "ShowID"):
