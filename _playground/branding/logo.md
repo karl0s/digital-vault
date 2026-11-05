@@ -285,7 +285,23 @@ duplicate chrome.
 
 ### Swapping logos in future
 All logo variants live in `components/logos/`. To swap: change the import in `HeroSearch.tsx`.
-No other files need touching.
+No other files need touching, except the favicon below if the V changes.
+
+### Favicon — the wordmark's V (2026-11-06)
+`tools/favicon/build.py` writes `public/favicon.svg`, `public/favicon.ico` (16/32/48) and
+`public/apple-touch-icon.png` (180, square corners: iOS rounds them), linked from `index.html`.
+It replaced a red serif V that matched nothing on the site. The V is Archivo 700's outline (a
+path, so the icon needs no font) with this file's filter at the V's own values (letter 4,
+`t = -1/7`) on `#141414`. The owner chose it on a preview page (`~/VaultShots/reports/favicon.html`):
+- **V 84% of the square's height**: the glyph is nearly square (671×686 units), so it can fill
+  most of the icon. At 90–96% the glow is cut at the edges.
+- **Glow 2×**: purple and cyan blur and offsets, and the irradiation, doubled. At the site's own
+  values the glow is under a pixel wide at 16px and the icon reads as a plain white V.
+- **Slightly rounded corners** (12.5% of the side); no header light (the masthead's red radial
+  smudges at 16px).
+
+The `.ico` is listed with `sizes="32x32"` so Chrome keeps using the SVG. The PNG and ICO are
+rendered by headless Chromium, so they match what a browser draws from the SVG.
 
 ---
 

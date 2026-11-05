@@ -51,6 +51,7 @@ tools/
   lineage/              ← lineage chains (->, >, →) in a show's own sidecar text that its Lineage lacks or has cut off: build.py renders ~/VaultShots/reports/lineage.html; apply.py writes Karl's picks
   generation/           ← shows whose sidecar has a Generation section and no Generation: build.py renders ~/VaultShots/reports/generation.html (a label read off the chain's markers); apply.py writes Karl's picks
   source-review/        ← records with no RecordingType: build.py renders ~/VaultShots/reports/source-review.html (two stills and a clue each); apply.py writes Karl's pasted picks
+  favicon/              ← build.py writes public/favicon.svg, favicon.ico and apple-touch-icon.png: the wordmark's V and glow (owner's pick, 2026-11-06; _playground/branding/logo.md)
 scripts/
   health-check.py       ← integrity validator (pre-push hook, and the deploy)
   audit-*.py            ← read-only audits: image geometry, aspect vs source, sidecar setlists
