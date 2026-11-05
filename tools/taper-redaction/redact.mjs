@@ -49,7 +49,7 @@ const SIGNOFF = /^\W*(?:enjoy(?:\s*(?:&|and)\s*share)?|share\s*(?:&|and)\s*enjoy
 
 // Words that make a phrase technical (a device, format, broadcaster, step).
 const TECH = new Set(`
-dvd dvds dvdr dvd-r dvd+r dvd-rw dvd+rw dvd-ram dvd5 dvd9 vob vobs video_ts ifo tv hdtv sdtv dtv tvrip vhs svhs s-vhs vhs+ hi8 minidv dv dv25 mini
+vid dvd dvds dvdr dvd-r dvd+r dvd-rw dvd+rw dvd-ram dvd5 dvd9 vob vobs video_ts ifo tv hdtv sdtv dtv tvrip vhs svhs s-vhs vhs+ hi8 minidv dv dv25 mini
 vcr pvr dvr hdd harddisk hard disk drive pc mac usb ethernet firewire ieee1394 scart s-video composite component capture card tuner receiver
 recorder standalone sa stand-alone deck camera cam camcorder handycam mic dat md minidisc cd master gen generation 1st 2nd 3rd low lgen
 dvb dvb-t dvb-s dvb-s2 dvb-c atsc ota qam clearqam isdb sat satellite cable catv catv[m] broadcast rebroadcast re-broadcast stream webstream webcast
