@@ -1304,8 +1304,13 @@ Identifying what a download is:
 
 Hand the owner the picks page **and** one records page: an A/B row per open question — identity
 from research (two fetched sources each, or the recording's own title card), copies from twins,
-broadcaster, corrections a twin needs (a year-only date, a venue's name at the time). Write nothing
-to `shows.json` before he answers.
+broadcaster, corrections a twin needs (a year-only date, a venue's name at the time), and any
+`aspect_ab.py` suspect as a row of its own with both images. Write nothing to `shows.json` before
+he answers. **Build it with `records_page.py`** (the drafted records in `data/new_records_*.json`,
+the questions and evidence in a small spec; `--example` prints one): it refuses duplicate rows,
+two suggestions on one row and a missing image, checks the links and opens the page. He pastes back
+one line (`<export>: 1B 2A …`). Where nothing is open, the picks page and a few lines in the chat
+are enough (Supergrass Glastonbury 2025).
 
 ---
 
@@ -1566,6 +1571,8 @@ python3 plan_files.py --label L --files f.json    # loose files NOT on Live Musi
                                                   # "from"/"to" to window one programme; "progressive": why, for
                                                   # a stream flagged interlaced that idet measures progressive.
                                                   # Same gates as plan; demuxes multi-part concat sources
+python3 records_page.py spec.json [--open]        # the owner's records page for a batch: question rows, drafted
+                                                  # records, evidence; refuses a broken spec (§13b; --example)
 python3 twin_match.py --src F --twins ID [ID ...] # is F a copy of a held show? finds each twin still in F (§13b)
 python3 hero_options.py --showid ID --match reports/twins/<slug>/match.json --around "Label=HH:MM:SS" [--twin ID ...]
                                                   # one show's hero re-pick: frames around chosen moments (and each twin's hero
