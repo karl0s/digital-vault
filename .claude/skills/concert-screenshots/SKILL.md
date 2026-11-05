@@ -1301,6 +1301,16 @@ Identifying what a download is:
   2025): window the record to the artist's set with `from`/`to`, name the other act and its times
   in `PrivateNotes`, and make no record of it — only when the owner says so; otherwise a multi-act
   recording goes through `va-masters` (§10).
+- **Notes sent before the file arrives** (the owner pastes a show's info text while it downloads)
+  wait in `~/VaultShots/data/pending_downloads.md` with a draft record; read it whenever new files
+  appear. Without an info file in the download, that text goes in `PrivateNotes`, not `Notes`, and
+  is one setlist source — setlist.fm added Boot Camp to a 20-song info text (Soundgarden Toronto
+  1996: the owner's pick, 2026-11-06).
+- **A trader's or seller's mark on the picture** — a DVD-maker's title card with a handle, a
+  bootlegger's burned-in caption: window the plan past the cards (`from`/`to`), keep every still off
+  the captions, write `[taper]`, and add the handle to `private/taper-names.json` before
+  `apply.mjs --apply` (its hash joins the check). A new lineage word can read as a person there
+  (`VID(M)` was cut — `vid` is in TECH now): check the redaction's diff, never just its count.
 
 Hand the owner the picks page **and** one records page: an A/B row per open question — identity
 from research (two fetched sources each, or the recording's own title card), copies from twins,
