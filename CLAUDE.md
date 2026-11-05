@@ -199,7 +199,10 @@ Lineage and Generation are published; the people in them are not.
   by hand, saving the original text to `private/taper-originals.json` first.
 - **The check reads each step of a lineage chain**: a step with no word it knows (`TECH` in
   `tools/taper-redaction/redact.mjs`) reads as a person. New lineage can trip it on a tool or a
-  channel ("CapDVHS", "NBCHD"): make sure the word names no one, then add it to `TECH`.
+  channel ("CapDVHS", "NBCHD"): make sure the word names no one, then add it to `TECH`. The
+  redaction does the same and **cuts** the step (`VID(M) > DVDR(x)` lost `VID(M)`, 2026-11-06):
+  read its diff after every `--apply`, restore the step, drop the false entry from
+  `private/taper-originals.json`, and add the word to `TECH`.
 
 ### AddedOn — what's new
 **The owner's rule (2026-10-16): "Recently added" starts from that day.** The 1,214 records then
