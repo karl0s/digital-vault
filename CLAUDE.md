@@ -277,7 +277,8 @@ match.** Sizes legitimately differ by broadcast standard; the aspect ratio must 
 | 720×480 | NTSC | 4:3 | 720×540 |
 | 720×480 | NTSC | 16:9 | 854×480 |
 | 704×480 | NTSC | 4:3 | 704×528 |
-| 1440×1080 | — | 16:9 | 1920×1080 |
+| 1440×1080 anamorphic (SAR 4:3) | — | 16:9 | 1920×1080 |
+| 1440×1080 square pixels (SAR 1:1; an AI upscale of a 4:3 DVD) | — | 4:3 | unchanged |
 | 1280×720 / 1920×1080 | — | 16:9 | unchanged |
 
 Read-only audits:

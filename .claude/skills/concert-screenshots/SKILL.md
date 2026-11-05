@@ -267,10 +267,14 @@ is at the largest size its source honestly supports; forcing one size would upsc
 | 720×576 / 704×576 | PAL | 16:9 | **1024×576** |
 | 720×480 | NTSC | 16:9 | **854×480** |
 | 1280×720 | either | 16:9 | **1280×720** |
-| 1920×1080 / 1440×1080 | either | 16:9 | **1920×1080** |
+| 1920×1080 / 1440×1080 anamorphic (SAR 4:3) | either | 16:9 | **1920×1080** |
+| 1440×1080 square pixels (SAR 1:1) | — | 4:3 | **1440×1080** |
 
-Eight sizes in all. **All slots of one show share one size** (§8 gate 7). Half-D1 sources
-legitimately stretch their width a lot (352 → 640): that axis is genuinely under-sampled.
+Nine sizes in all. **All slots of one show share one size** (§8 gate 7). Half-D1 sources
+legitimately stretch their width a lot (352 → 640): that axis is genuinely under-sampled. The
+square-pixel 1440×1080 is an **AI upscale of a 4:3 DVD** (Alice in Chains Unplugged, 2026-11-04: a
+Topaz Video AI tag in the file) — its own pixels, captured as they are; read the SAR before
+assuming a 1440-wide source is anamorphic HDV.
 
 ### 4.1c Auditing the whole collection
 ```bash
@@ -435,6 +439,16 @@ look at an A/B page of full frames with a 200% centre crop:
 ```python
 comb_ratio = mean(|2·row[y] − row[y−1] − row[y+1]|) / mean(|2·col[x] − col[x−1] − col[x+1]|)
 # ~1.0–1.5 clean · >2.4 visibly striped
+```
+
+**Measure with idet at three or more points, and read the frames' own flags.** A DVD title can be
+progressive for half its length and interlaced for the rest, and the field-order flag can lie on
+every frame: the R.E.M. Storytellers outtakes (2026-11-04) flag each frame BFF (`showinfo` shows
+`i:B`) while idet measures their interlaced stretches TFF. `parity=auto` follows the frame flag, so
+capture such a unit alone with the measured parity, then run the rest (it comes back cached):
+
+```bash
+python3 shots.py capture --only <key> --deint "bwdif=mode=send_frame:parity=tff:deint=all"
 ```
 
 ### 4.7 Temporal deinterlacers need consecutive frames — `select` breaks them
@@ -1245,7 +1259,11 @@ differences:
    the match times (two copies of one broadcast need different moments).
 3. **Plan with `plan_files.py`** (§18), then `./run_artist_noplan.sh "<label>"`. A stream flagged
    interlaced whose picture idet measures progressive (an MTV HD TS) takes `"progressive": "<why>"`.
-   `aspect_ab.py` uses the planned ShowDate while the record is unwritten.
+   `aspect_ab.py` uses the planned ShowDate while the record is unwritten. A disc folder takes
+   `"vts"`; one programme inside a longer stream takes `"from"`/`"to"` (each unit then gets its own
+   key, and a multi-part concat source is demuxed for its length, as `plan` does — its container
+   reported 45:38 for a 2:14:41 disc). The Nirvana 2007 DVD's VTS_01 held the uncut show, the
+   rehearsal and the broadcast back to back: three windows, three records (2026-11-04).
 4. **The record** follows §13 with the drive path the file is expected at: `FolderPath`
    `/Volumes/Live Music/<file name>` (loose files sit at the drive root), ShowID = sha1 of that path
    [:12], `ChecksumSHA1` = sha1 of the file itself (the move doesn't change it — never a temp stub),
@@ -1255,7 +1273,34 @@ differences:
    Music by exact size (six of the first twenty landed under a different name) and correct
    `FolderPath`, `FolderName` and `RepVideoFiles` together — the ShowID stays. Not with
    `fix_paths.py`: it also rewrites split records' `FolderName`s and `MasterDriveName`
-   (CLAUDE.md → Drives).
+   (CLAUDE.md → Drives). **A rename in Downloads** (the owner asked for the R.E.M. MakeMKV titles,
+   2026-11-05) is the same: match each file to its record by exact size, rename without clobbering,
+   update the three fields together, keep the ShowID. Name in the drive's own style,
+   `Artist - YYYY-MM-DD Event[, Venue]` (the artist as the drive spells it: `R.E.M.`), outtakes
+   `(Outtakes)`.
+
+Identifying what a download is:
+- **MakeMKV titles (`B1_t00.mkv`) carry one chapter per song.** With the owner's tracklist for the
+  discs, match each title's chapter count (ignore the one-second end chapter) to a list, then prove
+  it from the footage, never the count alone: song captions, who sings lead (Mike Mills on Love Is
+  All Around and Rockville), an instrument (the mandolin on Losing My Religion), title cards, the
+  room. Render one frame from the middle of each chapter — a row per title. Nine R.E.M. titles were
+  placed this way, every one confirmed (2026-11-04).
+- **A file's own tags can name it.** BBC iPlayer downloads carry the programme title, synopsis, date
+  and programme ID (`m002f2tb`); the BBC programme page gives the channel and broadcast time
+  (WebFetch is refused at bbc.co.uk; `curl` reads it). The channel bug on screen confirms it.
+- **Broadcast song captions are short.** BBC Glastonbury shows each title for ~3 s in a pink
+  lower-third, so a 15-second sweep missed all seven. A colour test at 1 fps over the window finds
+  them (pink: R>170, B>110, G<110, R−G>90 in the lower third), then read crops at ±1 s. The
+  captions are the setlist of *this* recording — the BBC aired 7 of the set's 16.
+- An attached cover picture (`mjpeg`, `attached_pic=1`) in an MP4 is skipped by ffmpeg's default
+  stream choice — checked by hashing frames with and without `-map 0:v:0`.
+- **An AI upscale is a copy of its source**: same programme, its own record and its own pixels;
+  say so in `PrivateNotes` (the owner kept it out of `Lineage`, 2026-11-04).
+- **A programme with a second act the owner doesn't want** (Supergrass then Blossoms, Glastonbury
+  2025): window the record to the artist's set with `from`/`to`, name the other act and its times
+  in `PrivateNotes`, and make no record of it — only when the owner says so; otherwise a multi-act
+  recording goes through `va-masters` (§10).
 
 Hand the owner the picks page **and** one records page: an A/B row per open question — identity
 from research (two fetched sources each, or the recording's own title card), copies from twins,
@@ -1517,8 +1562,10 @@ python3 promote.py --apply                    # write images + manifest
 ./run_artist_noplan.sh "<Label>"              # same, without plan, for a pruned or subset state.json
 python3 plan_subset.py --label L --ids ids.json   # plan only listed ShowIDs; REFUSES if any yields no unit
 python3 plan_files.py --label L --files f.json    # loose files NOT on Live Music yet (downloads): path, ShowID,
-                                                  # Checksum, ShowDate; "progressive": why, for a stream flagged
-                                                  # interlaced that idet measures progressive. Same gates as plan
+                                                  # Checksum, ShowDate; "vts" for a disc folder's titleset;
+                                                  # "from"/"to" to window one programme; "progressive": why, for
+                                                  # a stream flagged interlaced that idet measures progressive.
+                                                  # Same gates as plan; demuxes multi-part concat sources
 python3 twin_match.py --src F --twins ID [ID ...] # is F a copy of a held show? finds each twin still in F (§13b)
 python3 hero_options.py --showid ID --match reports/twins/<slug>/match.json --around "Label=HH:MM:SS" [--twin ID ...]
                                                   # one show's hero re-pick: frames around chosen moments (and each twin's hero
