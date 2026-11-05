@@ -64514,12 +64514,12 @@
     "Generation": "",
     "Lineage": "",
     "SourceEquipment": "",
-    "FolderName": "B1_t00.mkv",
-    "FolderPath": "/Volumes/Live Music/B1_t00.mkv",
+    "FolderName": "R.E.M. - 1991-04-10 MTV Unplugged, Chelsea Studios, New York.mkv",
+    "FolderPath": "/Volumes/Live Music/R.E.M. - 1991-04-10 MTV Unplugged, Chelsea Studios, New York.mkv",
     "MasterDriveName": "Live Music",
     "MasterDriveID": "",
     "RepVideoCount": "1",
-    "RepVideoFiles": "B1_t00.mkv",
+    "RepVideoFiles": "R.E.M. - 1991-04-10 MTV Unplugged, Chelsea Studios, New York.mkv",
     "Container": ".mkv",
     "VideoCodec": "mpeg2video",
     "Width": "720",
@@ -64552,7 +64552,7 @@
     "Broadcaster": "MTV",
     "AddedOn": "2026-11-04",
     "AudioTracks": "2",
-    "PrivateNotes": "ADDED (2026-11-04): a downloaded file (a MakeMKV title), catalogued while it sat in ~/Downloads, before it went onto Live Music. FolderPath is where it is expected (the drive root, under its MakeMKV name); ShowID = sha1 of that path [:12] and stays if the file is renamed or lands elsewhere; ChecksumSHA1 = sha1 of the file itself. Specs read from the file: ffprobe, video bitrate = the video packets over the running time, scan type by idet.\n\nIDENTITY (2026-11-04): matched to the owner's own tracklist for these discs (pasted into the session), list 'DVD1: UNPLUGGED 1991 (04/10/91)'. Evidence from the file: 12 chapters, one per song in the list's order; Mike Mills sings chapter 8 (Love Is All Around, his lead); a mandolin in chapter 10 (Losing My Religion); 1991 look (Stipe in a black hat); an MTV Unplugged logo bug; the credit roll over chapter 12 (Endgame). Taped 1991-04-10 at Chelsea Studios, New York (Wikipedia's 'Unplugged: The Complete 1991 and 2001 Sessions' and 'REMTV' pages, setlist.fm, thetvdb); first aired on MTV 1991-04-24 (thetvdb, Rotten Tomatoes). The owner's list matches REMTV's; setlist.fm's taping list (22 songs, with unreleased covers and retakes) lacks Rotary Eleven, which REMTV and the Complete Sessions include.\n\nSETLIST (2026-11-04): the owner's tracklist for 'DVD1: UNPLUGGED 1991 (04/10/91)', in house format; one chapter per song.\n\nSOURCE (2026-11-04): DVD title via MakeMKV, 720x480 NTSC 4:3, progressive picture in a stream flagged interlaced (idet: progressive at 200/600/1500/2200 s), so not deinterlaced; AC3 stereo 192 kbps and AC3 5.1. Stills 720x540.\n\nSAME TAPING (2026-11-04): bef152d0eff9 - this taping's unbroadcast songs.\n\nREVIEW (2026-11-04, the R.E.M. records page): the owner's picks - this file is the show named (identity confirmed)."
+    "PrivateNotes": "ADDED (2026-11-04): a downloaded file (a MakeMKV title), catalogued while it sat in ~/Downloads, before it went onto Live Music. FolderPath is where it is expected (the drive root, under its MakeMKV name); ShowID = sha1 of that path [:12] and stays if the file is renamed or lands elsewhere; ChecksumSHA1 = sha1 of the file itself. Specs read from the file: ffprobe, video bitrate = the video packets over the running time, scan type by idet.\n\nIDENTITY (2026-11-04): matched to the owner's own tracklist for these discs (pasted into the session), list 'DVD1: UNPLUGGED 1991 (04/10/91)'. Evidence from the file: 12 chapters, one per song in the list's order; Mike Mills sings chapter 8 (Love Is All Around, his lead); a mandolin in chapter 10 (Losing My Religion); 1991 look (Stipe in a black hat); an MTV Unplugged logo bug; the credit roll over chapter 12 (Endgame). Taped 1991-04-10 at Chelsea Studios, New York (Wikipedia's 'Unplugged: The Complete 1991 and 2001 Sessions' and 'REMTV' pages, setlist.fm, thetvdb); first aired on MTV 1991-04-24 (thetvdb, Rotten Tomatoes). The owner's list matches REMTV's; setlist.fm's taping list (22 songs, with unreleased covers and retakes) lacks Rotary Eleven, which REMTV and the Complete Sessions include.\n\nSETLIST (2026-11-04): the owner's tracklist for 'DVD1: UNPLUGGED 1991 (04/10/91)', in house format; one chapter per song.\n\nSOURCE (2026-11-04): DVD title via MakeMKV, 720x480 NTSC 4:3, progressive picture in a stream flagged interlaced (idet: progressive at 200/600/1500/2200 s), so not deinterlaced; AC3 stereo 192 kbps and AC3 5.1. Stills 720x540.\n\nSAME TAPING (2026-11-04): bef152d0eff9 - this taping's unbroadcast songs.\n\nREVIEW (2026-11-04, the R.E.M. records page): the owner's picks - this file is the show named (identity confirmed).\n\nRENAMED (2026-11-05): the owner asked for the download to be renamed from its MakeMKV name 'B1_t00.mkv' to 'R.E.M. - 1991-04-10 MTV Unplugged, Chelsea Studios, New York.mkv' (in ~/Downloads, before the move; matched by exact size). FolderName, FolderPath and RepVideoFiles follow; ShowID unchanged (derived from the old path)."
   },
   {
     "ShowID": "bef152d0eff9",
@@ -64566,12 +64566,12 @@
     "Generation": "",
     "Lineage": "",
     "SourceEquipment": "",
-    "FolderName": "C1_t01.mkv",
-    "FolderPath": "/Volumes/Live Music/C1_t01.mkv",
+    "FolderName": "R.E.M. - 1991-04-10 MTV Unplugged (Outtakes).mkv",
+    "FolderPath": "/Volumes/Live Music/R.E.M. - 1991-04-10 MTV Unplugged (Outtakes).mkv",
     "MasterDriveName": "Live Music",
     "MasterDriveID": "",
     "RepVideoCount": "1",
-    "RepVideoFiles": "C1_t01.mkv",
+    "RepVideoFiles": "R.E.M. - 1991-04-10 MTV Unplugged (Outtakes).mkv",
     "Container": ".mkv",
     "VideoCodec": "mpeg2video",
     "Width": "720",
@@ -64604,7 +64604,7 @@
     "Broadcaster": "MTV",
     "AddedOn": "2026-11-04",
     "AudioTracks": "2",
-    "PrivateNotes": "ADDED (2026-11-04): a downloaded file (a MakeMKV title), catalogued while it sat in ~/Downloads, before it went onto Live Music. FolderPath is where it is expected (the drive root, under its MakeMKV name); ShowID = sha1 of that path [:12] and stays if the file is renamed or lands elsewhere; ChecksumSHA1 = sha1 of the file itself. Specs read from the file: ffprobe, video bitrate = the video packets over the running time, scan type by idet.\n\nIDENTITY (2026-11-04): matched to the owner's own tracklist for these discs (pasted into the session), list 'DVD1: OUTTAKES 1991'. Evidence from the file: 5 chapters, one per song; no Stipe anywhere in chapter 3 (Rotary Eleven, an instrumental); the 1991 Unplugged set and clothes. Taped 1991-04-10 at Chelsea Studios, New York (Wikipedia's 'Unplugged: The Complete 1991 and 2001 Sessions' and 'REMTV' pages, setlist.fm, thetvdb); first aired on MTV 1991-04-24 (thetvdb, Rotten Tomatoes). The owner's list matches REMTV's; setlist.fm's taping list (22 songs, with unreleased covers and retakes) lacks Rotary Eleven, which REMTV and the Complete Sessions include.\n\nSETLIST (2026-11-04): the owner's tracklist for 'DVD1: OUTTAKES 1991', in house format; one chapter per song. The songs of this taping that were not broadcast (outtakes); the broadcast itself is dbcf3de97fb5.\n\nSOURCE (2026-11-04): DVD title via MakeMKV, 720x480 NTSC 4:3, interlaced; AC3 stereo 192 kbps and AC3 5.1. Stills 720x540.\n\nSAME TAPING (2026-11-04): dbcf3de97fb5 - its broadcast.\n\nREVIEW (2026-11-04, the R.E.M. records page): the owner's picks - this file is the show named (identity confirmed); the outtakes as a record of their own."
+    "PrivateNotes": "ADDED (2026-11-04): a downloaded file (a MakeMKV title), catalogued while it sat in ~/Downloads, before it went onto Live Music. FolderPath is where it is expected (the drive root, under its MakeMKV name); ShowID = sha1 of that path [:12] and stays if the file is renamed or lands elsewhere; ChecksumSHA1 = sha1 of the file itself. Specs read from the file: ffprobe, video bitrate = the video packets over the running time, scan type by idet.\n\nIDENTITY (2026-11-04): matched to the owner's own tracklist for these discs (pasted into the session), list 'DVD1: OUTTAKES 1991'. Evidence from the file: 5 chapters, one per song; no Stipe anywhere in chapter 3 (Rotary Eleven, an instrumental); the 1991 Unplugged set and clothes. Taped 1991-04-10 at Chelsea Studios, New York (Wikipedia's 'Unplugged: The Complete 1991 and 2001 Sessions' and 'REMTV' pages, setlist.fm, thetvdb); first aired on MTV 1991-04-24 (thetvdb, Rotten Tomatoes). The owner's list matches REMTV's; setlist.fm's taping list (22 songs, with unreleased covers and retakes) lacks Rotary Eleven, which REMTV and the Complete Sessions include.\n\nSETLIST (2026-11-04): the owner's tracklist for 'DVD1: OUTTAKES 1991', in house format; one chapter per song. The songs of this taping that were not broadcast (outtakes); the broadcast itself is dbcf3de97fb5.\n\nSOURCE (2026-11-04): DVD title via MakeMKV, 720x480 NTSC 4:3, interlaced; AC3 stereo 192 kbps and AC3 5.1. Stills 720x540.\n\nSAME TAPING (2026-11-04): dbcf3de97fb5 - its broadcast.\n\nREVIEW (2026-11-04, the R.E.M. records page): the owner's picks - this file is the show named (identity confirmed); the outtakes as a record of their own.\n\nRENAMED (2026-11-05): the owner asked for the download to be renamed from its MakeMKV name 'C1_t01.mkv' to 'R.E.M. - 1991-04-10 MTV Unplugged (Outtakes).mkv' (in ~/Downloads, before the move; matched by exact size). FolderName, FolderPath and RepVideoFiles follow; ShowID unchanged (derived from the old path)."
   },
   {
     "ShowID": "b91856965e97",
@@ -64618,12 +64618,12 @@
     "Generation": "",
     "Lineage": "",
     "SourceEquipment": "",
-    "FolderName": "D1_t02.mkv",
-    "FolderPath": "/Volumes/Live Music/D1_t02.mkv",
+    "FolderName": "R.E.M. - 2001-05-21 MTV Unplugged, MTV Studios, New York.mkv",
+    "FolderPath": "/Volumes/Live Music/R.E.M. - 2001-05-21 MTV Unplugged, MTV Studios, New York.mkv",
     "MasterDriveName": "Live Music",
     "MasterDriveID": "",
     "RepVideoCount": "1",
-    "RepVideoFiles": "D1_t02.mkv",
+    "RepVideoFiles": "R.E.M. - 2001-05-21 MTV Unplugged, MTV Studios, New York.mkv",
     "Container": ".mkv",
     "VideoCodec": "mpeg2video",
     "Width": "720",
@@ -64656,7 +64656,7 @@
     "Broadcaster": "MTV",
     "AddedOn": "2026-11-04",
     "AudioTracks": "2",
-    "PrivateNotes": "ADDED (2026-11-04): a downloaded file (a MakeMKV title), catalogued while it sat in ~/Downloads, before it went onto Live Music. FolderPath is where it is expected (the drive root, under its MakeMKV name); ShowID = sha1 of that path [:12] and stays if the file is renamed or lands elsewhere; ChecksumSHA1 = sha1 of the file itself. Specs read from the file: ffprobe, video bitrate = the video packets over the running time, scan type by idet.\n\nIDENTITY (2026-11-04): matched to the owner's own tracklist for these discs (pasted into the session), list 'DVD1: UNPLUGGED 2001 (05/21/01)'. Evidence from the file: 10 chapters, one per song; the on-screen caption 'Cuyahoga' at 30:28, the start of chapter 8 (Cuyahoga, eighth on the list); 2001 look (Stipe in a suit). Taped 2001-05-21 at MTV's TRL studio, MTV Studios, Times Square, New York (Wikipedia's Complete Sessions and REMTV pages, jambase, setlist.fm, thetvdb). First air date unsettled: setlist.fm says 2001-07-19; silentuproar (2001-07-17) and TMDB say MTV2 from 2001-08-09. The owner's list matches REMTV's; setlist.fm's 25-song taping list holds every one of its songs.\n\nSETLIST (2026-11-04): the owner's tracklist for 'DVD1: UNPLUGGED 2001 (05/21/01)', in house format; one chapter per song.\n\nSOURCE (2026-11-04): DVD title via MakeMKV, 720x480 NTSC 4:3, interlaced; AC3 stereo 192 kbps and AC3 5.1. Stills 720x540.\n\nSAME TAPING (2026-11-04): 67ef61082339 - this taping's unbroadcast songs.\n\nREVIEW (2026-11-04, the R.E.M. records page): the owner's picks - this file is the show named (identity confirmed); shape 4:3, the owner's A/B (flagged as a 4:3, bar-free 2001 source)."
+    "PrivateNotes": "ADDED (2026-11-04): a downloaded file (a MakeMKV title), catalogued while it sat in ~/Downloads, before it went onto Live Music. FolderPath is where it is expected (the drive root, under its MakeMKV name); ShowID = sha1 of that path [:12] and stays if the file is renamed or lands elsewhere; ChecksumSHA1 = sha1 of the file itself. Specs read from the file: ffprobe, video bitrate = the video packets over the running time, scan type by idet.\n\nIDENTITY (2026-11-04): matched to the owner's own tracklist for these discs (pasted into the session), list 'DVD1: UNPLUGGED 2001 (05/21/01)'. Evidence from the file: 10 chapters, one per song; the on-screen caption 'Cuyahoga' at 30:28, the start of chapter 8 (Cuyahoga, eighth on the list); 2001 look (Stipe in a suit). Taped 2001-05-21 at MTV's TRL studio, MTV Studios, Times Square, New York (Wikipedia's Complete Sessions and REMTV pages, jambase, setlist.fm, thetvdb). First air date unsettled: setlist.fm says 2001-07-19; silentuproar (2001-07-17) and TMDB say MTV2 from 2001-08-09. The owner's list matches REMTV's; setlist.fm's 25-song taping list holds every one of its songs.\n\nSETLIST (2026-11-04): the owner's tracklist for 'DVD1: UNPLUGGED 2001 (05/21/01)', in house format; one chapter per song.\n\nSOURCE (2026-11-04): DVD title via MakeMKV, 720x480 NTSC 4:3, interlaced; AC3 stereo 192 kbps and AC3 5.1. Stills 720x540.\n\nSAME TAPING (2026-11-04): 67ef61082339 - this taping's unbroadcast songs.\n\nREVIEW (2026-11-04, the R.E.M. records page): the owner's picks - this file is the show named (identity confirmed); shape 4:3, the owner's A/B (flagged as a 4:3, bar-free 2001 source).\n\nRENAMED (2026-11-05): the owner asked for the download to be renamed from its MakeMKV name 'D1_t02.mkv' to 'R.E.M. - 2001-05-21 MTV Unplugged, MTV Studios, New York.mkv' (in ~/Downloads, before the move; matched by exact size). FolderName, FolderPath and RepVideoFiles follow; ShowID unchanged (derived from the old path)."
   },
   {
     "ShowID": "67ef61082339",
@@ -64670,12 +64670,12 @@
     "Generation": "",
     "Lineage": "",
     "SourceEquipment": "",
-    "FolderName": "E1_t03.mkv",
-    "FolderPath": "/Volumes/Live Music/E1_t03.mkv",
+    "FolderName": "R.E.M. - 2001-05-21 MTV Unplugged (Outtakes).mkv",
+    "FolderPath": "/Volumes/Live Music/R.E.M. - 2001-05-21 MTV Unplugged (Outtakes).mkv",
     "MasterDriveName": "Live Music",
     "MasterDriveID": "",
     "RepVideoCount": "1",
-    "RepVideoFiles": "E1_t03.mkv",
+    "RepVideoFiles": "R.E.M. - 2001-05-21 MTV Unplugged (Outtakes).mkv",
     "Container": ".mkv",
     "VideoCodec": "mpeg2video",
     "Width": "720",
@@ -64708,7 +64708,7 @@
     "Broadcaster": "MTV",
     "AddedOn": "2026-11-04",
     "AudioTracks": "2",
-    "PrivateNotes": "ADDED (2026-11-04): a downloaded file (a MakeMKV title), catalogued while it sat in ~/Downloads, before it went onto Live Music. FolderPath is where it is expected (the drive root, under its MakeMKV name); ShowID = sha1 of that path [:12] and stays if the file is renamed or lands elsewhere; ChecksumSHA1 = sha1 of the file itself. Specs read from the file: ffprobe, video bitrate = the video packets over the running time, scan type by idet.\n\nIDENTITY (2026-11-04): matched to the owner's own tracklist for these discs (pasted into the session), list 'DVD1: OUTTAKES 2001'. Evidence from the file: 7 chapters, one per song; the 2001 Unplugged set and clothes. Taped 2001-05-21 at MTV's TRL studio, MTV Studios, Times Square, New York (Wikipedia's Complete Sessions and REMTV pages, jambase, setlist.fm, thetvdb). First air date unsettled: setlist.fm says 2001-07-19; silentuproar (2001-07-17) and TMDB say MTV2 from 2001-08-09. The owner's list matches REMTV's; setlist.fm's 25-song taping list holds every one of its songs.\n\nSETLIST (2026-11-04): the owner's tracklist for 'DVD1: OUTTAKES 2001', in house format; one chapter per song. The songs of this taping that were not broadcast (outtakes); the broadcast itself is b91856965e97.\n\nSOURCE (2026-11-04): DVD title via MakeMKV, 720x480 NTSC 4:3, interlaced; AC3 stereo 192 kbps and AC3 5.1. Stills 720x540.\n\nSAME TAPING (2026-11-04): b91856965e97 - its broadcast.\n\nREVIEW (2026-11-04, the R.E.M. records page): the owner's picks - this file is the show named (identity confirmed); the outtakes as a record of their own; shape 4:3, the owner's A/B (flagged as a 4:3, bar-free 2001 source)."
+    "PrivateNotes": "ADDED (2026-11-04): a downloaded file (a MakeMKV title), catalogued while it sat in ~/Downloads, before it went onto Live Music. FolderPath is where it is expected (the drive root, under its MakeMKV name); ShowID = sha1 of that path [:12] and stays if the file is renamed or lands elsewhere; ChecksumSHA1 = sha1 of the file itself. Specs read from the file: ffprobe, video bitrate = the video packets over the running time, scan type by idet.\n\nIDENTITY (2026-11-04): matched to the owner's own tracklist for these discs (pasted into the session), list 'DVD1: OUTTAKES 2001'. Evidence from the file: 7 chapters, one per song; the 2001 Unplugged set and clothes. Taped 2001-05-21 at MTV's TRL studio, MTV Studios, Times Square, New York (Wikipedia's Complete Sessions and REMTV pages, jambase, setlist.fm, thetvdb). First air date unsettled: setlist.fm says 2001-07-19; silentuproar (2001-07-17) and TMDB say MTV2 from 2001-08-09. The owner's list matches REMTV's; setlist.fm's 25-song taping list holds every one of its songs.\n\nSETLIST (2026-11-04): the owner's tracklist for 'DVD1: OUTTAKES 2001', in house format; one chapter per song. The songs of this taping that were not broadcast (outtakes); the broadcast itself is b91856965e97.\n\nSOURCE (2026-11-04): DVD title via MakeMKV, 720x480 NTSC 4:3, interlaced; AC3 stereo 192 kbps and AC3 5.1. Stills 720x540.\n\nSAME TAPING (2026-11-04): b91856965e97 - its broadcast.\n\nREVIEW (2026-11-04, the R.E.M. records page): the owner's picks - this file is the show named (identity confirmed); the outtakes as a record of their own; shape 4:3, the owner's A/B (flagged as a 4:3, bar-free 2001 source).\n\nRENAMED (2026-11-05): the owner asked for the download to be renamed from its MakeMKV name 'E1_t03.mkv' to 'R.E.M. - 2001-05-21 MTV Unplugged (Outtakes).mkv' (in ~/Downloads, before the move; matched by exact size). FolderName, FolderPath and RepVideoFiles follow; ShowID unchanged (derived from the old path)."
   },
   {
     "ShowID": "ca2c3ff7c55b",
@@ -64722,12 +64722,12 @@
     "Generation": "",
     "Lineage": "",
     "SourceEquipment": "",
-    "FolderName": "C1_t00.mkv",
-    "FolderPath": "/Volumes/Live Music/C1_t00.mkv",
+    "FolderName": "R.E.M. - 1998-10-23 VH1 Storytellers, Manhattan Center, New York.mkv",
+    "FolderPath": "/Volumes/Live Music/R.E.M. - 1998-10-23 VH1 Storytellers, Manhattan Center, New York.mkv",
     "MasterDriveName": "Live Music",
     "MasterDriveID": "",
     "RepVideoCount": "1",
-    "RepVideoFiles": "C1_t00.mkv",
+    "RepVideoFiles": "R.E.M. - 1998-10-23 VH1 Storytellers, Manhattan Center, New York.mkv",
     "Container": ".mkv",
     "VideoCodec": "mpeg2video",
     "Width": "720",
@@ -64759,7 +64759,7 @@
     "ShowSizeHuman": "2.02 GB",
     "Broadcaster": "VH1",
     "AddedOn": "2026-11-04",
-    "PrivateNotes": "ADDED (2026-11-04): a downloaded file (a MakeMKV title), catalogued while it sat in ~/Downloads, before it went onto Live Music. FolderPath is where it is expected (the drive root, under its MakeMKV name); ShowID = sha1 of that path [:12] and stays if the file is renamed or lands elsewhere; ChecksumSHA1 = sha1 of the file itself. Specs read from the file: ffprobe, video bitrate = the video packets over the running time, scan type by idet.\n\nIDENTITY (2026-11-04): matched to the owner's own tracklist for these discs (pasted into the session), list 'DVD2: VH1 STORYTELLERS (10/23/98)'. Evidence from the file: 9 chapters, one per song (with the stories between); Stipe holds an acoustic guitar in chapter 7 (I'm Not Over You, his solo song); the Storytellers set of hanging lights. Taped 1998-10-23 in the Grand Ballroom at Manhattan Center, New York (setlist.fm, the 'albums that should exist' blog; the date also in Wikipedia's REMTV and VH1 Storytellers pages and MTV News 1998-10-22); aired 1998-12-06 (Rotten Tomatoes; MTV News: 'early December'). The owner's list matches REMTV's; setlist.fm's 19-song taping list holds every one of its songs.\n\nSETLIST (2026-11-04): the owner's tracklist for 'DVD2: VH1 STORYTELLERS (10/23/98)', in house format; one chapter per song.\n\nSOURCE (2026-11-04): DVD title via MakeMKV, 720x480 NTSC 4:3, interlaced; AC3 stereo 192 kbps. Stills 720x540.\n\nSAME TAPING (2026-11-04): 25bc8b9982c8 - this taping's unbroadcast songs.\n\nREVIEW (2026-11-04, the R.E.M. records page): the owner's picks - this file is the show named (identity confirmed)."
+    "PrivateNotes": "ADDED (2026-11-04): a downloaded file (a MakeMKV title), catalogued while it sat in ~/Downloads, before it went onto Live Music. FolderPath is where it is expected (the drive root, under its MakeMKV name); ShowID = sha1 of that path [:12] and stays if the file is renamed or lands elsewhere; ChecksumSHA1 = sha1 of the file itself. Specs read from the file: ffprobe, video bitrate = the video packets over the running time, scan type by idet.\n\nIDENTITY (2026-11-04): matched to the owner's own tracklist for these discs (pasted into the session), list 'DVD2: VH1 STORYTELLERS (10/23/98)'. Evidence from the file: 9 chapters, one per song (with the stories between); Stipe holds an acoustic guitar in chapter 7 (I'm Not Over You, his solo song); the Storytellers set of hanging lights. Taped 1998-10-23 in the Grand Ballroom at Manhattan Center, New York (setlist.fm, the 'albums that should exist' blog; the date also in Wikipedia's REMTV and VH1 Storytellers pages and MTV News 1998-10-22); aired 1998-12-06 (Rotten Tomatoes; MTV News: 'early December'). The owner's list matches REMTV's; setlist.fm's 19-song taping list holds every one of its songs.\n\nSETLIST (2026-11-04): the owner's tracklist for 'DVD2: VH1 STORYTELLERS (10/23/98)', in house format; one chapter per song.\n\nSOURCE (2026-11-04): DVD title via MakeMKV, 720x480 NTSC 4:3, interlaced; AC3 stereo 192 kbps. Stills 720x540.\n\nSAME TAPING (2026-11-04): 25bc8b9982c8 - this taping's unbroadcast songs.\n\nREVIEW (2026-11-04, the R.E.M. records page): the owner's picks - this file is the show named (identity confirmed).\n\nRENAMED (2026-11-05): the owner asked for the download to be renamed from its MakeMKV name 'C1_t00.mkv' to 'R.E.M. - 1998-10-23 VH1 Storytellers, Manhattan Center, New York.mkv' (in ~/Downloads, before the move; matched by exact size). FolderName, FolderPath and RepVideoFiles follow; ShowID unchanged (derived from the old path)."
   },
   {
     "ShowID": "25bc8b9982c8",
@@ -64773,12 +64773,12 @@
     "Generation": "",
     "Lineage": "",
     "SourceEquipment": "",
-    "FolderName": "D1_t01.mkv",
-    "FolderPath": "/Volumes/Live Music/D1_t01.mkv",
+    "FolderName": "R.E.M. - 1998-10-23 VH1 Storytellers (Outtakes).mkv",
+    "FolderPath": "/Volumes/Live Music/R.E.M. - 1998-10-23 VH1 Storytellers (Outtakes).mkv",
     "MasterDriveName": "Live Music",
     "MasterDriveID": "",
     "RepVideoCount": "1",
-    "RepVideoFiles": "D1_t01.mkv",
+    "RepVideoFiles": "R.E.M. - 1998-10-23 VH1 Storytellers (Outtakes).mkv",
     "Container": ".mkv",
     "VideoCodec": "mpeg2video",
     "Width": "720",
@@ -64810,7 +64810,7 @@
     "ShowSizeHuman": "1.92 GB",
     "Broadcaster": "VH1",
     "AddedOn": "2026-11-04",
-    "PrivateNotes": "ADDED (2026-11-04): a downloaded file (a MakeMKV title), catalogued while it sat in ~/Downloads, before it went onto Live Music. FolderPath is where it is expected (the drive root, under its MakeMKV name); ShowID = sha1 of that path [:12] and stays if the file is renamed or lands elsewhere; ChecksumSHA1 = sha1 of the file itself. Specs read from the file: ffprobe, video bitrate = the video packets over the running time, scan type by idet.\n\nIDENTITY (2026-11-04): matched to the owner's own tracklist for these discs (pasted into the session), list 'DVD2: STORYTELLERS - OUTTAKES'. Evidence from the file: 6 chapters, one per song; Mike Mills sings chapter 3 ((Don't Go Back to) Rockville, his lead); the same set of hanging lights as the Storytellers broadcast. Taped 1998-10-23 in the Grand Ballroom at Manhattan Center, New York (setlist.fm, the 'albums that should exist' blog; the date also in Wikipedia's REMTV and VH1 Storytellers pages and MTV News 1998-10-22); aired 1998-12-06 (Rotten Tomatoes; MTV News: 'early December'). The owner's list matches REMTV's; setlist.fm's 19-song taping list holds every one of its songs.\n\nSETLIST (2026-11-04): the owner's tracklist for 'DVD2: STORYTELLERS - OUTTAKES', in house format; one chapter per song. The songs of this taping that were not broadcast (outtakes); the broadcast itself is ca2c3ff7c55b.\n\nSOURCE (2026-11-04): DVD title via MakeMKV, 720x480 NTSC 4:3, interlaced; AC3 stereo 192 kbps. Mixed: mostly progressive, its interlaced stretches top field first though every frame is flagged bottom-first; stills deinterlaced with bwdif parity=tff (comb ratio 0.85-1.04 against 1.12-1.25 undeinterlaced). Stills 720x540.\n\nSAME TAPING (2026-11-04): ca2c3ff7c55b - its broadcast.\n\nREVIEW (2026-11-04, the R.E.M. records page): the owner's picks - this file is the show named (identity confirmed); the outtakes as a record of their own."
+    "PrivateNotes": "ADDED (2026-11-04): a downloaded file (a MakeMKV title), catalogued while it sat in ~/Downloads, before it went onto Live Music. FolderPath is where it is expected (the drive root, under its MakeMKV name); ShowID = sha1 of that path [:12] and stays if the file is renamed or lands elsewhere; ChecksumSHA1 = sha1 of the file itself. Specs read from the file: ffprobe, video bitrate = the video packets over the running time, scan type by idet.\n\nIDENTITY (2026-11-04): matched to the owner's own tracklist for these discs (pasted into the session), list 'DVD2: STORYTELLERS - OUTTAKES'. Evidence from the file: 6 chapters, one per song; Mike Mills sings chapter 3 ((Don't Go Back to) Rockville, his lead); the same set of hanging lights as the Storytellers broadcast. Taped 1998-10-23 in the Grand Ballroom at Manhattan Center, New York (setlist.fm, the 'albums that should exist' blog; the date also in Wikipedia's REMTV and VH1 Storytellers pages and MTV News 1998-10-22); aired 1998-12-06 (Rotten Tomatoes; MTV News: 'early December'). The owner's list matches REMTV's; setlist.fm's 19-song taping list holds every one of its songs.\n\nSETLIST (2026-11-04): the owner's tracklist for 'DVD2: STORYTELLERS - OUTTAKES', in house format; one chapter per song. The songs of this taping that were not broadcast (outtakes); the broadcast itself is ca2c3ff7c55b.\n\nSOURCE (2026-11-04): DVD title via MakeMKV, 720x480 NTSC 4:3, interlaced; AC3 stereo 192 kbps. Mixed: mostly progressive, its interlaced stretches top field first though every frame is flagged bottom-first; stills deinterlaced with bwdif parity=tff (comb ratio 0.85-1.04 against 1.12-1.25 undeinterlaced). Stills 720x540.\n\nSAME TAPING (2026-11-04): ca2c3ff7c55b - its broadcast.\n\nREVIEW (2026-11-04, the R.E.M. records page): the owner's picks - this file is the show named (identity confirmed); the outtakes as a record of their own.\n\nRENAMED (2026-11-05): the owner asked for the download to be renamed from its MakeMKV name 'D1_t01.mkv' to 'R.E.M. - 1998-10-23 VH1 Storytellers (Outtakes).mkv' (in ~/Downloads, before the move; matched by exact size). FolderName, FolderPath and RepVideoFiles follow; ShowID unchanged (derived from the old path)."
   },
   {
     "ShowID": "732eb6beec8d",
@@ -64824,12 +64824,12 @@
     "Generation": "",
     "Lineage": "",
     "SourceEquipment": "",
-    "FolderName": "C1_t01 (1).mkv",
-    "FolderPath": "/Volumes/Live Music/C1_t01 (1).mkv",
+    "FolderName": "R.E.M. - 1998-10-21 MTV Uplink, Bowery Ballroom, New York.mkv",
+    "FolderPath": "/Volumes/Live Music/R.E.M. - 1998-10-21 MTV Uplink, Bowery Ballroom, New York.mkv",
     "MasterDriveName": "Live Music",
     "MasterDriveID": "",
     "RepVideoCount": "1",
-    "RepVideoFiles": "C1_t01 (1).mkv",
+    "RepVideoFiles": "R.E.M. - 1998-10-21 MTV Uplink, Bowery Ballroom, New York.mkv",
     "Container": ".mkv",
     "VideoCodec": "mpeg2video",
     "Width": "720",
@@ -64861,7 +64861,7 @@
     "ShowSizeHuman": "2.02 GB",
     "Broadcaster": "MTV",
     "AddedOn": "2026-11-04",
-    "PrivateNotes": "ADDED (2026-11-04): a downloaded file (a MakeMKV title), catalogued while it sat in ~/Downloads, before it went onto Live Music. FolderPath is where it is expected (the drive root, under its MakeMKV name); ShowID = sha1 of that path [:12] and stays if the file is renamed or lands elsewhere; ChecksumSHA1 = sha1 of the file itself. Specs read from the file: ffprobe, video bitrate = the video packets over the running time, scan type by idet.\n\nIDENTITY (2026-11-04): matched to the owner's own tracklist for these discs (pasted into the session), list 'DVD3: R.E.M. UPLINK AT BOWERY BALLROOM (10/28/98)'. Evidence from the file: 9 chapters, one per song; captions 'bowery ballroom, n.y.c.' (0:00) and title cards 'mtv presents: r.e.m. uplink' (9:39, 19:58, 38:43); a mandolin in chapter 1 (Losing My Religion). 'R.E.M. Uplink', a one-hour MTV special, also offered to radio stations as a simulcast (MTV News, Gil Kaufman, 1998-10-22). Taped Wednesday 1998-10-21 at the Bowery Ballroom, New York, before about 500 fan-club members and contest winners (MTV News: 'on Wednesday night'; setlist.fm 1998-10-21, 'MTV Presents: R.E.M. Uplink'; Wikipedia's Lotus page: 'MTV Uplink'); aired on MTV 1998-10-28 (REMTV, remhq, slicingupeyeballs) - the date in the owner's notes. The owner's list matches REMTV's; setlist.fm's 20-song taping list holds every one of its songs.\n\nSETLIST (2026-11-04): the owner's tracklist for 'DVD3: R.E.M. UPLINK AT BOWERY BALLROOM (10/28/98)', in house format; one chapter per song.\n\nSOURCE (2026-11-04): DVD title via MakeMKV, 720x480 NTSC 4:3, progressive picture in a stream flagged interlaced (idet: progressive at 200/600/1500/2200 s), so not deinterlaced; AC3 stereo 192 kbps. Stills 720x540.\n\nREVIEW (2026-11-04, the R.E.M. records page): the owner's picks - this file is the show named (identity confirmed); dated 1998-10-21, the taping (the owner's notes gave 10/28/98, the MTV air date)."
+    "PrivateNotes": "ADDED (2026-11-04): a downloaded file (a MakeMKV title), catalogued while it sat in ~/Downloads, before it went onto Live Music. FolderPath is where it is expected (the drive root, under its MakeMKV name); ShowID = sha1 of that path [:12] and stays if the file is renamed or lands elsewhere; ChecksumSHA1 = sha1 of the file itself. Specs read from the file: ffprobe, video bitrate = the video packets over the running time, scan type by idet.\n\nIDENTITY (2026-11-04): matched to the owner's own tracklist for these discs (pasted into the session), list 'DVD3: R.E.M. UPLINK AT BOWERY BALLROOM (10/28/98)'. Evidence from the file: 9 chapters, one per song; captions 'bowery ballroom, n.y.c.' (0:00) and title cards 'mtv presents: r.e.m. uplink' (9:39, 19:58, 38:43); a mandolin in chapter 1 (Losing My Religion). 'R.E.M. Uplink', a one-hour MTV special, also offered to radio stations as a simulcast (MTV News, Gil Kaufman, 1998-10-22). Taped Wednesday 1998-10-21 at the Bowery Ballroom, New York, before about 500 fan-club members and contest winners (MTV News: 'on Wednesday night'; setlist.fm 1998-10-21, 'MTV Presents: R.E.M. Uplink'; Wikipedia's Lotus page: 'MTV Uplink'); aired on MTV 1998-10-28 (REMTV, remhq, slicingupeyeballs) - the date in the owner's notes. The owner's list matches REMTV's; setlist.fm's 20-song taping list holds every one of its songs.\n\nSETLIST (2026-11-04): the owner's tracklist for 'DVD3: R.E.M. UPLINK AT BOWERY BALLROOM (10/28/98)', in house format; one chapter per song.\n\nSOURCE (2026-11-04): DVD title via MakeMKV, 720x480 NTSC 4:3, progressive picture in a stream flagged interlaced (idet: progressive at 200/600/1500/2200 s), so not deinterlaced; AC3 stereo 192 kbps. Stills 720x540.\n\nREVIEW (2026-11-04, the R.E.M. records page): the owner's picks - this file is the show named (identity confirmed); dated 1998-10-21, the taping (the owner's notes gave 10/28/98, the MTV air date).\n\nRENAMED (2026-11-05): the owner asked for the download to be renamed from its MakeMKV name 'C1_t01 (1).mkv' to 'R.E.M. - 1998-10-21 MTV Uplink, Bowery Ballroom, New York.mkv' (in ~/Downloads, before the move; matched by exact size). FolderName, FolderPath and RepVideoFiles follow; ShowID unchanged (derived from the old path)."
   },
   {
     "ShowID": "f10c3c4c4d2e",
@@ -64875,12 +64875,12 @@
     "Generation": "",
     "Lineage": "",
     "SourceEquipment": "",
-    "FolderName": "D1_t02 (1).mkv",
-    "FolderPath": "/Volumes/Live Music/D1_t02 (1).mkv",
+    "FolderName": "R.E.M. - 2001-05-12 Live in Cologne, Roncalliplatz.mkv",
+    "FolderPath": "/Volumes/Live Music/R.E.M. - 2001-05-12 Live in Cologne, Roncalliplatz.mkv",
     "MasterDriveName": "Live Music",
     "MasterDriveID": "",
     "RepVideoCount": "1",
-    "RepVideoFiles": "D1_t02 (1).mkv",
+    "RepVideoFiles": "R.E.M. - 2001-05-12 Live in Cologne, Roncalliplatz.mkv",
     "Container": ".mkv",
     "VideoCodec": "mpeg2video",
     "Width": "720",
@@ -64912,7 +64912,7 @@
     "ShowSizeHuman": "2.03 GB",
     "Broadcaster": "MTV Europe",
     "AddedOn": "2026-11-04",
-    "PrivateNotes": "ADDED (2026-11-04): a downloaded file (a MakeMKV title), catalogued while it sat in ~/Downloads, before it went onto Live Music. FolderPath is where it is expected (the drive root, under its MakeMKV name); ShowID = sha1 of that path [:12] and stays if the file is renamed or lands elsewhere; ChecksumSHA1 = sha1 of the file itself. Specs read from the file: ffprobe, video bitrate = the video packets over the running time, scan type by idet.\n\nIDENTITY (2026-11-04): matched to the owner's own tracklist for these discs (pasted into the session), list 'DVD3: LIVE IN COLOGNE (05/12/01)'. Evidence from the file: 9 chapters, one per song; an open-air show in a square of old buildings; Stipe in a polka-dot shirt (2001). A free open-air show on the Reveal promo tour, 2001-05-12, Roncalliplatz beside Cologne Cathedral (setlist.fm, 62 attended; lunakafe's review; remhq; MTV News 2001-05-14), broadcast live on MTV Europe (remhq; medialoper). No festival or named event. setlist.fm's full show is 19 songs, opening with The Great Beyond; the owner's lists (REMTV's) hold 17 of them.\n\nSETLIST (2026-11-04): the owner's tracklist for 'DVD3: LIVE IN COLOGNE (05/12/01)', in house format; one chapter per song.\n\nSOURCE (2026-11-04): DVD title via MakeMKV, 720x480 NTSC 4:3, interlaced; AC3 stereo 192 kbps. Stills 720x540.\n\nSAME TAPING (2026-11-04): 55335d5e8c94 - this taping's unbroadcast songs.\n\nREVIEW (2026-11-04, the R.E.M. records page): the owner's picks - this file is the show named (identity confirmed); shape 4:3, the owner's A/B (flagged as a 4:3, bar-free 2001 source)."
+    "PrivateNotes": "ADDED (2026-11-04): a downloaded file (a MakeMKV title), catalogued while it sat in ~/Downloads, before it went onto Live Music. FolderPath is where it is expected (the drive root, under its MakeMKV name); ShowID = sha1 of that path [:12] and stays if the file is renamed or lands elsewhere; ChecksumSHA1 = sha1 of the file itself. Specs read from the file: ffprobe, video bitrate = the video packets over the running time, scan type by idet.\n\nIDENTITY (2026-11-04): matched to the owner's own tracklist for these discs (pasted into the session), list 'DVD3: LIVE IN COLOGNE (05/12/01)'. Evidence from the file: 9 chapters, one per song; an open-air show in a square of old buildings; Stipe in a polka-dot shirt (2001). A free open-air show on the Reveal promo tour, 2001-05-12, Roncalliplatz beside Cologne Cathedral (setlist.fm, 62 attended; lunakafe's review; remhq; MTV News 2001-05-14), broadcast live on MTV Europe (remhq; medialoper). No festival or named event. setlist.fm's full show is 19 songs, opening with The Great Beyond; the owner's lists (REMTV's) hold 17 of them.\n\nSETLIST (2026-11-04): the owner's tracklist for 'DVD3: LIVE IN COLOGNE (05/12/01)', in house format; one chapter per song.\n\nSOURCE (2026-11-04): DVD title via MakeMKV, 720x480 NTSC 4:3, interlaced; AC3 stereo 192 kbps. Stills 720x540.\n\nSAME TAPING (2026-11-04): 55335d5e8c94 - this taping's unbroadcast songs.\n\nREVIEW (2026-11-04, the R.E.M. records page): the owner's picks - this file is the show named (identity confirmed); shape 4:3, the owner's A/B (flagged as a 4:3, bar-free 2001 source).\n\nRENAMED (2026-11-05): the owner asked for the download to be renamed from its MakeMKV name 'D1_t02 (1).mkv' to 'R.E.M. - 2001-05-12 Live in Cologne, Roncalliplatz.mkv' (in ~/Downloads, before the move; matched by exact size). FolderName, FolderPath and RepVideoFiles follow; ShowID unchanged (derived from the old path)."
   },
   {
     "ShowID": "55335d5e8c94",
@@ -64926,12 +64926,12 @@
     "Generation": "",
     "Lineage": "",
     "SourceEquipment": "",
-    "FolderName": "E1_t03 (1).mkv",
-    "FolderPath": "/Volumes/Live Music/E1_t03 (1).mkv",
+    "FolderName": "R.E.M. - 2001-05-12 Live in Cologne (Outtakes).mkv",
+    "FolderPath": "/Volumes/Live Music/R.E.M. - 2001-05-12 Live in Cologne (Outtakes).mkv",
     "MasterDriveName": "Live Music",
     "MasterDriveID": "",
     "RepVideoCount": "1",
-    "RepVideoFiles": "E1_t03 (1).mkv",
+    "RepVideoFiles": "R.E.M. - 2001-05-12 Live in Cologne (Outtakes).mkv",
     "Container": ".mkv",
     "VideoCodec": "mpeg2video",
     "Width": "720",
@@ -64963,7 +64963,7 @@
     "ShowSizeHuman": "1.56 GB",
     "Broadcaster": "MTV Europe",
     "AddedOn": "2026-11-04",
-    "PrivateNotes": "ADDED (2026-11-04): a downloaded file (a MakeMKV title), catalogued while it sat in ~/Downloads, before it went onto Live Music. FolderPath is where it is expected (the drive root, under its MakeMKV name); ShowID = sha1 of that path [:12] and stays if the file is renamed or lands elsewhere; ChecksumSHA1 = sha1 of the file itself. Specs read from the file: ffprobe, video bitrate = the video packets over the running time, scan type by idet.\n\nIDENTITY (2026-11-04): matched to the owner's own tracklist for these discs (pasted into the session), list 'DVD3: LIVE IN COLOGNE OUTTAKES'. Evidence from the file: 8 chapters, one per song; the same square, with Cologne Cathedral over the crowd at 25:46. A free open-air show on the Reveal promo tour, 2001-05-12, Roncalliplatz beside Cologne Cathedral (setlist.fm, 62 attended; lunakafe's review; remhq; MTV News 2001-05-14), broadcast live on MTV Europe (remhq; medialoper). No festival or named event. setlist.fm's full show is 19 songs, opening with The Great Beyond; the owner's lists (REMTV's) hold 17 of them.\n\nSETLIST (2026-11-04): the owner's tracklist for 'DVD3: LIVE IN COLOGNE OUTTAKES', in house format; one chapter per song. The songs of this taping that were not broadcast (outtakes); the broadcast itself is f10c3c4c4d2e.\n\nSOURCE (2026-11-04): DVD title via MakeMKV, 720x480 NTSC 4:3, interlaced; AC3 stereo 192 kbps. Stills 720x540.\n\nSAME TAPING (2026-11-04): f10c3c4c4d2e - its broadcast.\n\nREVIEW (2026-11-04, the R.E.M. records page): the owner's picks - this file is the show named (identity confirmed); the outtakes as a record of their own; shape 4:3, the owner's A/B (flagged as a 4:3, bar-free 2001 source)."
+    "PrivateNotes": "ADDED (2026-11-04): a downloaded file (a MakeMKV title), catalogued while it sat in ~/Downloads, before it went onto Live Music. FolderPath is where it is expected (the drive root, under its MakeMKV name); ShowID = sha1 of that path [:12] and stays if the file is renamed or lands elsewhere; ChecksumSHA1 = sha1 of the file itself. Specs read from the file: ffprobe, video bitrate = the video packets over the running time, scan type by idet.\n\nIDENTITY (2026-11-04): matched to the owner's own tracklist for these discs (pasted into the session), list 'DVD3: LIVE IN COLOGNE OUTTAKES'. Evidence from the file: 8 chapters, one per song; the same square, with Cologne Cathedral over the crowd at 25:46. A free open-air show on the Reveal promo tour, 2001-05-12, Roncalliplatz beside Cologne Cathedral (setlist.fm, 62 attended; lunakafe's review; remhq; MTV News 2001-05-14), broadcast live on MTV Europe (remhq; medialoper). No festival or named event. setlist.fm's full show is 19 songs, opening with The Great Beyond; the owner's lists (REMTV's) hold 17 of them.\n\nSETLIST (2026-11-04): the owner's tracklist for 'DVD3: LIVE IN COLOGNE OUTTAKES', in house format; one chapter per song. The songs of this taping that were not broadcast (outtakes); the broadcast itself is f10c3c4c4d2e.\n\nSOURCE (2026-11-04): DVD title via MakeMKV, 720x480 NTSC 4:3, interlaced; AC3 stereo 192 kbps. Stills 720x540.\n\nSAME TAPING (2026-11-04): f10c3c4c4d2e - its broadcast.\n\nREVIEW (2026-11-04, the R.E.M. records page): the owner's picks - this file is the show named (identity confirmed); the outtakes as a record of their own; shape 4:3, the owner's A/B (flagged as a 4:3, bar-free 2001 source).\n\nRENAMED (2026-11-05): the owner asked for the download to be renamed from its MakeMKV name 'E1_t03 (1).mkv' to 'R.E.M. - 2001-05-12 Live in Cologne (Outtakes).mkv' (in ~/Downloads, before the move; matched by exact size). FolderName, FolderPath and RepVideoFiles follow; ShowID unchanged (derived from the old path)."
   },
   {
     "ShowID": "7c973b66645a",
