@@ -64,7 +64,7 @@ encode encoded re-encode transfer transferred capture captured unknown unknwon ?
 panasonic sony philips phillips jvc akai topfield technisat skystar tevii hauppauge pinnacle canopus blackmagic datavideo dazzle conceptronic
 zinwell motorola terk myhd vbox avermedia gigaset envision fortec dreambox vu+ humax pace nokia samsung lg toshiba pioneer magnavox funai
 thomson liteon lite-on sky sky+ sky+box directv dishnetwork dish tt grundig loewe sharp hitachi aiwa matsui bush daewoo
-bbc bbc1 bbc2 bbc3 bbc4 bbchd itv channel4 c4 mtv mtv2 vh1 vh2 viva channel v wdr ndr swr br zdf ard arte 3sat eins einsfestival einsplus
+bbc bbc1 bbc2 bbc3 bbc4 bbchd itv channel4 c4 mtv mtv2 vh1 vh2 viva channel v jbtv wdr ndr swr br zdf ard arte 3sat eins einsfestival einsplus
 rockpalast orf sf rai tve etb yle nrk svt dr vpro nos nps brt vrt rtl canal+ canal multishow globo kqed nbc abc cbs fox pbs palladia fuse
 axs much muchmusic musiqueplus wowow nhk cultura teema kultura tvp sic radical europe2tv mcm uverse
 seller bootleg trade trader trading torrent net internet online download downloaded official release
