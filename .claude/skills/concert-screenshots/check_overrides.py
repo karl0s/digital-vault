@@ -8,7 +8,7 @@ broken, because the tool rendered correctly the whole time. The discipline of
 writing the correction back was documented but not enforced, so this enforces it.
 
   dar override   -> the record's PICTURE ratio must equal the forced ratio
-  crop override  -> the record must use the two-part boxed form,
+  crop override  -> the record must use the two-part boxed form (or, with crop_dar, carry that ratio),
                     "<frame> (letterboxed|pillarboxed <picture>)", and the picture
                     ratio must match the crop's actual shape
 
@@ -129,7 +129,15 @@ def main():
                 bad.append((frag, "override forces DAR %s but record says %r"
                             % (ov["dar"], rar), rec.get("ShowID", "?")))
 
-        if "crop" in ov:
+        if "crop" in ov and "crop_dar" in ov:
+            # The crop removes bars an upscale added around a squeezed picture, and
+            # crop_dar gives that picture's true shape (shots.apply_override): the SAR
+            # derivation below does not apply, and the record carries the picture's
+            # ratio - the stills fill the frame (RHCP Reading 1999, 2026-11-07).
+            want, got = ratio(str(ov["crop_dar"])), ratio(rar)
+            if want and (got is None or abs(got - want) / want > TOL):
+                bad.append((frag, "crop_dar %s but record says %r" % (ov["crop_dar"], rar), rec.get("ShowID", "?")))
+        elif "crop" in ov:
             if not is_boxed(rar):
                 bad.append((frag, "crop override but record %r is not the two-part "
                             "boxed form" % rar, rec.get("ShowID", "?")))

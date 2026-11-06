@@ -321,6 +321,15 @@ part of the recording, and on a disc that mixes shapes a crop cuts the full-fram
   wrong (Limp Bizkit, Field lessons); fixing a flag with a `dar` override is not a crop (§4.4).
 - **Legacy:** the eight `crop` rules in `data/overrides.json` predate the rule — leave them, add
   none. If one is recaptured, its target comes from the cropped pixels and the SAR.
+- **The one exception: bars an UPSCALE added around a squeezed picture** (RHCP Reading 1999,
+  `f0f9c8a267d2`, 2026-11-07): a 2048x1080 file held the 4:3-framed tape picture between black side
+  bars, and the owner's A/B made the tapes 16:9. Those bars hold nothing from the broadcast, and the
+  only way to the chosen shape is to remove them: `"crop"` plus `"crop_dar": "16:9"` (the picture's
+  own shape; the SAR would say 4:3). `check_overrides.py` then wants the record to carry that ratio.
+  The geometry audit calls its 1920x1080 stills "undersized" (it cannot see the crop) — expected.
+- **A shape the owner judges by eye goes to an A/B, even when the tools say otherwise.** The same
+  READING logo in two files only proves they agree when both came from different chains; there the
+  "16:9" file was the tapes pillarboxed, so it could not settle the tapes' own shape.
 
 **The two-part `AspectRatio` string (`4:3 (letterboxed 16:9)`) means the images ARE cropped** —
 tools read the second ratio as the picture and the geometry audit stops checking the show. It

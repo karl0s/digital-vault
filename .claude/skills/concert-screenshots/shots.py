@@ -525,6 +525,16 @@ def apply_override(it, t):
             t["computed_ar"] = t["dar"]
             t["target_w"], t["target_h"] = fit_no_downsample(cw, ch, t["dar"])
             t["override"] = (t.get("override","") + " crop %s (%s)" % (rule["crop"], rule.get("why",""))).strip()
+            # "crop_dar": the cropped picture's own shape, where the sample aspect lies about
+            # it - an HD upscale that pillarboxed a squeezed 16:9 tape inside a 16:9 frame
+            # (RHCP Reading 1999, owner's A/B 2026-11-07). The crop removes the bars the
+            # upscale added; this gives the picture its true shape, growing the short axis.
+            if "crop_dar" in rule:
+                dn, dd = ratio(rule["crop_dar"], (16, 9))
+                t["dar"] = t["computed_ar"] = dn / dd
+                t["target_w"], t["target_h"] = fit_no_downsample(cw, ch, dn / dd)
+                t["dar_overridden"] = True
+                t["override"] += " picture shape %s" % rule["crop_dar"]
         if "upscale_to" in rule:                # "WxH" - an owner-approved exception to never-upscale
             uw, uh = (int(v) for v in rule["upscale_to"].lower().split("x"))
             if abs(uw / uh - t["target_w"] / t["target_h"]) > 0.02:
