@@ -180,6 +180,9 @@ landing (owner, 2026-10-29: Featured only for now; how to bring it back is comme
 `FeaturedRows.tsx`). A card carries a badge for 30 days: **New** when the show wasn't held,
 and **New** too for a copy of a show already held (the card has no room for "New copy", owner
 2026-10-29); the drawer's Added line tells them apart, worked out from `copiesOf`, never stored.
+**AddedOn is the owner's New Zealand date**, up to 13 hours ahead of UTC: `addedWithin` counts -1 day as
+today, or a show added today would have no badge, and be missing from the New filter, until UTC reached
+that date (found 2026-11-07).
 **No label judges one copy against another**: "Better copy" was removed (owner, 2026-10-29). The drawer's Technical panel
 gives the date ("Added 2026-10-29 · new copy"), and the CSV an Added column.
 
@@ -209,8 +212,9 @@ traders decide by, in one popover after Event — **Source** (Pro-shot, Audience
 `RecordingType`; added 2026-10-17, once every record had one), **Quality** (HD 1080, HD 720, SD, Low-res, from
 `quality()`), **Standard** (PAL, NTSC; SD and low-res copies only, as the drawer: HD records have
 none), **Length** (under 10 min, 10–30, 30–60, 1–1½ hours, over 1½ hours) and **Setlist** (has one,
-none yet). Closed lists, defined once in `src/lib/specFilters.ts` (URL value, label, `specValue`);
-each is a facet like Country — URL keys `source`, `quality`, `standard`, `length`, `setlist` after
+none yet) and **Added** (New: exactly the shows whose card says New, the badge's own `BADGE_DAYS` window; owner
+2026-11-07). Closed lists, defined once in `src/lib/specFilters.ts` (URL value, label, `specValue`);
+each is a facet like Country — URL keys `source`, `quality`, `standard`, `length`, `setlist`, `added` after
 `festival`, values a link cannot invent dropped on parse, OR within a group and AND across, live
 counts, the same option rows (`FacetOptionButton`, shared with `FacetPopover`), chips, and named in
 the empty state. Options keep the file's order, never by count: they are scales. Two columns from

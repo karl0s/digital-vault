@@ -140,6 +140,8 @@ eq('a More filter counts as filtering', isFiltered(f({ setlist: ['yes'] })), tru
 eq('source sits after festival', serializeFilters(f({ quality: ['sd'], source: ['proshot'], festival: ['pinkpop'] })), '?festival=pinkpop&source=proshot&quality=sd');
 eq('a source a link cannot have is dropped', parseFilters('?source=soundboard,audience').source, ['audience']);
 eq('each value counts once', activeFilterCount(f({ quality: ['sd', 'low-res'], setlist: ['no'] })), 3);
+eq('New sits after setlist', serializeFilters(f({ added: ['new'], setlist: ['yes'] })), '?setlist=yes&added=new');
+eq('new is the only added value a link can have', parseFilters('?added=old,new').added, ['new']);
 
 console.log('\nList layout and the length sort (F10)');
 eq('grid is the default and never spelled out', serializeFilters(f({ layout: 'grid' })), '');

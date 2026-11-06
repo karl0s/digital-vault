@@ -29,6 +29,7 @@ export interface DerivedShow {
   standard: string;
   length: string;
   setlist: string;
+  added: string;
   artist: string;
   /** Sortable date key; '' for undated, which always sorts last. */
   dateKey: string;

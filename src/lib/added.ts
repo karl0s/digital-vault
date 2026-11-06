@@ -27,9 +27,15 @@ export function daysSinceAdded(show: Pick<Show, 'AddedOn'>, now = Date.now()): n
   return Math.floor((now - Date.parse(`${show.AddedOn}T00:00:00Z`)) / DAY);
 }
 
+/**
+ * Added within the last `days` days. AddedOn is the owner's own date (New
+ * Zealand, up to 13 hours ahead of UTC), so a record added today there reads -1
+ * day for the rest of the world until UTC reaches that date: -1 counts as today,
+ * or the newest additions would have no badge and fall out of the New filter.
+ */
 export const addedWithin = (show: Pick<Show, 'AddedOn'>, days: number, now = Date.now()): boolean => {
   const d = daysSinceAdded(show, now);
-  return d !== null && d >= 0 && d < days;
+  return d !== null && d >= -1 && d < days;
 };
 
 export type AddedKind = 'new' | 'new-copy';

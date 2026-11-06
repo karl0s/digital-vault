@@ -71,6 +71,7 @@ export interface FilterState {
   standard: string[];
   length: string[];
   setlist: string[];
+  added: string[];
   sort: SortKey;
   layout: Layout;
 }
@@ -87,6 +88,7 @@ export const EMPTY_FILTERS: FilterState = {
   standard: [],
   length: [],
   setlist: [],
+  added: [],
   sort: DEFAULT_SORT,
   layout: 'grid',
 };
@@ -96,12 +98,12 @@ export const EMPTY_FILTERS: FilterState = {
  * it is a range with its own controls, not a list of checkboxes. Country and
  * Event list the collection's own values; the rest are "More filters".
  */
-export const FACET_KEYS = ['country', 'festival', 'source', 'quality', 'standard', 'length', 'setlist'] as const;
+export const FACET_KEYS = ['country', 'festival', 'source', 'quality', 'standard', 'length', 'setlist', 'added'] as const;
 export type FacetKey = (typeof FACET_KEYS)[number];
 
 /** Rule 1. Emission order is fixed here and nowhere else. */
 const PARAM_ORDER = [
-  'q', 'from', 'to', 'undated', 'country', 'festival', 'source', 'quality', 'standard', 'length', 'setlist', 'sort', 'layout',
+  'q', 'from', 'to', 'undated', 'country', 'festival', 'source', 'quality', 'standard', 'length', 'setlist', 'added', 'sort', 'layout',
 ] as const;
 
 /** Rejects nonsense years from a hand-edited URL without pinning the data span. */
@@ -269,6 +271,7 @@ export function parseFilters(search: string): FilterState {
     standard: readSpec(params, 'standard'),
     length: readSpec(params, 'length'),
     setlist: readSpec(params, 'setlist'),
+    added: readSpec(params, 'added'),
     sort: rawSort && SORT_KEYS.includes(rawSort) ? rawSort : DEFAULT_SORT,
     layout: params.get('layout') === 'list' ? 'list' : 'grid',
   };

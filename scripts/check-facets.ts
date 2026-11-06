@@ -12,7 +12,7 @@ import { Show } from '../App';
 import { EMPTY_FILTERS, FACET_KEYS, FacetKey, FilterState, NONE } from '../src/lib/url';
 import { applyFilters, computeFacetCounts, computeYearHistogram, deriveAll, listedOptions, sortShows } from '../src/search/facets';
 import { indexCopies } from '../src/lib/copies';
-import { addedKind, addedWithin } from '../src/lib/added';
+import { addedKind, addedWithin, BADGE_DAYS } from '../src/lib/added';
 import { compilationParts, compilationSpan, dateCaveat, dateName, datePrecision, eventName, isoDate } from '../src/lib/specs';
 
 const shows: Show[] = JSON.parse(readFileSync('public/shows.json', 'utf8'));
@@ -226,6 +226,9 @@ console.log('\nMore filters match the data (F12), counted independently');
   const bands = ['under-10', '10-30', '30-60', '60-90', 'over-90']
     .reduce((n, v) => n + applyFilters(derived, f({ length: [v] }), null).length, 0);
   ok(`the length bands cover every show with a length (${bands})`, bands === shows.filter(s => minutes(s) > 0).length);
+  // Not in the list above: in a quiet spell nothing is new, and that must not fail the deploy.
+  const fresh = applyFilters(derived, f({ added: ['new'] }), null).length;
+  ok(`New finds exactly the shows the badge marks (${fresh})`, fresh === shows.filter(s => addedWithin(s, BADGE_DAYS)).length);
   ok('HD and PAL together find nothing: HD has no standard',
     applyFilters(derived, f({ quality: ['hd-1080', 'hd-720'], standard: ['pal', 'ntsc'] }), null).length === 0);
 }
@@ -248,6 +251,9 @@ console.log("\nWhat's new (F11): AddedOn, labels and the sort, on copies of real
   ok('inside 30 days it is recent', addedWithin(fresh, 30, now));
   ok('after 30 days it is not', !addedWithin(fresh, 30, Date.parse('2026-12-05T00:00:00Z')));
   ok('the collection at launch is never recent', !addedWithin(sd, 30, now));
+  ok('added today in New Zealand is new while UTC is still on the day before',
+    addedWithin(fresh, 30, Date.parse('2026-10-31T22:00:00Z')));
+  ok('but not two days early', !addedWithin(fresh, 30, Date.parse('2026-10-30T12:00:00Z')));
   const order = sortShows(all, 'added').map(s => s.ShowID);
   ok('recently added sorts the additions first', order.slice(0, 3).every(id => ['aaaaaaaaaa02', 'aaaaaaaaaa03', 'aaaaaaaaaa04'].includes(id)));
   indexCopies(shows);

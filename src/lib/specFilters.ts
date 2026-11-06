@@ -1,7 +1,7 @@
 /**
  * "More filters" (docs/ux-research F12, agreed 2026-10-16): the specs traders
  * decide by — how it was filmed, quality, PAL or NTSC, length, and whether a
- * setlist is known.
+ * setlist is known — and, since 2026-11-07, whether it is new.
  *
  * Closed lists, unlike Country and Event, so each option is defined here once:
  * its URL value, its label, and which shows have it. url.ts reads the values
@@ -12,6 +12,7 @@
  */
 
 import type { Show } from '../../App';
+import { BADGE_DAYS, addedWithin } from './added';
 import { quality } from './specs';
 
 export interface SpecOption {
@@ -70,6 +71,15 @@ export const SPEC_FACETS = {
       { value: 'no', label: 'No setlist yet' },
     ],
   },
+  // What's new (src/lib/added.ts; owner 2026-11-07): exactly the shows whose
+  // card says New - one window, BADGE_DAYS, for the badge and the filter.
+  added: {
+    label: 'Added',
+    hint: `in the last ${BADGE_DAYS} days`,
+    options: [
+      { value: 'new', label: 'New' },
+    ],
+  },
 } satisfies Record<string, SpecFacet>;
 
 export type SpecFacetKey = keyof typeof SPEC_FACETS;
@@ -99,6 +109,8 @@ export function specValue(show: Show, facet: SpecFacetKey): string {
     }
     case 'setlist':
       return show.Setlist?.trim() ? 'yes' : 'no';
+    case 'added':
+      return addedWithin(show, BADGE_DAYS) ? 'new' : '';
   }
 }
 
