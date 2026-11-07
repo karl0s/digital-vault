@@ -177,7 +177,7 @@ longest first**, or **recently added** (`AddedOn`, the collection at launch afte
 **What's new** (`src/lib/added.ts`, docs/ux-research F11; owner 2026-10-16, "start from today"):
 records added since carry `AddedOn` (CLAUDE.md → AddedOn). **No "Recently added" row** on the
 landing (owner, 2026-10-29: Featured only for now; how to bring it back is commented in
-`FeaturedRows.tsx`). A card carries a badge for 30 days: **New** when the show wasn't held,
+`FeaturedRows.tsx`). A card carries a badge for 90 days (`BADGE_DAYS`; 30 until 2026-11-07, owner): **New** when the show wasn't held,
 and **New** too for a copy of a show already held (the card has no room for "New copy", owner
 2026-10-29); the drawer's Added line tells them apart, worked out from `copiesOf`, never stored.
 **AddedOn is the owner's New Zealand date**, up to 13 hours ahead of UTC: `addedWithin` counts -1 day as
@@ -277,7 +277,7 @@ Traders are mostly 40–60 (docs/ux-research). The floor, everywhere:
 - One row across the top: badges left, the length right (`lengthName`: `1h 42m`, `24 min`, the one
   length format on the site); badges wrap under each other rather than run beneath the length. A
   badge only when the record is not a plain live show: **New**
-  (emerald) for 30 days after its `AddedOn` (`src/lib/added.ts`), Documentary (`ContentType`) or
+  (emerald) for 90 days after its `AddedOn` (`src/lib/added.ts`), Documentary (`ContentType`) or
   Excerpt (`ParentShowID`) — and, dark and quieter, **N copies** when the collection holds the show more
   than once (`copyCount` in `src/lib/copies.ts`, below), so look-alike cards say why. How it was
   filmed gets none: Pro-shot, Audience and HD badges were dropped (owner, 2026-10-15).

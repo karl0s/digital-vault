@@ -16,8 +16,11 @@ import { copiesOf } from './copies';
 
 /** How long a show stays in the "Recently added" row (hidden for now: FeaturedRows.tsx). */
 export const RECENT_DAYS = 60;
-/** How long its card carries the badge. */
-export const BADGE_DAYS = 30;
+/**
+ * How long a show is New - its card's badge and More filters' New (owner, 2026-11-07: 90 days, up
+ * from 30; the owner trades rarely now, so visitors come back months apart).
+ */
+export const BADGE_DAYS = 90;
 
 const DAY = 86_400_000;
 
