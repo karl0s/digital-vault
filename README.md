@@ -1,15 +1,17 @@
 # The Vault
 
-A browser for a private archive of live concert video: around twelve hundred recordings —
+A browser for a private archive of live concert video: nearly thirteen hundred recordings —
 festival sets, TV appearances, pro-shot and audience tapes, documentaries — each with its
 date, venue, setlist, technical details and up to four stills taken from the footage. Browse
-the whole collection, narrow it by year, country, event, quality, PAL/NTSC, length or setlist,
+the whole collection, narrow it by year, country, event, pro-shot or audience, quality, PAL/NTSC,
+length, setlist or what's new,
 search by artist, song, venue or date (any format; abbreviations like RATM and terms like "hd" or
 "pal" too) — results grouped into artists, shows and songs, with a "Did you mean" for a misspelt
 name — or work through the A–Z artist directory. Copies of one show are compared side by side
 (source and broadcaster, frame rate, bitrate, size);
 results switch to a dense list and download as a spreadsheet (CSV); every show has a link of its
-own that previews it when pasted; recent additions are marked. It is built for video traders
+own that previews it when pasted; recent additions are marked New, and copies not for trade NFT. It
+is built for video traders
 (`docs/ux-research/`). There is no backend: the site is static and all show data is one JSON file.
 
 **Live:** https://karl0s.github.io/digital-vault/

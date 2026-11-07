@@ -7,9 +7,9 @@ import { useFilterStore } from '../../src/store/filters';
 import { FacetOptionButton } from './FacetPopover';
 
 /**
- * "More filters" (docs/ux-research F12, agreed 2026-10-16): quality, PAL or
- * NTSC, length and setlist in one popover beside Event, so the bar keeps three
- * controls. Each group is a facet like Country — OR within a group, AND across
+ * "More filters" (docs/ux-research F12, agreed 2026-10-16): source, quality,
+ * PAL or NTSC, length, setlist and — since 2026-11-07 — New, in one popover
+ * beside Event, so the bar keeps three controls. Each group is a facet like Country — OR within a group, AND across
  * — with the same live counts and the same option rows. Options come in the
  * order src/lib/specFilters.ts gives, never by count: these are scales.
  */

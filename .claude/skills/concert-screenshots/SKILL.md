@@ -263,6 +263,7 @@ is at the largest size its source honestly supports; forcing one size would upsc
 | 720×576 / 704×576 / 480×576 | PAL | 4:3 | **768×576** |
 | 720×480 | NTSC | 4:3 | **720×540** |
 | 704×480 | NTSC | 4:3 | **704×528** |
+| 706×480 (a HandBrake crop of 720, SAR 8:9) | NTSC | 4:3 | **706×530** — a `dar` 4:3 override (ITU's 704-column active width; RATM Aragon 1996) |
 | 352×480 | NTSC | 4:3 | **640×480** |
 | 720×576 / 704×576 | PAL | 16:9 | **1024×576** |
 | 720×480 | NTSC | 16:9 | **854×480** |
@@ -270,7 +271,7 @@ is at the largest size its source honestly supports; forcing one size would upsc
 | 1920×1080 / 1440×1080 anamorphic (SAR 4:3) | either | 16:9 | **1920×1080** |
 | 1440×1080 square pixels (SAR 1:1) | — | 4:3 | **1440×1080** |
 
-Nine sizes in all. **All slots of one show share one size** (§8 gate 7). Half-D1 sources
+Nine standard sizes, plus the HandBrake-crop case. **All slots of one show share one size** (§8 gate 7). Half-D1 sources
 legitimately stretch their width a lot (352 → 640): that axis is genuinely under-sampled. The
 square-pixel 1440×1080 is an **AI upscale of a 4:3 DVD** (Alice in Chains Unplugged, 2026-11-04: a
 Topaz Video AI tag in the file) — its own pixels, captured as they are; read the SAR before
@@ -1310,6 +1311,7 @@ Identifying what a download is:
   2025): window the record to the artist's set with `from`/`to`, name the other act and its times
   in `PrivateNotes`, and make no record of it — only when the owner says so; otherwise a multi-act
   recording goes through `va-masters` (§10).
+- **Before a trader's links expire, prove the drive copies** (2026-11-07): `python3 ~/VaultShots/verify_recent.py [--since D | --nft]` checks each record against Live Music - present (a file renamed in the move is found by exact size), the size, the full SHA1 against `ChecksumSHA1`, and frames actually decoded at five points including the last seconds. Then list the trader's Drive links from the Gmail thread and read each shared folder (`drive.google.com/embeddedfolderview?id=`, no sign-in) to find files never downloaded; a folder's own md5 list checks a disc file by file (the Pearl Jam Video Anthology: 105 of 107, VTS_01_1 absent from the trader's Drive itself).
 - **Notes sent before the file arrives** (the owner pastes a show's info text while it downloads)
   wait in `~/VaultShots/data/pending_downloads.md` with a draft record; read it whenever new files
   appear. Without an info file in the download, that text goes in `PrivateNotes`, not `Notes`, and
@@ -1593,6 +1595,7 @@ python3 plan_files.py --label L --files f.json    # loose files NOT on Live Musi
 python3 records_page.py spec.json [--open]        # the owner's records page for a batch: question rows, drafted
                                                   # records, evidence; refuses a broken spec (§13b; --example)
 python3 twin_match.py --src F --twins ID [ID ...] # is F a copy of a held show? finds each twin still in F (§13b)
+python3 verify_recent.py [--since D | --nft | --only ID]  # recent records vs Live Music: present, size, SHA1, frames decoded (§13b)
 python3 hero_options.py --showid ID --match reports/twins/<slug>/match.json --around "Label=HH:MM:SS" [--twin ID ...]
                                                   # one show's hero re-pick: frames around chosen moments (and each twin's hero
                                                   # moment) rendered as picks are, on reports/hero-<ID>.html for the owner.

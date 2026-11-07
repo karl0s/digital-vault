@@ -157,7 +157,7 @@ Flat JSON array of show objects. Key fields:
 | `FrameRate`, `ScanType`, `VideoKbps`, `AudioKbps`, `AudioTracks`, `DiscType`, `Menu`, `Chapters`, `ShowSizeHuman` | strings or absent | Read from the record's own files by the drive scan (`tools/drive-scan`, 2026-10-18; added, never overwriting). Bitrates are averages from size and length; `Chapters` only where the record is its titleset's whole programme; `ShowSizeHuman` only where the files are its own, in `TotalSizeHuman`'s units (binary, "GB"). Re-run: `scan.py` → `page.py` (review) → `apply.py` |
 | `AddedOn` | `YYYY-MM-DD` or absent | When the recording joined the site; drives the New badge and the "Recently added" sort. **Set on every new record** — see *AddedOn* below |
 | `Title` | string or absent | The name of a record that is not one show — a compilation or a film — as it is titled ("Pro Concert TV Clips 1994–1996"; owner, 2026-11-03). Shown where the event goes (`eventName` in `src/lib/specs.ts`), searched as its event; an undated record with a `Title` shows "Compilation" instead of "Undated" (documentaries excepted). Never in `EventOrFestival`, which lists only events |
-| `Parts` | string or absent | A compilation's parts, one line per show it draws on: `date | name | place | songs` ("1994-02-08 | Sony Music TV Special · Club Citta | Kawasaki, Japan | Spoonman; Fell on Black Days"; owner, 2026-11-03). The date reads "Compilation 1994–1996" (the years the parts span), the drawer groups the setlist under each part, search finds the parts' names and places. Its songs, in order, must be the `Setlist` exactly — `npm run check` (check-facets) fails otherwise |
+| `Parts` | string or absent | A compilation's parts, one line per show it draws on: `date | name | place | songs` ("1994-02-08 | Sony Music TV Special · Club Citta | Kawasaki, Japan | Spoonman; Fell on Black Days"; owner, 2026-11-03). The date reads "Compilation 1994–1996" (the years the parts span), the drawer groups the setlist under each part, search finds the parts' names and places. Its songs, in order, must be the `Setlist` exactly, and a part's date is a full `YYYY-MM-DD` or blank (a month or year goes in its name) — `npm run check` (check-facets) fails otherwise |
 | `NFT` | `"Yes"` or absent | Not for trade: a copy the owner agreed not to pass on (2026-11-02: ten traded from one taper, on his channel or labelled NFT by him). The card, list and drawer show a quiet **NFT** badge ("Not for trade" on hover). Say why in `PrivateNotes`, and name no one — the taper is `[taper]` |
 
 ### Notes and PrivateNotes
@@ -212,7 +212,8 @@ are the collection at launch, listed in `scripts/collection-at-launch.json`, and
 re-filings). Every record created since gets `AddedOn` = the day it was added, the screenshot and
 VA-master procedures included. A record carved from one already on the site — a split, a re-key, a
 linked record cut from an existing master — is not new: add its ShowID to the launch list instead.
-The health check blocks a record with neither. The site works out the rest (`src/lib/added.ts`):
+The health check blocks a record with neither. `AddedOn` is the owner's New Zealand date, up to 13 hours
+ahead of UTC; the site counts one day early as today (2026-11-07). The site works out the rest (`src/lib/added.ts`):
 a card badge **New** for 30 days (a new show or a new copy alike: no room on the card; `BADGE_DAYS`), the
 same shows under More filters → Added → New, and in the
 drawer "Added … · new copy" when the show was already held, from its other copies. **Never a label
