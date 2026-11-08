@@ -138,19 +138,33 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
    * Measured at rest and docked, again whenever the drawer changes size (the
    * header's vh height, rewrapped titles) and once the fonts have loaded.
    * Until the first measure the header is simply not sticky yet.
+   *
+   * On a phone the docked bar is one line, the name and the date (R11,
+   * docs/ux-research/06-mobile-audit.md): the subtitle and badges shrink with
+   * --p from their heights at rest (--sub-h, --badges-h), and `data-dock-line`
+   * sets the name on one line beside the date. It goes on before the end
+   * (`lineAt`) when the name wraps, or the wrapped name would outgrow the
+   * part of the header still on screen and its first line would slip off the
+   * top. The rules are in styles/globals.css, below md only.
    */
   useEffect(() => {
     const drawer = drawerRef.current, hero = heroRef.current, title = heroTitleRef.current, scroller = scrollRef.current;
     if (!drawer || !hero || !title || !scroller) return;
     let range = 1;
+    let lineAt = 0.98;
     const onScroll = () => {
       const p = Math.min(1, Math.max(0, scroller.scrollTop / range));
       drawer.style.setProperty('--p', p.toFixed(4));
       dockedRef.current = p > 0.98;
       drawer.toggleAttribute('data-docked', dockedRef.current);
+      drawer.toggleAttribute('data-dock-moving', p > 0);
+      drawer.toggleAttribute('data-dock-line', p >= lineAt);
     };
     const measure = () => {
       drawer.style.setProperty('--p', '0');
+      drawer.removeAttribute('data-dock-line');
+      drawer.style.removeProperty('--sub-h');
+      drawer.style.removeProperty('--badges-h');
       hero.style.height = '';
       hero.style.top = '';
       const height = hero.offsetHeight;
@@ -158,8 +172,38 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
       // so untransformed), or a second measure would read its docked place.
       const close = drawer.querySelector<HTMLElement>('.drawer-dock-close');
       const d = drawer.getBoundingClientRect(), c = close?.getBoundingClientRect();
-      drawer.style.setProperty('--p', '1');
-      const docked = title.offsetHeight;
+      const phone = !window.matchMedia('(min-width: 768px)').matches;
+      let nameWraps = false;
+      if (phone) {
+        const sub = title.querySelector<HTMLElement>('.drawer-dock-sub');
+        const badges = title.querySelector<HTMLElement>('.drawer-dock-badges');
+        const name = title.querySelector<HTMLElement>('.drawer-dock-name');
+        if (sub) drawer.style.setProperty('--sub-h', `${sub.offsetHeight}px`);
+        if (badges) drawer.style.setProperty('--badges-h', `${badges.offsetHeight}px`);
+        nameWraps = Boolean(name && name.offsetHeight > 1.5 * parseFloat(getComputedStyle(name).fontSize));
+      }
+      lineAt = 0.98;
+      let docked: number;
+      if (phone) {
+        drawer.setAttribute('data-dock-line', '');
+        drawer.style.setProperty('--p', '1');
+        docked = title.offsetHeight;
+        drawer.removeAttribute('data-dock-line');
+        // A name on two lines at rest stays on two until late, as its size
+        // shrinks: find where the title would outgrow the part of the header
+        // still on screen, and go to one line a step before. Only for a
+        // wrapped name, so most shows read nothing more here.
+        if (nameWraps) {
+          for (let k = 0.125; k < 1; k += 0.125) {
+            drawer.style.setProperty('--p', String(k));
+            if (title.offsetHeight > height - k * (height - docked) + 4) { lineAt = Math.max(0.01, k - 0.125); break; }
+          }
+        }
+        drawer.style.setProperty('--p', '1');
+      } else {
+        drawer.style.setProperty('--p', '1');
+        docked = title.offsetHeight;
+      }
       range = Math.max(1, height - docked);
       // A fixed height, so the title shrinking never moves the content below it.
       hero.style.height = `${height}px`;
@@ -361,7 +405,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
    * place, like a linked record.
    */
   const copies = copiesOf(show);
-  const copySpecs = (c: Show) => {
+  const copySpecs = (c: Show): string[] => {
     const cq = quality(c);
     // What ranks one copy against another (F1): source, frame rate and scan,
     // codec at its bitrate, then the rest; the show's own size where known.
@@ -375,8 +419,16 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
       cq?.tier !== 'hd' && c.TVStandard,
       c.ShowSizeHuman || c.TotalSizeHuman,
       c.ParentShowID && 'excerpt',
-    ].filter(Boolean).join(' · ');
+    ].filter(Boolean) as string[];
   };
+  // On a phone the copies stack, and what tells them apart is lit (R9,
+  // docs/ux-research/06-mobile-audit.md): the specs every copy shares are
+  // said once per copy, quietly, after the ones that differ.
+  const specsByCopy = new Map(copies.map(c => [c.ShowID, copySpecs(c)]));
+  const sharedSpecs = copies.length > 1
+    ? (specsByCopy.get(copies[0].ShowID) ?? []).filter(t => copies.every(c => specsByCopy.get(c.ShowID)?.includes(t)))
+    : [];
+  const copiesDiffer = copies.some(c => (specsByCopy.get(c.ShowID) ?? []).some(t => !sharedSpecs.includes(t)));
   const shareSheet = typeof navigator !== 'undefined' && typeof navigator.share === 'function'
     && typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
   const [copied, setCopied] = useState(false);
@@ -456,13 +508,13 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                 type="button"
                 onClick={closeImage}
                 aria-label="Back to the show"
-                className="drawer-dock-back absolute top-4 left-4 md:top-6 md:left-6 p-2 md:p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors cursor-pointer"
+                className="drawer-dock-back absolute top-4 left-4 md:top-6 md:left-6 p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors cursor-pointer"
               >
                 <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
               </button>
 
               {/* Where you are, set like the docked header bar. */}
-              <div className="drawer-dock-follow absolute top-4 md:top-6 left-16 md:left-[88px] right-16 md:right-20 h-9 md:h-12 flex flex-col justify-center pointer-events-none">
+              <div className="drawer-dock-follow absolute top-4 md:top-6 left-16 md:left-[88px] right-16 md:right-20 h-11 md:h-12 flex flex-col justify-center pointer-events-none">
                 <p
                   className="text-white text-[22px] md:text-2xl leading-none truncate"
                   style={{ fontFamily: 'var(--font-display)', letterSpacing: '0.04em' }}
@@ -478,7 +530,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                     href={images[viewingIndex]}
                     target="_blank"
                     rel="noopener"
-                    className="pointer-events-auto underline decoration-white/30 underline-offset-2 hover:text-white hover:decoration-white/60 transition-colors"
+                    className="touch-target relative inline-block pointer-events-auto underline decoration-white/30 underline-offset-2 hover:text-white hover:decoration-white/60 transition-colors"
                   >
                     Open full size
                   </a>
@@ -486,7 +538,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
               </div>
 
               {/* Image — top padding clears the absolutely-positioned close button */}
-              <div className="flex-1 flex items-center justify-center min-h-0 px-6 pt-14 md:pt-20">
+              <div className="flex-1 flex items-center justify-center min-h-0 px-6 pt-16 md:pt-20">
                 <motion.div
                   layoutId={`drawer-img-${show.ShowID}-${expandedFromIndex}`}
                   style={{ borderRadius: 8 }}
@@ -506,19 +558,20 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                 <div className="flex items-center justify-center gap-4 py-5 shrink-0">
                   <button
                     onClick={prevImage}
-                    className="p-2 md:p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
+                    className="p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
                     aria-label="Previous image"
                   >
                     <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
                   </button>
-                  {/* The dot stays 6–8px; the button around it is 24×24 so the
-                      target clears the WCAG minimum. Padding, not a bigger dot. */}
+                  {/* The dot stays 6–8px; the button around it is 44×44 on a
+                      phone (R12) and 24×24 from md, clearing the WCAG minimum.
+                      Padding, not a bigger dot. */}
                   <div className="flex items-center">
                     {images.map((_, i) => (
                       <button
                         key={i}
                         onClick={() => setViewingIndex(i)}
-                        className="p-2 flex items-center justify-center"
+                        className="size-11 md:size-auto md:p-2 flex items-center justify-center"
                         aria-label={`Go to image ${i + 1}`}
                         aria-current={i === viewingIndex ? 'true' : undefined}
                       >
@@ -534,7 +587,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                   </div>
                   <button
                     onClick={nextImage}
-                    className="p-2 md:p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
+                    className="p-3 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
                     aria-label="Next image"
                   >
                     <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
@@ -616,10 +669,13 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
               className="drawer-dock-title relative px-5 md:px-8 pr-16 md:pr-20"
             >
               {/* h2, not h1 — the page owns the single h1, and this heading is
-                  also the dialog's accessible name via aria-labelledby. */}
+                  also the dialog's accessible name via aria-labelledby. In a
+                  row with the date, which shows beside it only in a phone's
+                  one-line docked bar (R11); the subtitle still says it. */}
+              <div className="flex items-baseline">
               <h2
                 id={titleId}
-                className="drawer-dock-name text-white leading-none"
+                className="drawer-dock-name min-w-0 text-white leading-none"
                 style={{ fontFamily: 'var(--font-display)', letterSpacing: '0.04em' }}
               >
                 {show.Artist}
@@ -635,6 +691,10 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                   </span>
                 )}
               </h2>
+              <span aria-hidden="true" className="drawer-dock-date ml-2.5 shrink-0 text-sm leading-none tabular-nums text-gray-300">
+                {dateName(show)}
+              </span>
+              </div>
               <p className="drawer-dock-sub text-gray-400">
                 {/* Date · event · venue · city, country: the place always, event
                     or not (F9), each part once. */}
@@ -648,7 +708,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
               </p>
 
               {/* Metadata badges: content type, recording type, duration, TV standard */}
-              <div className="flex flex-wrap gap-1.5">
+              <div className="drawer-dock-badges flex flex-wrap gap-1.5">
                 {show.ContentType && (
                   <span className="px-2.5 py-0.5 rounded text-xs font-medium bg-violet-500/15 text-violet-300 border border-violet-500/25">
                     {show.ContentType}
@@ -678,11 +738,12 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                     {show.TVStandard}
                   </span>
                 )}
-                {/* An action among facts, so a pill, not a badge (F4). */}
+                {/* An action among facts, so a pill, not a badge (F4). On a
+                    phone its touch area is 44px, the look unchanged (R12). */}
                 <button
                   type="button"
                   onClick={share}
-                  className="inline-flex cursor-pointer items-center gap-1 rounded-full border border-white/15 bg-white/10 px-2.5 py-0.5 text-xs font-medium text-gray-100 transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+                  className="touch-target relative inline-flex cursor-pointer items-center gap-1 rounded-full border border-white/15 bg-white/10 px-2.5 py-0.5 text-xs font-medium text-gray-100 transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
                 >
                   {copied ? <Check className="h-3 w-3" aria-hidden="true" /> : shareSheet ? <Share2 className="h-3 w-3" aria-hidden="true" /> : <Link2 className="h-3 w-3" aria-hidden="true" />}
                   {copied ? 'Copied' : shareSheet ? 'Share' : 'Copy link'}
@@ -782,36 +843,68 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
             {/* Every recording of this show, when there is more than one */}
             {copies.length > 1 && (
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400 mb-3 flex items-center gap-1.5">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-400 mb-3 flex items-center gap-1.5 max-md:flex-wrap">
                   <Copy className="w-3 h-3" /> {copies.length} recordings of this show
+                  {/* Wraps under the label, rather than splitting it, where the phone is narrow. */}
+                  {copiesDiffer && <span className="ml-auto whitespace-nowrap font-normal normal-case tracking-normal md:hidden">differences lit</span>}
                 </p>
                 <ol className="divide-y divide-white/5 border-y border-white/5">
                   {copies.map(c => {
                     const cq = quality(c);
                     const n = songCount(c.Setlist);
                     const current = c.ShowID === show.ShowID;
+                    const specs = specsByCopy.get(c.ShowID) ?? [];
+                    const differs = specs.filter(t => !sharedSpecs.includes(t));
+                    // From md: one row, the specs in a line (max-md:hidden).
                     const row = (
                       <>
-                        <span className="w-[4.5rem] shrink-0 text-sm font-medium text-white tabular-nums">{cq?.label ?? '—'}</span>
-                        <span className="w-16 shrink-0 text-sm text-gray-200 tabular-nums">{lengthName(c.DurationSec) || '—'}</span>
-                        <span className="min-w-0 flex-1 text-xs leading-snug text-gray-400">{copySpecs(c)}</span>
+                        <span className="w-[4.5rem] shrink-0 text-sm font-medium text-white tabular-nums max-md:hidden">{cq?.label ?? '—'}</span>
+                        <span className="w-16 shrink-0 text-sm text-gray-200 tabular-nums max-md:hidden">{lengthName(c.DurationSec) || '—'}</span>
+                        <span className="min-w-0 flex-1 text-xs leading-snug text-gray-400 max-md:hidden">{specs.join(' · ')}</span>
                         {n > 0 && <span className="hidden md:inline shrink-0 text-xs text-gray-400">{n} {n === 1 ? 'song' : 'songs'}</span>}
                       </>
+                    );
+                    // On a phone: a block — quality and length, then what
+                    // differs as lit chips, then what is the same (md:hidden).
+                    const block = (
+                      <span className="block md:hidden">
+                        <span className="flex items-baseline gap-2.5">
+                          <span className="text-[0.9375rem] font-medium text-white tabular-nums">{cq?.label ?? '—'}</span>
+                          <span className="text-[0.9375rem] text-gray-200 tabular-nums">{lengthName(c.DurationSec) || '—'}</span>
+                          <span className={`ml-auto flex shrink-0 items-center gap-0.5 self-center text-xs font-semibold uppercase tracking-[0.12em] ${current ? 'text-gray-300' : 'text-gray-400'}`}>
+                            {current ? 'This copy' : <>Open<ChevronRight className="h-3.5 w-3.5" aria-hidden="true" /></>}
+                          </span>
+                        </span>
+                        {differs.length > 0 && (
+                          <span className="mt-2 flex flex-wrap gap-1.5">
+                            {differs.map((t, i) => (
+                              <span key={i} className="rounded-md border border-[rgba(250,204,21,0.35)] bg-[rgba(250,204,21,0.16)] px-[7px] py-0.5 text-[0.8125rem] leading-snug text-white">
+                                {t}
+                              </span>
+                            ))}
+                          </span>
+                        )}
+                        {sharedSpecs.length > 0 && (
+                          <span className="mt-2 block text-xs leading-snug text-gray-400">Same: {sharedSpecs.join(' · ')}</span>
+                        )}
+                      </span>
                     );
                     return (
                       <li key={c.ShowID}>
                         {current ? (
-                          <div className="flex items-baseline gap-3 py-2.5 px-2 -mx-2 rounded bg-white/6" aria-current="true">
+                          <div className="flex items-baseline gap-3 py-2.5 px-2 -mx-2 rounded bg-white/6 max-md:block max-md:p-3 max-md:rounded-[10px] max-md:bg-white/7" aria-current="true">
                             {row}
-                            <span className="shrink-0 text-xs font-semibold uppercase tracking-[0.12em] text-gray-300">This copy</span>
+                            <span className="shrink-0 text-xs font-semibold uppercase tracking-[0.12em] text-gray-300 max-md:hidden">This copy</span>
+                            {block}
                           </div>
                         ) : (
                           <button
                             onClick={() => onOpenShow?.(c)}
-                            className="w-full flex items-baseline gap-3 py-2.5 px-2 -mx-2 text-left rounded hover:bg-white/5 transition-colors group/copy"
+                            className="w-full flex items-baseline gap-3 py-2.5 px-2 -mx-2 text-left rounded hover:bg-white/5 transition-colors group/copy max-md:block max-md:w-[calc(100%+1rem)] max-md:p-3 max-md:rounded-[10px]"
                           >
                             {row}
-                            <ChevronRight className="w-4 h-4 self-center text-gray-500 shrink-0 group-hover/copy:text-gray-300 transition-colors" />
+                            <ChevronRight className="w-4 h-4 self-center text-gray-500 shrink-0 group-hover/copy:text-gray-300 transition-colors max-md:hidden" />
+                            {block}
                           </button>
                         )}
                       </li>
@@ -825,7 +918,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                 panel so it reads as reference detail rather than content. The
                 Setlist heading is always drawn, so Technical can never take
                 its place. Below md the columns stack and Technical folds
-                behind a "Technical details" toggle. */}
+                behind a "Technical details" toggle, a 44px row (R12). */}
             <div className="grid grid-cols-1 gap-6 md:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)] md:items-start">
               <div className="min-w-0 space-y-6">
 
@@ -904,13 +997,13 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
 
               {/* Technical */}
               {(techRows.length > 0 || show.Generation || lineage.length > 0) && (
-                <div className="border-t border-white/6 pt-4 md:rounded-lg md:border md:bg-white/4 md:p-4">
+                <div className="border-t border-white/6 pt-0.5 md:rounded-lg md:border md:bg-white/4 md:p-4">
                   <button
                     type="button"
                     onClick={() => setTechOpen(open => !open)}
                     aria-expanded={techOpen}
                     aria-controls={techId}
-                    className="md:hidden w-full flex items-center justify-between text-xs font-semibold uppercase tracking-[0.2em] text-gray-400 hover:text-gray-300 transition-colors"
+                    className="md:hidden w-full min-h-11 flex items-center justify-between text-xs font-semibold uppercase tracking-[0.2em] text-gray-400 hover:text-gray-300 transition-colors"
                   >
                     Technical details
                     <ChevronDown className={`w-3 h-3 transition-transform ${techOpen ? 'rotate-180' : ''}`} />
@@ -918,7 +1011,7 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                   <p className="hidden md:block text-xs font-semibold uppercase tracking-[0.2em] text-gray-400 mb-4">
                     Technical
                   </p>
-                  <div id={techId} className={`${techOpen ? 'block' : 'hidden'} md:block space-y-2 mt-4 md:mt-0`}>
+                  <div id={techId} className={`${techOpen ? 'block' : 'hidden'} md:block space-y-2 mt-0.5 md:mt-0`}>
                     {techRows.map(({ label, value, mono }) => (
                       <div key={label} className="flex items-start gap-3 text-sm">
                         <span className="text-gray-400 text-xs w-16 shrink-0 pt-px">{label}</span>

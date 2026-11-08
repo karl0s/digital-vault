@@ -33,6 +33,30 @@
   --text-2xs: 0.6875rem;
 }
 
+/* A phone held sideways (docs/ux-research/06-mobile-audit.md, R10): too short
+   for the masthead. Touch screens only, so a short desktop window keeps it. */
+@custom-variant phone-landscape (@media (orientation: landscape) and (max-height: 31.25rem) and (pointer: coarse));
+
+/* A 44px touch area on phones around a control that looks smaller (R12; Apple's
+   44pt), the look unchanged. The element must be positioned (relative or
+   absolute). From md, where a pointer is precise, the area is the control's own. */
+@utility touch-target {
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: max(100%, 2.75rem);
+    height: max(100%, 2.75rem);
+    transform: translate(-50%, -50%);
+  }
+  @variant md {
+    &::after {
+      content: none;
+    }
+  }
+}
+
 /* Custom scrollbar styles */
 .scrollbar-hide {
   -ms-overflow-style: none;  /* IE and Edge */
@@ -115,4 +139,47 @@
 }
 .drawer-dock-follow {
   transform: translateY(calc(var(--close-dy, 0px) * var(--p, 0)));
+}
+/* Phones (R11, docs/ux-research/06-mobile-audit.md): docked, the bar is one
+   line — the name and the date, 56px — not name, subtitle and badges (~150px,
+   nearly a quarter of the screen while reading). The subtitle and badges
+   shrink with --p from their heights at rest (--sub-h, --badges-h, written by
+   the docking effect), so the title never outgrows the part of the header
+   still on screen; `data-dock-line` (set by the effect, before the end when
+   the name wraps) puts the name on one line with the date beside it. Clipped
+   only once moving, so the Share pill's touch area works at rest. From md the
+   docking is as above, untouched. */
+.drawer-dock-date {
+  display: none;
+}
+@media (width < 48rem) {
+  .drawer-dock-title {
+    padding-top: 16px;
+    padding-bottom: calc(20px - 4px * var(--p, 0));
+  }
+  .drawer-dock-name {
+    margin-bottom: calc(8px * (1 - var(--p, 0)));
+  }
+  .drawer-dock-sub {
+    max-height: calc(var(--sub-h, 999px) * (1 - var(--p, 0)));
+    margin-bottom: calc(12px * (1 - var(--p, 0)));
+    opacity: calc(1 - 1.5 * var(--p, 0));
+  }
+  .drawer-dock-badges {
+    max-height: calc(var(--badges-h, 999px) * (1 - var(--p, 0)));
+    opacity: calc(1 - 1.5 * var(--p, 0));
+  }
+  [data-dock-moving] .drawer-dock-sub,
+  [data-dock-moving] .drawer-dock-badges {
+    overflow: hidden;
+  }
+  [data-dock-line] .drawer-dock-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  [data-dock-line] .drawer-dock-date {
+    display: block;
+    opacity: var(--p, 0);
+  }
 }
