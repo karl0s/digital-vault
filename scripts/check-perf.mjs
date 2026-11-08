@@ -87,8 +87,11 @@ ok('getImageUrl is stable (useCallback)',
   /const getImageUrl = useCallback\(/.test(shows),
   'It is a prop of every memoised card.');
 ok('LazyImage uses native lazy loading',
-  /loading="lazy"/.test(lazy) && !/IntersectionObserver/.test(lazy),
-  'One observer per image was 1,100+ observers on Browse, and loaded later than the browser does.');
+  /loading="lazy"|loading=\{priority \? 'eager' : 'lazy'\}/.test(lazy) && !/IntersectionObserver/.test(lazy),
+  'One observer per image was 1,100+ observers on Browse, and loaded later than the browser does. Only a grid\'s first cards (priority) load eagerly.');
+ok('only a grid\'s first few cards load eagerly',
+  /export const PRIORITY_CARDS = [1-6];/.test(code('components/FeaturedRows.tsx')),
+  'Eager loading is for the first screen (R14, docs/ux-research/06-mobile-audit.md). Every card eager would fetch the whole grid at once.');
 ok('LazyImage does not pin images to their own compositor layer',
   !/translateZ|will-?change/i.test(lazy),
   'translateZ(0) or will-change on every card image is a permanent layer each — over a thousand on Browse.');

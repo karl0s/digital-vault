@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { Show } from '../App';
-import { GRID_COLS } from './FeaturedRows';
+import { GRID_COLS, PRIORITY_CARDS } from './FeaturedRows';
 import { ShowCard } from './ShowCard';
 
 /**
@@ -43,13 +43,14 @@ export const ShowGrid = memo(function ShowGrid({ shows, onShowClick, getImageUrl
 
   return (
     <div className={GRID_COLS}>
-      {shows.map(show => (
+      {shows.map((show, i) => (
         <ShowCard
           key={show.ShowID}
           show={show}
           onSelect={onShowClick}
           getImageUrl={getImageUrl}
           searchMode="search"
+          priority={i < PRIORITY_CARDS}
         />
       ))}
     </div>

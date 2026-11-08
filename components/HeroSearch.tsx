@@ -29,16 +29,19 @@ export function HeroSearch({ isSearching = false, instant = false, summary }: He
   return (
     <motion.div
       style={{ overflow: 'hidden' }}
-      // Printing is for the list (F10): no masthead on paper.
-      className="print:hidden"
+      // Printing is for the list (F10): no masthead on paper. A phone held
+      // sideways has no room for it either (R10).
+      className="print:hidden phone-landscape:hidden"
       animate={isSearching ? { opacity: 0, height: 0 } : { opacity: 1, height: 'auto' }}
       transition={instant ? { duration: 0 } : {
         opacity: { duration: 0.18, ease: 'easeOut' },
         height: { duration: 0.28, ease: [0.4, 0, 0.2, 1] },
       }}
     >
-      {/* Static inner wrapper owns all padding — keeps it out of the height animation */}
-      <div className="relative flex flex-col items-center overflow-hidden px-4 pt-10 pb-8 text-center">
+      {/* Static inner wrapper owns all padding — keeps it out of the height
+          animation. Shorter on a phone, so the first shows are on the first
+          screen (docs/ux-research/06-mobile-audit.md, R10). */}
+      <div className="relative flex flex-col items-center overflow-hidden px-4 pt-[18px] pb-3 text-center md:pt-10 md:pb-8">
         {/* Atmospheric radial glow — faint red from above, like stage lighting */}
         <div
           className="pointer-events-none absolute inset-0"
@@ -49,7 +52,7 @@ export function HeroSearch({ isSearching = false, instant = false, summary }: He
         />
         {/* Subtle bottom vignette to blend into the grid below */}
         <div
-          className="pointer-events-none absolute bottom-0 left-0 right-0 h-24"
+          className="pointer-events-none absolute bottom-0 left-0 right-0 h-12 md:h-24"
           style={{ background: 'linear-gradient(to bottom, transparent, #141414)' }}
         />
 
@@ -60,16 +63,19 @@ export function HeroSearch({ isSearching = false, instant = false, summary }: He
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
           >
-            <HalationLogo scale={1} style={{ width: '70%', height: 'auto' }} />
+            {/* 70% of the column; 48% on a phone. */}
+            <div className="w-[48%] md:w-[70%]">
+              <HalationLogo scale={1} style={{ width: '100%', height: 'auto' }} />
+            </div>
           </motion.div>
 
           {/* One line, the tagline and what the site is (owner, 2026-10-18):
               "1,213 live shows worth reliving." It fades in once the data has
               counted the shows; until then the line holds its place unseen,
               so nothing moves and the old wording never flashes. */}
+          {/* 12px on a phone, the site's floor for text (F13). */}
           <motion.p
-            className="-mt-2 text-sm uppercase tracking-widest text-gray-400 md:text-base"
-            style={{ letterSpacing: '0.25em' }}
+            className="-mt-0.5 text-xs uppercase tracking-[0.2em] text-gray-400 md:-mt-2 md:text-base md:tracking-[0.25em]"
             initial={{ opacity: 0 }}
             animate={{ opacity: summary ? 1 : 0 }}
             transition={{ duration: 0.4, delay: 0.15 }}

@@ -24,6 +24,8 @@ interface ShowCardProps {
    * memoised result, so the same array on every render.
    */
   songHits?: SongHit[];
+  /** One of a grid's first cards: its still loads eagerly, at high priority (R14). */
+  priority?: boolean;
 }
 
 /** Text with the matched letters lit. */
@@ -91,7 +93,7 @@ function exceptions(show: Show): { label: string; tone: string; title?: string }
  * Memoised: with stable props (see `onSelect`, and `getImageUrl` in useShows)
  * opening the drawer or touching a filter no longer re-renders every card.
  */
-export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, searchMode, songHits }: ShowCardProps) {
+export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, searchMode, songHits, priority }: ShowCardProps) {
   const year = show.ShowDate ? show.ShowDate.split('-')[0] : '';
   const length = lengthName(show.DurationSec);
   const badges = exceptions(show);
@@ -178,6 +180,7 @@ export const ShowCard = memo(function ShowCard({ show, onSelect, getImageUrl, se
             alt={`${show.Artist} - ${show.VenueName}`}
             className="w-full h-full object-cover object-center"
             placeholderColor={getColorFromString(show.Artist)}
+            priority={priority}
           />
         ) : (
           <div className={`w-full h-full ${getColorFromString(show.Artist)} flex items-center justify-center`}>

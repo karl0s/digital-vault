@@ -7,6 +7,7 @@ import {
   FilterState,
   Layout,
   SortKey,
+  isFiltered,
   parseFilters,
   readShowParam,
   serializeFilters,
@@ -43,12 +44,43 @@ interface FilterActions {
 export type FilterStore = FilterState & FilterActions;
 
 /**
+ * Back steps through the site, not out of it (docs/ux-research/06-mobile-audit.md,
+ * R5). A write adds a history entry when it changes the view — an artist
+ * opened, the jump to the A–Z list (both ask with `stepHistory`), the page
+ * going from the landing to results or back, or a new search typed once the
+ * last one had settled (a pause of SETTLE_MS, or Enter: `settleQuery`). Every
+ * other write replaces the entry: refining a search letter by letter, or
+ * ticking four filters, must not bury Back under a dozen entries.
+ */
+export interface ViewHistoryState {
+  /** The page's scroll position when it was left; Back returns to it (App). */
+  y?: number;
+  /** How the query was reached: 'artist' for an artist opened from the list or a tile. */
+  searchType?: 'artist' | 'general';
+}
+const SETTLE_MS = 2000;
+let pendingStep: ViewHistoryState | null = null;
+let querySettled = true;
+let settleTimer: ReturnType<typeof setTimeout> | undefined;
+
+/** The next filter write adds a history entry, carrying this state. */
+export function stepHistory(state: ViewHistoryState = {}): void {
+  pendingStep = state;
+}
+
+/** The query on screen is a search of its own now (Enter): the next change adds an entry. */
+export function settleQuery(): void {
+  clearTimeout(settleTimer);
+  querySettled = true;
+}
+
+/**
  * The single choke-point every filter mutation passes through.
  *
  * When GA lands it hooks here and nowhere else — the alternative is hunting a
  * dozen scattered setter calls later. Keeping the seam empty costs nothing now.
  */
-function commitFilterState(next: FilterState): void {
+function commitFilterState(prev: FilterState, next: FilterState): void {
   if (typeof window === 'undefined') return;
 
   // The open show's param rides along, and so does the history entry's state:
@@ -57,9 +89,26 @@ function commitFilterState(next: FilterState): void {
   const query = withShowParam(serializeFilters(next), readShowParam(window.location.search));
   const url = `${window.location.pathname}${query}${window.location.hash}`;
 
-  // replaceState, not pushState: ticking four checkboxes should not bury the
-  // back button under four entries.
-  window.history.replaceState(window.history.state, '', url);
+  const queryChanged = prev.q !== next.q;
+  const step = pendingStep
+    ?? (isFiltered(prev) !== isFiltered(next) || (queryChanged && querySettled) ? {} : null);
+  pendingStep = null;
+
+  if (step) {
+    // The page being left keeps its scroll position, for Back to return to.
+    window.history.replaceState({ ...window.history.state, y: window.scrollY }, '');
+    window.history.pushState(step, '', url);
+  } else {
+    window.history.replaceState(window.history.state, '', url);
+  }
+
+  // A typed search settles after a pause; one reached in a step (an artist)
+  // is settled at once, so typing from it starts a new entry.
+  if (queryChanged) {
+    clearTimeout(settleTimer);
+    querySettled = step?.searchType === 'artist';
+    if (!querySettled) settleTimer = setTimeout(() => { querySettled = true; }, SETTLE_MS);
+  }
 
   // GA seam — intentionally empty. Nothing else in the app may call gtag.
   // trackFilterView(query)
@@ -89,11 +138,9 @@ const NO_FACETS = Object.fromEntries(FACET_KEYS.map(key => [key, []])) as unknow
 export const useFilterStore = create<FilterStore>((set, get) => {
   /** Applies a partial change, then syncs the URL unless we came from the URL. */
   const apply = (patch: Partial<FilterState>) => {
+    const prev = selectFilterState(get());
     set(patch as Partial<FilterStore>);
-    if (!applyingFromUrl) {
-      const s = get();
-      commitFilterState(selectFilterState(s));
-    }
+    if (!applyingFromUrl) commitFilterState(prev, selectFilterState(get()));
   };
 
   return {
@@ -157,6 +204,9 @@ export function initFilterUrlSync(): () => void {
   // would hand every subscriber new arrays and recompute the results in the
   // frame the drawer is closing.
   const onPopState = () => {
+    // Whatever Back or Forward lands on is a settled view: typing from it adds an entry.
+    settleQuery();
+    pendingStep = null;
     const store = useFilterStore.getState();
     if (serializeFilters(parseFilters(window.location.search)) === serializeFilters(selectFilterState(store))) return;
     store.hydrateFromUrl(window.location.search);

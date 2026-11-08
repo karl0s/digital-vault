@@ -15,7 +15,9 @@ interface ArtistDirectoryProps {
  * Every artist A–Z, under Featured shows (owner, 2026-10-13).
  *
  * It was the Artists destination; it now follows the curated row on the one
- * page, and its page header and A–Z jump rail went with the destination. "All
+ * page, and its page header and A–Z jump rail went with the destination. On a
+ * phone, where the list runs to twenty screens, App puts a letter index beside
+ * it (components/LetterIndex.tsx; docs/ux-research/06-mobile-audit.md, R6). "All
  * artists" in the filter bar and the phone's Artists tab jump here.
  *
  * Exists because open search demands recall: you can only find an artist if
@@ -52,7 +54,8 @@ export const ArtistDirectory = memo(forwardRef<HTMLElement, ArtistDirectoryProps
 
   return (
     <section ref={ref} aria-labelledby="all-artists" className="pt-2">
-      <div className={CONTENT_WIDTH}>
+      {/* Phones: room on the right for the letter index (components/LetterIndex.tsx, R6). */}
+      <div className={`${CONTENT_WIDTH} max-md:pr-8`}>
         {/* Labelled like Featured shows above it: what the section is, and how many. */}
         <div className="mb-3 flex items-baseline justify-between gap-4">
           <h2 id="all-artists" className="flex items-baseline gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-gray-400">
@@ -86,20 +89,21 @@ export const ArtistDirectory = memo(forwardRef<HTMLElement, ArtistDirectoryProps
           {groups.map(({ letter, artists }) => (
             // break-inside-avoid keeps a letter's list whole — a block never
             // splits across two columns.
-            <section key={letter} aria-label={letter} className="mb-8 break-inside-avoid md:mb-7">
+            <section key={letter} aria-label={letter} data-letter={letter} className="mb-8 break-inside-avoid md:mb-7">
               {/* The wayfinding anchor in a packed multi-column index, in the
                   display face the drawer uses for artist names. */}
               <h3 className="mb-1.5 font-(family-name:--font-display) text-[36px] leading-none tracking-[0.02em] text-white">
                 {letter}
               </h3>
               {/* -mx-3: the names sit on the letter's edge; the hover fill
-                  bleeds past it. Rows are 32px from md, 36px on a phone. */}
+                  bleeds past it. Rows are 32px from md, 44px on a phone: a
+                  thumb's target (R12; 36px until 2026-11-08). */}
               <div className="-mx-3 flex flex-col">
                 {artists.map(({ name, count }) => (
                   <button
                     key={name}
                     onClick={() => onArtistSelect(name)}
-                    className="group flex cursor-pointer items-baseline justify-between gap-3 rounded-md px-3 py-2 text-left transition-colors duration-150 hover:bg-white/10 md:py-1.5"
+                    className="group flex cursor-pointer items-baseline justify-between gap-3 rounded-md px-3 py-3 text-left transition-colors duration-150 hover:bg-white/10 md:py-1.5"
                   >
                     <span className="truncate text-sm text-gray-300 transition-colors group-hover:text-white group-focus-visible:text-white">
                       {name}

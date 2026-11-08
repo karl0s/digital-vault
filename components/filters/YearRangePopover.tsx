@@ -33,9 +33,10 @@ interface YearRangePopoverProps {
  * the collection grows. Nothing becomes unreachable: the brush and the From/To
  * inputs still cover every year in the data.
  */
-const MIN_DECADE_SHOWS = 5;
+export const MIN_DECADE_SHOWS = 5;
 
-function decadesWithin(bins: YearBin[], minYear: number, maxYear: number): number[] {
+/** The decades worth a chip; shared with the phone's filter sheet. */
+export function decadesWithin(bins: YearBin[], minYear: number, maxYear: number): number[] {
   const totals = new Map<number, number>();
   for (const b of bins) {
     const decade = Math.floor(b.year / 10) * 10;

@@ -20,15 +20,23 @@ import { ShowCard } from './ShowCard';
 /**
  * Shared with SearchResultsGrid — if these diverge the landing stops matching
  * the results again. The owner's columns (2026-10-19, picked on
- * ~/VaultShots/reports/card-columns.html): one under 400px, two on other phones,
- * three on tablets and small laptops, four on laptops, five on desktops, six
- * from 1920px. The Cinematic card carries its text on the picture, so it wants
- * to be wide; 400px (25rem) is the one width the site's breakpoints don't name. The row
- * gap is tight for the same reason — there is no caption under a card.
+ * ~/VaultShots/reports/card-columns.html): two on phones, three on tablets and
+ * small laptops, four on laptops, five on desktops, six from 1920px. Phones
+ * under 400px had one, a card per screen, until the mobile audit (owner,
+ * 2026-11-08, docs/ux-research/06-mobile-audit.md R2: four to six per screen;
+ * three columns was tried and could not be read). The row gap is tight — there
+ * is no caption under a card — and tighter on a phone.
  * GRID_TRACKS is the columns alone, for the artist tiles above search results.
  */
-export const GRID_TRACKS = 'grid grid-cols-1 min-[25rem]:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6';
-export const GRID_COLS = `${GRID_TRACKS} gap-x-3 gap-y-3.5`;
+export const GRID_TRACKS = 'grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6';
+export const GRID_COLS = `${GRID_TRACKS} gap-x-2 gap-y-2.5 md:gap-x-3 md:gap-y-3.5`;
+
+/**
+ * The first cards of a grid load their stills first: eager and at high
+ * priority, ahead of the rest of the page (R14; on slow 4G the first still
+ * took 5.2 s). Four covers a phone's first screen and a desktop's first row.
+ */
+export const PRIORITY_CARDS = 4;
 
 /**
  * Fisher–Yates. Deliberately not `sort(() => Math.random() - 0.5)`, which this
@@ -67,12 +75,13 @@ function FeaturedSection({ title, shows, onShowClick, getImageUrl }: FeaturedSec
           {title}
         </h2>
         <div className={GRID_COLS}>
-          {shows.map(show => (
+          {shows.map((show, i) => (
             <ShowCard
               key={show.ShowID}
               show={show}
               onSelect={onShowClick}
               getImageUrl={getImageUrl}
+              priority={i < PRIORITY_CARDS}
             />
           ))}
         </div>

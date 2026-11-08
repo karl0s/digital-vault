@@ -13,6 +13,8 @@ interface LazyImageProps {
    * `npm run dev`, an image added since the last build) still shows a picture.
    */
   fallbackSrc?: string | null;
+  /** Load now and ahead of other images: a grid's first cards (R14). */
+  priority?: boolean;
 }
 
 /**
@@ -32,6 +34,7 @@ export function LazyImage({
   onClick,
   style,
   fallbackSrc = null,
+  priority = false,
 }: LazyImageProps) {
   // Both keyed by src, so a changed src starts over without an effect to reset it.
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
@@ -60,7 +63,10 @@ export function LazyImage({
         <img
           src={current}
           alt={alt}
-          loading="lazy"
+          // Lazy is the rule. A grid's first cards are on screen from the
+          // start, so they are fetched at once and ahead of the rest (R14).
+          loading={priority ? 'eager' : 'lazy'}
+          {...(priority ? { fetchpriority: 'high' } : {})}
           decoding="async"
           onLoad={() => setLoadedSrc(current)}
           onError={() => { if (current === src && fallbackSrc) setFailedSrc(src); }}

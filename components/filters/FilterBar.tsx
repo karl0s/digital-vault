@@ -1,11 +1,13 @@
-import { Download, LayoutGrid, List, Search, X } from 'lucide-react';
-import { RefObject, useEffect, useRef } from 'react';
+import { ChevronDown, Download, LayoutGrid, List, Search, SlidersHorizontal, X } from 'lucide-react';
+import { RefObject, useEffect, useRef, useState } from 'react';
+import { BADGE_DAYS } from '../../src/lib/added';
 import { cn } from '../../src/lib/cn';
 import { CONTENT_WIDTH } from '../../src/lib/layout';
 import { FACET_KEYS, FacetKey, SortKey } from '../../src/lib/url';
 import { FacetCounts, YearHistogram } from '../../src/search/facets';
 import { useFilterStore } from '../../src/store/filters';
 import { FacetPopover } from './FacetPopover';
+import { FilterSheet } from './FilterSheet';
 import { MoreFiltersPopover } from './MoreFiltersPopover';
 import { YearRangePopover } from './YearRangePopover';
 
@@ -25,6 +27,14 @@ import { YearRangePopover } from './YearRangePopover';
  *
  * data-filter-bar is how App finds it to measure: the jump to the artist list
  * scrolls to just under it, whatever height it has wrapped to.
+ *
+ * PHONES (docs/ux-research/06-mobile-audit.md, R7, R8, R13): with four filters
+ * on, the bar and the chips under it took 44% of the screen. Below md the bar
+ * is the search, then one 44px row: Filters (with how many are set), and while
+ * filtering the count, list or cards, and the sort — or, on the landing, New.
+ * Filters opens every filter in a sheet from the bottom (FilterSheet), which
+ * holds the chips too. The row folds while scrolling down. From md the bar is
+ * as it was: the popovers, the chips, the results row.
  */
 
 // Years are handled by their own range control, not as a multi-select facet.
@@ -36,12 +46,13 @@ const FACETS: { key: FacetKey; label: string; minTotal?: number }[] = [
   { key: 'festival', label: 'Event', minTotal: 6 },
 ];
 
-const SORTS: { key: SortKey; label: string }[] = [
-  { key: 'year-desc', label: 'Year — newest first' },
-  { key: 'year-asc', label: 'Year — oldest first' },
-  { key: 'artist', label: 'Artist A–Z' },
-  { key: 'length', label: 'Length — longest first' },
-  { key: 'added', label: 'Recently added' },
+// `short`: the phone's row has room for one word; its picker lists the labels.
+const SORTS: { key: SortKey; label: string; short: string }[] = [
+  { key: 'year-desc', label: 'Year — newest first', short: 'Newest' },
+  { key: 'year-asc', label: 'Year — oldest first', short: 'Oldest' },
+  { key: 'artist', label: 'Artist A–Z', short: 'A–Z' },
+  { key: 'length', label: 'Length — longest first', short: 'Longest' },
+  { key: 'added', label: 'Recently added', short: 'Added' },
 ];
 
 interface FilterBarProps {
@@ -52,22 +63,39 @@ interface FilterBarProps {
   filtered: boolean;
   searchQuery: string;
   onSearchChange: (query: string) => void;
+  /** Enter, or the phone keyboard's Search key (App: settles the search, closes the keyboard). */
+  onSearchSubmit: () => void;
   searchInputRef: RefObject<HTMLInputElement>;
   /** Downloads the results on screen as a CSV (F10). */
   onDownloadCsv: () => void;
 }
 
 export function FilterBar({
-  counts, histogram, resultCount, filtered, searchQuery, onSearchChange, searchInputRef, onDownloadCsv,
+  counts, histogram, resultCount, filtered, searchQuery, onSearchChange, onSearchSubmit, searchInputRef, onDownloadCsv,
 }: FilterBarProps) {
   const state = useFilterStore();
   const barRef = useRef<HTMLDivElement>(null);
 
+  // The phone's filter sheet (R8). Closed if the screen grows past a phone's,
+  // where the popovers take over.
+  const [sheetOpen, setSheetOpen] = useState(false);
+  useEffect(() => {
+    const desktop = window.matchMedia('(min-width: 48rem)');
+    const onChange = () => { if (desktop.matches) setSheetOpen(false); };
+    desktop.addEventListener('change', onChange);
+    return () => desktop.removeEventListener('change', onChange);
+  }, []);
+
   // F18: on a phone the bar took a fifth of the screen. While scrolling down
-  // through results, the results row (count, layout, sort) folds away; it
-  // comes back on the way up. Written to the DOM, never React state: a scroll
+  // through results, the phone's row of controls (Filters, the count, layout,
+  // sort) folds away; it comes back on the way up. Not on the landing: the
+  // jump to the A–Z list lands under the bar's full height. Written to the DOM, never React state: a scroll
   // listener must not re-render the bar. The bar gives the row's height back
   // as margin (--fold), so nothing under it moves while it folds.
+  const filteredRef = useRef(filtered);
+  filteredRef.current = filtered;
+  // Back to the landing: unfolded, or the row would stay hidden there.
+  useEffect(() => { if (!filtered) barRef.current?.removeAttribute('data-folded'); }, [filtered]);
   useEffect(() => {
     const bar = barRef.current;
     if (!bar) return;
@@ -86,7 +114,7 @@ export function FilterBar({
       }
       // Measured as it folds: its height is the margin that stands in for it.
       const row = bar.querySelector<HTMLElement>('[data-results-row]');
-      if (dy > 0 && phone.matches && bar.getBoundingClientRect().top <= 0 && row && row.offsetHeight > 0) {
+      if (dy > 0 && filteredRef.current && phone.matches && bar.getBoundingClientRect().top <= 0 && row && row.offsetHeight > 0) {
         bar.style.setProperty('--fold', `${row.offsetHeight}px`);
         bar.setAttribute('data-folded', '');
       }
@@ -129,6 +157,11 @@ export function FilterBar({
     id: string; label: string; remove: () => void;
   }[];
 
+  // The landing's one tap to what's new (R13): the New filter, as in More
+  // filters, with how many shows it holds.
+  const newCount = counts.added.find(o => o.value === 'new')?.count ?? 0;
+  const otherLayout = state.layout === 'grid' ? 'list' : 'grid';
+
   return (
     // z-30: above the grid, under the phone tab bar (z-40) and the drawer (z-50).
     <div
@@ -137,33 +170,41 @@ export function FilterBar({
       className="group/bar sticky top-0 z-30 border-b border-white/6 bg-[#141414]/97 backdrop-blur-md print:hidden max-md:data-folded:mb-(--fold)"
     >
       <div className={CONTENT_WIDTH}>
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-3 py-3">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-3 py-3 max-md:pb-2.5">
           {/* One of the pills: same height and roundness as the controls beside
-              it. text-base below md, or iOS zooms the page on focus. */}
-          <div className="relative w-full lg:w-auto lg:min-w-[260px] lg:max-w-md lg:flex-1">
+              it. text-base below md, or iOS zooms the page on focus. A form,
+              so a phone's keyboard offers Search, and Enter is one event. */}
+          <form
+            role="search"
+            onSubmit={e => { e.preventDefault(); onSearchSubmit(); }}
+            className="relative w-full lg:w-auto lg:min-w-[260px] lg:max-w-md lg:flex-1"
+          >
             <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500 md:h-3.5 md:w-3.5" aria-hidden="true" />
             <input
               ref={searchInputRef}
               type="search"
               placeholder="Artist, song, venue, date…"
               aria-label="Search shows"
+              enterKeyHint="search"
               value={searchQuery}
               onChange={e => onSearchChange(e.target.value)}
-              className="w-full rounded-full border border-white/10 bg-white/7 py-2 pl-10 pr-9 text-base text-white placeholder-gray-400 transition-colors focus:border-white/25 focus:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70 md:py-1.5 md:pl-9 md:text-sm [&::-webkit-search-cancel-button]:hidden"
+              className="w-full rounded-full border border-white/10 bg-white/7 py-2 pl-10 pr-9 text-base max-md:h-11 text-white placeholder-gray-400 transition-colors focus:border-white/25 focus:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70 md:py-1.5 md:pl-9 md:text-sm [&::-webkit-search-cancel-button]:hidden"
             />
             {searchQuery && (
               <button
+                type="button"
                 onClick={() => { onSearchChange(''); searchInputRef.current?.focus(); }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 transition-colors hover:text-white"
+                // touch-target: a 44px area on a phone around the small × (R12).
+                className="touch-target absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 transition-colors hover:text-white"
                 aria-label="Clear search"
               >
                 <X className="h-3.5 w-3.5" />
               </button>
             )}
-          </div>
+          </form>
 
-          {/* Scrolls sideways on a phone, so the next control peeks in. */}
-          <div className="-mx-4 flex w-full items-center gap-2 overflow-x-auto px-4 scrollbar-hide md:mx-0 md:px-0 lg:w-auto lg:overflow-visible">
+          {/* From md. Scrolls sideways on a tablet, so the next control peeks in. */}
+          <div className="hidden w-full items-center gap-2 overflow-x-auto scrollbar-hide md:flex lg:w-auto lg:overflow-visible">
             <YearRangePopover histogram={histogram} />
             {FACETS.map(({ key, label, minTotal }) => (
               <FacetPopover
@@ -180,8 +221,87 @@ export function FilterBar({
           </div>
         </div>
 
+        {/* Phones: one row of controls (R7). Folds while scrolling down, and
+            steps aside while the search is being typed, so the results show
+            above the keyboard (R4). */}
+        <div data-results-row className="overflow-hidden md:hidden group-data-folded/bar:h-0 group-has-[input:focus]/bar:h-0">
+          <div className="flex items-center gap-1.5 pb-2.5">
+            <button
+              type="button"
+              onClick={() => setSheetOpen(true)}
+              aria-haspopup="dialog"
+              className={cn(
+                'flex h-11 shrink-0 cursor-pointer items-center gap-1.5 rounded-full border px-3.5 text-sm transition-colors duration-150',
+                active.length > 0 ? 'border-white/22 bg-white/12 text-white' : 'border-white/10 bg-white/5 text-gray-200',
+              )}
+            >
+              <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
+              Filters
+              {active.length > 0 && (
+                <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-white px-1.5 text-xs font-semibold tabular-nums text-[#111]">
+                  {active.length}<span className="sr-only"> set</span>
+                </span>
+              )}
+            </button>
+            {filtered ? (
+              <>
+                <p className="min-w-0 flex-1 truncate pl-1 text-sm text-gray-400" aria-hidden="true">
+                  <span className="tabular-nums text-gray-200">{resultCount}</span>
+                  {/* The word goes on the narrowest phones, before the number is cut. */}
+                  <span className="max-[23rem]:hidden">{resultCount === 1 ? ' show' : ' shows'}</span>
+                </p>
+                {/* The other layout, one tap away (F10). */}
+                <button
+                  type="button"
+                  onClick={() => setLayout(otherLayout)}
+                  aria-label={otherLayout === 'list' ? 'Show as a list' : 'Show as cards'}
+                  title={otherLayout === 'list' ? 'List' : 'Grid'}
+                  className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-white/5 text-gray-200"
+                >
+                  {otherLayout === 'list' ? <List className="h-4 w-4" aria-hidden="true" /> : <LayoutGrid className="h-4 w-4" aria-hidden="true" />}
+                </button>
+                {/* The sort: the phone's own picker, as wide as the choice on
+                    show. A select is as wide as its longest option, so the real
+                    one lies invisible over a label of the current choice. */}
+                <label className="relative flex h-11 shrink-0 items-center gap-1 rounded-full border border-white/10 bg-white/5 pl-3.5 pr-2.5 text-sm text-white has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-white/70">
+                  <span aria-hidden="true">{SORTS.find(s => s.key === state.sort)?.short}</span>
+                  <ChevronDown className="h-3.5 w-3.5 text-gray-400" aria-hidden="true" />
+                  <select
+                    value={state.sort}
+                    onChange={e => setSort(e.target.value as SortKey)}
+                    aria-label="Sort"
+                    className="absolute inset-0 cursor-pointer opacity-0"
+                  >
+                    {SORTS.map(s => (
+                      <option key={s.key} value={s.key}>{s.label}</option>
+                    ))}
+                  </select>
+                </label>
+              </>
+            ) : newCount > 0 && (
+              <button
+                type="button"
+                onClick={() => toggleFacet('added', 'new')}
+                aria-label={`New: ${newCount} shows added in the last ${BADGE_DAYS} days`}
+                className="flex h-11 shrink-0 cursor-pointer items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 text-sm text-gray-200"
+              >
+                <span className="h-[7px] w-[7px] rounded-full bg-emerald-300" aria-hidden="true" />
+                New · <span className="tabular-nums">{newCount}</span>
+              </button>
+            )}
+          </div>
+        </div>
+        <FilterSheet
+          open={sheetOpen}
+          onOpenChange={setSheetOpen}
+          counts={counts}
+          histogram={histogram}
+          resultCount={resultCount}
+          activeCount={active.length}
+        />
+
         {active.length > 0 && (
-          <div className="flex flex-wrap items-center gap-2 pb-3">
+          <div className="flex flex-wrap items-center gap-2 pb-3 max-md:hidden">
             {active.map(chip => (
               <button
                 key={chip.id}
@@ -210,11 +330,12 @@ export function FilterBar({
         <p className="sr-only" aria-live="polite">
           {filtered ? `${resultCount} ${resultCount === 1 ? 'show' : 'shows'}` : ''}
         </p>
-        {/* Folds on a phone while scrolling down (above). In one frame, not
-            animated: the row's height and the margin standing in for it must
-            change together, or the browser's scroll anchoring nudges the page
-            and the nudge reads as scrolling back up (tried, 2026-10-17). */}
-        <div data-results-row className={cn('overflow-hidden max-md:group-data-folded/bar:h-0', !filtered && 'hidden')}>
+        {/* From md: the results row. (On a phone the row above folds while
+            scrolling down, in one frame, not animated: the row's height and
+            the margin standing in for it must change together, or the
+            browser's scroll anchoring nudges the page and the nudge reads as
+            scrolling back up; tried, 2026-10-17.) */}
+        <div className={cn('max-md:hidden', !filtered && 'hidden')}>
         <div className={cn('items-center justify-between gap-4 pb-3', filtered ? 'flex' : 'hidden')}>
           <p className="whitespace-nowrap text-sm text-gray-400" aria-hidden="true">
             <span className="tabular-nums text-gray-200">{resultCount}</span>

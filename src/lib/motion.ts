@@ -26,6 +26,18 @@ export function scrollToY(top: number): void {
   window.scrollTo({ top, behavior: behavior() });
 }
 
+/**
+ * The page to a y position at once. For a view that has just replaced the one
+ * before (an artist picked from the A–Z list, Back, a cleared search): there
+ * is nothing to scroll through, and a smooth scroll is cut short when the page
+ * shortens under it — an artist used to open at the bottom of its shows
+ * (docs/ux-research/06-mobile-audit.md, R1). 'instant', not 'auto': the page
+ * sets `scroll-behavior: smooth`, which 'auto' would follow.
+ */
+export function jumpToY(top: number): void {
+  window.scrollTo({ top, behavior: 'instant' });
+}
+
 /** A scrolling element back to its top: the docked drawer header uses it. */
 export function scrollContainerToTop(el: Element | null | undefined): void {
   el?.scrollTo({ top: 0, behavior: behavior() });

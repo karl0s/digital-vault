@@ -5,7 +5,8 @@ import { Show } from '../App';
 import { ShowCard } from './ShowCard';
 import { ShowList } from './ShowList';
 import { LazyImage } from './LazyImage';
-import { GRID_COLS, GRID_TRACKS } from './FeaturedRows';
+import { GRID_COLS, GRID_TRACKS, PRIORITY_CARDS } from './FeaturedRows';
+import { cn } from '../src/lib/cn';
 import { CONTENT_WIDTH } from '../src/lib/layout';
 import type { SongSuggestion } from '../src/search/searchIndex';
 import type { ArtistMatch, ResultGroups } from '../src/hooks/useBrowseResults';
@@ -54,20 +55,36 @@ export function SearchResultsGrid({ shows, query, searchType, transitionKey, son
   const suggestions = groups && shows.length === 0 ? groups.didYouMean : [];
   const corrected = groups && shows.length === 0 && suggestions.length === 0 ? groups.correctedQuery : null;
 
+  /*
+    Phones (docs/ux-research/06-mobile-audit.md, R4): the results start right
+    under the bar. The query is already in the field, the count in the bar and
+    the field's × clears it, so the title, "Found N" and Clear search go —
+    kept for screen readers — and with the keyboard up the first results show
+    above it. What stays: an artist's way back to the list, and the song hint.
+    A section label with no other section beside it ("Shows 34") repeats the
+    count, so it goes too. Desktop keeps the header.
+  */
+  const back = searchType === 'artist';
+  const phoneHeader = back || Boolean(songSuggestion && onSearch);
+  const sectionCount = groups ? [groups.artists.length > 0 && onArtistSelect, groups.shows.length > 0, groups.songs.length > 0].filter(Boolean).length : 0;
+  const sectionLabel = cn(SECTION_LABEL, sectionCount === 1 && 'max-md:sr-only');
+  // The grid on screen first loads its first stills first (R14).
+  const firstGrid = groups ? (groups.shows.length > 0 ? 'shows' : 'songs') : 'all';
+
   return (
-    <div className={`${CONTENT_WIDTH} pt-8`}>
+    <div className={`${CONTENT_WIDTH} pt-3 md:pt-8`}>
       {/* Results header */}
-      <div className="mb-6">
-        <h2 className="text-4xl font-bold text-white print:text-2xl print:text-black">“{query}”</h2>
+      <div className={cn('mb-6', phoneHeader ? 'max-md:mb-3' : 'max-md:mb-0')}>
+        <h2 className="text-4xl font-bold text-white max-md:sr-only print:text-2xl print:text-black">“{query}”</h2>
         {/* The summary row: what was found, and the way out of it, side by
             side — the control sits beside the thing it clears. */}
-        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
-          <p className="text-gray-400 text-sm print:text-black">
+        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 max-md:mt-0">
+          <p className="text-gray-400 text-sm max-md:sr-only print:text-black">
             {shows.length === 0
               ? 'No shows match'
               : <>Found <span className="text-gray-200 tabular-nums print:text-black">{shows.length}</span> {shows.length === 1 ? 'show' : 'shows'}</>}
           </p>
-          <ClearButton onClick={onClear} back={searchType === 'artist'} />
+          <ClearButton onClick={onClear} back={back} />
         </div>
 
         {/* "Kiss" and "Hole" are bands AND song words. The artist view wins,
@@ -75,7 +92,7 @@ export function SearchResultsGrid({ shows, query, searchType, transitionKey, son
         {songSuggestion && onSearch && (
           <button
             onClick={() => onSearch(songSuggestion.query)}
-            className="print:hidden cursor-pointer group mt-3 flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-200 transition-colors duration-200"
+            className="print:hidden cursor-pointer group mt-3 flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-200 transition-colors duration-200 max-md:min-h-11"
           >
             <span aria-hidden="true" className="text-gray-400 group-hover:text-gray-300 transition-colors">↳</span>
             <span>
@@ -164,7 +181,7 @@ export function SearchResultsGrid({ shows, query, searchType, transitionKey, son
               <div className="space-y-10">
                 {groups.artists.length > 0 && onArtistSelect && (
                   <section aria-labelledby="results-artists">
-                    <h3 id="results-artists" className={SECTION_LABEL}>
+                    <h3 id="results-artists" className={sectionLabel}>
                       Artists <span className={SECTION_COUNT}>{groups.artists.length}</span>
                     </h3>
                     {/* Keyed by query, so a new search starts folded again. */}
@@ -173,17 +190,18 @@ export function SearchResultsGrid({ shows, query, searchType, transitionKey, son
                 )}
                 {groups.shows.length > 0 && (
                   <section aria-labelledby="results-shows">
-                    <h3 id="results-shows" className={SECTION_LABEL}>
+                    <h3 id="results-shows" className={sectionLabel}>
                       Shows <span className={SECTION_COUNT}>{groups.shows.length}</span>
                     </h3>
                     <div className={GRID_COLS}>
-                      {groups.shows.map(show => (
+                      {groups.shows.map((show, i) => (
                         <ShowCard
                           key={show.ShowID}
                           show={show}
                           onSelect={onShowClick}
                           getImageUrl={getImageUrl}
                           searchMode="search"
+                          priority={firstGrid === 'shows' && i < PRIORITY_CARDS}
                         />
                       ))}
                     </div>
@@ -191,11 +209,11 @@ export function SearchResultsGrid({ shows, query, searchType, transitionKey, son
                 )}
                 {groups.songs.length > 0 && (
                   <section aria-labelledby="results-songs">
-                    <h3 id="results-songs" className={SECTION_LABEL}>
+                    <h3 id="results-songs" className={sectionLabel}>
                       Songs <span className={SECTION_COUNT}>in {plural(groups.songs.length, 'show', 'shows')}</span>
                     </h3>
                     <div className={GRID_COLS}>
-                      {groups.songs.map(show => (
+                      {groups.songs.map((show, i) => (
                         <ShowCard
                           key={show.ShowID}
                           show={show}
@@ -203,6 +221,7 @@ export function SearchResultsGrid({ shows, query, searchType, transitionKey, son
                           getImageUrl={getImageUrl}
                           searchMode="search"
                           songHits={groups.songHits.get(show.ShowID)}
+                          priority={firstGrid === 'songs' && i < PRIORITY_CARDS}
                         />
                       ))}
                     </div>
@@ -213,13 +232,14 @@ export function SearchResultsGrid({ shows, query, searchType, transitionKey, son
               // Shared with the landing sections so card size and spacing match
               // across every view. Defined once in FeaturedRows.
               <div className={GRID_COLS}>
-                {shows.map((show) => (
+                {shows.map((show, i) => (
                   <ShowCard
                     key={show.ShowID}
                     show={show}
                     onSelect={onShowClick}
                     getImageUrl={getImageUrl}
                     searchMode={cardMode}
+                    priority={i < PRIORITY_CARDS}
                   />
                 ))}
               </div>
@@ -244,7 +264,12 @@ function ClearButton({ onClick, back }: { onClick: () => void; back: boolean }) 
     <button
       type="button"
       onClick={onClick}
-      className="print:hidden inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-full bg-white/10 pl-2.5 pr-3.5 text-sm text-gray-200 transition-colors duration-150 hover:bg-white/20 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+      // Phones: the field's × clears a search, so only the way back to the
+      // list stays, as a 44px target (R4, R12).
+      className={cn(
+        'print:hidden inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-full bg-white/10 pl-2.5 pr-3.5 text-sm text-gray-200 transition-colors duration-150 hover:bg-white/20 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70',
+        back ? 'max-md:h-11 max-md:pl-3 max-md:pr-4' : 'max-md:hidden',
+      )}
     >
       <Icon className="h-3.5 w-3.5" aria-hidden="true" />
       {back ? 'All artists' : 'Clear search'}
@@ -302,7 +327,7 @@ function ArtistTile({ artist, onSelect, getImageUrl }: { artist: ArtistMatch; on
     <button
       type="button"
       onClick={() => onSelect(artist.name)}
-      className="group col-span-1 flex cursor-pointer items-center gap-3 min-[25rem]:col-span-2 md:col-span-1 rounded-xl border border-white/6 bg-white/4 p-2 pr-4 text-left transition-colors duration-150 hover:border-white/12 hover:bg-white/8 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+      className="group col-span-2 flex cursor-pointer items-center gap-3 md:col-span-1 rounded-xl border border-white/6 bg-white/4 p-2 pr-4 text-left transition-colors duration-150 hover:border-white/12 hover:bg-white/8 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
     >
       {portrait ? (
         <LazyImage

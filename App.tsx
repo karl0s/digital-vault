@@ -1,5 +1,6 @@
 
 import { useRef, useState, useEffect, useCallback, useMemo } from 'react';
+import { flushSync } from 'react-dom';
 import { ArtistDirectory } from './components/ArtistDirectory';
 import { ShowDrawer } from './components/ShowDrawer';
 import { SearchResultsGrid } from './components/SearchResultsGrid';
@@ -8,7 +9,7 @@ import { FeaturedRows } from './components/FeaturedRows';
 import { AnimatePresence, motion, MotionConfig } from 'motion/react';
 import { useShows } from './src/hooks/useShows';
 import { useDebounce } from './src/hooks/useDebounce';
-import { scrollToTop, scrollToY } from './src/lib/motion';
+import { jumpToY, scrollToTop, scrollToY } from './src/lib/motion';
 import { CONTENT_WIDTH } from './src/lib/layout';
 import { AppShell } from './components/shell/AppShell';
 import { FilterBar } from './components/filters/FilterBar';
@@ -17,7 +18,9 @@ import { ShowList } from './components/ShowList';
 import { downloadCsv } from './src/lib/csv';
 import { useBrowseResults } from './src/hooks/useBrowseResults';
 import { FACET_KEYS, isFiltered as computeIsFiltered, LEGACY_VIEW_PARAM, readShowParam, withShowParam } from './src/lib/url';
-import { useFilterStore, initFilterUrlSync, selectFilterState } from './src/store/filters';
+import { useFilterStore, initFilterUrlSync, selectFilterState, settleQuery, stepHistory, type ViewHistoryState } from './src/store/filters';
+import { LetterIndex } from './components/LetterIndex';
+import { getArtistDirectory } from './src/search/searchIndex';
 import { startHoverPreload } from './src/lib/hoverPreload';
 import { dateName, eventName } from './src/lib/specs';
 import { useShallow } from 'zustand/react/shallow';
@@ -115,7 +118,10 @@ const urlWithShow = (id: string | null) =>
   `${window.location.pathname}${withShowParam(window.location.search, id)}${window.location.hash}`;
 
 export default function App() {
-  const [searchQuery, setSearchQuery] = useState('');
+  // Starts from the URL's query, so a search link doesn't briefly clear it on
+  // load (the debounced write of '' showed the landing, and with R5 added two
+  // history entries).
+  const [searchQuery, setSearchQuery] = useState(() => useFilterStore.getState().q);
   const [searchType, setSearchType] = useState<'artist' | 'general' | undefined>(undefined);
   const [pillTransitionKey, setPillTransitionKey] = useState(0);
   const [selectedShow, setSelectedShow] = useState<Show | null>(null);
@@ -133,8 +139,12 @@ export default function App() {
   // because the facet arrays are only ever replaced, never mutated in place.
   const filterState = useFilterStore(useShallow(selectFilterState));
 
-  // Back/forward -> store. Once, at the root.
-  useEffect(() => initFilterUrlSync(), []);
+  // Back and Forward return to the place each view was left at (R5, R6):
+  // App restores it once the view has rendered, so the browser's own guess,
+  // made against the page before it changed, would only land somewhere else.
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) window.history.scrollRestoration = 'manual';
+  }, []);
   // Cards' hover stills fetched before the hover, on mouse devices only.
   useEffect(() => startHoverPreload(), []);
 
@@ -234,6 +244,18 @@ export default function App() {
     setSelectedShow(show);
   }, [getImageUrl]);
 
+  /**
+   * Enter, or the phone keyboard's Search key: the search on screen is done.
+   * It reaches the store now rather than after the debounce, counts as a step
+   * of its own for Back (R5), and on a touch screen the keyboard closes, so
+   * the results it covered come into view (R4).
+   */
+  function handleSearchSubmit() {
+    if (searchQuery !== storeQuery) setStoreQuery(searchQuery);
+    settleQuery();
+    if (window.matchMedia('(pointer: coarse)').matches) searchInputRef.current?.blur();
+  }
+
   function handleSearchChange(query: string, type?: 'artist' | 'general') {
     setSearchQuery(query);
     setSearchType(query.trim() ? type : undefined);
@@ -246,13 +268,26 @@ export default function App() {
    * replace the list in the same frame as the click. Stable, because the
    * memoised ArtistDirectory receives it.
    */
+  const azReturnY = useRef<number | null>(null);
   const handleArtistSelect = useCallback((artist: string) => {
+    // Opened from a tile or a Did you mean: "All artists" goes to the top of the list.
+    azReturnY.current = null;
+    stepHistory({ searchType: 'artist' });
     setSearchQuery(artist);
     setSearchType('artist');
     setPillTransitionKey(k => k + 1);
     setStoreQuery(artist);
-    scrollToTop();
+    // At once: the list is replaced in this same render, and a smooth scroll
+    // cut short by the shorter page left the artist at its bottom (R1).
+    jumpToY(0);
   }, [setStoreQuery]);
+  // From the A–Z list: remember the place, so "All artists" (and the Artists
+  // tab) bring the trader back to it rather than to A (R6).
+  const handleDirectoryArtistSelect = useCallback((artist: string) => {
+    const y = window.scrollY;
+    handleArtistSelect(artist);
+    azReturnY.current = y;
+  }, [handleArtistSelect]);
 
   /**
    * The phone's Artists tab, All artists on an artist's results, and an old
@@ -263,7 +298,12 @@ export default function App() {
    */
   const [instantMasthead, setInstantMasthead] = useState(false);
   const [directoryJump, setDirectoryJump] = useState(0);
-  const goToDirectory = useCallback(() => {
+  // Where the jump lands: the place an artist was opened from (R6), else the list's top.
+  const directoryTarget = useRef<number | null>(null);
+  const goToDirectory = useCallback((returnToPlace: boolean, record = true) => {
+    directoryTarget.current = returnToPlace ? azReturnY.current : null;
+    // A step of its own: Back returns to the artist (R5). Not for an old link.
+    if (record) stepHistory();
     setInstantMasthead(true);
     setSearchQuery('');
     setSearchType(undefined);
@@ -273,16 +313,29 @@ export default function App() {
   useEffect(() => {
     if (!directoryJump) return;
     const raf = requestAnimationFrame(() => {
-      // The bar is measured now, not earlier: it is a row taller while
-      // filtering (count and sort) and only drops it in this render, so a
-      // margin taken before would land the list under it.
-      const list = directoryRef.current;
-      const bar = document.querySelector<HTMLElement>('[data-filter-bar]')?.offsetHeight ?? 0;
-      if (list) scrollToY(list.getBoundingClientRect().top + window.scrollY - bar);
+      const target = directoryTarget.current;
+      if (target !== null) {
+        // Back to the row the artist was picked from, as Back would.
+        jumpToY(target);
+      } else {
+        // The bar is measured now, not earlier: it is a row taller while
+        // filtering (count and sort) and only drops it in this render, so a
+        // margin taken before would land the list under it.
+        const list = directoryRef.current;
+        const bar = document.querySelector<HTMLElement>('[data-filter-bar]')?.offsetHeight ?? 0;
+        if (list) scrollToY(list.getBoundingClientRect().top + window.scrollY - bar);
+      }
       setInstantMasthead(false);
     });
     return () => cancelAnimationFrame(raf);
   }, [directoryJump]);
+  // The Artists tab and All artists: back to the place in the list when the
+  // artist on screen was opened from it, else the list's top.
+  const handleArtistsTab = useCallback(
+    () => goToDirectory(searchType === 'artist'),
+    [goToDirectory, searchType],
+  );
+  const handleAllArtists = useCallback(() => goToDirectory(true), [goToDirectory]);
 
   // An old link to the Artists page lands on the list. Once, when the shows
   // arrive; clearing writes the canonical URL, which drops the old param.
@@ -290,7 +343,7 @@ export default function App() {
   useEffect(() => {
     if (!legacyLink.current || shows.length === 0) return;
     legacyLink.current = false;
-    goToDirectory();
+    goToDirectory(false, false);
   }, [shows.length, goToDirectory]);
 
   /**
@@ -323,35 +376,74 @@ export default function App() {
   // The phone tab bar. Search focuses the bar's field inside the tap — it is
   // always mounted and sticky, so iOS raises the keyboard.
   const handleBrowseTab = useCallback(() => {
-    if (filtered) { setSearchQuery(''); setSearchType(undefined); clearAllFilters(); }
-    scrollToTop();
+    // Leaving results for the landing replaces the page: jump, don't scroll (R1).
+    if (filtered) { setSearchQuery(''); setSearchType(undefined); clearAllFilters(); jumpToY(0); }
+    else scrollToTop();
   }, [filtered, clearAllFilters]);
   const handleSearchTab = useCallback(() => searchInputRef.current?.focus(), []);
 
   // Closing steps back over the entry opening added, so Back afterwards goes
   // where it went before; a show that arrived in a link has no entry of ours,
   // so its param is simply removed.
+  // Set while our own step back over the show's entry is under way, so the
+  // popstate it causes is not taken for Back to another view (R5).
+  const closingShowRef = useRef(false);
   function handleCloseDrawer() {
     openShowRef.current = null;
     setSelectedShow(null);
-    if (window.history.state?.vaultShow) window.history.back();
+    if (window.history.state?.vaultShow) { closingShowRef.current = true; window.history.back(); }
     else window.history.replaceState(window.history.state, '', urlWithShow(null));
   }
 
   // Back and Forward: the URL says which show, if any, is open.
   const showById = useRef(new Map<string, Show>());
   useEffect(() => { showById.current = new Map(shows.map(s => [s.ShowID, s])); }, [shows]);
+  // A view returned to by Back or Forward (R5): its search type, and the place
+  // it was left at, restored once it has rendered. The masthead snaps open or
+  // shut, as for the jump to the list, or its animation would move the page.
+  const [viewRestore, setViewRestore] = useState<{ y: number } | null>(null);
   useEffect(() => {
-    const onPopState = () => {
+    const onPopState = (e: PopStateEvent) => {
       const id = readShowParam(window.location.search);
-      if (id === openShowRef.current) return;
-      const show = id ? showById.current.get(id) : undefined;
-      openShowRef.current = show ? id : null;
-      setSelectedShow(show ?? null);
+      const wasOpen = openShowRef.current;
+      if (id !== wasOpen) {
+        const show = id ? showById.current.get(id) : undefined;
+        openShowRef.current = show ? id : null;
+        setSelectedShow(show ?? null);
+      }
+      // A show opening or closing: the page behind it stays where it is.
+      const closing = closingShowRef.current;
+      closingShowRef.current = false;
+      if (wasOpen || id || closing) return;
+      const state = (e.state ?? {}) as ViewHistoryState;
+      // Rendered now, before the store's own listener applies the URL: the
+      // store's update renders at once, and the masthead must already be set
+      // to snap, or it animates and moves the page after the jump.
+      flushSync(() => {
+        setSearchType(state.searchType);
+        setInstantMasthead(true);
+        setViewRestore({ y: typeof state.y === 'number' ? state.y : 0 });
+      });
     };
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
+  // Back/forward -> store. Once, at the root, and after the listener above, so
+  // that one runs first on each popstate.
+  useEffect(() => initFilterUrlSync(), []);
+  useEffect(() => {
+    if (!viewRestore) return;
+    // Two frames: motion opens the masthead in the first, even when told to
+    // snap, and a jump made before it would be pushed down by its height (the
+    // browser keeps what is on screen in place: scroll anchoring).
+    let raf = requestAnimationFrame(() => {
+      raf = requestAnimationFrame(() => {
+        jumpToY(viewRestore.y);
+        setInstantMasthead(false);
+      });
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [viewRestore]);
 
   // A link to one show opens it once the shows arrive. An ID that names no
   // show is dropped from the URL rather than left to confuse a later share.
@@ -373,6 +465,7 @@ export default function App() {
   }, [selectedShow]);
 
   const hasQuery = filterState.q.trim().length > 0;
+  const directoryLetters = useMemo(() => getArtistDirectory(shows).map(g => g.letter), [shows]);
 
   /**
    * The one page: masthead, sticky filter bar, then content.
@@ -400,6 +493,7 @@ export default function App() {
         filtered={filtered}
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
+        onSearchSubmit={handleSearchSubmit}
         searchInputRef={searchInputRef}
         onDownloadCsv={downloadResults}
       />
@@ -407,7 +501,7 @@ export default function App() {
       {!filtered ? (
         <>
           <FeaturedRows shows={shows} onShowClick={handleShowClick} getImageUrl={getImageUrl} />
-          <ArtistDirectory ref={directoryRef} shows={shows} onArtistSelect={handleArtistSelect} />
+          <ArtistDirectory ref={directoryRef} shows={shows} onArtistSelect={handleDirectoryArtistSelect} />
         </>
       ) : hasQuery ? (
         <SearchResultsGrid
@@ -422,8 +516,8 @@ export default function App() {
           // An artist picked from the list goes back to the list; a typed
           // search clears in place and returns to the field.
           onClear={searchType === 'artist'
-            ? goToDirectory
-            : () => { setSearchQuery(''); setStoreQuery(''); scrollToTop(); searchInputRef.current?.focus(); }}
+            ? handleAllArtists
+            : () => { setSearchQuery(''); setStoreQuery(''); jumpToY(0); searchInputRef.current?.focus(); }}
           onSearch={(q) => handleSearchChange(q, 'general')}
           withoutFilters={withoutFilters}
           getImageUrl={getImageUrl}
@@ -501,7 +595,7 @@ export default function App() {
       <div {...backgroundInert}>
         <AppShell
           onBrowse={handleBrowseTab}
-          onArtists={goToDirectory}
+          onArtists={handleArtistsTab}
           onSearch={handleSearchTab}
           activeTab={directoryInView && !filtered ? 'artists' : 'browse'}
         >
@@ -517,6 +611,8 @@ export default function App() {
             {mainContent}
           </AnimatePresence>
         </AppShell>
+        {/* Phones: a letter index beside the A–Z list while it is on screen (R6). */}
+        <LetterIndex letters={directoryLetters} visible={directoryInView && !filtered} />
       </div>
 
       <AnimatePresence onExitComplete={() => setDrawerSettled(false)}>
