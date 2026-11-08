@@ -21,10 +21,10 @@ public/
 
 App.tsx                 ← root: the one page (Featured, artist list, results), search input, drawer state
 main.tsx                ← entry; DEV-only playground gate
-components/             ← cards, grids, ShowList (the list layout), ShowDrawer, ArtistDirectory, HeroSearch, FeaturedRows
+components/             ← cards, grids, ShowList (the list layout), ShowDrawer, ArtistDirectory, LetterIndex (phones), HeroSearch, FeaturedRows
   CloseButton.tsx       ← shared close button — use this for ALL close buttons
   shell/                ← AppShell, MobileTabBar (no sidebar or top bar since 2026-10-13)
-  filters/              ← FilterBar, FacetPopover, MoreFiltersPopover, YearRangePopover, YearHistogram
+  filters/              ← FilterBar, FilterSheet (phones), FacetPopover, MoreFiltersPopover, YearRangePopover, YearHistogram
   logos/                ← HalationLogo (the wordmark)
 src/
   hooks/                ← useShows (data + getNotes + getImageUrl), useBrowseResults, useSearchEngine, useDebounce
@@ -672,7 +672,8 @@ check:perf` (part of `npm run check`) enforces every rule not marked (unchecked)
 - **No layout reads in the drawer's opening frame** (unchecked). The docking header measures itself
   two frames after the drawer opens; measuring in the click's frame added ~50 ms at 4× (116 → 166 ms).
 - **Card images use native `loading="lazy"`** in `LazyImage` — no per-image IntersectionObserver,
-  no `translateZ(0)` or `will-change` (each pins a compositor layer per card).
+  no `translateZ(0)` or `will-change` (each pins a compositor layer per card). Only a grid's first
+  `PRIORITY_CARDS` (4) load eagerly, at high priority: the first screen (mobile audit R14).
 - **Cards load the build thumbnail**, with the original as `fallbackSrc`; anything shown large uses
   the original (the drawer header fades it in over the thumbnail). The hover crossfade's second still
   (slot 2's WebP) mounts only on a card's first hover or focus, never with the grid, and loads first
@@ -730,7 +731,7 @@ deploy runs it too.
 ## Featured shows
 **No "Recently added" row** above them (owner, 2026-10-29: Featured only for now; the way back is
 commented in the file). `components/FeaturedRows.tsx` → `FEATURED_IDS`: 12 hand-picked ShowIDs (owner, 2026-10-15; the
-grid's columns, 1 to 6 by width, are `GRID_TRACKS` in the same file), shuffled once per load, shown on Browse only while nothing filters. A missing ID
+grid's columns, 2 to 6 by width, are `GRID_TRACKS` in the same file), shuffled once per load, shown on Browse only while nothing filters. A missing ID
 drops out silently. The comment beside each ID says why that copy was chosen — keep doing that.
 
 ---

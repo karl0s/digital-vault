@@ -9,8 +9,12 @@ every change must pass are in `CLAUDE.md` (Front-end performance, Checks).
 ## Breakpoints
 
 Defined once, in `styles/globals.css` (`@theme`): Tailwind's defaults minus `sm`, plus `3xl`. Use
-only these prefixes, and test a layout change at each tier's size. One exception: the card grid
-drops to a single column below 400px (`min-[25rem]:`, owner, 2026-10-19; see Grids).
+only these prefixes, and test a layout change at each tier's size. (The card grid's one-column
+step below 400px went with the mobile audit, 2026-11-08: two columns on every phone; see Grids.)
+Two helpers there for phones (docs/ux-research/06-mobile-audit.md): the `phone-landscape:` variant
+(a touch screen held sideways, under 500px tall: no masthead) and the `touch-target` utility (an
+invisible 44px touch area below md around a control that looks smaller; the element must be
+positioned).
 
 | Tier | Prefix | From | Test at | Typical screens |
 |---|---|---|---|---|
@@ -54,8 +58,15 @@ screen), Search (focuses the bar's field inside the tap).
 without animating (`HeroSearch instant`, or its 0.28s growth moves the list mid-scroll), then scroll
 to the list measured against the bar's height at that moment (the bar loses its count row in the
 same render). Picking an artist runs the exact-artist facet and writes the store at once, not after
-the search debounce. `directoryInView` (read on scroll, re-rendering only when it flips) lights the
-Artists tab.
+the search debounce, and **jumps** to the top (`jumpToY`, src/lib/motion.ts): a smooth scroll was
+cut short as the list gave way to the shorter results, and the artist opened at its bottom (R1,
+2026-11-08; clearing a search and the Browse tab jump too). Picked from the list, the place is
+remembered (`azReturnY`): **All artists**, and the Artists tab while that artist is open, return to
+it rather than to A (R6). `directoryInView` (read on scroll, re-rendering only when it flips) lights
+the Artists tab, and on a phone shows the **letter index** (`components/LetterIndex.tsx`, R6): a
+rail at the right edge under the bar, a tap or a drag down it jumps to a letter (the letter shown
+large beside the thumb while dragging), the letter on screen lit — scroll work DOM only. The list
+keeps 32px of right padding on a phone for it, and its rows are 44px there (R12).
 
 **State** (`src/store/filters.ts`, zustand): `q, from, to, undated, country, festival, quality,
 source, standard, length, setlist, sort, layout`. Sort and layout are view preferences: Clear all keeps
@@ -67,7 +78,23 @@ selectors. The search input is local to App; only its debounced value (150 ms) r
 **URL** (`src/lib/url.ts`) is the store's canonical serialisation: keys in the fixed order above;
 facet values slugified, de-duplicated and sorted; defaults (`sort=year-desc`, `undated` off) and
 empty values omitted. Query params on the root path, never path segments (GitHub Pages has no SPA
-fallback). Every change `replaceState`s. `initFilterUrlSync` (once, in App) rehydrates on popstate.
+fallback). `initFilterUrlSync` (once, in App) rehydrates on popstate.
+
+**Back steps through the site** (R5, 2026-11-08; it used to leave it after any search). A change
+that moves to another view **adds** a history entry (`commitFilterState`, src/store/filters.ts): an
+artist opened and the jump to the A–Z list (both call `stepHistory`), the page going from the
+landing to results or back, and a new search typed once the last had settled — two seconds without
+a change, or Enter (`settleQuery`). Every other change replaces the entry: a search refined letter by
+letter, four filters ticked, the sort. Before adding one, the entry being left takes the scroll
+position (`y` in its state, with `searchType: 'artist'` for an artist's view). On Back or Forward to
+a view (not a show opening or closing) App restores both: its popstate listener runs before the
+store's (declared first) and renders the masthead set to snap at once (`flushSync`), and the jump
+waits two frames, since motion opens the masthead in the first and a jump made before it is pushed
+down by its height. `history.scrollRestoration` is `manual`: the browser's own guess was made
+against the page before it changed. Opening or closing a show is not a view change: the page behind
+stays put (closing with × marks its own `history.back()`, `closingShowRef`, so the popstate it causes
+is not taken for one). The search field starts from the URL's query, so a search link doesn't clear
+and re-set it on load (which added two entries).
 Every filter write passes through `commitFilterState` — the one seam reserved for analytics. The
 retired `view` and `type` params are dropped on parse; `view=artists` is honoured once by App.
 
@@ -121,7 +148,12 @@ corrected (`suggestQuery`). `npm run check:search` holds golden cases for all of
   words alone find nothing. If a date reading finds nothing, the words are tried as typed.
 - **Initials** open an artist (RATM, FNM, KOL, 30STM, NIN, GNR…): worked out for names of three
   words or more (`artistInitials`), unique ones only, never a name's own spelling; hand aliases
-  (`ARTIST_ALIASES`: STP, RHCP, SP…) win; MAS is left out.
+  (`ARTIST_ALIASES`: STP, RHCP, SP…) win; MAS is left out. They also work **beside other words**, in
+  any order: "ratm swu", "swu ratm", "fnm bizarre 97", "rock am ring 2010 30stm" (R3, 2026-11-08).
+  Tried only when the words as typed find nothing: the shorthand narrows to that artist's shows and
+  the other words, dates included, are searched among them (`resolveShorthand`, `searchWords`), so
+  no search that already worked changes. Only shorthand counts this way, never a plain name ("live",
+  "tool").
 - **Other names** are indexed beside each show, not rewritten into the query, so a word that is
   also a song title still finds the song (`src/search/aliases.ts`): `aka` — countries and cities
   in other languages and spellings (uk, brasil, deutschland, holland, koln/koeln, lisboa…),
@@ -145,20 +177,35 @@ location" / "No event"). Undated records sort last both ways and are excluded fr
 unless `undated=1`.
 
 **Controls** (`components/filters/`). `FilterBar` (`sticky top-0`, `data-filter-bar`): the search
-field (a pill like the controls beside it; `text-base` below md), then Years, Country, Event and
-More filters —
-one row from lg, the search on its own
-line below it, the controls scrolling sideways on a phone. Then removable chips and Clear all while
-anything is set, and — only while filtering — the results row: the count, Grid / List, CSV and
-the sort (below); the count's `aria-live`
-region is always mounted (visually hidden), since one inside a `display:none` row is silent.
-**On a phone the results row folds while scrolling down** (F18, 2026-10-17): a passive scroll
-listener in `FilterBar` sets `data-folded` on the bar once it is stuck and the page moves down,
-and removes it on the way up — DOM only, never React state. Folded, the row (`data-results-row`)
-is `h-0` and the bar takes its measured height as `margin-bottom` (`--fold`), in the same frame,
-so nothing below moves. Not animated: tried, and mid-animation the row and the margin didn't sum
-to the same height, the browser's scroll anchoring nudged the page, and the nudge read as
-scrolling up. On desktop the listener returns before any layout read.
+field (a pill like the controls beside it; `text-base` below md; in a `form role="search"` with
+`enterKeyHint="search"`, so Enter or the phone keyboard's Search key is one submit — App settles
+the search for Back and, on a touch screen, closes the keyboard, R4), then — from md — Years,
+Country, Event and More filters, one row from lg, the search on its own line below it on a tablet.
+Then removable chips and Clear all while anything is set, and — only while filtering — the results
+row: the count, Grid / List, CSV and the sort (below); the count's `aria-live` region is always
+mounted (visually hidden), since one inside a `display:none` row is silent.
+**On a phone** (R7, R8, R13, 2026-11-08; with four filters the bar and chips took 44% of the screen)
+the bar is the search and one row of 44px controls (`data-results-row`): **Filters** (with how many
+are set) opening `FilterSheet`, then while filtering the count (the word "shows" goes under 368px),
+the other layout's icon and the sort — the phone's own picker lying invisible over a label of the
+choice, so it is as wide as "Newest", not its longest option — and on the landing **New · N** (the
+New filter, one tap; it leaves the sort alone). No popovers or chips below md: they are in the
+sheet. The row steps aside (`h-0`) while the search field has focus, so results show above the
+keyboard (four on a Galaxy, none before).
+**`FilterSheet`** (phones): every filter in a base-ui `Dialog` from the bottom, 86% of the screen —
+Years (decade chips, From and To typed and applied on leaving the field, Include undated), Event and
+Country (what is chosen as chips, the rest behind "Add …" with a field to narrow them; 6+ shows, as
+the popovers), then More filters' groups — as 44px chips with live counts, dimmed at 0, applied as
+they are tapped; Clear all (the filters, not the search), × and "Show N shows" at the foot close it,
+as do a tap outside, Escape and a drag down on the header. It closes if the screen grows past md.
+**The phone's row folds while scrolling down through results** (F18, 2026-10-17): a passive scroll
+listener in `FilterBar` sets `data-folded` on the bar once it is stuck, something filters, and the
+page moves down, and removes it on the way up (and on returning to the landing) — DOM only, never
+React state. Not on the landing: the jump to the A–Z list lands under the bar's full height.
+Folded, the row is `h-0` and the bar takes its measured height as `margin-bottom` (`--fold`), in the
+same frame, so nothing below moves. Not animated: tried, and mid-animation the row and the margin
+didn't sum to the same height, the browser's scroll anchoring nudged the page, and the nudge read
+as scrolling up. On desktop the listener returns before any layout read.
 `FacetPopover` is a base-ui `Popover` — its `z-50` belongs on the `Positioner`; a text filter
 appears above 15 options. `minTotal` leaves out options with fewer shows in the whole collection
 (`listedOptions` in `facets.ts`; a selected one stays): Country and Event list only values with 6+
@@ -221,13 +268,20 @@ the empty state. Options keep the file's order, never by count: they are scales.
 md, one on a phone.
 
 **Grids.** `GRID_COLS` (exported by `FeaturedRows.tsx`) is the one column set for every grid:
-1 below 400px → 2 → md 3 (lg too) → xl 4 → 2xl 5 → 3xl 6 (owner, 2026-10-19, picked on
-`~/VaultShots/reports/card-columns.html`, made by `~/VaultShots/card_columns.py`), with a 14px row gap
-since a card carries no caption below it. `min-[25rem]:` is the one width outside the six tiers. `ShowGrid` is memoised and deliberately unanimated;
+2 on phones → md 3 (lg too) → xl 4 → 2xl 5 → 3xl 6 (owner, 2026-10-19, picked on
+`~/VaultShots/reports/card-columns.html`, made by `~/VaultShots/card_columns.py`; phones under 400px
+had one column until the mobile audit, R2, 2026-11-08: one card per screen became four to six, and
+three columns was tried and could not be read), with a 14px row gap and 12px between columns since
+a card carries no caption below it — 10px and 8px on a phone. A grid's first `PRIORITY_CARDS` (4)
+cards load their stills eagerly and at high priority (R14; `priority` on `ShowCard` and
+`LazyImage`). `ShowGrid` is memoised and deliberately unanimated;
 `SearchResultsGrid` has its own header and the "N more shows feature a song called …" suggestion;
+**on a phone the header goes** (R4: the query is in the field, the count in the bar, the field's ×
+clears), kept for screen readers; an artist keeps its All artists pill (44px), and a section label
+with no other section beside it is visually hidden;
 for free text it renders the groups in order — **Artists** as tiles (round portrait, name, count,
 chevron; one card wide from md so its edges meet the cards' and no row leaves a hole, the full
-width on a phone, a long name on two lines; six, then Show all),
+width on a phone (both columns), a long name on two lines; six, then Show all),
 then **Shows** and **Songs** as card grids — or the Did you mean. A tile's portrait is the owner's
 pick in `ARTIST_PORTRAITS` (`src/lib/portraits.ts`), else the newest show's slot 1, whatever the
 filters or sort; picks are made on `tools/artist-portraits/build.py`'s page and pasted back. Under
@@ -301,8 +355,9 @@ Traders are mostly 40–60 (docs/ux-research). The floor, everywhere:
   colour-graded gig-poster style, face-detected art direction of the crop.
 
 ### Close buttons
-All close buttons use `components/CloseButton.tsx` (`bg-white/10 hover:bg-white/20 rounded-full`,
-icon `w-5 h-5 md:w-6 md:h-6`); pass positioning via `className` — standard `top-4 right-4` mobile,
+All close buttons use `components/CloseButton.tsx` (`p-3 bg-white/10 hover:bg-white/20 rounded-full`,
+icon `w-5 h-5 md:w-6 md:h-6`: 44px on a phone, a thumb's target, R12 — 36px until 2026-11-08 — and
+48px from md); pass positioning via `className` — standard `top-4 right-4` mobile,
 `top-6 right-6` desktop. In `ShowDrawer` the close button sits **outside** the scroll div (sibling,
 inside the fixed drawer `motion.div`) as `absolute top-4 right-4 md:fixed md:top-6 md:right-6`, so
 on mobile it floats over the hero without taking layout space. It also carries `drawer-dock-close`,
@@ -325,7 +380,9 @@ onClick={() => {
 The search field no longer mounts on tap: it lives in the sticky `FilterBar`, always mounted, so
 the tab bar's Search item focuses it directly inside the tap (`handleSearchTab` in App) and needs
 no `flushSync`. Keep the pattern for any input that does mount on tap. Mobile inputs use
-`font-size` 16px (`text-base`) or larger, or iOS zooms the page on focus.
+`font-size` 16px (`text-base`) or larger, or iOS zooms the page on focus — the filter sheet's
+fields too. The keyboard's Search key closes the keyboard on a touch screen (`pointer: coarse`;
+`handleSearchSubmit`), never on desktop, where the field keeps focus.
 
 ### Masthead (HeroSearch)
 Wordmark (`HalationLogo`) and one line that is both the tagline and what the site is (F16;
@@ -334,7 +391,11 @@ from the shows by App (`collectionSummary`) so it never goes stale. It fades in 
 loaded; until then it holds its place unseen. The one place the brand appears. Always mounted,
 animating to `height: 0 / opacity: 0` while filtering (`isSearching={filtered}` from App). It uses
 motion's `animate` prop, not `AnimatePresence`, so the search field in the bar below keeps its
-place and focus mid-keystroke. `instant` skips the animation for the jump to the artist list.
+place and focus mid-keystroke. `instant` skips the animation for the jump to the artist list and for
+Back and Forward. **On a phone it is shorter** (R10, 2026-11-08): padding 18/12px (40/32 from md),
+the wordmark 48% of the column (70%), the line 12px (the floor, F13) with 0.2em spacing, the
+bottom fade 48px — about 93px, so the first four shows are on the first screen. Held sideways
+(`phone-landscape:`) it is not shown at all.
 
 ### ShowDrawer — sizing and modal behaviour
 On mobile: full width, `h-dvh` (live dynamic viewport height, so it always fills the visible screen
@@ -377,7 +438,7 @@ of the close button.
 **The header docks on scroll** (owner, 2026-10-12, the "Photo" bar). It is `sticky` with a negative
 `top` (minus the distance between its height at rest and docked), so it rides up until only the
 title is left on screen, then stays: name, subtitle and badges become a bar at the top of the
-drawer, about 107px on desktop and 122px on a phone. The docking effect in `ShowDrawer` measures
+drawer, about 107px on desktop and 56px on a phone (below). The docking effect in `ShowDrawer` measures
 both heights (after the first frame, on drawer resize, once fonts load) and writes `--p` (0 at rest,
 1 docked) onto the drawer from the scroll position; the `drawer-dock-*` rules in
 `styles/globals.css` follow it — the name eases 56 → 28px (32 → 24px on a phone), the subtitle 16 →
@@ -387,6 +448,15 @@ the drawer colour. Scroll-linked, so it never re-renders the drawer and has noth
 motion to remove. Docked, a tap on the bar scrolls back to the top (`scrollContainerToTop` in
 `src/lib/motion.ts`). The image and gradient clip in their own `absolute inset-0 overflow-hidden`
 wrapper, not on the header, so the fade can hang below it.
+
+**On a phone the docked bar is one line** (R11, 2026-11-08; it was about 150px with the subtitle and
+badges): the name (24px, one line, cut short with "…") with the date beside it
+(`.drawer-dock-date`), about 56px. The subtitle and badges shrink with `--p` from their heights at
+rest (`--sub-h`, `--badges-h`, written by `measure()`) and fade; they clip only while moving
+(`data-dock-moving`), so Share's touch area works at rest. `data-dock-line` puts the name on one line
+and shows the date. For a name that wraps at rest, `measure()` finds where the wrapped title would
+outgrow the part of the header still on screen and switches a step earlier, so the name never slips
+off the top. Docking takes about 168px of scroll on a phone (74 before). From md, unchanged.
 
 **Below the hero**, in order: a "Part of …" link to the master (linked records), the Screenshots
 strip, an "On this recording" list of linked records with time windows and song counts (masters),
@@ -399,7 +469,11 @@ a trader ranks them: source and broadcaster, frame rate and scan in shorthand ("
 `frameShort`), the video codec at its bitrate ("MPEG-2 8.9 Mb/s"), container, audio and
 channels, PAL/NTSC for SD, the show's own size (else its folder's), "excerpt"; the song count from
 md. The open copy is a plain row marked "This copy" (`aria-current`); the others are
-buttons that swap the drawer to that copy, as the links above do. `src/lib/copies.ts` groups the
+buttons that swap the drawer to that copy, as the links above do. **On a phone each copy is a
+block** (R9, 2026-11-08; the specs had wrapped into a 150px column): the quality and length, "This
+copy" or "Open ›" at the right; then the specs that differ from the other copies as lit (amber)
+chips; then "Same: …", the specs every copy shares. The label adds "differences lit". The same
+`copySpecs` list feeds both; from md, the row as before. `src/lib/copies.ts` groups the
 visible shows once per catalogue load (useShows) on CLAUDE.md's duplicate rule — artist, date,
 event, venue, city and country — plus `ContentType`, so a backstage documentary from the night is
 not a copy of the set; an excerpt is, since a trader wants to know the full set exists. Undated
@@ -462,6 +536,9 @@ Tailwind v4: use `bg-linear-to-t`, not `bg-gradient-to-t` (deprecated).
   header bar; a click on the link does not count as a click in the dark around the picture. Both carry
   the docking transform (`drawer-dock-back`, `drawer-dock-follow`), so they line up with × whether
   or not the header is docked. Back also on Esc and on a click in the dark around the picture.
+- Touch (R12, phones): Back, Previous and Next are 44px, the dots 44px buttons around the same
+  small dot, "Open full size" and Share keep their look with a 44px `touch-target`, and the
+  Technical details toggle is a 44px row.
 - Focus: Back takes focus when the viewer opens; going back returns it to the thumbnail
   (`data-thumb`). The drawer content behind the viewer is `inert` while it is open, and the focus
   trap skips it.

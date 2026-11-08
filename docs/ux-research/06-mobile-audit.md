@@ -102,6 +102,41 @@ Every "after" is the live page restyled in the test browser; no project file was
 | R11 Docked header | ![](evidence/mobile/m11-dock-before.jpg) | ![](evidence/mobile/m11-dock-after.jpg) |
 | R12 Targets under 44px | ![](evidence/mobile/m12-targets-before.jpg) | |
 
+## Built — branch `mobile-audit` (2026-11-08)
+
+The owner picked B on all fourteen. Built on the branch `mobile-audit` for preview, not on `main`
+until he merges it. Measured on the branch in the same emulation as the audit:
+
+| # | What was built | Today → branch |
+|---|---|---|
+| R1 | An artist opens at the top (`jumpToY`); clearing a search and the Browse tab jump too | lands at y 6,477 of 7,141 → 0 |
+| R2 | Two columns on every phone, 8px apart | Pearl Jam 10.8 screens → 2.9 (iPhone), 2.7 (Galaxy), 2.9 (125% text) |
+| R3 | Initials beside other words, only when the words as typed find nothing | 0 of 10 trader queries → 10 of 10 |
+| R4 | No query title, Found or Clear search on a phone; Search key closes the keyboard; the bar's row steps aside while typing | "brasil" with the keyboard up: 0 shows → 4 |
+| R5 | A history entry per view (artist, A–Z jump, landing ↔ results, a new search after 2 s or Enter); Back restores the scroll position | Back left the site → steps back, to the pixel |
+| R6 | All artists (and the Artists tab from that artist) return to the place; a letter index beside the list on phones | 13.5 screens of scrolling → none; 11,605 → 11,605 |
+| R7 | Search, then one 44px row: Filters N · count · layout · sort | bar with four filters 235px → 121px; 1 card → 6 |
+| R8 | Filters sheet: every filter as 44px chips with live counts, Show N shows | More filters 64–114px off-screen → all reachable |
+| R9 | Copies stacked, differences as lit chips, "Same: …" | — |
+| R10 | Masthead 18/12px padding, wordmark 48%, line 12px; none held sideways | first screen 1 show → 4 (iPhone), ½ → 2 + 2 halves (SE) |
+| R11 | Docked header one line, name and date | 150px → 56px |
+| R12 | 44px: close, viewer controls, dots, Technical details, A–Z rows, field ×, Share and Open full size (invisible area), every control in the bar and sheet | — |
+| R13 | "● New · 64" beside Filters on the landing | "New" off-screen → one tap |
+| R14 | A grid's first four stills eager, high priority | not re-measured on slow 4G |
+
+**Where the build departs from the proposal:** the line under the wordmark is 12px, not 11px (the
+site's floor, F13); New applies the New filter and leaves the sort alone (the sort is a lasting
+preference, and Recently added would have carried over to the next artist); the bar's row folds
+while scrolling only on results, as before (on the landing it moved the A–Z jump's target); and the
+row stepping aside while typing is an addition (2 → 4 results above the keyboard).
+
+**What changes on desktop** (md and up), on purpose, because it belongs on both: opening an artist
+from the A–Z list, clearing a search, and Back and Forward (R1, R5, R6: the jump, the history
+entries, the return to the place in the list); initials beside other words (R3); Enter counts as a
+finished search for Back (the field keeps focus); the first four cards' stills load first (R14).
+Nothing looks different: the artist page and filtered results are pixel-identical to the live site
+at 1440×900, and the drawer's docked height, close button and copies rows measure the same.
+
 ## What works on a phone — keep it
 
 - **Links:** they open the exact recording. × and Back close it at the same scroll position.
