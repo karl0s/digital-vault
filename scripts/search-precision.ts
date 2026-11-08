@@ -268,7 +268,9 @@ const height = (s: Show) => parseInt(s.Height, 10) || 0;
 const width = (s: Show) => parseInt(s.Width, 10) || 0;
 const tier = (s: Show) => (height(s) >= 700 ? 'hd' : width(s) <= 360 || height(s) <= 300 ? 'low' : 'sd');
 const on = (date: string) => shows.filter(s => s.ShowDate === date);
-const TRADER: { query: string; exactly?: Show[]; includes?: Show[]; artist?: string | null; noSuggestion?: boolean; note: string }[] = [
+const by = (artist: string, where: (s: Show) => boolean) => shows.filter(s => s.Artist === artist && where(s));
+const RATM = 'Rage Against the Machine';
+const TRADER: { query: string; exactly?: Show[]; includes?: Show[]; artistOnly?: string; none?: boolean; artist?: string | null; noSuggestion?: boolean; note: string }[] = [
   ...['1996-05-24', '1996/05/24', '24.05.1996', '24.05.96', '24/05/1996', '05/24/1996', 'May 24 1996',
     'May 24, 1996', '24 May 1996', '24th May 1996', '24. Mai 1996'].map(query => ({
     query, exactly: on('1996-05-24'), note: 'one date, every format' })),
@@ -283,6 +285,20 @@ const TRADER: { query: string; exactly?: Show[]; includes?: Show[]; artist?: str
     ['NIN', 'Nine Inch Nails'], ['SP', 'Smashing Pumpkins'], ['GNR', "Guns N' Roses"], ['rhcp', 'Red Hot Chili Peppers']] as const)
     .map(([query, artist]) => ({ query, artist, note: 'initials open the artist' })),
   { query: 'mas', artist: null, note: 'a Spanish word, not Mumford & Sons' },
+  // Shorthand beside other words (docs/ux-research/06-mobile-audit.md, R3): the
+  // shorthand narrows to the artist, the other words search their shows.
+  { query: 'ratm swu', exactly: by(RATM, s => s.EventOrFestival === 'SWU Music & Arts Festival'), note: 'initials and an event short name' },
+  { query: 'swu ratm', exactly: by(RATM, s => s.EventOrFestival === 'SWU Music & Arts Festival'), note: 'word order does not matter' },
+  { query: 'ratm 2010', exactly: by(RATM, s => s.ShowDate.startsWith('2010')), note: 'initials and a year' },
+  { query: 'ratm brasil', exactly: by(RATM, s => s.Country === 'Brazil'), note: 'initials and a country in its own language' },
+  { query: 'ratm sao paulo', exactly: by(RATM, s => /s[aã]o paulo/i.test(s.City)), note: 'initials and a city of two words' },
+  { query: 'fnm bizarre 97', exactly: by('Faith No More', s => s.EventOrFestival === 'Bizarre Festival' && s.ShowDate.startsWith('1997')), note: 'initials, an event and a bare two-digit year' },
+  { query: 'qotsa reading', includes: by('Queens of the Stone Age', s => s.EventOrFestival === 'Reading Festival'), artistOnly: 'Queens of the Stone Age', note: 'a hand alias and an event' },
+  { query: 'stp unplugged', includes: by('Stone Temple Pilots', s => s.EventOrFestival === 'MTV Unplugged'), artistOnly: 'Stone Temple Pilots', note: 'a hand alias and a programme' },
+  { query: '30stm rar', exactly: by('30 Seconds to Mars', s => s.EventOrFestival === 'Rock am Ring'), note: 'initials with a number, and an event short name' },
+  { query: 'rock am ring 2010 30stm', exactly: by('30 Seconds to Mars', s => s.EventOrFestival === 'Rock am Ring' && s.ShowDate.startsWith('2010')), note: 'the shorthand last, after an event and a year' },
+  { query: 'mas austin', none: true, note: 'left-out initials stay out beside other words: Mumford & Sons played Austin, but "mas" is not them' },
+  { query: 'live zzqx', none: true, note: 'a plain name ("Live") beside other words is not shorthand: nothing found stays nothing' },
   { query: 'XYZQ', noSuggestion: true, note: 'an unknown abbreviation is not "corrected" into a name' },
   { query: 'soundboard', noSuggestion: true, note: 'a spec word is not "corrected" into Soundgarden' },
   { query: 'uk', includes: shows.filter(s => s.Country === 'United Kingdom'), note: 'country short name' },
@@ -320,6 +336,11 @@ for (const t of TRADER) {
     if (!t.includes.length) problems.push('test has no expected shows');
     if (missing) problems.push(`${missing} of ${t.includes.length} missing`);
   }
+  if (t.artistOnly) {
+    const other = found.filter(s => s.Artist !== t.artistOnly);
+    if (other.length) problems.push(`${other.length} by other artists, e.g. ${other[0].Artist}`);
+  }
+  if (t.none && got.size) problems.push(`found ${got.size}, want none`);
   if (t.artist !== undefined) {
     const resolved = resolveArtist(t.query.toLowerCase(), artistNames);
     if (resolved !== t.artist) problems.push(`resolved to ${resolved ?? 'nothing'}`);

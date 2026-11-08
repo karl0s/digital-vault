@@ -257,6 +257,20 @@ export function resolveArtist(query: string, artistNames: string[]): string | nu
   return artistNames.find(name => normaliseArtist(name) === key) ?? artistInitials(artistNames).get(key) ?? null;
 }
 
+/**
+ * One word that is an artist's shorthand — an alias (STP, RHCP) or worked-out
+ * initials (RATM, FNM, 30STM) — never a plain name. Beside other words a name
+ * like "Live", "Tool" or "Hole" is just as likely a word of a venue or a song,
+ * so only shorthand, which means nothing else, stands for the artist there.
+ */
+function resolveShorthand(word: string, artistNames: string[]): string | null {
+  const key = normaliseArtist(word);
+  if (!key) return null;
+  const alias = ARTIST_ALIASES[key];
+  if (alias && artistNames.includes(alias)) return alias;
+  return artistInitials(artistNames).get(key) ?? null;
+}
+
 /** Every show by exactly this artist, newest first. */
 function getArtistShows(shows: Show[], artist: string): Show[] {
   return shows.filter(show => show.Artist === artist).sort(sortChronological);
@@ -728,12 +742,38 @@ export function searchShows(shows: Show[], searchQuery: string, index: SearchInd
   const artist = resolveArtist(query, index.artistNames);
   if (artist) return { shows: getArtistShows(shows, artist), grouped: null };
 
-  const outcome = searchWithin(shows, searchQuery, index);
+  const outcome = searchWords(shows, searchQuery, index);
+  if (outcome.shows.length) return outcome;
 
-  // "Rock am Ring 97": a bare two-digit number is tried as a year, but only
-  // when the words alone found nothing — it may be a song ("99 Problems").
+  // "ratm swu", "fnm bizarre 97", "swu ratm": shorthand beside other words
+  // (docs/ux-research/06-mobile-audit.md, R3) — the shortest thing to type on
+  // a phone. Tried only when the words as typed find nothing, so no search
+  // that works today changes: the shorthand narrows to that artist's shows
+  // and the other words are searched among them. If none of it finds a show,
+  // the first outcome stands, with its Did you mean.
+  const words = searchQuery.trim().split(/\s+/);
+  if (words.length > 1) {
+    for (let i = 0; i < words.length; i++) {
+      const named = resolveShorthand(words[i], index.artistNames);
+      if (!named) continue;
+      const rest = words.filter((_, j) => j !== i).join(' ');
+      const within = searchWords(getArtistShows(shows, named), rest, index);
+      if (within.shows.length) return within;
+    }
+  }
+  return outcome;
+}
+
+/**
+ * Free words within a pool, and — when they find nothing — once more with a
+ * bare two-digit number read as a year: "Rock am Ring 97". Only then, since it
+ * may be a song ("99 Problems").
+ */
+function searchWords(pool: Show[], text: string, index: SearchIndex): SearchOutcome {
+  const outcome = searchWithin(pool, text, index);
+  const query = text.toLowerCase().trim();
   if (!outcome.shows.length && /(?:^|\s)\d{2}(?=\s|$)/.test(query)) {
-    const asYear = searchWithin(shows, query.replace(/(^|\s)(\d{2})(?=\s|$)/g, "$1'$2"), index);
+    const asYear = searchWithin(pool, query.replace(/(^|\s)(\d{2})(?=\s|$)/g, "$1'$2"), index);
     if (asYear.shows.length) return asYear;
   }
   return outcome;
