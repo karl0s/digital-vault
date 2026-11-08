@@ -9,6 +9,7 @@ How experienced live-video traders are likely to use The Vault, and what to fix 
 | [03-jobs-journeys-pain-points.md](03-jobs-journeys-pain-points.md) | Jobs to be done, the seven core journeys stage by stage, ranked pain points and needs |
 | [04-test-plan.md](04-test-plan.md) | Moderated test plan (screener, script, tasks, metrics) and the log of the scripted pilot run on the live site |
 | [05-findings-report.md](05-findings-report.md) | **The report:** the [progress tracker](05-findings-report.md#progress-tracker) (what's done and what's left), findings by severity, fix-first list, benchmark against industry practice, data quality, roadmap |
+| [06-mobile-audit.md](06-mobile-audit.md) | **Phones only (2026-11-08):** five participants on their phones, findings M1–M13, recommendations R1–R14 scored as in 05, before/after pictures in [evidence/mobile/](evidence/mobile/) |
 | [evidence/](evidence/) | Screenshots from the pilot run, referenced by the report |
 
 The pilot was a scripted walkthrough, not real people. Confirm the findings by running the
