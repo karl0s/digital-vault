@@ -4,9 +4,12 @@
 > [02-participants.md](02-participants.md), each on a phone, doing the tasks traders do on phones:
 > quick checks and replies, started from a message. Scripted Chromium with phone emulation at the
 > area a person actually sees (the screen minus the browser's bars), not real people or devices.
-> The full report, with every screenshot and the before/after pictures, is
-> `~/VaultShots/reports/mobile-audit.html` (rebuilt by `~/VaultShots/reports/mobile-audit/build_report.py`).
-> Scoring as in [05-findings-report.md](05-findings-report.md#fix-these-first--and-why-in-this-order).
+> The full report, with every screenshot and the before/after pictures, is kept in the repo at
+> [evidence/mobile/report/mobile-audit.html](evidence/mobile/report/mobile-audit.html) (the
+> original: `~/VaultShots/reports/mobile-audit.html`, rebuilt by `build_report.py`). Scoring as in
+> [05-findings-report.md](05-findings-report.md#fix-these-first--and-why-in-this-order).
+> **Built and live the same day** — see [Built](#built-and-live-2026-11-08); the brief, plan,
+> decisions and timeline are in [07-mobile-case-study.md](07-mobile-case-study.md).
 
 ## Bottom line
 
@@ -85,27 +88,32 @@ touches an earlier decision of yours.
 
 ## Before and after
 
-Every "after" is the live page restyled in the test browser; no project file was changed.
+"Proposed" is the live page restyled in the test browser during the audit, before any code
+changed; "Built" is the new code, in the same emulation. The before/after page of the build is
+[evidence/mobile/report/mobile-audit-built.html](evidence/mobile/report/mobile-audit-built.html).
 
-| | Today | Proposed |
-|---|---|---|
-| R1 A–Z → Pearl Jam | ![](evidence/mobile/m01-az-jump-before.jpg) | ![](evidence/mobile/m01-az-jump-after.jpg) |
-| R2 + R4 Two columns | ![](evidence/mobile/m02-tiles-before.jpg) | ![](evidence/mobile/m02-tiles-after.jpg) |
-| R2 Three columns (rejected) | | ![](evidence/mobile/m02-tiles-three-columns.jpg) |
-| R3 "ratm swu" | ![](evidence/mobile/m03-initials-before.jpg) | ![](evidence/mobile/m03-initials-after.jpg) |
-| R4 Keyboard up | ![](evidence/mobile/m04-keyboard-before.jpg) | ![](evidence/mobile/m04-keyboard-after.jpg) |
-| R6 All artists | ![](evidence/mobile/m06-all-artists-before.jpg) | ![](evidence/mobile/m06-all-artists-after.jpg) |
-| R7 Four filters on | ![](evidence/mobile/m07-bar-before.jpg) | ![](evidence/mobile/m07-bar-after.jpg) |
-| R8 Filters | ![](evidence/mobile/m08-filters-before.jpg) | ![](evidence/mobile/m08-filters-after.jpg) |
-| R9 Copies | ![](evidence/mobile/m09-copies-before.jpg) | ![](evidence/mobile/m09-copies-after.jpg) |
-| R10 + R13 First screen | ![](evidence/mobile/m10-landing-before.jpg) | ![](evidence/mobile/m10-landing-after.jpg) |
-| R11 Docked header | ![](evidence/mobile/m11-dock-before.jpg) | ![](evidence/mobile/m11-dock-after.jpg) |
-| R12 Targets under 44px | ![](evidence/mobile/m12-targets-before.jpg) | |
+| | Today | Proposed | Built |
+|---|---|---|---|
+| R1 A–Z → Pearl Jam | ![](evidence/mobile/m01-az-jump-before.jpg) | ![](evidence/mobile/m01-az-jump-after.jpg) | ![](evidence/mobile/m01-az-jump-built.jpg) |
+| R2 + R4 Two columns | ![](evidence/mobile/m02-tiles-before.jpg) | ![](evidence/mobile/m02-tiles-after.jpg) | ![](evidence/mobile/m02-tiles-built.jpg) |
+| R2 Three columns (rejected) | | ![](evidence/mobile/m02-tiles-three-columns.jpg) | |
+| R3 "ratm swu" | ![](evidence/mobile/m03-initials-before.jpg) | ![](evidence/mobile/m03-initials-after.jpg) | ![](evidence/mobile/m03-initials-built.jpg) |
+| R4 Keyboard up | ![](evidence/mobile/m04-keyboard-before.jpg) | ![](evidence/mobile/m04-keyboard-after.jpg) | ![](evidence/mobile/m04-keyboard-built.jpg) |
+| R6 All artists / letter index | ![](evidence/mobile/m06-all-artists-before.jpg) | ![](evidence/mobile/m06-all-artists-after.jpg) | ![](evidence/mobile/m06-all-artists-built.jpg) |
+| R7 Four filters on | ![](evidence/mobile/m07-bar-before.jpg) | ![](evidence/mobile/m07-bar-after.jpg) | ![](evidence/mobile/m07-bar-built.jpg) |
+| R8 Filters | ![](evidence/mobile/m08-filters-before.jpg) | ![](evidence/mobile/m08-filters-after.jpg) | ![](evidence/mobile/m08-filters-built.jpg) |
+| R9 Copies | ![](evidence/mobile/m09-copies-before.jpg) | ![](evidence/mobile/m09-copies-after.jpg) | ![](evidence/mobile/m09-copies-built.jpg) |
+| R10 + R13 First screen | ![](evidence/mobile/m10-landing-before.jpg) | ![](evidence/mobile/m10-landing-after.jpg) | ![](evidence/mobile/m10-landing-built.jpg) |
+| R13 After tapping New | | | ![](evidence/mobile/m13-new-built.jpg) |
+| R11 Docked header | ![](evidence/mobile/m11-dock-before.jpg) | ![](evidence/mobile/m11-dock-after.jpg) | ![](evidence/mobile/m11-dock-built.jpg) |
+| R12 Targets under 44px / the viewer | ![](evidence/mobile/m12-targets-before.jpg) | | ![](evidence/mobile/m12-targets-built.jpg) |
+| Desktop, 1440×900 (unchanged) | ![](evidence/mobile/m14-desktop-live.jpg) | | ![](evidence/mobile/m14-desktop-built.jpg) |
 
-## Built — branch `mobile-audit` (2026-11-08)
+## Built and live (2026-11-08)
 
-The owner picked B on all fourteen. Built on the branch `mobile-audit` for preview, not on `main`
-until he merges it. Measured on the branch in the same emulation as the audit:
+The owner picked B on all fourteen. Built on the branch `mobile-audit` for preview, then merged
+into `main` and pushed live the same evening. Measured on the branch in the same emulation as the
+audit:
 
 | # | What was built | Today → branch |
 |---|---|---|
@@ -151,6 +159,9 @@ at 1440×900, and the drawer's docked height, close button and copies rows measu
 - **First paint:** 1.9s on slow 4G.
 
 ## Limits — check on a real phone
+
+Still open after the build: none of these has been tried on a real phone yet.
+
 
 1. Does iPhone Safari also land at the bottom after an A–Z tap (R1)?
 2. Does the iPhone edge-swipe Back leave the site after a search (R5)?

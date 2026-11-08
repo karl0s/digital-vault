@@ -10,16 +10,17 @@ search by artist, song, venue or date (any format; abbreviations like RATM and t
 name — or work through the A–Z artist directory. Copies of one show are compared side by side
 (source and broadcaster, frame rate, bitrate, size);
 results switch to a dense list and download as a spreadsheet (CSV); every show has a link of its
-own that previews it when pasted; recent additions are marked New, and copies not for trade NFT. It
-is built for video traders
-(`docs/ux-research/`). There is no backend: the site is static and all show data is one JSON file.
+own that previews it when pasted; recent additions are marked New, and copies not for trade NFT. On
+a phone the shows come two to a row, every filter is in one sheet, the A–Z list has a letter index,
+and Back steps through searches and artists. It is built for video traders
+(`docs/ux-research/`, including a phone-only audit and its case study notes). There is no backend: the site is static and all show data is one JSON file.
 
 **Live:** https://karl0s.github.io/digital-vault/
 
 ## Tech stack
 
 React 18 + TypeScript · Vite 6 · Tailwind CSS v4 · `motion` (animation) · zustand (filter
-state, synced to the URL) · base-ui (popovers) · MiniSearch (search) · sharp (card thumbnails,
+state, synced to the URL) · base-ui (popovers, the phone's filter sheet) · MiniSearch (search) · sharp (card thumbnails,
 built at deploy time).
 
 ## Run it

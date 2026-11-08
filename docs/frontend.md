@@ -265,7 +265,7 @@ each is a facet like Country — URL keys `source`, `quality`, `standard`, `leng
 `festival`, values a link cannot invent dropped on parse, OR within a group and AND across, live
 counts, the same option rows (`FacetOptionButton`, shared with `FacetPopover`), chips, and named in
 the empty state. Options keep the file's order, never by count: they are scales. Two columns from
-md, one on a phone.
+md; on a phone the same groups are in the filter sheet, as chips.
 
 **Grids.** `GRID_COLS` (exported by `FeaturedRows.tsx`) is the one column set for every grid:
 2 on phones → md 3 (lg too) → xl 4 → 2xl 5 → 3xl 6 (owner, 2026-10-19, picked on
@@ -290,7 +290,7 @@ so WCAG 2.5.8's 24px target applies; an artist opened from the list reads **All 
 back chevron instead). It is the results' one way out; the empty state only suggests what to try.
 `ArtistDirectory` is memoised; its `columns-[240px]` keeps every name untruncated. Its hierarchy
 (owner, 2026-10-13): letters in Bebas Neue 36px (`--font-display`); names on the letter's edge, the
-row's hover fill bleeding 12px past it (`-mx-3`); rows 32px from md, 36px on a phone; show counts
+row's hover fill bleeding 12px past it (`-mx-3`); rows 32px from md, 44px on a phone (36px until the mobile audit, R12); show counts
 at `text-white/50`, the quietest legible level (5.3:1), brightening to `gray-300` on the row's hover
 or focus (the owner's "Ghost" `white/17`, 1.7:1, failed WCAG AA and was lifted with F13, 2026-10-16). Tried and dropped: thumbnails per
 row, fading the other letters on hover, white names for 5+ show artists.

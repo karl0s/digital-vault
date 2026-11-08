@@ -1,0 +1,14 @@
+import { chromium } from 'playwright-core';
+import { homedir } from 'node:os';
+const b = await chromium.launch({ executablePath: homedir() + '/Library/Caches/ms-playwright/chromium_headless_shell-1223/chrome-headless-shell-mac-x64/chrome-headless-shell' });
+const p = await b.newPage({ viewport: { width: 1280, height: 900 } });
+const errs = []; p.on('pageerror', e => errs.push(e.message)); p.on('console', m => m.type() === 'error' && errs.push(m.text()));
+await p.goto('file://' + homedir() + '/VaultShots/reports/mobile-audit.html');
+await p.waitForTimeout(800);
+await p.screenshot({ path: '/tmp/r1.jpg', type: 'jpeg', quality: 60 });
+await p.evaluate(() => document.getElementById('R2').scrollIntoView()); await p.waitForTimeout(700);
+await p.screenshot({ path: '/tmp/r2.jpg', type: 'jpeg', quality: 60 });
+await p.locator('#R1 .pick button[data-v="B"]').click();
+const broken = await p.evaluate(() => [...document.images].filter(i => i.complete && i.naturalWidth === 0).length);
+console.log('errors', errs, 'broken images', broken, 'count', await p.textContent('#cnt'));
+await b.close();

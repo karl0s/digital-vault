@@ -25,7 +25,11 @@ quality, standard, length, setlist, sort, layout`, then `show`; sorts `year-desc
 `artist`, `length`, `added`; a Grid / List layout and CSV download; the open show in the URL and a
 page per show for link previews; card badges New, Documentary, Excerpt and
 "N copies" (the RecordingType badge went on 2026-10-15; "Better copy" removed 2026-10-29); no
-"Recently added" row above Featured (hidden 2026-10-29, owner).
+"Recently added" row above Featured (hidden 2026-10-29, owner). On a phone (2026-11-08,
+`docs/ux-research/06-mobile-audit.md`) the bar is the search and one row — Filters, the count,
+layout, sort, or New on the landing — with every filter in a bottom sheet (`FilterSheet`) instead
+of popovers and chips; two card columns; a letter index on the A–Z list; and Back steps through
+views (history entries per artist, A–Z jump and search) rather than replacing one entry.
 The research behind these is `docs/ux-research/`.
 
 Checked against the code on 2026-10-05.

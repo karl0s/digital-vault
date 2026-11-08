@@ -1,0 +1,532 @@
+{
+ "tiles-before-iphone": {
+  "file": "M-tiles-before-iphone.jpg",
+  "cards": {
+   "total": 24,
+   "full": 1,
+   "half": 0
+  },
+  "barVisible": 159,
+  "contentArea": 448,
+  "cardSize": [
+   358,
+   269
+  ],
+  "docH": 7141,
+  "smallTargetCount": 10
+ },
+ "tiles-after-iphone": {
+  "file": "M-tiles-after-iphone.jpg",
+  "cards": {
+   "total": 24,
+   "full": 4,
+   "half": 0
+  },
+  "barVisible": 159,
+  "contentArea": 448,
+  "cardSize": [
+   175,
+   131
+  ],
+  "docH": 2060,
+  "smallTargetCount": 10
+ },
+ "tiles-after2-iphone": {
+  "file": "M-tiles-after2-iphone.jpg",
+  "cards": {
+   "total": 24,
+   "full": 6,
+   "half": 0
+  },
+  "barVisible": 159,
+  "contentArea": 448,
+  "cardSize": [
+   175,
+   131
+  ],
+  "docH": 1936,
+  "smallTargetCount": 9
+ },
+ "tiles-three-iphone": {
+  "file": "M-tiles-three-iphone.jpg",
+  "cards": {
+   "total": 24,
+   "full": 12,
+   "half": 3
+  },
+  "barVisible": 159,
+  "contentArea": 448,
+  "cardSize": [
+   115,
+   87
+  ],
+  "docH": 999,
+  "smallTargetCount": 9
+ },
+ "tiles-rows-iphone": {
+  "file": "M-tiles-rows-iphone.jpg",
+  "cards": {
+   "total": 24,
+   "full": 4,
+   "half": 0
+  },
+  "barVisible": 159,
+  "contentArea": 448,
+  "cardSize": [
+   624,
+   96
+  ],
+  "docH": 2785,
+  "smallTargetCount": 9
+ },
+ "tiles-before-android": {
+  "file": "M-tiles-before-android.jpg",
+  "cards": {
+   "total": 24,
+   "full": 1,
+   "half": 0
+  },
+  "barVisible": 159,
+  "contentArea": 444,
+  "cardSize": [
+   328,
+   246
+  ],
+  "docH": 6601,
+  "smallTargetCount": 10
+ },
+ "tiles-after-android": {
+  "file": "M-tiles-after-android.jpg",
+  "cards": {
+   "total": 24,
+   "full": 4,
+   "half": 0
+  },
+  "barVisible": 159,
+  "contentArea": 444,
+  "cardSize": [
+   160,
+   120
+  ],
+  "docH": 1925,
+  "smallTargetCount": 10
+ },
+ "tiles-after2-android": {
+  "file": "M-tiles-after2-android.jpg",
+  "cards": {
+   "total": 24,
+   "full": 6,
+   "half": 0
+  },
+  "barVisible": 159,
+  "contentArea": 444,
+  "cardSize": [
+   160,
+   120
+  ],
+  "docH": 1801,
+  "smallTargetCount": 9
+ },
+ "tiles-three-android": {
+  "file": "M-tiles-three-android.jpg",
+  "cards": {
+   "total": 24,
+   "full": 15,
+   "half": 0
+  },
+  "barVisible": 159,
+  "contentArea": 444,
+  "cardSize": [
+   105,
+   79
+  ],
+  "docH": 939,
+  "smallTargetCount": 9
+ },
+ "tiles-rows-android": {
+  "file": "M-tiles-rows-android.jpg",
+  "cards": {
+   "total": 24,
+   "full": 4,
+   "half": 0
+  },
+  "barVisible": 159,
+  "contentArea": 444,
+  "cardSize": [
+   624,
+   96
+  ],
+  "docH": 2785,
+  "smallTargetCount": 9
+ },
+ "landing-before-iphone": {
+  "file": "M-landing-before-iphone.jpg",
+  "cards": {
+   "total": 12,
+   "full": 1,
+   "half": 0
+  },
+  "barVisible": 113,
+  "contentArea": 607,
+  "cardSize": [
+   358,
+   269
+  ],
+  "docH": 16827,
+  "smallTargetCount": 5
+ },
+ "landing-after-iphone": {
+  "file": "M-landing-after-iphone.jpg",
+  "cards": {
+   "total": 12,
+   "full": 4,
+   "half": 0
+  },
+  "barVisible": 123,
+  "contentArea": 607,
+  "cardSize": [
+   175,
+   131
+  ],
+  "docH": 14236,
+  "smallTargetCount": 1
+ },
+ "landing-allArtists-after-iphone": {
+  "all": 1159,
+  "vh": 664
+ },
+ "landing-before-se": {
+  "file": "M-landing-before-se.jpg",
+  "cards": {
+   "total": 12,
+   "full": 0,
+   "half": 1
+  },
+  "barVisible": 113,
+  "contentArea": 496,
+  "cardSize": [
+   343,
+   257
+  ],
+  "docH": 16709,
+  "smallTargetCount": 5
+ },
+ "landing-after-se": {
+  "file": "M-landing-after-se.jpg",
+  "cards": {
+   "total": 12,
+   "full": 2,
+   "half": 2
+  },
+  "barVisible": 123,
+  "contentArea": 496,
+  "cardSize": [
+   168,
+   126
+  ],
+  "docH": 14200,
+  "smallTargetCount": 1
+ },
+ "landing-allArtists-after-se": {
+  "all": 1123,
+  "vh": 553
+ },
+ "landscape-before-land": {
+  "file": "M-landscape-before-land.jpg",
+  "cards": {
+   "total": 12,
+   "full": 0,
+   "half": 0
+  },
+  "barVisible": 113,
+  "contentArea": 283,
+  "cardSize": [
+   353,
+   265
+  ],
+  "docH": 8749,
+  "smallTargetCount": 5
+ },
+ "landscape-after-land": {
+  "file": "M-landscape-after-land.jpg",
+  "cards": {
+   "total": 12,
+   "full": 0,
+   "half": 0
+  },
+  "barVisible": 123,
+  "contentArea": 160,
+  "cardSize": [
+   353,
+   265
+  ],
+  "docH": 8533,
+  "smallTargetCount": 1
+ },
+ "keyboard-before-android": {
+  "file": "M-keyboard-before-android.jpg",
+  "cards": {
+   "total": 16,
+   "full": 1,
+   "half": 0
+  },
+  "barVisible": 159,
+  "contentArea": 444,
+  "cardSize": [
+   328,
+   246
+  ],
+  "docH": 4549,
+  "smallTargetCount": 10
+ },
+ "keyboard-after-android": {
+  "file": "M-keyboard-after-android.jpg",
+  "cards": {
+   "total": 16,
+   "full": 6,
+   "half": 0
+  },
+  "barVisible": 159,
+  "contentArea": 444,
+  "cardSize": [
+   160,
+   120
+  ],
+  "docH": 1281,
+  "smallTargetCount": 9
+ },
+ "keyboard-after-dismissed-android": {
+  "file": "M-keyboard-after-dismissed-android.jpg",
+  "cards": {
+   "total": 16,
+   "full": 6,
+   "half": 0
+  },
+  "barVisible": 159,
+  "contentArea": 444,
+  "cardSize": [
+   160,
+   120
+  ],
+  "docH": 1281,
+  "smallTargetCount": 9
+ },
+ "bar-before-iphone": {
+  "file": "M-bar-before-iphone.jpg",
+  "cards": {
+   "total": 34,
+   "full": 1,
+   "half": 0
+  },
+  "barVisible": 235,
+  "contentArea": 372,
+  "cardSize": [
+   358,
+   269
+  ],
+  "docH": 9930,
+  "smallTargetCount": 12
+ },
+ "bar-after-iphone": {
+  "file": "M-bar-after-iphone.jpg",
+  "cards": {
+   "total": 34,
+   "full": 6,
+   "half": 0
+  },
+  "barVisible": 123,
+  "contentArea": 484,
+  "cardSize": [
+   175,
+   131
+  ],
+  "docH": 2618,
+  "smallTargetCount": 2
+ },
+ "sheet-after-iphone": {
+  "file": "M-sheet-after-iphone.jpg",
+  "cards": {
+   "total": 34,
+   "full": 6,
+   "half": 0
+  },
+  "barVisible": 123,
+  "contentArea": 484,
+  "cardSize": [
+   175,
+   131
+  ],
+  "docH": 2618,
+  "smallTargetCount": 2
+ },
+ "sheet-before-iphone": {
+  "file": "M-sheet-before-iphone.jpg",
+  "barVisible": 113,
+  "docH": 16827,
+  "smallTargetCount": 15
+ },
+ "az-before-iphone": {
+  "file": "M-az-before-iphone.jpg",
+  "cards": {
+   "total": 12,
+   "full": 0,
+   "half": 0
+  },
+  "barVisible": 113,
+  "contentArea": 494,
+  "cardSize": [
+   358,
+   269
+  ],
+  "docH": 16827,
+  "smallTargetCount": 16
+ },
+ "az-after-iphone": {
+  "file": "M-az-after-iphone.jpg",
+  "cards": {
+   "total": 12,
+   "full": 0,
+   "half": 0
+  },
+  "barVisible": 113,
+  "contentArea": 494,
+  "cardSize": [
+   358,
+   269
+  ],
+  "docH": 16827,
+  "smallTargetCount": 22
+ },
+ "azjump-tap-iphone": {
+  "file": "M-azjump-tap-iphone.jpg",
+  "cards": {
+   "total": 12,
+   "full": 0,
+   "half": 0
+  },
+  "barVisible": 113,
+  "contentArea": 494,
+  "cardSize": [
+   358,
+   269
+  ],
+  "docH": 16827,
+  "smallTargetCount": 23
+ },
+ "azjump-before-iphone": {
+  "file": "M-azjump-before-iphone.jpg",
+  "cards": {
+   "total": 24,
+   "full": 1,
+   "half": 1
+  },
+  "barVisible": 159,
+  "contentArea": 448,
+  "cardSize": [
+   358,
+   269
+  ],
+  "docH": 7141,
+  "smallTargetCount": 9
+ },
+ "azjump-after-iphone": {
+  "file": "M-azjump-after-iphone.jpg",
+  "cards": {
+   "total": 24,
+   "full": 1,
+   "half": 0
+  },
+  "barVisible": 159,
+  "contentArea": 448,
+  "cardSize": [
+   358,
+   269
+  ],
+  "docH": 7141,
+  "smallTargetCount": 10
+ },
+ "initials-before-android": {
+  "file": "M-initials-before-android.jpg",
+  "cards": {
+   "total": 0,
+   "full": 0,
+   "half": 0
+  },
+  "barVisible": 159,
+  "contentArea": 444,
+  "docH": 708,
+  "smallTargetCount": 10
+ },
+ "initials-after-android": {
+  "file": "M-initials-after-android.jpg",
+  "cards": {
+   "total": 2,
+   "full": 2,
+   "half": 0
+  },
+  "barVisible": 159,
+  "contentArea": 444,
+  "cardSize": [
+   160,
+   120
+  ],
+  "docH": 660,
+  "smallTargetCount": 9
+ },
+ "copies-before-iphone": {
+  "file": "M-copies-before-iphone.jpg",
+  "barVisible": 113,
+  "docH": 16827,
+  "smallTargetCount": 2
+ },
+ "copies-after-iphone": {
+  "file": "M-copies-after-iphone.jpg",
+  "barVisible": 113,
+  "docH": 16827,
+  "smallTargetCount": 2
+ },
+ "dock-before-iphone": {
+  "file": "M-dock-before-iphone.jpg",
+  "barVisible": 113,
+  "docH": 16827,
+  "smallTargetCount": 2
+ },
+ "dock-after-iphone": {
+  "file": "M-dock-after-iphone.jpg",
+  "barVisible": 113,
+  "docH": 16827,
+  "smallTargetCount": 2
+ },
+ "targets-before-iphone": {
+  "file": "M-targets-before-iphone.jpg",
+  "cards": {
+   "total": 33,
+   "full": 0,
+   "half": 1
+  },
+  "barVisible": 199,
+  "contentArea": 408,
+  "cardSize": [
+   358,
+   269
+  ],
+  "docH": 9752,
+  "smallTargetCount": 12
+ },
+ "targets-after-iphone": {
+  "file": "M-targets-after-iphone.jpg",
+  "cards": {
+   "total": 33,
+   "full": 6,
+   "half": 0
+  },
+  "barVisible": 123,
+  "contentArea": 484,
+  "cardSize": [
+   175,
+   131
+  ],
+  "docH": 2606,
+  "smallTargetCount": 3
+ }
+}

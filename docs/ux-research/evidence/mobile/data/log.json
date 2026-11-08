@@ -1,0 +1,6503 @@
+[
+ {
+  "scenario": "S1",
+  "n": "01",
+  "slug": "first-screen",
+  "device": "iphone",
+  "file": "S1-01-first-screen-iphone.jpg",
+  "title": "First screen — iPhone 15 · Safari",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/",
+  "cards": {
+   "total": 12,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 607,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 5,
+  "textSizes": {
+   "11": 8,
+   "12": 75,
+   "14": 82,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S1",
+  "kind": "sections",
+  "device": "iphone",
+  "featured": 292,
+  "allArtists": 3750,
+  "letters": {
+   "#": 3811,
+   "A": 3957,
+   "B": 4679,
+   "C": 5545,
+   "D": 6231,
+   "E": 6953,
+   "F": 7423,
+   "G": 8325,
+   "H": 8651,
+   "I": 8869,
+   "J": 9051,
+   "K": 9701,
+   "L": 10315,
+   "M": 10929,
+   "N": 11759,
+   "O": 12337,
+   "P": 12627,
+   "Q": 13205,
+   "R": 13351,
+   "S": 13965,
+   "T": 15227,
+   "U": 15805,
+   "V": 15915,
+   "W": 16169,
+   "Y": 16423,
+   "Z": 16533
+  },
+  "pearlJam": 12741,
+  "docH": 16827,
+  "vh": 664
+ },
+ {
+  "scenario": "S1",
+  "n": "02",
+  "slug": "scroll-1",
+  "device": "iphone",
+  "file": "S1-02-scroll-1-iphone.jpg",
+  "title": "One swipe down: Featured, one card at a time",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 386,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/",
+  "cards": {
+   "total": 12,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 494,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 5,
+  "textSizes": {
+   "11": 8,
+   "12": 95,
+   "14": 61
+  }
+ },
+ {
+  "scenario": "S1",
+  "n": "03",
+  "slug": "all-artists",
+  "device": "iphone",
+  "file": "S1-03-all-artists-iphone.jpg",
+  "title": "\"All artists\" — 5.6 screens down",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 3229,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/",
+  "cards": {
+   "total": 12,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 494,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Download the full list",
+    "w": 157,
+    "h": 20
+   },
+   {
+    "name": "28 Days1",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "30 Seconds to Mars25",
+    "w": 382,
+    "h": 36
+   }
+  ],
+  "smallTargetCount": 8,
+  "textSizes": {
+   "11": 8,
+   "12": 103,
+   "14": 87,
+   "36": 1
+  }
+ },
+ {
+  "scenario": "S1",
+  "n": "04",
+  "slug": "filter-row-scrolled",
+  "device": "iphone",
+  "file": "S1-04-filter-row-scrolled-iphone.jpg",
+  "title": "Filter row swiped sideways to reach More filters",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 52,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/",
+  "cards": {
+   "total": 12,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 607,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 5,
+  "textSizes": {
+   "11": 8,
+   "12": 75,
+   "14": 82,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S1",
+  "n": "05",
+  "slug": "more-filters",
+  "device": "iphone",
+  "file": "S1-05-more-filters-iphone.jpg",
+  "title": "More filters, as it opens",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/",
+  "smallTargets": [
+   {
+    "name": "Pro-shot1225",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Audience52",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "HD 1080117",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "HD 72030",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "SD1090",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Low-res40",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "PAL593",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "NTSC532",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Under 10 min271",
+    "w": 332,
+    "h": 32
+   }
+  ],
+  "smallTargetCount": 9,
+  "textSizes": {
+   "12": 71,
+   "14": 45
+  }
+ },
+ {
+  "scenario": "S1",
+  "n": "06",
+  "slug": "more-filters-bottom",
+  "device": "iphone",
+  "file": "S1-06-more-filters-bottom-iphone.jpg",
+  "title": "Scrolled inside the popover: \"Added → New\" is last",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/",
+  "smallTargets": [
+   {
+    "name": "Pro-shot1225",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Audience52",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "HD 1080117",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "HD 72030",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "SD1090",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Low-res40",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "PAL593",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "NTSC532",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Under 10 min271",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "10–30 min252",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "30–60 min399",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "1–1½ hours231",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Over 1½ hours122",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Has a setlist858",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "No setlist yet419",
+    "w": 332,
+    "h": 32
+   }
+  ],
+  "smallTargetCount": 15,
+  "textSizes": {
+   "12": 99,
+   "14": 125
+  }
+ },
+ {
+  "scenario": "S1",
+  "n": "07",
+  "slug": "new-selected",
+  "device": "iphone",
+  "file": "S1-07-new-selected-iphone.jpg",
+  "title": "New ticked",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 218,
+  "docH": 18369,
+  "overflowX": 0,
+  "barH": 199,
+  "barVisible": 199,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/?added=new",
+  "smallTargets": [
+   {
+    "name": "HD 108018",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "HD 7205",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "SD40",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Low-res1",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "PAL3",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "NTSC38",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Under 10 min2",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "10–30 min14",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "30–60 min24",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "1–1½ hours13",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Over 1½ hours11",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Has a setlist51",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "No setlist yet13",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "New64",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Clear more filters",
+    "w": 344,
+    "h": 32
+   }
+  ],
+  "smallTargetCount": 15,
+  "textSizes": {
+   "12": 90,
+   "14": 130
+  }
+ },
+ {
+  "scenario": "S1",
+  "n": "08",
+  "slug": "new-results",
+  "device": "iphone",
+  "file": "S1-08-new-results-iphone.jpg",
+  "title": "The new shows",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 218,
+  "docH": 18369,
+  "overflowX": 0,
+  "barH": 199,
+  "barVisible": 199,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?added=new",
+  "cards": {
+   "total": 64,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 408,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters1",
+    "w": 133,
+    "h": 34
+   },
+   {
+    "name": "Remove filter New",
+    "w": 68,
+    "h": 28
+   },
+   {
+    "name": "Clear all",
+    "w": 68,
+    "h": 28
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 10,
+  "textSizes": {
+   "10": 3,
+   "11": 9,
+   "12": 126,
+   "14": 75
+  }
+ },
+ {
+  "scenario": "S1",
+  "n": "09",
+  "slug": "new-results-scrolled",
+  "device": "iphone",
+  "file": "S1-09-new-results-scrolled-iphone.jpg",
+  "title": "Scrolling the new shows",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 564,
+  "docH": 18369,
+  "overflowX": 0,
+  "barH": 153,
+  "barVisible": 153,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?added=new",
+  "cards": {
+   "total": 64,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 454,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters1",
+    "w": 133,
+    "h": 34
+   },
+   {
+    "name": "Remove filter New",
+    "w": 68,
+    "h": 28
+   },
+   {
+    "name": "Clear all",
+    "w": 68,
+    "h": 28
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 10,
+  "textSizes": {
+   "10": 6,
+   "11": 6,
+   "12": 116,
+   "14": 76
+  }
+ },
+ {
+  "scenario": "S1",
+  "n": "10",
+  "slug": "first-screen",
+  "device": "se",
+  "file": "S1-10-first-screen-se.jpg",
+  "title": "First screen — iPhone SE · Safari",
+  "note": "",
+  "keyboard": false,
+  "vw": 375,
+  "vh": 553,
+  "scrollY": 0,
+  "docH": 16709,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/",
+  "cards": {
+   "total": 12,
+   "full": 0,
+   "half": 1
+  },
+  "cardSize": [
+   343,
+   257
+  ],
+  "contentArea": 496,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 343,
+    "h": 42
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 5,
+  "textSizes": {
+   "11": 8,
+   "12": 54,
+   "14": 72,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S1",
+  "n": "11",
+  "slug": "first-screen",
+  "device": "android",
+  "file": "S1-11-first-screen-android.jpg",
+  "title": "First screen — Galaxy S23 · Chrome",
+  "note": "",
+  "keyboard": false,
+  "vw": 360,
+  "vh": 660,
+  "scrollY": 0,
+  "docH": 16571,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/",
+  "cards": {
+   "total": 12,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   328,
+   246
+  ],
+  "contentArea": 603,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 328,
+    "h": 42
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 5,
+  "textSizes": {
+   "12": 82,
+   "14": 77,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S1",
+  "n": "12",
+  "slug": "first-screen",
+  "device": "promax",
+  "file": "S1-12-first-screen-promax.jpg",
+  "title": "First screen — iPhone 15 Pro Max · Safari",
+  "note": "",
+  "keyboard": false,
+  "vw": 430,
+  "vh": 752,
+  "scrollY": 0,
+  "docH": 14397,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/",
+  "cards": {
+   "total": 12,
+   "full": 4,
+   "half": 0
+  },
+  "cardSize": [
+   193,
+   145
+  ],
+  "contentArea": 695,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 398,
+    "h": 42
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 5,
+  "textSizes": {
+   "11": 24,
+   "12": 236,
+   "14": 148,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S1",
+  "n": "13",
+  "slug": "first-screen",
+  "device": "zoom125",
+  "file": "S1-13-first-screen-zoom125.jpg",
+  "title": "First screen — iPhone 15 · Safari text 125%",
+  "note": "",
+  "keyboard": false,
+  "vw": 312,
+  "vh": 531,
+  "scrollY": 0,
+  "docH": 16145,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/",
+  "cards": {
+   "total": 12,
+   "full": 0,
+   "half": 1
+  },
+  "cardSize": [
+   280,
+   210
+  ],
+  "contentArea": 474,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 280,
+    "h": 42
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 4,
+  "textSizes": {
+   "11": 8,
+   "12": 73,
+   "14": 72,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S1",
+  "n": "14",
+  "slug": "zoom-results",
+  "device": "zoom125",
+  "file": "S1-14-zoom-results-zoom125.jpg",
+  "title": "Text at 125%: results for \"pinkpop\"",
+  "note": "",
+  "keyboard": false,
+  "vw": 312,
+  "vh": 531,
+  "scrollY": 0,
+  "docH": 7781,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=pinkpop",
+  "cards": {
+   "total": 33,
+   "full": 0,
+   "half": 1
+  },
+  "cardSize": [
+   280,
+   210
+  ],
+  "contentArea": 315,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 280,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 125,
+    "h": 34
+   },
+   {
+    "name": "Clear search",
+    "w": 125,
+    "h": 32
+   }
+  ],
+  "smallTargetCount": 9,
+  "textSizes": {
+   "12": 58,
+   "14": 105,
+   "36": 9,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S1",
+  "n": "15",
+  "slug": "zoom-drawer",
+  "device": "zoom125",
+  "file": "S1-15-zoom-drawer-zoom125.jpg",
+  "title": "Text at 125%: a show",
+  "note": "",
+  "keyboard": false,
+  "vw": 312,
+  "vh": 531,
+  "scrollY": 2,
+  "docH": 7781,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/?q=pinkpop&show=1407e9f4ed4a",
+  "smallTargets": [
+   {
+    "name": "Close",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "name": "Share",
+    "w": 70,
+    "h": 22
+   }
+  ],
+  "smallTargetCount": 2,
+  "textSizes": {
+   "12": 58,
+   "14": 133,
+   "32": 13
+  }
+ },
+ {
+  "scenario": "S1",
+  "n": "16",
+  "slug": "first-screen",
+  "device": "land",
+  "file": "S1-16-first-screen-land.jpg",
+  "title": "First screen — iPhone 15 · landscape",
+  "note": "",
+  "keyboard": false,
+  "vw": 750,
+  "vh": 340,
+  "scrollY": 0,
+  "docH": 8749,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/",
+  "cards": {
+   "total": 12,
+   "full": 0,
+   "half": 0
+  },
+  "cardSize": [
+   353,
+   265
+  ],
+  "contentArea": 283,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 718,
+    "h": 42
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 5,
+  "textSizes": {
+   "12": 19,
+   "14": 61,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S1",
+  "n": "17",
+  "slug": "land-results",
+  "device": "land",
+  "file": "S1-17-land-results-land.jpg",
+  "title": "Landscape: results",
+  "note": "",
+  "keyboard": false,
+  "vw": 750,
+  "vh": 340,
+  "scrollY": 0,
+  "docH": 5128,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=pinkpop",
+  "cards": {
+   "total": 33,
+   "full": 0,
+   "half": 0
+  },
+  "cardSize": [
+   353,
+   265
+  ],
+  "contentArea": 124,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 718,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   },
+   {
+    "name": "Clear search",
+    "w": 125,
+    "h": 32
+   }
+  ],
+  "smallTargetCount": 10,
+  "textSizes": {
+   "12": 37,
+   "14": 92,
+   "36": 9,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S2",
+  "n": "01",
+  "slug": "search-tab",
+  "device": "android",
+  "file": "S2-01-search-tab-android.jpg",
+  "title": "Taps the Search tab: field focused, keyboard up",
+  "note": "",
+  "keyboard": true,
+  "vw": 360,
+  "vh": 660,
+  "scrollY": 0,
+  "docH": 16571,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/",
+  "cards": {
+   "total": 12,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   328,
+   246
+  ],
+  "contentArea": 603,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 328,
+    "h": 42
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 5,
+  "textSizes": {
+   "11": 8,
+   "12": 82,
+   "14": 84,
+   "15": 37,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S2",
+  "n": "02",
+  "slug": "brasil-keyboard",
+  "device": "android",
+  "file": "S2-02-brasil-keyboard-android.jpg",
+  "title": "\"brasil\" — what shows above the keyboard",
+  "note": "",
+  "keyboard": true,
+  "vw": 360,
+  "vh": 660,
+  "scrollY": 0,
+  "docH": 4549,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=brasil",
+  "cards": {
+   "total": 16,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   328,
+   246
+  ],
+  "contentArea": 444,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 328,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 176,
+    "h": 34
+   },
+   {
+    "name": "Clear search",
+    "w": 125,
+    "h": 32
+   }
+  ],
+  "smallTargetCount": 10,
+  "textSizes": {
+   "12": 68,
+   "14": 117,
+   "15": 37,
+   "36": 8,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S2",
+  "n": "03",
+  "slug": "brasil",
+  "device": "android",
+  "file": "S2-03-brasil-android.jpg",
+  "title": "\"brasil\" — keyboard down",
+  "note": "",
+  "keyboard": false,
+  "vw": 360,
+  "vh": 660,
+  "scrollY": 0,
+  "docH": 4549,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=brasil",
+  "cards": {
+   "total": 16,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   328,
+   246
+  ],
+  "contentArea": 444,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 328,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 176,
+    "h": 34
+   },
+   {
+    "name": "Clear search",
+    "w": 125,
+    "h": 32
+   }
+  ],
+  "smallTargetCount": 10,
+  "textSizes": {
+   "12": 68,
+   "14": 110,
+   "36": 8,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S2",
+  "n": "04",
+  "slug": "brasil-scrolled",
+  "device": "android",
+  "file": "S2-04-brasil-scrolled-android.jpg",
+  "title": "\"brasil\" — one swipe down",
+  "note": "",
+  "keyboard": false,
+  "vw": 360,
+  "vh": 660,
+  "scrollY": 364,
+  "docH": 4549,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=brasil",
+  "cards": {
+   "total": 16,
+   "full": 1,
+   "half": 1
+  },
+  "cardSize": [
+   328,
+   246
+  ],
+  "contentArea": 490,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 328,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 176,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 9,
+  "textSizes": {
+   "12": 92,
+   "14": 63
+  }
+ },
+ {
+  "scenario": "S2",
+  "n": "05",
+  "slug": "foo-rir-keyboard",
+  "device": "android",
+  "file": "S2-05-foo-rir-keyboard-android.jpg",
+  "title": "\"foo fighters rock in rio\" — above the keyboard",
+  "note": "",
+  "keyboard": true,
+  "vw": 360,
+  "vh": 660,
+  "scrollY": 0,
+  "docH": 689,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=foo%20fighters%20rock%20in%20rio",
+  "cards": {
+   "total": 1,
+   "full": 0,
+   "half": 1
+  },
+  "cardSize": [
+   328,
+   246
+  ],
+  "contentArea": 444,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 328,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   },
+   {
+    "name": "Clear search",
+    "w": 125,
+    "h": 32
+   }
+  ],
+  "smallTargetCount": 10,
+  "textSizes": {
+   "12": 55,
+   "14": 107,
+   "15": 37,
+   "36": 26,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S2",
+  "n": "06",
+  "slug": "foo-rir",
+  "device": "android",
+  "file": "S2-06-foo-rir-android.jpg",
+  "title": "\"foo fighters rock in rio\" — one result",
+  "note": "",
+  "keyboard": false,
+  "vw": 360,
+  "vh": 660,
+  "scrollY": 0,
+  "docH": 689,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=foo%20fighters%20rock%20in%20rio",
+  "cards": {
+   "total": 1,
+   "full": 0,
+   "half": 1
+  },
+  "cardSize": [
+   328,
+   246
+  ],
+  "contentArea": 444,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 328,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   },
+   {
+    "name": "Clear search",
+    "w": 125,
+    "h": 32
+   }
+  ],
+  "smallTargetCount": 10,
+  "textSizes": {
+   "12": 55,
+   "14": 100,
+   "36": 26,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S2",
+  "n": "07",
+  "slug": "drawer-top",
+  "device": "android",
+  "file": "S2-07-drawer-top-android.jpg",
+  "title": "The show opens: first screen",
+  "note": "",
+  "keyboard": false,
+  "vw": 360,
+  "vh": 660,
+  "scrollY": 0,
+  "docH": 689,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/?q=foo%20fighters%20rock%20in%20rio&show=a93618c16397",
+  "smallTargets": [
+   {
+    "name": "Close",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "name": "Share",
+    "w": 70,
+    "h": 22
+   }
+  ],
+  "smallTargetCount": 2,
+  "textSizes": {
+   "12": 68,
+   "14": 145,
+   "32": 12
+  }
+ },
+ {
+  "scenario": "S2",
+  "n": "08",
+  "slug": "drawer-scroll-1",
+  "device": "android",
+  "file": "S2-08-drawer-scroll-1-android.jpg",
+  "title": "One swipe into the show",
+  "note": "",
+  "keyboard": false,
+  "vw": 360,
+  "vh": 660,
+  "scrollY": 0,
+  "docH": 689,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/?q=foo%20fighters%20rock%20in%20rio&show=a93618c16397",
+  "smallTargets": [
+   {
+    "name": "Close",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "name": "Share",
+    "w": 70,
+    "h": 22
+   },
+   {
+    "name": "Technical details",
+    "w": 320,
+    "h": 16
+   }
+  ],
+  "smallTargetCount": 3,
+  "textSizes": {
+   "12": 93,
+   "14": 187,
+   "24": 12
+  }
+ },
+ {
+  "scenario": "S2",
+  "n": "09",
+  "slug": "drawer-tech-closed",
+  "device": "android",
+  "file": "S2-09-drawer-tech-closed-android.jpg",
+  "title": "Technical details, folded",
+  "note": "",
+  "keyboard": false,
+  "vw": 360,
+  "vh": 660,
+  "scrollY": 0,
+  "docH": 689,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/?q=foo%20fighters%20rock%20in%20rio&show=a93618c16397",
+  "smallTargets": [
+   {
+    "name": "Close",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "name": "Share",
+    "w": 70,
+    "h": 22
+   },
+   {
+    "name": "Technical details",
+    "w": 320,
+    "h": 16
+   }
+  ],
+  "smallTargetCount": 3,
+  "textSizes": {
+   "12": 93,
+   "14": 187,
+   "24": 12
+  }
+ },
+ {
+  "scenario": "S2",
+  "n": "10",
+  "slug": "drawer-tech-open",
+  "device": "android",
+  "file": "S2-10-drawer-tech-open-android.jpg",
+  "title": "Technical details, open",
+  "note": "",
+  "keyboard": false,
+  "vw": 360,
+  "vh": 660,
+  "scrollY": 0,
+  "docH": 689,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/?q=foo%20fighters%20rock%20in%20rio&show=a93618c16397",
+  "smallTargets": [
+   {
+    "name": "Close",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "name": "Share",
+    "w": 70,
+    "h": 22
+   },
+   {
+    "name": "Technical details",
+    "w": 320,
+    "h": 16
+   }
+  ],
+  "smallTargetCount": 3,
+  "textSizes": {
+   "12": 98,
+   "14": 193,
+   "24": 12
+  }
+ },
+ {
+  "scenario": "S2",
+  "n": "11",
+  "slug": "back-gesture",
+  "device": "android",
+  "file": "S2-11-back-gesture-android.jpg",
+  "title": "Android back: the show closes, results stay",
+  "note": "",
+  "keyboard": false,
+  "vw": 360,
+  "vh": 660,
+  "scrollY": 0,
+  "docH": 689,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=foo%20fighters%20rock%20in%20rio",
+  "cards": {
+   "total": 1,
+   "full": 0,
+   "half": 1
+  },
+  "cardSize": [
+   328,
+   246
+  ],
+  "contentArea": 444,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 328,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   },
+   {
+    "name": "Clear search",
+    "w": 125,
+    "h": 32
+   }
+  ],
+  "smallTargetCount": 10,
+  "textSizes": {
+   "12": 55,
+   "14": 100,
+   "36": 26,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S2",
+  "n": "12",
+  "slug": "ratm-swu",
+  "device": "android",
+  "file": "S2-12-ratm-swu-android.jpg",
+  "title": "\"ratm swu\" — two copies",
+  "note": "",
+  "keyboard": false,
+  "vw": 360,
+  "vh": 660,
+  "scrollY": 0,
+  "docH": 708,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=ratm%20swu",
+  "cards": {
+   "total": 0,
+   "full": 0,
+   "half": 0
+  },
+  "contentArea": 444,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 328,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 180,
+    "h": 34
+   },
+   {
+    "name": "Clear search",
+    "w": 125,
+    "h": 32
+   }
+  ],
+  "smallTargetCount": 10,
+  "textSizes": {
+   "12": 19,
+   "13": 54,
+   "14": 208,
+   "16": 29,
+   "36": 10,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S2",
+  "n": "13",
+  "slug": "multishow",
+  "device": "android",
+  "file": "S2-13-multishow-android.jpg",
+  "title": "\"multishow\" — by broadcaster",
+  "note": "",
+  "keyboard": false,
+  "vw": 360,
+  "vh": 660,
+  "scrollY": 0,
+  "docH": 2989,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=multishow",
+  "cards": {
+   "total": 10,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   328,
+   246
+  ],
+  "contentArea": 444,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 328,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 176,
+    "h": 34
+   },
+   {
+    "name": "Clear search",
+    "w": 125,
+    "h": 32
+   }
+  ],
+  "smallTargetCount": 10,
+  "textSizes": {
+   "12": 68,
+   "14": 110,
+   "36": 11,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S2",
+  "n": "14",
+  "slug": "date",
+  "device": "android",
+  "file": "S2-14-date-android.jpg",
+  "title": "\"24.05.96\" — a date as traders type it",
+  "note": "",
+  "keyboard": false,
+  "vw": 360,
+  "vh": 660,
+  "scrollY": 0,
+  "docH": 660,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=24.05.96",
+  "cards": {
+   "total": 1,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   328,
+   246
+  ],
+  "contentArea": 444,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 328,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   },
+   {
+    "name": "Clear search",
+    "w": 125,
+    "h": 32
+   }
+  ],
+  "smallTargetCount": 10,
+  "textSizes": {
+   "12": 55,
+   "14": 100,
+   "36": 10,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S2",
+  "kind": "back-after-searches",
+  "before": "https://karl0s.github.io/digital-vault/?q=24.05.96",
+  "after": "about:blank",
+  "left": true
+ },
+ {
+  "scenario": "S3",
+  "n": "01",
+  "slug": "link-lands",
+  "device": "iphone",
+  "file": "S3-01-link-lands-iphone.jpg",
+  "title": "Taps the link: the show opens",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/?show=7c860a05fcce",
+  "smallTargets": [
+   {
+    "name": "Close",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "name": "Share",
+    "w": 70,
+    "h": 22
+   }
+  ],
+  "smallTargetCount": 2,
+  "textSizes": {
+   "12": 280,
+   "14": 93,
+   "32": 12
+  }
+ },
+ {
+  "scenario": "S3",
+  "n": "02",
+  "slug": "drawer-scroll-1",
+  "device": "iphone",
+  "file": "S3-02-drawer-scroll-1-iphone.jpg",
+  "title": "One swipe: stills and the copies",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/?show=7c860a05fcce",
+  "smallTargets": [
+   {
+    "name": "Close",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "name": "Share",
+    "w": 70,
+    "h": 22
+   }
+  ],
+  "smallTargetCount": 2,
+  "textSizes": {
+   "12": 285,
+   "14": 219,
+   "24": 12
+  }
+ },
+ {
+  "scenario": "S3",
+  "n": "03",
+  "slug": "copies",
+  "device": "iphone",
+  "file": "S3-03-copies-iphone.jpg",
+  "title": "\"2 recordings of this show\" at phone width",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/?show=7c860a05fcce",
+  "smallTargets": [
+   {
+    "name": "Close",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "name": "Share",
+    "w": 70,
+    "h": 22
+   }
+  ],
+  "smallTargetCount": 2,
+  "textSizes": {
+   "12": 285,
+   "14": 219,
+   "24": 12
+  }
+ },
+ {
+  "scenario": "S3",
+  "n": "04",
+  "slug": "other-copy",
+  "device": "iphone",
+  "file": "S3-04-other-copy-iphone.jpg",
+  "title": "Taps the other copy: the show swaps",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/?show=8349e6f453e8",
+  "smallTargets": [
+   {
+    "name": "Close",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "name": "Share",
+    "w": 70,
+    "h": 22
+   }
+  ],
+  "smallTargetCount": 2,
+  "textSizes": {
+   "12": 280,
+   "14": 93,
+   "32": 12
+  }
+ },
+ {
+  "scenario": "S3",
+  "n": "05",
+  "slug": "other-copy-copies",
+  "device": "iphone",
+  "file": "S3-05-other-copy-copies-iphone.jpg",
+  "title": "The copies list, from the other copy",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/?show=8349e6f453e8",
+  "smallTargets": [
+   {
+    "name": "Close",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "name": "Share",
+    "w": 70,
+    "h": 22
+   }
+  ],
+  "smallTargetCount": 2,
+  "textSizes": {
+   "12": 280,
+   "14": 93,
+   "32": 12
+  }
+ },
+ {
+  "scenario": "S3",
+  "n": "06",
+  "slug": "stills-strip",
+  "device": "iphone",
+  "file": "S3-06-stills-strip-iphone.jpg",
+  "title": "The stills strip",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/?show=8349e6f453e8",
+  "smallTargets": [
+   {
+    "name": "Close",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "name": "Share",
+    "w": 70,
+    "h": 22
+   }
+  ],
+  "smallTargetCount": 2,
+  "textSizes": {
+   "12": 280,
+   "14": 93,
+   "32": 12
+  }
+ },
+ {
+  "scenario": "S3",
+  "n": "07",
+  "slug": "viewer",
+  "device": "iphone",
+  "file": "S3-07-viewer-iphone.jpg",
+  "title": "A still opened",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/?show=8349e6f453e8",
+  "smallTargets": [
+   {
+    "name": "Back to the show",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "name": "Open full size",
+    "w": 75,
+    "h": 16
+   },
+   {
+    "name": "Previous image",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "name": "Go to image 1",
+    "w": 24,
+    "h": 24
+   },
+   {
+    "name": "Go to image 2",
+    "w": 22,
+    "h": 22
+   },
+   {
+    "name": "Go to image 3",
+    "w": 22,
+    "h": 22
+   },
+   {
+    "name": "Go to image 4",
+    "w": 22,
+    "h": 22
+   },
+   {
+    "name": "Next image",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "name": "Close",
+    "w": 36,
+    "h": 36
+   }
+  ],
+  "smallTargetCount": 9,
+  "textSizes": {
+   "12": 32,
+   "22": 12
+  }
+ },
+ {
+  "scenario": "S3",
+  "n": "08",
+  "slug": "viewer-next",
+  "device": "iphone",
+  "file": "S3-08-viewer-next-iphone.jpg",
+  "title": "Next still",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/?show=8349e6f453e8",
+  "smallTargets": [
+   {
+    "name": "Back to the show",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "name": "Open full size",
+    "w": 75,
+    "h": 16
+   },
+   {
+    "name": "Previous image",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "name": "Go to image 1",
+    "w": 22,
+    "h": 22
+   },
+   {
+    "name": "Go to image 2",
+    "w": 24,
+    "h": 24
+   },
+   {
+    "name": "Go to image 3",
+    "w": 22,
+    "h": 22
+   },
+   {
+    "name": "Go to image 4",
+    "w": 22,
+    "h": 22
+   },
+   {
+    "name": "Next image",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "name": "Close",
+    "w": 36,
+    "h": 36
+   }
+  ],
+  "smallTargetCount": 9,
+  "textSizes": {
+   "12": 32,
+   "22": 12
+  }
+ },
+ {
+  "scenario": "S3",
+  "n": "09",
+  "slug": "share-visible",
+  "device": "iphone",
+  "file": "S3-09-share-visible-iphone.jpg",
+  "title": "Back at the top: the Share pill",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/?show=8349e6f453e8",
+  "smallTargets": [
+   {
+    "name": "Close",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "name": "Share",
+    "w": 70,
+    "h": 22
+   }
+  ],
+  "smallTargetCount": 2,
+  "textSizes": {
+   "12": 280,
+   "14": 93,
+   "32": 12
+  }
+ },
+ {
+  "scenario": "S3",
+  "kind": "shared",
+  "shared": {
+   "title": "Foo Fighters · 2000-01-16 · Big Day Out · SD 576 · 1h 10m",
+   "url": "https://karl0s.github.io/digital-vault/show/8349e6f453e8/"
+  }
+ },
+ {
+  "scenario": "S3",
+  "n": "10",
+  "slug": "closed",
+  "device": "iphone",
+  "file": "S3-10-closed-iphone.jpg",
+  "title": "Closes the show (×): where she lands",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/",
+  "cards": {
+   "total": 12,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 607,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 5,
+  "textSizes": {
+   "11": 8,
+   "12": 68,
+   "14": 73,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S3",
+  "kind": "back-after-close",
+  "after": "about:blank"
+ },
+ {
+  "scenario": "S3",
+  "n": "11",
+  "slug": "docked",
+  "device": "iphone",
+  "file": "S3-11-docked-iphone.jpg",
+  "title": "Deep in the show: the docked header",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/?show=8349e6f453e8",
+  "smallTargets": [
+   {
+    "name": "Close",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "name": "Share",
+    "w": 70,
+    "h": 22
+   }
+  ],
+  "smallTargetCount": 2,
+  "textSizes": {
+   "12": 66,
+   "13": 1949,
+   "14": 188,
+   "24": 12
+  }
+ },
+ {
+  "scenario": "S4",
+  "n": "01",
+  "slug": "artists-tab",
+  "device": "iphone",
+  "file": "S4-01-artists-tab-iphone.jpg",
+  "title": "Taps Artists",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 3623,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/",
+  "cards": {
+   "total": 12,
+   "full": 0,
+   "half": 0
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 494,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Download the full list",
+    "w": 157,
+    "h": 20
+   },
+   {
+    "name": "28 Days1",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "30 Seconds to Mars25",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "A Perfect Circle7",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Aerosmith10",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Afghan Whigs1",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Alanis Morissette4",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Alice in Chains9",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Alkaline Trio1",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "All American Rejects1",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Amos Lee1",
+    "w": 382,
+    "h": 36
+   }
+  ],
+  "smallTargetCount": 16,
+  "textSizes": {
+   "12": 87,
+   "14": 198,
+   "36": 2
+  }
+ },
+ {
+  "scenario": "S4",
+  "kind": "sections",
+  "device": "iphone",
+  "featured": 292,
+  "allArtists": 3750,
+  "letters": {
+   "#": 3811,
+   "A": 3957,
+   "B": 4679,
+   "C": 5545,
+   "D": 6231,
+   "E": 6953,
+   "F": 7423,
+   "G": 8325,
+   "H": 8651,
+   "I": 8869,
+   "J": 9051,
+   "K": 9701,
+   "L": 10315,
+   "M": 10929,
+   "N": 11759,
+   "O": 12337,
+   "P": 12627,
+   "Q": 13205,
+   "R": 13351,
+   "S": 13965,
+   "T": 15227,
+   "U": 15805,
+   "V": 15915,
+   "W": 16169,
+   "Y": 16423,
+   "Z": 16533
+  },
+  "pearlJam": 12741,
+  "docH": 16827,
+  "vh": 664
+ },
+ {
+  "scenario": "S4",
+  "n": "02",
+  "slug": "scrolled-to-p",
+  "device": "iphone",
+  "file": "S4-02-scrolled-to-p-iphone.jpg",
+  "title": "Scrolls to P — Pearl Jam is 13.5 screens into the list",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 9375,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/",
+  "cards": {
+   "total": 12,
+   "full": 0,
+   "half": 0
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 494,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Jeff Buckley2",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Jessica Mauboy1",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Jet4",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Jimi Hendrix1",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Joe Walsh4",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "John Butler Trio1",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "John Fogerty1",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Jonsi1",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Juliette Lewis1",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Kaiser Chiefs2",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Kanye West1",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Keith Urban1",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Kelly Jones1",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Kid Rock1",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Killers7",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Killing Heidi1",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Kings of Leon56",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Kinks2",
+    "w": 382,
+    "h": 36
+   }
+  ],
+  "smallTargetCount": 23,
+  "textSizes": {
+   "12": 36,
+   "14": 200,
+   "36": 1
+  }
+ },
+ {
+  "scenario": "S4",
+  "n": "03",
+  "slug": "pearl-jam",
+  "device": "iphone",
+  "file": "S4-03-pearl-jam-iphone.jpg",
+  "title": "Pearl Jam: first screen",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 6472,
+  "docH": 7141,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=Pearl%20Jam",
+  "cards": {
+   "total": 24,
+   "full": 1,
+   "half": 1
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 448,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 9,
+  "textSizes": {
+   "12": 99,
+   "14": 70
+  }
+ },
+ {
+  "scenario": "S4",
+  "kind": "artist-page",
+  "device": "iphone",
+  "docH": 7141
+ },
+ {
+  "scenario": "S4",
+  "n": "04",
+  "slug": "pearl-jam-scroll-1",
+  "device": "iphone",
+  "file": "S4-04-pearl-jam-scroll-1-iphone.jpg",
+  "title": "One swipe down",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 6477,
+  "docH": 7141,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=Pearl%20Jam",
+  "cards": {
+   "total": 24,
+   "full": 1,
+   "half": 1
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 448,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 9,
+  "textSizes": {
+   "12": 99,
+   "14": 70
+  }
+ },
+ {
+  "scenario": "S4",
+  "n": "05",
+  "slug": "pearl-jam-deeper",
+  "device": "iphone",
+  "file": "S4-05-pearl-jam-deeper-iphone.jpg",
+  "title": "Three swipes down",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 6477,
+  "docH": 7141,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=Pearl%20Jam",
+  "cards": {
+   "total": 24,
+   "full": 1,
+   "half": 1
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 448,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 9,
+  "textSizes": {
+   "12": 99,
+   "14": 70
+  }
+ },
+ {
+  "scenario": "S4",
+  "n": "06",
+  "slug": "card-open",
+  "device": "iphone",
+  "file": "S4-06-card-open-iphone.jpg",
+  "title": "Opens a show",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 6477,
+  "docH": 7141,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/?q=Pearl%20Jam&show=2ef05cefd49b",
+  "smallTargets": [
+   {
+    "name": "Close",
+    "w": 36,
+    "h": 36
+   },
+   {
+    "name": "Share",
+    "w": 70,
+    "h": 22
+   }
+  ],
+  "smallTargetCount": 2,
+  "textSizes": {
+   "12": 60,
+   "14": 142,
+   "32": 9
+  }
+ },
+ {
+  "scenario": "S4",
+  "kind": "scroll-restore",
+  "yBefore": 6477,
+  "yAfter": 6477
+ },
+ {
+  "scenario": "S4",
+  "n": "07",
+  "slug": "back-from-show",
+  "device": "iphone",
+  "file": "S4-07-back-from-show-iphone.jpg",
+  "title": "Back: same place in the list (6477 → 6477)",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 6477,
+  "docH": 7141,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=Pearl%20Jam",
+  "cards": {
+   "total": 24,
+   "full": 1,
+   "half": 1
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 448,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 9,
+  "textSizes": {
+   "12": 99,
+   "14": 70
+  }
+ },
+ {
+  "scenario": "S4",
+  "n": "08",
+  "slug": "list",
+  "device": "iphone",
+  "file": "S4-08-list-iphone.jpg",
+  "title": "List layout: first screen",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 1792,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=Pearl%20Jam&layout=list",
+  "cards": {
+   "total": 0,
+   "full": 0,
+   "half": 0
+  },
+  "rows": {
+   "total": 24,
+   "full": 4,
+   "h": 69
+  },
+  "contentArea": 448,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   },
+   {
+    "name": "All artists",
+    "w": 104,
+    "h": 32
+   },
+   {
+    "name": "Pearl Jam",
+    "w": 64,
+    "h": 20
+   },
+   {
+    "name": "Pearl Jam",
+    "w": 64,
+    "h": 20
+   },
+   {
+    "name": "Pearl Jam",
+    "w": 64,
+    "h": 20
+   },
+   {
+    "name": "Pearl Jam",
+    "w": 64,
+    "h": 20
+   },
+   {
+    "name": "Pearl Jam",
+    "w": 64,
+    "h": 20
+   },
+   {
+    "name": "Pearl Jam",
+    "w": 64,
+    "h": 20
+   }
+  ],
+  "smallTargetCount": 16,
+  "textSizes": {
+   "12": 233,
+   "14": 259,
+   "36": 11,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S4",
+  "n": "09",
+  "slug": "list-scroll-1",
+  "device": "iphone",
+  "file": "S4-09-list-scroll-1-iphone.jpg",
+  "title": "List layout: one swipe down",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 411,
+  "docH": 1792,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=Pearl%20Jam&layout=list",
+  "cards": {
+   "total": 0,
+   "full": 0,
+   "half": 0
+  },
+  "rows": {
+   "total": 24,
+   "full": 8,
+   "h": 69
+  },
+  "contentArea": 494,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   },
+   {
+    "name": "Pearl Jam",
+    "w": 64,
+    "h": 20
+   },
+   {
+    "name": "Pearl Jam",
+    "w": 64,
+    "h": 20
+   },
+   {
+    "name": "Pearl Jam",
+    "w": 64,
+    "h": 20
+   },
+   {
+    "name": "Pearl Jam",
+    "w": 64,
+    "h": 20
+   },
+   {
+    "name": "Pearl Jam",
+    "w": 64,
+    "h": 20
+   },
+   {
+    "name": "Pearl Jam",
+    "w": 64,
+    "h": 20
+   },
+   {
+    "name": "Pearl Jam",
+    "w": 64,
+    "h": 20
+   },
+   {
+    "name": "Pearl Jam",
+    "w": 64,
+    "h": 20
+   },
+   {
+    "name": "Pearl Jam",
+    "w": 64,
+    "h": 20
+   },
+   {
+    "name": "Pearl Jam",
+    "w": 64,
+    "h": 20
+   },
+   {
+    "name": "Pearl Jam",
+    "w": 64,
+    "h": 20
+   },
+   {
+    "name": "Pearl Jam",
+    "w": 64,
+    "h": 20
+   },
+   {
+    "name": "Pearl Jam",
+    "w": 64,
+    "h": 20
+   }
+  ],
+  "smallTargetCount": 22,
+  "textSizes": {
+   "10": 3,
+   "12": 394,
+   "14": 364
+  }
+ },
+ {
+  "scenario": "S4",
+  "kind": "all-artists-return",
+  "y": 3623,
+  "pearlJam": 12741,
+  "allArtists": 3750
+ },
+ {
+  "scenario": "S4",
+  "n": "10",
+  "slug": "all-artists-return",
+  "device": "iphone",
+  "file": "S4-10-all-artists-return-iphone.jpg",
+  "title": "\"All artists\": back to the top of the list, not to P",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 3623,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/",
+  "cards": {
+   "total": 12,
+   "full": 0,
+   "half": 0
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 494,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Download the full list",
+    "w": 157,
+    "h": 20
+   },
+   {
+    "name": "28 Days1",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "30 Seconds to Mars25",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "A Perfect Circle7",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Aerosmith10",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Afghan Whigs1",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Alanis Morissette4",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Alice in Chains9",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Alkaline Trio1",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "All American Rejects1",
+    "w": 382,
+    "h": 36
+   },
+   {
+    "name": "Amos Lee1",
+    "w": 382,
+    "h": 36
+   }
+  ],
+  "smallTargetCount": 16,
+  "textSizes": {
+   "12": 82,
+   "14": 202,
+   "36": 2
+  }
+ },
+ {
+  "scenario": "S4",
+  "n": "11",
+  "slug": "soundgarden",
+  "device": "iphone",
+  "file": "S4-11-soundgarden-iphone.jpg",
+  "title": "Another artist: Soundgarden",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 10765,
+  "docH": 11944,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=Soundgarden",
+  "cards": {
+   "total": 41,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 448,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 9,
+  "textSizes": {
+   "12": 75,
+   "14": 64
+  }
+ },
+ {
+  "scenario": "S4",
+  "n": "12",
+  "slug": "search-tab-from-artist",
+  "device": "iphone",
+  "file": "S4-12-search-tab-from-artist-iphone.jpg",
+  "title": "Search tab from an artist page",
+  "note": "",
+  "keyboard": true,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 10765,
+  "docH": 11944,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=Soundgarden",
+  "cards": {
+   "total": 41,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 448,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 9,
+  "textSizes": {
+   "12": 75,
+   "14": 71,
+   "15": 37
+  }
+ },
+ {
+  "scenario": "S4",
+  "n": "13",
+  "slug": "search-pj-pinkpop",
+  "device": "iphone",
+  "file": "S4-13-search-pj-pinkpop-iphone.jpg",
+  "title": "\"pearl jam pinkpop\"",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 855,
+  "docH": 1519,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=pearl%20jam%20pinkpop",
+  "cards": {
+   "total": 4,
+   "full": 1,
+   "half": 1
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 448,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 9,
+  "textSizes": {
+   "11": 8,
+   "12": 102,
+   "14": 53
+  }
+ },
+ {
+  "scenario": "S4",
+  "kind": "back-after-search",
+  "before": "https://karl0s.github.io/digital-vault/?q=pearl%20jam%20pinkpop",
+  "after": "about:blank"
+ },
+ {
+  "scenario": "S4",
+  "n": "14",
+  "slug": "artists-tab",
+  "device": "promax",
+  "file": "S4-14-artists-tab-promax.jpg",
+  "title": "Taps Artists",
+  "note": "",
+  "keyboard": false,
+  "vw": 430,
+  "vh": 752,
+  "scrollY": 1193,
+  "docH": 14397,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/",
+  "cards": {
+   "total": 12,
+   "full": 0,
+   "half": 0
+  },
+  "cardSize": [
+   193,
+   145
+  ],
+  "contentArea": 582,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 398,
+    "h": 42
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Download the full list",
+    "w": 157,
+    "h": 20
+   },
+   {
+    "name": "28 Days1",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "30 Seconds to Mars25",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "A Perfect Circle7",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Aerosmith10",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Afghan Whigs1",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Alanis Morissette4",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Alice in Chains9",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Alkaline Trio1",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "All American Rejects1",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Amos Lee1",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Arcade Fire1",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Arctic Monkeys3",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Army of Anyone1",
+    "w": 422,
+    "h": 36
+   }
+  ],
+  "smallTargetCount": 19,
+  "textSizes": {
+   "12": 117,
+   "14": 250,
+   "36": 2
+  }
+ },
+ {
+  "scenario": "S4",
+  "n": "15",
+  "slug": "scrolled-to-p",
+  "device": "promax",
+  "file": "S4-15-scrolled-to-p-promax.jpg",
+  "title": "Scrolls to P — Pearl Jam is 12 screens into the list",
+  "note": "",
+  "keyboard": false,
+  "vw": 430,
+  "vh": 752,
+  "scrollY": 6737,
+  "docH": 14397,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/",
+  "cards": {
+   "total": 12,
+   "full": 0,
+   "half": 0
+  },
+  "cardSize": [
+   193,
+   145
+  ],
+  "contentArea": 582,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 398,
+    "h": 42
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "James Brown1",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Jamiroquai3",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Jane's Addiction25",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Jason Mraz1",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Jay-Z5",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Jeff Buckley2",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Jessica Mauboy1",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Jet4",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Jimi Hendrix1",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Joe Walsh4",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "John Butler Trio1",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "John Fogerty1",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Jonsi1",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Juliette Lewis1",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Kaiser Chiefs2",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Kanye West1",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Keith Urban1",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Kelly Jones1",
+    "w": 422,
+    "h": 36
+   },
+   {
+    "name": "Kid Rock1",
+    "w": 422,
+    "h": 36
+   }
+  ],
+  "smallTargetCount": 24,
+  "textSizes": {
+   "12": 39,
+   "14": 231,
+   "36": 1
+  }
+ },
+ {
+  "scenario": "S4",
+  "n": "16",
+  "slug": "pearl-jam",
+  "device": "promax",
+  "file": "S4-16-pearl-jam-promax.jpg",
+  "title": "Pearl Jam: first screen",
+  "note": "",
+  "keyboard": false,
+  "vw": 430,
+  "vh": 752,
+  "scrollY": 1508,
+  "docH": 2266,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=Pearl%20Jam",
+  "cards": {
+   "total": 24,
+   "full": 6,
+   "half": 0
+  },
+  "cardSize": [
+   193,
+   145
+  ],
+  "contentArea": 536,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 398,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 9,
+  "textSizes": {
+   "10": 6,
+   "11": 29,
+   "12": 410,
+   "14": 190
+  }
+ },
+ {
+  "scenario": "S4",
+  "kind": "artist-page",
+  "device": "promax",
+  "docH": 2266
+ },
+ {
+  "scenario": "S4",
+  "n": "17",
+  "slug": "pearl-jam-scroll-1",
+  "device": "promax",
+  "file": "S4-17-pearl-jam-scroll-1-promax.jpg",
+  "title": "One swipe down",
+  "note": "",
+  "keyboard": false,
+  "vw": 430,
+  "vh": 752,
+  "scrollY": 1514,
+  "docH": 2266,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=Pearl%20Jam",
+  "cards": {
+   "total": 24,
+   "full": 6,
+   "half": 0
+  },
+  "cardSize": [
+   193,
+   145
+  ],
+  "contentArea": 536,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 398,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 9,
+  "textSizes": {
+   "10": 6,
+   "11": 29,
+   "12": 410,
+   "14": 190
+  }
+ },
+ {
+  "scenario": "S4",
+  "n": "18",
+  "slug": "artists-tab",
+  "device": "se",
+  "file": "S4-18-artists-tab-se.jpg",
+  "title": "Taps Artists",
+  "note": "",
+  "keyboard": false,
+  "vw": 375,
+  "vh": 553,
+  "scrollY": 3505,
+  "docH": 16709,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/",
+  "cards": {
+   "total": 12,
+   "full": 0,
+   "half": 0
+  },
+  "cardSize": [
+   343,
+   257
+  ],
+  "contentArea": 383,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 343,
+    "h": 42
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Download the full list",
+    "w": 157,
+    "h": 20
+   },
+   {
+    "name": "28 Days1",
+    "w": 367,
+    "h": 36
+   },
+   {
+    "name": "30 Seconds to Mars25",
+    "w": 367,
+    "h": 36
+   },
+   {
+    "name": "A Perfect Circle7",
+    "w": 367,
+    "h": 36
+   },
+   {
+    "name": "Aerosmith10",
+    "w": 367,
+    "h": 36
+   },
+   {
+    "name": "Afghan Whigs1",
+    "w": 367,
+    "h": 36
+   },
+   {
+    "name": "Alanis Morissette4",
+    "w": 367,
+    "h": 36
+   },
+   {
+    "name": "Alice in Chains9",
+    "w": 367,
+    "h": 36
+   }
+  ],
+  "smallTargetCount": 13,
+  "textSizes": {
+   "12": 76,
+   "14": 156,
+   "36": 2
+  }
+ },
+ {
+  "scenario": "S4",
+  "n": "19",
+  "slug": "scrolled-to-p",
+  "device": "se",
+  "file": "S4-19-scrolled-to-p-se.jpg",
+  "title": "Scrolls to P — Pearl Jam is 16.3 screens into the list",
+  "note": "",
+  "keyboard": false,
+  "vw": 375,
+  "vh": 553,
+  "scrollY": 9049,
+  "docH": 16709,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/",
+  "cards": {
+   "total": 12,
+   "full": 0,
+   "half": 0
+  },
+  "cardSize": [
+   343,
+   257
+  ],
+  "contentArea": 383,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 343,
+    "h": 42
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "James Brown1",
+    "w": 367,
+    "h": 36
+   },
+   {
+    "name": "Jamiroquai3",
+    "w": 367,
+    "h": 36
+   },
+   {
+    "name": "Jane's Addiction25",
+    "w": 367,
+    "h": 36
+   },
+   {
+    "name": "Jason Mraz1",
+    "w": 367,
+    "h": 36
+   },
+   {
+    "name": "Jay-Z5",
+    "w": 367,
+    "h": 36
+   },
+   {
+    "name": "Jeff Buckley2",
+    "w": 367,
+    "h": 36
+   },
+   {
+    "name": "Jessica Mauboy1",
+    "w": 367,
+    "h": 36
+   },
+   {
+    "name": "Jet4",
+    "w": 367,
+    "h": 36
+   },
+   {
+    "name": "Jimi Hendrix1",
+    "w": 367,
+    "h": 36
+   },
+   {
+    "name": "Joe Walsh4",
+    "w": 367,
+    "h": 36
+   },
+   {
+    "name": "John Butler Trio1",
+    "w": 367,
+    "h": 36
+   },
+   {
+    "name": "John Fogerty1",
+    "w": 367,
+    "h": 36
+   },
+   {
+    "name": "Jonsi1",
+    "w": 367,
+    "h": 36
+   },
+   {
+    "name": "Juliette Lewis1",
+    "w": 367,
+    "h": 36
+   }
+  ],
+  "smallTargetCount": 19,
+  "textSizes": {
+   "12": 34,
+   "14": 178,
+   "36": 1
+  }
+ },
+ {
+  "scenario": "S4",
+  "n": "20",
+  "slug": "pearl-jam",
+  "device": "se",
+  "file": "S4-20-pearl-jam-se.jpg",
+  "title": "Pearl Jam: first screen",
+  "note": "",
+  "keyboard": false,
+  "vw": 375,
+  "vh": 553,
+  "scrollY": 6318,
+  "docH": 6871,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=Pearl%20Jam",
+  "cards": {
+   "total": 24,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   343,
+   257
+  ],
+  "contentArea": 337,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 343,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 9,
+  "textSizes": {
+   "12": 68,
+   "14": 70
+  }
+ },
+ {
+  "scenario": "S4",
+  "kind": "artist-page",
+  "device": "se",
+  "docH": 6871
+ },
+ {
+  "scenario": "S4",
+  "n": "21",
+  "slug": "pearl-jam-scroll-1",
+  "device": "se",
+  "file": "S4-21-pearl-jam-scroll-1-se.jpg",
+  "title": "One swipe down",
+  "note": "",
+  "keyboard": false,
+  "vw": 375,
+  "vh": 553,
+  "scrollY": 6318,
+  "docH": 6871,
+  "overflowX": 0,
+  "barH": 159,
+  "barVisible": 159,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=Pearl%20Jam",
+  "cards": {
+   "total": 24,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   343,
+   257
+  ],
+  "contentArea": 337,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 343,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 9,
+  "textSizes": {
+   "12": 68,
+   "14": 70
+  }
+ },
+ {
+  "scenario": "S5",
+  "n": "01",
+  "slug": "event-open",
+  "device": "iphone",
+  "file": "S5-01-event-open-iphone.jpg",
+  "title": "Taps Event",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/",
+  "smallTargets": [
+   {
+    "name": "Filter Event options",
+    "w": 254,
+    "h": 32
+   },
+   {
+    "name": "Reading & Leeds84",
+    "w": 258,
+    "h": 32
+   },
+   {
+    "name": "Glastonbury Festival73",
+    "w": 258,
+    "h": 32
+   },
+   {
+    "name": "Rock am Ring54",
+    "w": 258,
+    "h": 32
+   },
+   {
+    "name": "Big Day Out35",
+    "w": 258,
+    "h": 32
+   },
+   {
+    "name": "MTV Unplugged35",
+    "w": 258,
+    "h": 32
+   },
+   {
+    "name": "Pinkpop33",
+    "w": 258,
+    "h": 32
+   },
+   {
+    "name": "Rockpalast25",
+    "w": 258,
+    "h": 32
+   },
+   {
+    "name": "Bizarre Festival24",
+    "w": 258,
+    "h": 32
+   },
+   {
+    "name": "Jay Leno24",
+    "w": 258,
+    "h": 32
+   },
+   {
+    "name": "Rolling Rock Town Fair23",
+    "w": 258,
+    "h": 32
+   },
+   {
+    "name": "Carson Daly21",
+    "w": 258,
+    "h": 32
+   }
+  ],
+  "smallTargetCount": 12,
+  "textSizes": {
+   "12": 22,
+   "14": 145
+  }
+ },
+ {
+  "scenario": "S5",
+  "n": "02",
+  "slug": "event-typed",
+  "device": "iphone",
+  "file": "S5-02-event-typed-iphone.jpg",
+  "title": "Types \"rock\" in the Event list",
+  "note": "",
+  "keyboard": true,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/",
+  "smallTargets": [
+   {
+    "name": "Filter Event options",
+    "w": 254,
+    "h": 32
+   },
+   {
+    "name": "Rock am Ring54",
+    "w": 258,
+    "h": 32
+   },
+   {
+    "name": "Rockpalast25",
+    "w": 258,
+    "h": 32
+   },
+   {
+    "name": "Rolling Rock Town Fair23",
+    "w": 258,
+    "h": 32
+   },
+   {
+    "name": "Eurockéennes Festival19",
+    "w": 258,
+    "h": 32
+   }
+  ],
+  "smallTargetCount": 5,
+  "textSizes": {
+   "12": 8,
+   "14": 65
+  }
+ },
+ {
+  "scenario": "S5",
+  "n": "03",
+  "slug": "event-two-ticked",
+  "device": "iphone",
+  "file": "S5-03-event-two-ticked-iphone.jpg",
+  "title": "Two events ticked",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 22607,
+  "overflowX": 0,
+  "barH": 199,
+  "barVisible": 199,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/?festival=rock-am-ring,rockpalast",
+  "smallTargets": [
+   {
+    "name": "Filter Event options",
+    "w": 254,
+    "h": 32
+   },
+   {
+    "name": "Rock am Ring54",
+    "w": 258,
+    "h": 32
+   },
+   {
+    "name": "Rockpalast25",
+    "w": 258,
+    "h": 32
+   },
+   {
+    "name": "Clear event",
+    "w": 258,
+    "h": 32
+   }
+  ],
+  "smallTargetCount": 4,
+  "textSizes": {
+   "12": 4,
+   "14": 32
+  }
+ },
+ {
+  "scenario": "S5",
+  "n": "04",
+  "slug": "event-results",
+  "device": "iphone",
+  "file": "S5-04-event-results-iphone.jpg",
+  "title": "Rock am Ring + Rockpalast: results",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 22607,
+  "overflowX": 0,
+  "barH": 199,
+  "barVisible": 199,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?festival=rock-am-ring,rockpalast",
+  "cards": {
+   "total": 79,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 408,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event2",
+    "w": 99,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   },
+   {
+    "name": "Remove filter Rock am Ring",
+    "w": 126,
+    "h": 28
+   },
+   {
+    "name": "Remove filter Rockpalast",
+    "w": 111,
+    "h": 28
+   },
+   {
+    "name": "Clear all",
+    "w": 68,
+    "h": 28
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 11,
+  "textSizes": {
+   "12": 63,
+   "14": 112,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S5",
+  "n": "05",
+  "slug": "years-open",
+  "device": "iphone",
+  "file": "S5-05-years-open-iphone.jpg",
+  "title": "Taps Years",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 22607,
+  "overflowX": 0,
+  "barH": 199,
+  "barVisible": 199,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/?festival=rock-am-ring,rockpalast",
+  "smallTargets": [
+   {
+    "name": "1990s",
+    "w": 55,
+    "h": 26
+   },
+   {
+    "name": "2000s",
+    "w": 59,
+    "h": 26
+   },
+   {
+    "name": "2010s",
+    "w": 55,
+    "h": 26
+   },
+   {
+    "name": "1979",
+    "w": 127,
+    "h": 34
+   },
+   {
+    "name": "2013",
+    "w": 143,
+    "h": 34
+   },
+   {
+    "name": "Include undated0",
+    "w": 332,
+    "h": 32
+   }
+  ],
+  "smallTargetCount": 6,
+  "textSizes": {
+   "12": 30,
+   "14": 22
+  }
+ },
+ {
+  "scenario": "S5",
+  "kind": "histogram-box",
+  "box": {
+   "x": 29,
+   "y": 159,
+   "w": 332,
+   "h": 112
+  }
+ },
+ {
+  "scenario": "S5",
+  "n": "06",
+  "slug": "years-typed",
+  "device": "iphone",
+  "file": "S5-06-years-typed-iphone.jpg",
+  "title": "Types 1995 to 2005",
+  "note": "",
+  "keyboard": true,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 9930,
+  "overflowX": 0,
+  "barH": 235,
+  "barVisible": 235,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/?from=1995&to=2005&festival=rock-am-ring,rockpalast",
+  "smallTargets": [
+   {
+    "name": "1990s",
+    "w": 55,
+    "h": 26
+   },
+   {
+    "name": "2000s",
+    "w": 59,
+    "h": 26
+   },
+   {
+    "name": "2010s",
+    "w": 55,
+    "h": 26
+   },
+   {
+    "name": "1979",
+    "w": 127,
+    "h": 34
+   },
+   {
+    "name": "2013",
+    "w": 143,
+    "h": 34
+   },
+   {
+    "name": "Include undated0",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Reset",
+    "w": 36,
+    "h": 20
+   }
+  ],
+  "smallTargetCount": 7,
+  "textSizes": {
+   "12": 30,
+   "14": 27
+  }
+ },
+ {
+  "scenario": "S5",
+  "n": "07",
+  "slug": "years-results",
+  "device": "iphone",
+  "file": "S5-07-years-results-iphone.jpg",
+  "title": "With years set: chips and results",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 9930,
+  "overflowX": 0,
+  "barH": 235,
+  "barVisible": 235,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?from=1995&to=2005&festival=rock-am-ring,rockpalast",
+  "cards": {
+   "total": 34,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 372,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Years · 1995–2005",
+    "w": 170,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event2",
+    "w": 99,
+    "h": 34
+   },
+   {
+    "name": "Remove filter 1995–2005",
+    "w": 116,
+    "h": 28
+   },
+   {
+    "name": "Remove filter Rock am Ring",
+    "w": 126,
+    "h": 28
+   },
+   {
+    "name": "Remove filter Rockpalast",
+    "w": 111,
+    "h": 28
+   },
+   {
+    "name": "Clear all",
+    "w": 68,
+    "h": 28
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 11,
+  "textSizes": {
+   "11": 23,
+   "12": 63,
+   "14": 127,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S5",
+  "n": "08",
+  "slug": "more-open",
+  "device": "iphone",
+  "file": "S5-08-more-open-iphone.jpg",
+  "title": "More filters",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 9930,
+  "overflowX": 0,
+  "barH": 235,
+  "barVisible": 235,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/?from=1995&to=2005&festival=rock-am-ring,rockpalast",
+  "smallTargets": [
+   {
+    "name": "Pro-shot34",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Audience0",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "HD 10800",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "HD 7202",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "SD30",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Low-res2",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "PAL23",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "NTSC9",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Under 10 min0",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "10–30 min7",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "30–60 min10",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "1–1½ hours14",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Over 1½ hours3",
+    "w": 332,
+    "h": 32
+   }
+  ],
+  "smallTargetCount": 13,
+  "textSizes": {
+   "12": 66,
+   "14": 98
+  }
+ },
+ {
+  "scenario": "S5",
+  "n": "09",
+  "slug": "more-proshot",
+  "device": "iphone",
+  "file": "S5-09-more-proshot-iphone.jpg",
+  "title": "Pro-shot ticked",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 9930,
+  "overflowX": 0,
+  "barH": 235,
+  "barVisible": 235,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": true,
+  "url": "/digital-vault/?from=1995&to=2005&festival=rock-am-ring,rockpalast&source=proshot",
+  "smallTargets": [
+   {
+    "name": "Pro-shot34",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Audience0",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "HD 10800",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "HD 7202",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "SD30",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Low-res2",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "PAL23",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "NTSC9",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Under 10 min0",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "10–30 min7",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "30–60 min10",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "1–1½ hours14",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Over 1½ hours3",
+    "w": 332,
+    "h": 32
+   },
+   {
+    "name": "Clear more filters",
+    "w": 344,
+    "h": 32
+   }
+  ],
+  "smallTargetCount": 14,
+  "textSizes": {
+   "12": 66,
+   "14": 116
+  }
+ },
+ {
+  "scenario": "S5",
+  "n": "10",
+  "slug": "all-filters",
+  "device": "iphone",
+  "file": "S5-10-all-filters-iphone.jpg",
+  "title": "Four filters on: how much screen is left",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 9930,
+  "overflowX": 0,
+  "barH": 235,
+  "barVisible": 235,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?from=1995&to=2005&festival=rock-am-ring,rockpalast&source=proshot",
+  "cards": {
+   "total": 34,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 372,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event2",
+    "w": 99,
+    "h": 34
+   },
+   {
+    "name": "More filters1",
+    "w": 133,
+    "h": 34
+   },
+   {
+    "name": "Remove filter 1995–2005",
+    "w": 116,
+    "h": 28
+   },
+   {
+    "name": "Remove filter Rock am Ring",
+    "w": 126,
+    "h": 28
+   },
+   {
+    "name": "Remove filter Rockpalast",
+    "w": 111,
+    "h": 28
+   },
+   {
+    "name": "Remove filter Pro-shot",
+    "w": 98,
+    "h": 28
+   },
+   {
+    "name": "Clear all",
+    "w": 68,
+    "h": 28
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 12,
+  "textSizes": {
+   "11": 23,
+   "12": 64,
+   "14": 135,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S5",
+  "n": "11",
+  "slug": "all-filters-scrolled",
+  "device": "iphone",
+  "file": "S5-11-all-filters-scrolled-iphone.jpg",
+  "title": "Scrolling down: the bar folds its results row",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 307,
+  "docH": 9930,
+  "overflowX": 0,
+  "barH": 189,
+  "barVisible": 189,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?from=1995&to=2005&festival=rock-am-ring,rockpalast&source=proshot",
+  "cards": {
+   "total": 34,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 418,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event2",
+    "w": 99,
+    "h": 34
+   },
+   {
+    "name": "More filters1",
+    "w": 133,
+    "h": 34
+   },
+   {
+    "name": "Remove filter 1995–2005",
+    "w": 116,
+    "h": 28
+   },
+   {
+    "name": "Remove filter Rock am Ring",
+    "w": 126,
+    "h": 28
+   },
+   {
+    "name": "Remove filter Rockpalast",
+    "w": 111,
+    "h": 28
+   },
+   {
+    "name": "Remove filter Pro-shot",
+    "w": 98,
+    "h": 28
+   },
+   {
+    "name": "Clear all",
+    "w": 68,
+    "h": 28
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 12,
+  "textSizes": {
+   "11": 23,
+   "12": 96,
+   "14": 110
+  }
+ },
+ {
+  "scenario": "S5",
+  "n": "12",
+  "slug": "all-filters-up",
+  "device": "iphone",
+  "file": "S5-12-all-filters-up-iphone.jpg",
+  "title": "A little back up: the row returns",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 145,
+  "docH": 9930,
+  "overflowX": 0,
+  "barH": 235,
+  "barVisible": 235,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?from=1995&to=2005&festival=rock-am-ring,rockpalast&source=proshot",
+  "cards": {
+   "total": 34,
+   "full": 0,
+   "half": 2
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 372,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event2",
+    "w": 99,
+    "h": 34
+   },
+   {
+    "name": "More filters1",
+    "w": 133,
+    "h": 34
+   },
+   {
+    "name": "Remove filter 1995–2005",
+    "w": 116,
+    "h": 28
+   },
+   {
+    "name": "Remove filter Rock am Ring",
+    "w": 126,
+    "h": 28
+   },
+   {
+    "name": "Remove filter Rockpalast",
+    "w": 111,
+    "h": 28
+   },
+   {
+    "name": "Remove filter Pro-shot",
+    "w": 98,
+    "h": 28
+   },
+   {
+    "name": "Clear all",
+    "w": 68,
+    "h": 28
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 12,
+  "textSizes": {
+   "11": 23,
+   "12": 96,
+   "14": 110
+  }
+ },
+ {
+  "scenario": "S5",
+  "n": "13",
+  "slug": "sorted",
+  "device": "iphone",
+  "file": "S5-13-sorted-iphone.jpg",
+  "title": "Sorted oldest first",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 9930,
+  "overflowX": 0,
+  "barH": 235,
+  "barVisible": 235,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?from=1995&to=2005&festival=rock-am-ring,rockpalast&source=proshot&sort=year-asc",
+  "cards": {
+   "total": 34,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 372,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event2",
+    "w": 99,
+    "h": 34
+   },
+   {
+    "name": "More filters1",
+    "w": 133,
+    "h": 34
+   },
+   {
+    "name": "Remove filter 1995–2005",
+    "w": 116,
+    "h": 28
+   },
+   {
+    "name": "Remove filter Rock am Ring",
+    "w": 126,
+    "h": 28
+   },
+   {
+    "name": "Remove filter Rockpalast",
+    "w": 111,
+    "h": 28
+   },
+   {
+    "name": "Remove filter Pro-shot",
+    "w": 98,
+    "h": 28
+   },
+   {
+    "name": "Clear all",
+    "w": 68,
+    "h": 28
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 12,
+  "textSizes": {
+   "12": 56,
+   "14": 141,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S5",
+  "n": "14",
+  "slug": "fnm-with-filters",
+  "device": "iphone",
+  "file": "S5-14-fnm-with-filters-iphone.jpg",
+  "title": "\"faith no more\" with the filters still on",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 752,
+  "overflowX": 0,
+  "barH": 235,
+  "barVisible": 235,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=faith%20no%20more&from=1995&to=2005&festival=rock-am-ring,rockpalast&source=proshot&sort=year-asc",
+  "cards": {
+   "total": 0,
+   "full": 0,
+   "half": 0
+  },
+  "contentArea": 372,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event2",
+    "w": 99,
+    "h": 34
+   },
+   {
+    "name": "More filters1",
+    "w": 133,
+    "h": 34
+   },
+   {
+    "name": "Remove filter 1995–2005",
+    "w": 116,
+    "h": 28
+   },
+   {
+    "name": "Remove filter Rock am Ring",
+    "w": 126,
+    "h": 28
+   },
+   {
+    "name": "Remove filter Rockpalast",
+    "w": 111,
+    "h": 28
+   },
+   {
+    "name": "Remove filter Pro-shot",
+    "w": 98,
+    "h": 28
+   },
+   {
+    "name": "Clear all",
+    "w": 68,
+    "h": 28
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   },
+   {
+    "name": "Clear search",
+    "w": 125,
+    "h": 32
+   },
+   {
+    "name": "Show 22 without the filters",
+    "w": 242,
+    "h": 41
+   }
+  ],
+  "smallTargetCount": 15,
+  "textSizes": {
+   "12": 21,
+   "14": 153,
+   "15": 24,
+   "16": 88,
+   "36": 15,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S5",
+  "n": "15",
+  "slug": "fnm-with-filters-2",
+  "device": "iphone",
+  "file": "S5-15-fnm-with-filters-2-iphone.jpg",
+  "title": "…scrolled",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 88,
+  "docH": 752,
+  "overflowX": 0,
+  "barH": 189,
+  "barVisible": 189,
+  "barStuck": true,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?q=faith%20no%20more&from=1995&to=2005&festival=rock-am-ring,rockpalast&source=proshot&sort=year-asc",
+  "cards": {
+   "total": 0,
+   "full": 0,
+   "half": 0
+  },
+  "contentArea": 418,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Clear search",
+    "w": 14,
+    "h": 14
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event2",
+    "w": 99,
+    "h": 34
+   },
+   {
+    "name": "More filters1",
+    "w": 133,
+    "h": 34
+   },
+   {
+    "name": "Remove filter 1995–2005",
+    "w": 116,
+    "h": 28
+   },
+   {
+    "name": "Remove filter Rock am Ring",
+    "w": 126,
+    "h": 28
+   },
+   {
+    "name": "Remove filter Rockpalast",
+    "w": 111,
+    "h": 28
+   },
+   {
+    "name": "Remove filter Pro-shot",
+    "w": 98,
+    "h": 28
+   },
+   {
+    "name": "Clear all",
+    "w": 68,
+    "h": 28
+   },
+   {
+    "name": "Grid",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "List",
+    "w": 32,
+    "h": 28
+   },
+   {
+    "name": "Year — newest firstYear — oldest firstAr",
+    "w": 187,
+    "h": 34
+   },
+   {
+    "name": "Clear search",
+    "w": 125,
+    "h": 32
+   },
+   {
+    "name": "Show 22 without the filters",
+    "w": 242,
+    "h": 41
+   }
+  ],
+  "smallTargetCount": 15,
+  "textSizes": {
+   "12": 21,
+   "14": 153,
+   "15": 24,
+   "16": 88,
+   "36": 15,
+   "130": 8
+  }
+ },
+ {
+  "scenario": "S5",
+  "n": "16",
+  "slug": "cleared",
+  "device": "iphone",
+  "file": "S5-16-cleared-iphone.jpg",
+  "title": "Clear all",
+  "note": "",
+  "keyboard": false,
+  "vw": 390,
+  "vh": 664,
+  "scrollY": 0,
+  "docH": 16827,
+  "overflowX": 0,
+  "barH": 113,
+  "barVisible": 113,
+  "barStuck": false,
+  "tabH": 57,
+  "dialog": false,
+  "url": "/digital-vault/?sort=year-asc",
+  "cards": {
+   "total": 12,
+   "full": 1,
+   "half": 0
+  },
+  "cardSize": [
+   358,
+   269
+  ],
+  "contentArea": 607,
+  "smallTargets": [
+   {
+    "name": "Search shows",
+    "w": 358,
+    "h": 42
+   },
+   {
+    "name": "Years",
+    "w": 85,
+    "h": 34
+   },
+   {
+    "name": "Country",
+    "w": 103,
+    "h": 34
+   },
+   {
+    "name": "Event",
+    "w": 86,
+    "h": 34
+   },
+   {
+    "name": "More filters",
+    "w": 123,
+    "h": 34
+   }
+  ],
+  "smallTargetCount": 5,
+  "textSizes": {
+   "12": 75,
+   "14": 82,
+   "130": 8
+  }
+ }
+]

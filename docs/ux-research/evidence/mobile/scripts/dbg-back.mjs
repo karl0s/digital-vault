@@ -1,0 +1,20 @@
+import { launch, close, newPhone, BASE, settle, wait } from './lib.mjs';
+await launch();
+const { page, ctx } = await newPhone('iphone');
+await page.goto(BASE, { waitUntil: 'domcontentloaded' }); await settle(page, 1500);
+await page.locator('nav[aria-label="Main"] button', { hasText: 'Artists' }).tap(); await wait(2200);
+const pj = page.locator('button', { hasText: /^Pearl Jam\s*\d+$/ }).first();
+await pj.scrollIntoViewIfNeeded(); await wait(400);
+console.log('before tap', await page.evaluate(() => [scrollY, JSON.stringify(history.state)]));
+await pj.tap(); await wait(1500);
+console.log('on artist', await page.evaluate(() => [scrollY, JSON.stringify(history.state), history.length]));
+await page.evaluate(() => {
+  window.__trace = [];
+  const mast = () => Math.round(document.querySelector('[data-filter-bar]').getBoundingClientRect().top + scrollY);
+  addEventListener('popstate', e => window.__trace.push(['pop', JSON.stringify(e.state), scrollY]), true);
+  let n = 0; const tick = () => { window.__trace.push([n, Math.round(scrollY), mast(), document.documentElement.scrollHeight]); if (++n < 40) requestAnimationFrame(tick); };
+  addEventListener('popstate', () => requestAnimationFrame(tick));
+});
+await page.goBack(); await wait(1500);
+console.log(JSON.stringify(await page.evaluate(() => window.__trace)));
+await ctx.close(); await close();

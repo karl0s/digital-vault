@@ -15,7 +15,7 @@
 
 ## Progress tracker
 
-*Updated with every change that touches a finding. Last update: 2026-11-08 (mobile audit, on the branch `mobile-audit`).*
+*Updated with every change that touches a finding. Last update: 2026-11-08 (mobile audit, R1–R14 live).*
 
 ### Where it stands
 
@@ -28,10 +28,11 @@
 
 **Live on the site:** everything above (pushed 2026-10-19).
 
-**Mobile audit (2026-11-08):** fourteen phone fixes, R1–R14, all picked — built on the branch
-`mobile-audit` for preview, not yet on `main`. Status and measurements in
-[06-mobile-audit.md](06-mobile-audit.md#built--branch-mobile-audit-2026-11-08). The card columns
-below changed with it: two on every phone.
+**Mobile audit (2026-11-08):** fourteen phone fixes, R1–R14, all picked, built and **live**
+(pushed 2026-11-08). Status and measurements in
+[06-mobile-audit.md](06-mobile-audit.md#built-and-live-2026-11-08), the story in
+[07-mobile-case-study.md](07-mobile-case-study.md). The card columns below changed with it: two on
+every phone.
 
 ### Done
 

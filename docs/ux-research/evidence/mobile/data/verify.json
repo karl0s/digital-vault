@@ -1,0 +1,71 @@
+{
+ "more_iphone": {
+  "top": 263,
+  "bottom": 728,
+  "vh": 664,
+  "offBottom": 64,
+  "innerScroll": 273,
+  "newTop": 956,
+  "newBottom": 988,
+  "afterInnerScroll": {
+   "newTop": 683,
+   "newBottom": 715,
+   "vh": 664,
+   "tabTop": 607
+  }
+ },
+ "more_se": {
+  "top": 280,
+  "bottom": 667,
+  "vh": 553,
+  "offBottom": 114,
+  "innerScroll": 351,
+  "newTop": 973,
+  "newBottom": 1005,
+  "afterInnerScroll": {
+   "newTop": 622,
+   "newBottom": 654,
+   "vh": 553,
+   "tabTop": 496
+  }
+ },
+ "more_android": {
+  "top": 277,
+  "bottom": 739,
+  "vh": 660,
+  "offBottom": 79,
+  "innerScroll": 276,
+  "newTop": 970,
+  "newBottom": 1002,
+  "afterInnerScroll": {
+   "newTop": 694,
+   "newBottom": 726,
+   "vh": 660,
+   "tabTop": 603
+  }
+ },
+ "enterKeepsFocus": true,
+ "resultsHeader": {
+  "barBottom": 159,
+  "firstCardTop": 323,
+  "gap": 164
+ },
+ "dockedHeader": {
+  "top": -74,
+  "bottom": 150,
+  "h": 224,
+  "vh": 664
+ },
+ "slow4g_1": {
+  "firstCardImage": 5168,
+  "first-paint": 664,
+  "first-contentful-paint": 1864,
+  "kbTransferred": 702
+ },
+ "slow4g_2": {
+  "firstCardImage": 5349,
+  "first-paint": 664,
+  "first-contentful-paint": 1860,
+  "kbTransferred": 715
+ }
+}

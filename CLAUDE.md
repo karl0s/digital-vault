@@ -37,7 +37,7 @@ data-pipeline/          ← historical drive-scan scripts and CSVs (see Data pip
 docs/
   frontend.md           ← front-end architecture and UI patterns — read before any UI change
   browse-redesign-spec.md ← the Browse design and how the build departs from it
-  ux-research/          ← trader persona, participants, journeys, test plan, findings report (2026-10-16)
+  ux-research/          ← trader persona, participants, journeys, test plan, findings report (2026-10-16), mobile audit and its case study notes (2026-11-08; evidence/mobile/ keeps the reports, scripts and screenshots — never delete)
 tools/
   add-temp-images.py    ← temp-images → slots + manifest, verified (see Temp images workflow)
   show-editor/          ← Karl's metadata editor; build.py renders index.html (gitignored)
