@@ -1,0 +1,224 @@
+[
+  {
+    "name": "touch-action set on the picture area",
+    "ok": true,
+    "detail": {
+      "open": true,
+      "transform": "",
+      "moving": false,
+      "shownAlt": "Screenshot 1",
+      "counter": "Screenshot 1 of 4",
+      "touchAction": "pan-y pinch-zoom"
+    }
+  },
+  {
+    "name": "rubber band: 200px drag past the first still moves less than half",
+    "ok": true,
+    "detail": {
+      "rb": 76.6071,
+      "open": true,
+      "transform": "translate3d(76.6071px, 0px, 0px)",
+      "moving": true,
+      "shownAlt": "Screenshot 1",
+      "counter": "Screenshot 1 of 4",
+      "touchAction": "pan-y pinch-zoom"
+    }
+  },
+  {
+    "name": "rubber band: springs back to still 1",
+    "ok": true,
+    "detail": {
+      "open": true,
+      "transform": "",
+      "moving": false,
+      "shownAlt": "Screenshot 1",
+      "counter": "Screenshot 1 of 4",
+      "touchAction": "pan-y pinch-zoom"
+    }
+  },
+  {
+    "name": "mid-swipe: the next still is visible, coming in from the right",
+    "ok": true,
+    "detail": {
+      "vis": "visible",
+      "left": 289,
+      "transform": "translate3d(-101.429px, 0px, 0px)"
+    }
+  },
+  {
+    "name": "release: the counter changes at once",
+    "ok": true,
+    "detail": {
+      "open": true,
+      "transform": "translate3d(116px, 0px, 0px)",
+      "moving": true,
+      "shownAlt": "Screenshot 2",
+      "counter": "Screenshot 2 of 4",
+      "touchAction": "pan-y pinch-zoom"
+    }
+  },
+  {
+    "name": "settled on still 2, strip at rest, neighbours hidden",
+    "ok": true,
+    "detail": {
+      "open": true,
+      "transform": "",
+      "moving": false,
+      "shownAlt": "Screenshot 2",
+      "counter": "Screenshot 2 of 4",
+      "touchAction": "pan-y pinch-zoom"
+    }
+  },
+  {
+    "name": "a slow 60px drag, held, stays on still 2",
+    "ok": true,
+    "detail": {
+      "open": true,
+      "transform": "",
+      "moving": false,
+      "shownAlt": "Screenshot 2",
+      "counter": "Screenshot 2 of 4",
+      "touchAction": "pan-y pinch-zoom"
+    }
+  },
+  {
+    "name": "a 50px flick goes to still 3",
+    "ok": true,
+    "detail": {
+      "open": true,
+      "transform": "",
+      "moving": false,
+      "shownAlt": "Screenshot 3",
+      "counter": "Screenshot 3 of 4",
+      "touchAction": "pan-y pinch-zoom"
+    }
+  },
+  {
+    "name": "a flick right goes back to still 2",
+    "ok": true,
+    "detail": {
+      "open": true,
+      "transform": "",
+      "moving": false,
+      "shownAlt": "Screenshot 2",
+      "counter": "Screenshot 2 of 4",
+      "touchAction": "pan-y pinch-zoom"
+    }
+  },
+  {
+    "name": "a vertical drag does nothing",
+    "ok": true,
+    "detail": {
+      "open": true,
+      "transform": "",
+      "moving": false,
+      "shownAlt": "Screenshot 2",
+      "counter": "Screenshot 2 of 4",
+      "touchAction": "pan-y pinch-zoom"
+    }
+  },
+  {
+    "name": "a slow drag past half the page, held, goes to still 1",
+    "ok": true,
+    "detail": {
+      "open": true,
+      "transform": "",
+      "moving": false,
+      "shownAlt": "Screenshot 1",
+      "counter": "Screenshot 1 of 4",
+      "touchAction": "pan-y pinch-zoom"
+    }
+  },
+  {
+    "name": "caught mid-flight: the strip stops under the finger",
+    "ok": true,
+    "detail": {
+      "c1": "translate3d(98.8515px, 0px, 0px)",
+      "c2": "translate3d(98.8515px, 0px, 0px)"
+    }
+  },
+  {
+    "name": "released after the catch: settles on a still, open",
+    "ok": true,
+    "detail": {
+      "open": true,
+      "transform": "",
+      "moving": false,
+      "shownAlt": "Screenshot 2",
+      "counter": "Screenshot 2 of 4",
+      "touchAction": "pan-y pinch-zoom"
+    }
+  },
+  {
+    "name": "swiped to the last still",
+    "ok": true,
+    "detail": {
+      "open": true,
+      "transform": "",
+      "moving": false,
+      "shownAlt": "Screenshot 4",
+      "counter": "Screenshot 4 of 4",
+      "touchAction": "pan-y pinch-zoom"
+    }
+  },
+  {
+    "name": "past the last still: resists, stays on 4 (no wrap)",
+    "ok": true,
+    "detail": {
+      "during": "translate3d(-73.6193px, 0px, 0px)",
+      "after": {
+        "open": true,
+        "transform": "",
+        "moving": false,
+        "shownAlt": "Screenshot 4",
+        "counter": "Screenshot 4 of 4",
+        "touchAction": "pan-y pinch-zoom"
+      }
+    }
+  },
+  {
+    "name": "a swipe on the dark area keeps the viewer open",
+    "ok": true,
+    "detail": {
+      "open": true,
+      "transform": "",
+      "moving": false,
+      "shownAlt": "Screenshot 3",
+      "counter": "Screenshot 3 of 4",
+      "touchAction": "pan-y pinch-zoom",
+      "clicksSeenAtDocument": 0
+    }
+  },
+  {
+    "name": "no image src changed and no image fetched during swipes",
+    "ok": true,
+    "detail": {
+      "src": 0,
+      "jpg": 0
+    }
+  },
+  {
+    "name": "Next twice from 3 wraps to 1, instant",
+    "ok": true,
+    "detail": {
+      "open": true,
+      "transform": "",
+      "moving": false,
+      "shownAlt": "Screenshot 1",
+      "counter": "Screenshot 1 of 4",
+      "touchAction": "pan-y pinch-zoom"
+    }
+  },
+  {
+    "name": "a tap on the dark area closes the viewer, as before",
+    "ok": true,
+    "detail": {
+      "open": false,
+      "transform": null,
+      "moving": null,
+      "shownAlt": null,
+      "counter": "Screenshots",
+      "touchAction": null
+    }
+  }
+]

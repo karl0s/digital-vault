@@ -246,11 +246,47 @@ Fourteen recommendations, R1–R14, ranked by score; details and reasoning in
 - The phone's row folds while scrolling only on results (problem 1).
 - The row stepping aside while typing is an addition (problem 6).
 
+## Follow-up, 2026-11-13: swiping the stills
+
+**The brief:** "when the user opens a show bottom drawer on mobile and selects a thumbnail from a
+set of 4 … make sure they are swipable on mobile so the user doesn't have to always tap the dots or
+arrows which are far away. mobile only … top 1% senior ux/ui design and optimised for speed and
+performance … dont change anything else."
+
+**What was built:** the viewer's still follows the finger 1:1. At release the movement's momentum
+is projected forward (Apple's 0.998 deceleration), so a short flick is enough. A critically damped
+spring (response 0.32 s) carries on at the finger's speed with no seam and no bounce. Past the
+first and last still the picture resists like a rubber band and springs back; a swipe never wraps
+round, though the arrows still do. A touch on a sliding still catches it. The counter and dots
+change at release. Up-and-down movement and pinch-zoom stay the browser's. Touch screens only: a
+mouse drag does nothing, so desktop is unchanged.
+
+**How it was kept fast:** the swipe moves the picture by writing a transform straight to the page,
+so React does not re-render while a finger moves; it renders once, at release. All the stills are
+already loaded with the drawer, so a swipe swaps or fetches nothing. The frame that zooms from the
+thumbnail never moves, so opening and closing the viewer look as before.
+
+**Checked:** in headless Chromium at iPhone size, with real touch events:
+- 19 checks on the phone and 2 with a mouse on desktop;
+- landscape (the side drawer), a second finger mid-swipe, and pinch-zoom in and out;
+- the viewer at rest is pixel-identical to before on the phone, and the same rectangle on desktop;
+- the drawer benchmark: open in 29 ms at 1× CPU, as before.
+
+The owner was given the local build in Chrome to try, said "perfect", and asked for it to go live
+the same day.
+
+**Problem met:** screenshots taken mid-drag showed the still in the wrong place. An event log
+traced it to the test, not the site. Taking a screenshot makes Chromium's touch emulation send a
+`pointermove` at the touch's first position, and the strip correctly followed it. The pictures for
+the owner were recorded as a screencast instead.
+
+Commit `9a67fa5c`. The assets are in `evidence/mobile/swipe/` ([README](evidence/mobile/swipe/README.md)).
+
 ## Still to confirm on a real phone
 
 The five limits in [06](06-mobile-audit.md#limits--check-on-a-real-phone): Safari's own scrolling
 on the A–Z jump, the iPhone's edge-swipe Back, results above the real keyboard, the filter sheet,
-and pinch-zoom in the viewer.
+and pinch-zoom in the viewer, now with the swipe beside it.
 
 ## Where everything is kept
 
@@ -267,3 +303,5 @@ and pinch-zoom in the viewer.
 | The measurements (walkthrough log, mockups, search battery) | `evidence/mobile/data/` | `~/VaultShots/reports/mobile-audit/*.json` |
 | The personas and participants | `docs/ux-research/01`, `02` | — |
 | The code | commits `c89e24ea` (audit), `7bb529da` (search), `48081459` (drawer), `d0073287` (the rest), `80a2ec0e` (docs), then this archive; branch `mobile-audit` kept | — |
+| Swiping the stills (2026-11-13): page, recording, screenshots, results, scripts | `evidence/mobile/swipe/` | `~/VaultShots/reports/viewer-swipe.html` |
+| The swipe's code | commit `9a67fa5c`, `src/hooks/useSwipePager.ts` | — |

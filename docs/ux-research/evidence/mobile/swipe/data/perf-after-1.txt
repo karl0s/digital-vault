@@ -1,0 +1,45 @@
+
+> the-vault@1.0.0 perf
+> node scripts/perf/bench.mjs --quick --url http://localhost:4401/digital-vault/
+
+Probing http://localhost:4401/digital-vault/?from=1900&undated=1
+Chromium: /Users/ko/Library/Caches/ms-playwright/chromium_headless_shell-1223/chrome-headless-shell-mac-x64/chrome-headless-shell
+
+Drawer correctness
+  ok   inert is not applied at the click
+  ok   page behind is inert while open
+  ok   focus moves into the drawer
+  ok   page behind cannot take focus
+  ok   drawer closes on Escape
+  ok   inert is lifted after close
+  ok   focus returns to the card
+  ok   page behind is inert while open (reduced motion)
+  ok   focus moves into the drawer (reduced motion)
+  ok   page behind cannot take focus (reduced motion)
+  ok   drawer closes on Escape (reduced motion)
+  ok   inert is lifted after close (reduced motion)
+  ok   focus returns to the card (reduced motion)
+Timing at 1x CPU, run 1/1…   Timing at 4x CPU, run 1/1…                                                     
+Timings — median of 1 run(s) at 1x, 1 at 4x; 1277 cards
+                                              1x CPU    4x CPU
+  first contentful paint                      296 ms    556 ms
+  show data parsed before first render       1136 KB   1136 KB
+  grid first render                           895 ms   3135 ms
+  JS heap after load                           17 MB     17 MB
+  scroll: image data downloaded                39 MB     39 MB
+  scroll: p95 frame                            67 ms    150 ms
+  scroll: frames over 50 ms                       34       184
+  scroll: on-screen cards still blank            0 %       1 %
+  drawer open: click -> first frame            29 ms    139 ms
+  drawer open: worst frame in next 1 s         73 ms    427 ms
+  drawer close: Esc -> first frame              8 ms     35 ms
+  drawer close: worst frame in next 1 s        67 ms    417 ms
+
+Budgets (~3x the 2026-10-02 measurements)
+  ok   drawer open at 1x: 29 ms (budget 80)
+  ok   drawer close at 1x: 8 ms (budget 40)
+  ok   drawer open at 4x: 139 ms (budget 400)
+  ok   JS heap: 17 MB (budget 25)
+  ok   blank cards while scrolling at 4x: 1 % (budget 15)
+
+All checks passed

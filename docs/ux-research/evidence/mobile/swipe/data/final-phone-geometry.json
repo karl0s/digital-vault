@@ -1,0 +1,16 @@
+{
+  "shownRect": {
+    "x": 24,
+    "y": 283.8,
+    "w": 342,
+    "h": 256.5
+  },
+  "s0": {
+    "open": true,
+    "transform": "",
+    "moving": false,
+    "shownAlt": "Screenshot 1",
+    "counter": "Screenshot 1 of 4",
+    "touchAction": "pan-y pinch-zoom"
+  }
+}

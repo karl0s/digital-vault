@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stills swipe</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; background: #111; color: #ddd; font: 15px/1.55 -apple-system, system-ui, sans-serif; }
+  main { max-width: 980px; margin: 0 auto; padding: 32px 16px 64px; display: grid; grid-template-columns: 300px 1fr; gap: 40px; align-items: start; }
+  @media (max-width: 720px) { main { grid-template-columns: 1fr; } }
+  video { width: 300px; border-radius: 28px; border: 6px solid #2a2a2a; display: block; background: #000; }
+  h1 { font-size: 22px; margin: 0 0 4px; color: #fff; }
+  .sub { color: #999; margin: 0 0 24px; }
+  h2 { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: #888; margin: 28px 0 8px; }
+  ol, ul { margin: 0; padding-left: 20px; }
+  li { margin: 4px 0; }
+  code { background: #222; padding: 1px 6px; border-radius: 4px; font-size: 13px; }
+  .note { color: #999; font-size: 13px; margin-top: 8px; }
+</style>
+</head>
+<body>
+<main>
+  <div>
+    <video src="swipe.mp4" autoplay loop muted playsinline controls></video>
+    <p class="note">Recorded in a headless iPhone-size browser (390×844) with real touch events, at real speed.</p>
+  </div>
+  <div>
+    <h1>Swipe between screenshots on a phone</h1>
+    <p class="sub">The show drawer's screenshot viewer, touch screens only. Not pushed.</p>
+
+    <h2>In the recording, in order</h2>
+    <ol>
+      <li>Drag left past halfway and let go: the next screenshot.</li>
+      <li>A short quick flick: the next one. Momentum counts, so a flick is enough.</li>
+      <li>Drag right, change your mind and go back: it stays put.</li>
+      <li>Two flicks right: back to the first.</li>
+      <li>Drag right past the first screenshot: it resists, then springs back. No wrap-around.</li>
+    </ol>
+
+    <h2>How it behaves</h2>
+    <ul>
+      <li>The picture stays under your finger the whole way; after you let go it carries on at your finger's speed and settles without a bounce.</li>
+      <li>"Screenshot 2 of 4" and the dots change as you let go, not after the slide.</li>
+      <li>Touch a picture while it is still sliding and it stops under your finger.</li>
+      <li>Up-and-down movement and pinch-zoom work as before; zoomed in, a finger pans the page.</li>
+      <li>A swipe never closes the viewer; a tap on the dark area still does.</li>
+      <li>The arrows and dots work as before (they still wrap around). On a computer with a mouse nothing has changed.</li>
+    </ul>
+
+    <h2>Try it on your phone</h2>
+    <p>In the project folder run <code>npm run dev -- --host</code>, open the "Network" address it prints on your phone (same Wi-Fi), open a show and tap a screenshot.</p>
+  </div>
+</main>
+</body>
+</html>
