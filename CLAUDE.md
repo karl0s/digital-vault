@@ -27,7 +27,7 @@ components/             ← cards, grids, ShowList (the list layout), ShowDrawer
   filters/              ← FilterBar, FilterSheet (phones), FacetPopover, MoreFiltersPopover, YearRangePopover, YearHistogram
   logos/                ← HalationLogo (the wordmark)
 src/
-  hooks/                ← useShows (data + getNotes + getImageUrl), useBrowseResults, useSearchEngine, useDebounce
+  hooks/                ← useShows (data + getNotes + getImageUrl), useBrowseResults, useSearchEngine, useDebounce, useSwipePager (the image viewer's swipe)
   store/filters.ts      ← zustand filter store, synced to the URL
   lib/                  ← url.ts (canonical URL state, EVENT_GROUPS), specs.ts (specs in traders' words: quality, codecs, lengths, dates), specFilters.ts (More filters' options), csv.ts (the results as a spreadsheet), added.ts (what's new), copies.ts (a show's other recordings), layout.ts (the one content width), portraits.ts (artist tile picks), hoverPreload.ts (cards' hover stills), brush.ts, motion.ts, cn.ts
   search/               ← searchIndex.ts (MiniSearch, field prefixes; free text grouped artist/show/song, Did you mean), facets.ts (filter, count, sort)

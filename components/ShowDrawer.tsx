@@ -9,6 +9,7 @@ import { showLink } from '../src/lib/url';
 import { quality, videoName, audioName, containerName, channelsName, aspectName, sampleRateName, lengthName, sourceName, sourceWithChannel, dateName, dateCaveat, eventName, compilationParts, songCount, frameName, frameShort, kbpsName, discName } from '../src/lib/specs';
 import { copiesOf } from '../src/lib/copies';
 import { ADDED_LABEL, addedKind } from '../src/lib/added';
+import { useSwipePager } from '../src/hooks/useSwipePager';
 import type { SongHit } from '../src/search/searchIndex';
 
 interface ShowDrawerProps {
@@ -110,6 +111,9 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
   // Set while the header is docked; a tap on it then scrolls back to the top.
   const dockedRef = useRef(false);
   const viewerBackRef = useRef<HTMLButtonElement>(null);
+  // The viewer's picture area, where a swipe starts, and the strip it moves.
+  const viewerAreaRef = useRef<HTMLDivElement>(null);
+  const viewerStripRef = useRef<HTMLDivElement>(null);
 
   // A linked record points at its master; a master is pointed at by its linked records.
   const parent = show.ParentShowID ? shows.find(s => s.ShowID === show.ParentShowID) : undefined;
@@ -278,6 +282,16 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
   }
   function prevImage() { setViewingIndex(i => (i > 0 ? i - 1 : images.length - 1)); }
   function nextImage() { setViewingIndex(i => (i < images.length - 1 ? i + 1 : 0)); }
+
+  // On a touch screen the stills swipe; the arrows, dots and keys stay.
+  useSwipePager({
+    regionRef: viewerAreaRef,
+    stripRef: viewerStripRef,
+    index: viewingIndex,
+    count: images.length,
+    onChange: setViewingIndex,
+    enabled: isImageExpanded,
+  });
 
   useEffect(() => {
     if (isImageExpanded) viewerBackRef.current?.focus({ preventScroll: true });
@@ -491,7 +505,8 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
             <motion.div
               key="img-overlay"
               // Above the sticky header (z-20), below the drawer's close button (z-60).
-              className="absolute inset-0 z-30 flex flex-col bg-[#0d0d0d]/97 cursor-zoom-out"
+              // Clipped, so a still swiping in never shows outside the drawer.
+              className="absolute inset-0 z-30 flex flex-col overflow-hidden bg-[#0d0d0d]/97 cursor-zoom-out"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.25 } }}
@@ -537,19 +552,40 @@ export function ShowDrawer({ show, onClose, getImageUrl, shows = [], onOpenShow,
                 </p>
               </div>
 
-              {/* Image — top padding clears the absolutely-positioned close button */}
-              <div className="flex-1 flex items-center justify-center min-h-0 px-6 pt-16 md:pt-20">
+              {/* Image — top padding clears the absolutely-positioned close button.
+                  On a touch screen a swipe anywhere here moves between the
+                  stills (useSwipePager). */}
+              <div ref={viewerAreaRef} className="flex-1 flex items-center justify-center min-h-0 px-6 pt-16 md:pt-20">
                 <motion.div
                   layoutId={`drawer-img-${show.ShowID}-${expandedFromIndex}`}
                   style={{ borderRadius: 8 }}
                   transition={LAYOUT_TRANSITION}
                 >
-                  <img
-                    src={images[viewingIndex]}
-                    alt={`Screenshot ${viewingIndex + 1}`}
-                    className="max-w-full max-h-[62vh] object-contain cursor-default"
-                    style={{ display: 'block', borderRadius: 8 }}
-                  />
+                  {/* The strip the swipe moves, inside the frame so the frame
+                      (and its zoom from the thumbnail) never moves. The still
+                      shown is in the flow and sizes the frame; the others sit
+                      a page to either side, seen only mid-swipe. One keyed
+                      <img> per still, so changing still reloads nothing. */}
+                  <div ref={viewerStripRef} className="group/strip relative">
+                    {images.map((url, i) => i === viewingIndex ? (
+                      <img
+                        key={i}
+                        src={url}
+                        alt={`Screenshot ${i + 1}`}
+                        className="max-w-full max-h-[62vh] object-contain cursor-default"
+                        style={{ display: 'block', borderRadius: 8 }}
+                      />
+                    ) : (
+                      <img
+                        key={i}
+                        src={url}
+                        alt=""
+                        aria-hidden="true"
+                        className="invisible group-data-moving/strip:visible absolute inset-0 size-full object-contain"
+                        style={{ borderRadius: 8, transform: `translate3d(calc(var(--swipe-page, 100vw) * ${i - viewingIndex}), 0, 0)` }}
+                      />
+                    ))}
+                  </div>
                 </motion.div>
               </div>
 

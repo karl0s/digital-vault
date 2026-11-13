@@ -525,8 +525,26 @@ Tailwind v4: use `bg-linear-to-t`, not `bg-gradient-to-t` (deprecated).
   the viewer's `layoutId`s stay stable.
 - The viewer is internal (no external lightbox). `expandedFromIndex` (the clicked thumbnail; anchors
   `layoutId={`drawer-img-${show.ShowID}-${idx}`}` for the open/close animation; `null` closes) and
-  `viewingIndex` (the image shown; prev/next, ← →, and the dots change only this, wrapping around).
-  Going back always zooms back to the original thumbnail.
+  `viewingIndex` (the image shown; prev/next, ← →, and the dots change only this, wrapping around;
+  a swipe changes it too, without wrapping). Going back always zooms back to the original thumbnail.
+- **Swipe** (touch screens, 2026-11-13; `src/hooks/useSwipePager.ts`): a finger anywhere in the
+  picture area moves between the stills. The picture follows the finger 1:1; at release the
+  gesture's momentum is projected forward (Apple's 0.998 deceleration) to choose the still, so a
+  short flick is enough, one still per gesture; a critically damped spring (response 0.32 s, no
+  bounce) carries on at the finger's own speed; past the first or last still it resists (rubber
+  band) and comes back; a touch on a still settling catches it. The counter and dots change at
+  release. Up-and-down and pinch-zoom stay the browser's (`touch-action: pan-y pinch-zoom`, dropped
+  while zoomed in, so the finger pans the page). A mouse never drives it: arrows, dots and keys as
+  before.
+- How the swipe is built: the `layoutId` frame never moves, so its zoom from the thumbnail is
+  unchanged; a strip inside it does, by `style.transform` written from the gesture, never React
+  state. React renders once per still, at release, and a layout effect re-bases the strip in that
+  same commit, so nothing jumps. One keyed `<img>` per still: the one shown is in the flow and
+  sizes the frame, as before; the others are `absolute`, a page to either side (`--swipe-page`,
+  measured per gesture: the still plus 24px, or more so a neighbour always enters from the edge),
+  and `invisible` except while the strip has `data-moving`. Changing still swaps no `src` and
+  fetches nothing (the drawer's thumbnails have already loaded the originals). The viewer clips
+  (`overflow-hidden`), so a still never shows outside the drawer.
 - The viewer covers the drawer at `z-30`, above the sticky header (`z-20`) and below the drawer's
   close button (`z-60`). **× means one thing everywhere** (owner, 2026-10-12): the drawer's close
   button stays visible over the viewer and closes the show. Its twin on the left, a round **Back**

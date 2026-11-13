@@ -167,4 +167,6 @@ Still open after the build: none of these has been tried on a real phone yet.
 2. Does the iPhone edge-swipe Back leave the site after a search (R5)?
 3. How many results show above the real keyboard (R4)?
 4. Can "New" be reached in More filters on the landing page (R8)?
-5. Does pinch-zoom work on a still in the viewer? (Not tested.)
+5. Does pinch-zoom work on a still in the viewer? (Not tested.) Since 2026-11-13 the viewer also
+   swipes between stills on a touch screen and leaves pinch-zoom to the browser (`touch-action:
+   pan-y pinch-zoom`; docs/frontend.md); both still to try on a real phone.
